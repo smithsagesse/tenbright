@@ -1,0 +1,206 @@
+Tenbright Compliance Review
+
+
+
+
+  Tenbright Compliance Review
+    Nov 3, 2026       ·   ​@Smith
+
+
+
+
+  Verdict
+  The corrected app is ready for a private family pilot today: it keeps every child record on
+  the device, sends nothing to any outside server, and now requires an adult gate and
+  parental agreement before a child profile exists. A public launch still needs four things
+  only you or a licensed attorney can supply (section 3).
+
+  This is a detailed compliance review against COPPA, the FTC Act, state design codes,
+  accessibility and IP. It is not legal advice and does not replace a licensed attorney's sign-
+  off, which the plan already budgets.
+
+  What changed in this release: 13 findings, 11 fixed in code and retested, 2 open (contact
+  details and the trademark search).
+
+  Verified by automated tests
+
+         The math engine passed 2.1 million checks across all 53 skills.
+         A headless-browser walkthrough of every flow passed, including the adult gate, the
+         consent bypass, the data view, the privacy notice and phone layout.
+         The release build made zero outside network requests, and the build now fails if any
+         outside web address appears in the page.
+
+
+  Findings and fixes
+
+    #          Finding                 Rule                  Severity   Fix                      Status
+
+    F1         Opening the sample      COPPA: consent        High       "Add child" now          Fixed, tested
+               learner, then "Add      before collecting a              routes to the
+               child" on the parent    child's information              consent screen
+               page, created a real                                     unless real consent is
+               child profile with no                                    on record
+               consent
+
+
+
+
+                                                                                                           Page 1 of 4
+Tenbright Compliance Review
+
+
+
+
+    #          Finding                  Rule                     Severity   Fix                     Status
+
+    F2         Every page load          COPPA: persistent        High       Fonts embedded in       Fixed, tested
+               fetched Google           identifiers count as                the page; the build     (0 outside
+               Fonts, sending the       personal information;               refuses any outside     requests)
+               device's IP address,     no disclosure to third              web address
+               a persistent             parties
+               identifier, to a third
+               party
+
+    F3         Read-aloud could         Same as F2               Medium     Only on-device          Fixed
+               use an online voice,                                         voices are used; if
+               sending text to a                                            none exist, read-
+               voice service                                                aloud stays silent
+
+    F4         Anyone, including a      COPPA consent must       Medium     Adult gate (birth       Fixed, tested
+               child, could open        come from the                       year, 18+) before
+               setup and tick the       parent; app-store                   setup and the
+               consent boxes            kids' rules ask for a               sample; answer not
+                                        parental gate                       stored
+
+    F5         No full online           COPPA requires a         High       Privacy notice added,   Fixed; contact
+               privacy notice           clear online notice                 linked from the         details open
+                                        linked on the home                  welcome, consent        (F12)
+                                        page and wherever                   and parent pages
+                                        data is collected
+
+    F6         No terms of use          Consumer                 Medium     Terms added: no         Fixed
+                                        protection; sets                    outcome promises,
+                                        expectations on                     clear pricing and
+                                        outcomes and future                 cancellation before
+                                        pricing                             any payment
+
+    F7         Parents could            COPPA gives parents      Medium     "See everything         Fixed, tested
+               delete data but not      the right to review                 stored" shows the
+               see all of it            their child's                       full record, with a
+                                        information                         copy button
+
+    F8         No automatic             Amended COPPA            Medium     Answer records and      Fixed
+               deletion                 Rule: written                       sessions older than
+                                        retention policy with               13 months are
+                                        deletion timeframes                 deleted on the
+                                                                            device; stated in the
+                                                                            notice
+
+    F9         Grown-ups PIN            Amended Rule:            Low        PIN stored only as a    Fixed
+               stored as plain          reasonable security                 salted hash; existing
+               digits                   for children's data                 PINs converted on
+                                                                            first load
+
+
+
+
+                                                                                                              Page 2 of 4
+Tenbright Compliance Review
+
+
+
+
+    #          Finding                Rule                  Severity     Fix                    Status
+
+    F10        Consent record had     Proof of consent if   Low          Records notice         Fixed
+               a date but no notice   questioned                         version and method;
+               version or method                                         shown on the parent
+                                                                         page
+
+    F11        A developer test       Good practice;        Low          Release build strips   Fixed
+               hook shipped in the    smaller attack                     it; tests use a
+               page                   surface                            separate test build
+
+    F12        Privacy notice and     COPPA notice must     High for     Placeholders clearly   Open: needs
+               terms have no          name the operator     public       marked in the notice   your details
+               operator legal name,   and how to reach      launch
+               address, email or      them
+               phone
+
+    F13        "Tenbright" has only   Trademark risk        Medium for   None in code           Open: needs a
+               a web-search name                            public                              USPTO search
+               check                                        launch
+
+
+  Checked and found compliant: no ads, analytics, trackers or links out of the child side; no
+  streaks, loot boxes, timers on ordinary practice or other manipulative design; Pip says it is
+  a computer-made helper; no child free text, chat, camera, microphone or location; no
+  efficacy or IQ claims; fonts under the SIL Open Font License, with license files in the
+  package; the Vedic history note is accurate; keyboard focus is visible, motion respects
+  reduced-motion settings, and the layout works at phone width.
+
+
+  Blocking items before a public launch
+  Four items block a public launch, and none of them is code.
+
+          Operator details (F12): GMIA's legal entity name, mailing address, a monitored
+          contact email and a phone number for the privacy notice and terms. Send them and I
+          will fill them in.
+          Trademark search (F13): USPTO search for "Tenbright" in Class 9 (software) and Class
+          41 (education) before public use.
+          Attorney sign-off: the licensed privacy attorney reviews the notice, terms, consent
+          flow and the accounts plan. This review gives them a head start; it doesn't replace
+          them.
+          Verifiable parental consent for any server version: the on-device agreement is
+          acceptable only because nothing leaves the device. The moment progress syncs to a
+          server, the email-plus flow in the accounts plan must replace it.
+
+
+
+                                                                                                          Page 3 of 4
+Tenbright Compliance Review
+
+
+
+
+  The pilot can run before these are done, as long as the families are invited personally and
+  know it is a preview.
+
+
+  How to release
+  The app is a single HTML file with no outside dependencies, so it can run from the current
+  private link for the pilot and from your own website for the public launch.
+
+  Now: private pilot
+
+     1. Open the Tenbright app page and use its Share menu to share it with pilot families. I
+        can't change sharing for you.
+     2. Tell families it is a preview and their child's data stays on their device.
+     3. Use the Phase 3 test plan for the G3 sessions.
+
+  Later: public launch on your own domain (after section 3)
+
+     1. Upload dist/index.html from the release package to any static host (for example
+         Netlify, Cloudflare Pages or GitHub Pages) under your domain.
+     2. Serve it over HTTPS only.
+     3. Add no analytics or tag scripts; the build check exists to catch exactly that.
+     4. Each family's data stays in their own browser, so moving hosts does not move data.
+        Families who used the pilot link start fresh on the new address.
+
+  Self-hosting also makes GMIA the operator of record on its own domain, which is cleaner
+  for the privacy notice than a shared link on someone else's site.
+
+
+
+  Sources
+         16 CFR 312.5, parental consent methods (Cornell LII)
+         Federal Register: amended COPPA Rule (2025)
+         Perkins Coie: separate consent, AI training and retention under the amended Rule
+         Deque: WCAG 2.2 target size
+         Loeb & Loeb: state children's privacy laws in 2026
+
+
+
+
+                                                                                           Page 4 of 4
+

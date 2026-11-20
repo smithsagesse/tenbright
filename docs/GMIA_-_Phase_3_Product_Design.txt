@@ -1,0 +1,516 @@
+GMIA — Phase 3 Product Design
+
+
+
+
+  GMIA — Phase 3 Product Design
+    Nov 3, 2026       ·   ​@Smith
+
+
+
+
+  Summary
+  Phase 3 defines how GMIA looks, sounds and flows: a proposed child-facing brand
+  ("Tenbright"), an original mascot built around the ten-makes-one idea, the Number
+  Kingdom world, child and parent journeys, a screen-by-screen interface spec, and a
+  usability test plan for Gate G3. The visual system and the key screens are built as
+  separate design artifacts so they can be edited and reused in the build.
+
+  Approvals carried forward (Phase 2, approved Nov 3)
+
+         Review budget of about $5–9k and the lean, founder-led build path.
+         Piano Quest engine sharing stays open; the learner and parent models are generic so
+         the choice can wait.
+         Mascot naming moved to this phase (section 2).
+
+  Companion artifacts (built Nov 3)
+
+         Tenbright Design System: 10 colors in light and dark themes, type, spacing, radius,
+         brand rules and a cover. Components are added once the prototype settles.
+         Tenbright Brand and Screens: logo and palette, Pip's character sheet, the game cover,
+         the Kingdom map (C2), a working practice item (C5) and the parent home (P3). The
+         map's Pip button opens the practice item in Play mode.
+
+
+  Brand strategy and naming
+  Recommendation: keep "Global Mathematics Intelligence Academy" as the company and
+  institutional brand, and give children and families a short, warm product name. The
+  working pick is Tenbright: it names the core idea (ten ones make a ten), suggests a bright
+  mind, and is easy for a 7-year-old to say.
+
+  Brand architecture
+
+
+     Layer                Name                              Audience              Tone
+
+     Company              Global Mathematics Intelligence   Investors, schools,   Rigorous, evidence-
+                          Academy (GMIA)                    partners              led
+
+
+
+
+                                                                                                 Page 1 of 11
+GMIA — Phase 3 Product Design
+
+
+
+
+     Layer                Name                                  Audience            Tone
+
+     Product              Tenbright                             Children and        Warm, curious,
+                                                                parents             encouraging
+
+     World                Number Kingdom (first of many         Children            Playful, story-driven
+                          worlds)
+
+     Programs             Mental Math Strategies; Soroban       Parents and         Clear, descriptive
+                          Academy; Money Island                 children
+
+     Parent               Tenbright for Parents                 Parents             Plain-spoken,
+     side                                                                           reassuring
+
+
+  Name candidates and first-pass conflict check (web search only, Nov 3, 2026)
+
+
+     Name                       Meaning           Web search result              Status
+
+     Tenbright                  Ten + bright      No education app found with    Recommended, pending
+                                mind              this name                      legal search
+
+     Beadlight                  Soroban beads     No app found; generic          Backup
+                                that glow         product listings use "bead"
+                                                  words
+
+     Numberwood                 A forest of       Not checked in depth           Backup
+                                numbers
+
+     Tenfold                    Tenfold growth    Taken: TENFOLD                 Rejected
+                                                  EDUCATION, a South African
+                                                  math app
+
+     Numtopia                   Number utopia     Taken: Numtopia, a kids math   Rejected
+                                                  app
+
+
+  A web search is not trademark clearance. Before any spend on logo files or a domain, run a
+  USPTO trademark search in Class 9 (software) and Class 41 (education) and check app
+  stores and domains; the Phase 1 privacy attorney can do this in the same engagement
+  (estimate $500–1,500).
+
+  Voice and tone
+
+         To children: short sentences, praise for effort and strategy ("You used make-ten!"),
+         never for being "smart"; mistakes are "clues."
+
+
+
+                                                                                                     Page 2 of 11
+GMIA — Phase 3 Product Design
+
+
+
+
+         To parents: specific and honest ("Maya can regroup ones but not yet hundreds"), no
+         hype, no fear-based messaging.
+
+
+  Mascot and characters
+  The mascot is Pip, a small glowmoth who collects light-beads. Ten beads click into a
+  lantern, and ten lanterns stack into a tower: the character's world literally performs place
+  value, so every animation teaches regrouping.
+
+  Why this concept
+
+         It turns the MVP's core idea (10 ones = 1 ten, 10 tens = 1 hundred) into the mascot's
+         everyday job, so the art reinforces the math instead of decorating it.
+         Beads connect visually to the soroban, and lanterns connect to base-ten blocks; one
+         visual language covers three representations.
+         It is original: not an animal from a famous franchise, not a number-shaped character,
+         no borrowed style.
+
+  Pip's character sheet
+
+
+     Trait                         Definition
+
+     Personality                   Curious, a little clumsy, delighted by patterns;
+                                   never a know-it-all
+
+     Role                          Learning companion who asks more than tells:
+                                   "What do you notice?"
+
+     How Pip reacts to mistakes    Treats them as clues: "Hmm, a clue! Let's look at the
+                                   ones."
+
+     How Pip celebrates            Lantern glows brighter; a short chime; praise
+                                   names the strategy used
+
+     What Pip never does           Pretend to be a person or a friend; ask personal
+                                   questions; say "don't tell your parents"; guilt the
+                                   child into staying
+
+     Voice                         Warm, gender-neutral, slightly slower than adult
+                                   speech; recorded by a voice actor with an AI-voice
+                                   fallback only for dynamic numbers
+
+
+
+
+                                                                                            Page 3 of 11
+GMIA — Phase 3 Product Design
+
+
+
+
+  Pip is introduced as "a helper made by the Tenbright team using a computer," consistent
+  with the Phase 1 AI-safety rules.
+
+  Supporting cast (Number Kingdom)
+
+         Marta the Mapkeeper: an older tortoise who guards the Kingdom map and explains
+         new regions. Calm, appears at unlocks.
+         The Rounders: three hill goats who argue about which ten a number is closer to; they
+         front the rounding skills.
+         Captain Carry and Lieutenant Lend: a pair of river-ferry operators who move beads
+         across columns; they front regrouping in addition and subtraction.
+
+  All characters avoid stereotyped accents or cultural shorthand; human characters in story
+  scenes rotate names, skin tones and family structures.
+
+
+  Number Kingdom world and progression
+  Number Kingdom is a map of five regions, one per MVP domain plus a review hub; a region
+  opens when its first skill's prerequisites are met, so the map is the competency graph
+  drawn as places.
+
+
+     Region                     Domain           Signature activity                 Skills
+
+     Lantern Village            Review and       Relight dimmed lanterns            All mastered
+     (hub)                      retention        (spaced review items)              skills
+
+     Bead Meadows               Place value      Gather beads, build lanterns and   PV01–PV14
+                                                 towers
+
+     Ferry River                Addition and     Load and unload ferries across     AS01–AS17
+                                subtraction      the ones, tens and hundreds
+                                                 docks
+
+     Orchard of                 Multiplication   Plant equal rows, harvest arrays   MU01–MU16
+     Rows
+
+     Story Bridge               Word problems    Help villagers with requests       WP01–WP05
+                                                 using bar diagrams
+
+
+  Progression mechanics (and what each one is for)
+
+
+
+
+                                                                                             Page 4 of 11
+GMIA — Phase 3 Product Design
+
+
+
+
+     Mechanic                   Earned by            Purpose                  Guardrail
+
+     Lantern lit                Mastering a micro-   Makes progress           Never sold, never lost for
+                                skill                visible on the map       absence
+
+     Lantern dims               A retention check    Prompts review           Dimming is gentle;
+                                falls due            without punishment       relighting is one short
+                                                                              review
+
+     Certificate                Passing the 30-day   Proof of durable         Printable from the parent
+                                check                learning for parents     side
+
+     Region unlock              Prerequisites        Story progress tied to   No paid shortcuts
+                                mastered             the graph
+
+     Decorate your              Lanterns earned      Creative play and        Items earned only; no
+     cottage                                         ownership                randomized rewards
+
+     Optional                   Choosing "Pip's      Stretch for advanced     Never required to
+     challenges                 puzzle"              learners                 progress
+
+
+  Not used, by design: streak counters, loot boxes or random prize draws, public
+  leaderboards, timers on ordinary practice, notifications to the child, and any item that can
+  be bought.
+
+
+  User journeys
+  The parent does everything that involves data, consent or money; the child's experience
+  starts at Pip and never shows a form, a price or a login.
+
+
+
+
+                                                                                                        Page 5 of 11
+GMIA — Phase 3 Product Design
+
+
+
+
+  Child and parent journeys · first week
+
+  Child journey, step by step
+
+     1. Meet Pip (about 2 minutes): Pip's lantern goes dark; the child helps relight it by
+        building a number. This teaches the interface by doing.
+     2. Explore the map (placement, 15 minutes or less): presented as visiting regions; the
+         map lights up where the child is already strong.
+     3. Daily session: Pip suggests one activity chosen by the engine; the child can pick
+         between two options to keep a sense of control. Each session ends at a natural break
+         with a "see you tomorrow" screen, never a cliffhanger.
+     4. Certificate moments: after the 30-day check, the child sees a lantern ceremony; the
+         certificate itself is sent to the parent side.
+
+  Parent journey, step by step
+
+     1. Sign up: email and password, then verifiable consent before any child data is
+         collected.
+     2. Add a child: nickname and birth year, plus "What math is your child working on now?"
+     3. Hand over the device: a child-mode lock (a 4-digit parent PIN) keeps the child out of
+         settings and billing.
+     4. Placement summary: "Already strong at, ready to learn next, we'll strengthen first."
+     5. Weekly report (email plus dashboard): what the child understands, what they're
+         working on, the likely reason for any difficulty, one 10-minute home activity, and how
+         progress will be measured.
+
+
+
+                                                                                             Page 6 of 11
+GMIA — Phase 3 Product Design
+
+
+
+
+     6. Controls: session-length caps, data download and deletion, subscription
+        management.
+
+  Moments of truth to test at G3: Can a 7-year-old start a lesson with no adult help after
+  the Pip intro? Can a parent explain, after reading one report, what their child should
+  practice next?
+
+
+  Interface specifications
+  The MVP needs 14 screens: 8 on the child side and 6 on the parent side. Every child screen
+  works with audio alone and one finger, and uses no text input except numbers.
+
+  Child screens (landscape tablet first, 1024 × 768 reference; phone landscape supported)
+
+
+
+
+                                                                                           Page 7 of 11
+GMIA — Phase 3 Product Design
+
+
+
+
+     #         Screen               Must show                Must do             Acceptance
+
+     C1        Who's playing?       Child avatars, no        One tap to          Child enters in ≤ 2
+                                    names typed              enter; parent       taps
+                                                             PIN corner
+
+     C2        Kingdom map          Regions, lit and dim     Tap a region or     Pip's suggestion is
+                                    lanterns, Pip            Pip's suggestion    the largest target
+
+     C3        Lesson: discover     Story panel, narrated    Replay audio;       Narration auto-plays;
+               and demonstrate      worked example           next                captions on by
+                                                                                 default
+
+     C4        Lesson: explore      Manipulative             Drag, split,        Model state always
+                                    (blocks, soroban,        combine             matches the numeral
+                                    number line, array)                          shown
+
+     C5        Practice item        Question, model,         Number pad 0–       Hint button visible
+                                    answer pad               9, check, hint      but not flashing
+
+     C6        Feedback             Correct: strategy        Try again; see a    No red X, no buzzer;
+                                    praise; wrong: clue      worked step         error routes per
+                                                                                 section 2 of Phase 2
+
+     C7        Session end          Lanterns lit today;      Return to map       No countdowns or
+                                    "See you tomorrow"       or finish           "just one more"
+                                                                                 prompts
+
+     C8        My cottage           Earned decorations       Place items         No store, prices or
+                                                                                 locked teasers
+
+
+  Parent screens (responsive web, phone first)
+
+
+     #         Screen             Must show                            Acceptance
+
+     P1        Sign up and        Plain-language notice, consent       No child data stored until
+               consent            method, separate optional            consent is recorded
+                                  consents
+
+     P2        Add child          Nickname, birth year, current-       Under 60 seconds
+                                  math question
+
+     P3        Home               Per child: this week, strengths,     Readable in under 1 minute, no
+               dashboard          working on, next home activity       charts required to understand
+
+
+
+                                                                                                    Page 8 of 11
+GMIA — Phase 3 Product Design
+
+
+
+
+     #         Screen           Must show                           Acceptance
+
+     P4        Skill detail     Skill status, evidence (accuracy,   Every claim links to its
+                                retention), misconceptions in       evidence
+                                plain words, why the engine
+                                chose the next activity
+
+     P5        Printables       Worksheets generated from           Prints on US Letter in black and
+                                current skills, with answer key     white
+
+     P6        Settings         Session caps, PIN, data             Deletion completes in-app with
+                                download, delete child,             confirmation
+                                subscription
+
+
+  Lesson screen layout (C5, the most-used screen): question and narration at top; the
+  manipulative in the center (60% of the screen); the answer pad on the right for right-
+  handed default, mirrored by a setting; Pip small in the corner, animating only when spoken
+  to.
+
+
+  Accessibility and child-safety design rules
+  GMIA designs above the legal minimum because 7-year-olds' motor control and reading
+  are still developing: WCAG 2.2 AA requires 24 × 24 CSS-pixel targets (Deque), and Apple
+  and Google recommend 44 and 48, so child screens use 64 × 64 px minimum and 88 px for
+  primary actions.
+
+  Accessibility
+
+          Targets: child 64 px minimum, 88 px primary, 16 px gaps; parent 44 px minimum.
+          Contrast: text 4.5:1 minimum and 7:1 for numbers in items; never rely on color alone
+          (correct and incorrect also use shape and sound).
+          Audio-first: every instruction narrated, with captions; replay always available;
+          adjustable speech rate.
+          Reading level: child text at or below grade 1 for ages 7, grade 2 for 8–10.
+          Motion: reduced-motion setting honored; no flashing above 3 per second.
+          Dragging has a tap-to-place alternative; no time limits on standard items; a dyslexia-
+          friendly font option.
+          Screen-reader labels on parent pages; child manipulatives expose their current value
+          to assistive tech.
+
+
+
+
+                                                                                                Page 9 of 11
+GMIA — Phase 3 Product Design
+
+
+
+
+  Child-safety design
+
+         No links out of the child side; no ads; no chat; no other users visible.
+         Parent PIN guards settings, billing and any outbound link.
+         No push notifications to the child's device; reminders go to the parent, opt-in.
+         Session caps enforced from the parent setting; a gentle end screen, never a hard cut
+         mid-item.
+         No collection of the child's real name, photo, voice or location in the MVP.
+
+
+  Prototype and Gate G3 test plan
+  G3 passes when 5–8 children aged 7–9 and their parents use a clickable prototype of the
+  first-session flow and at least 4 of 5 success criteria are met; target date is February 2027.
+
+  Prototype scope: C1 → C2 → C3 → C4 → C5 → C6 → C7 for one micro-skill (AS05, adding 2-
+  digit numbers by composing a ten), plus P3 and P4 with sample data. Built as an
+  interactive web page with working blocks and number pad, not static images, so children
+  can actually try the manipulative.
+
+  Sessions: 30 minutes per child with a parent present, one moderator, one note-taker;
+  consent and an age-appropriate assent script; children are thanked with a small non-cash
+  gift (e.g., a book).
+
+  Recruiting: homeschool co-ops and family networks in Gwinnett County; mix of ages 7, 8
+  and 9; at least two children who find math hard; at least one child who uses assistive
+  features.
+
+  Success criteria
+
+
+     #         Criterion                                              Target
+
+     1         Child starts the lesson without adult help after the   4 of 5 children or more
+               Pip intro
+
+     2         Child uses the blocks to show regrouping correctly     4 of 5 or more
+               at least once
+
+     3         Child can say what a hint or the clue screen told      3 of 5 or more
+               them
+
+     4         Parent correctly states the next home activity         4 of 5 parents or more
+               after reading P3
+
+
+
+                                                                                                Page 10 of 11
+GMIA — Phase 3 Product Design
+
+
+
+
+     #         Criterion                                          Target
+
+     5         Child says they would like to play again (smiley   4 of 5 or more
+               scale)
+
+
+  Also record: task time, every point of confusion, and any moment a child seems anxious;
+  anxiety at the feedback screen is a stop-and-fix issue regardless of other results.
+
+
+  Decisions for approval and sources
+  Five decisions close Phase 3's design direction; once approved, the next step is the G3
+  prototype build and usability sessions, then Phase 4 engineering.
+
+  Decisions
+
+         Name: Tenbright as the child-facing product name, subject to a trademark search
+         (Class 9 and 41) before final logo files.
+         Mascot: Pip the glowmoth, with the lantern and tower system for place value.
+         Palette and type: the night-lantern palette with Nunito and Atkinson Hyperlegible.
+         Prototype scope for G3: map → AS05 practice item → feedback → session end, plus
+         the parent home; the working practice item on the canvas is the starting point.
+         Commission budget for final art and sound (estimate $8–25k, from the Phase 1
+         budget), or continue with these drafts through the pilot.
+
+  What the practice-item prototype already does: shows 38 + 27 with beads and lanterns;
+  Make a ten trades 10 ones for a lantern; the number pad and Check work; answers 515, 55
+  and 75 trigger the matching clue from the misconception library; the Hint button walks the
+  first three hint levels.
+
+  What is not built yet: audio narration and Pip voice, animation, the other 11 screens, real
+  data, and accessibility testing. These are deliberately left for the G3 build.
+
+  Sources
+
+         Deque: WCAG 2.2 target size rule
+         TestParty: platform touch-target guidance (44 and 48 px)
+         TENFOLD EDUCATION app listing (name conflict)
+         Numtopia app listing (name conflict)
+
+
+
+
+                                                                                          Page 11 of 11
+

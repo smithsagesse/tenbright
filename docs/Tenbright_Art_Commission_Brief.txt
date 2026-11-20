@@ -1,0 +1,368 @@
+Tenbright Art Commission Brief
+
+
+
+
+  Tenbright Art Commission Brief
+    Nov 3, 2026        ·   ​@Smith
+
+
+
+
+  Summary
+  Tenbright needs one illustrator, or one small studio, to create a single visual world for
+  children aged 7–10: Pip the guide, five map regions, the app icon, key art, and illustrated
+  skins for the math models. The app's colors, type and layout are already set by the
+  Tenbright design system; the artist adds character and place on top of it.
+
+  No one illustrator is objectively "the best". The best fit is one who has shipped children's
+  educational or game art at this age band, can draw quantities exactly, and delivers
+  layered, app-ready files. That points to agencies that specialise in children's and
+  educational illustration rather than open freelance marketplaces.
+
+  Recommended route
+
+     1. Send the brief in section 7 to the three agencies in section 2 on the same day and ask
+        each for 3–5 portfolio matches with availability and a quote.
+     2. Pay 2–3 finalists a fixed fee for a test sheet: Pip in three expressions plus one region
+        thumbnail.
+     3. Test the sheets with 5–8 children aged 7–10 during the G3 sessions; pick the artist
+        children recognise and describe positively and who scores best against the rules in
+        section 3.
+     4. Contract on the terms in section 5 before any production work.
+
+  I can't contact, hire or pay anyone. This brief, the shortlist and the email are ready for you
+  to send.
+
+
+  Shortlist
+  The first three are agencies: send the brief to all three. Curious Media is the option if you
+  would rather hire one studio for art plus animation. The directory is a fallback for finding
+  individual artists.
+
+
+
+
+                                                                                              Page 1 of 8
+Tenbright Art Commission Brief
+
+
+
+
+     Priority           Who                           Why they fit         How to reach
+
+     1                  MB Artists (New York)         Represents 60+       Mela Bolinao,
+                                                      illustrators         mela@mbartists.com, 212
+                                                      focused on           689 7830 (mbartists.com)
+                                                      children's,
+                                                      juvenile and
+                                                      educational
+                                                      work; used to
+                                                      educational
+                                                      publishers'
+                                                      accuracy and
+                                                      review cycles
+
+     2                  The Bright Agency (London /   Large children's-    Contact form at
+                        New York)                     illustration         thebrightagency.com
+                                                      agency with
+                                                      picture-book,
+                                                      licensing and
+                                                      character-design
+                                                      artists; strong at
+                                                      memorable lead
+                                                      characters like
+                                                      Pip
+
+     3                  Anna Goodson Illustration     Represents           Contact page at
+                        Agency (Montréal)             illustrators for     agoodson.com
+                                                      educational and
+                                                      digital clients;
+                                                      good for a
+                                                      cleaner, more
+                                                      graphic look
+
+     Alt.               Curious Media (Nampa,         Studio that          Contact page at
+                        Idaho)                        builds HTML5         curiousmedia.com
+                                                      children's
+                                                      learning games
+                                                      with illustration,
+                                                      animation and
+                                                      sound; 70+
+                                                      games for HMH's
+                                                      Curious World
+
+
+
+                                                                                                  Page 2 of 8
+Tenbright Art Commission Brief
+
+
+
+
+     Priority           Who                         Why they fit       How to reach
+
+     Fallback           Lemonade Illustration       Searchable         childrensillustrators.com
+                        Agency /                    directory of
+                        childrensillustrators.com   children's
+                                                    illustrators by
+                                                    style; useful if
+                                                    the agencies are
+                                                    over budget
+
+
+  What to ask each one: 3–5 artists with shipped work for ages 6–11 (education, games or
+  chapter books), availability for an 8–12 week project, a quote against section 4, and
+  confirmation the artist draws by hand or in vector without generative AI.
+
+
+  Art direction for ages 7–10
+  Children at 7–10 reject art that looks "babyish" but still respond to warmth and humour.
+  The look should sit between a picture book and a chapter-book or game cover: confident
+  shapes, real-world texture, a sense of adventure.
+
+  Style
+
+         Warm, hand-made feel with clean, readable silhouettes; no photorealism, no generic
+         stock-vector look.
+         Palette built on the design system: cream background, navy, amber accent, river blue
+         and meadow green. The artist may add tints and shadows but not new brand colors.
+         Diverse children shown in everyday settings, never as stereotypes; no brand logos or
+         real products in scenes.
+         Expressions that encourage effort: curious, determined, pleased. Never mocking,
+         shaming or disappointed.
+
+  Pip, the guide
+
+         An original, friendly creature that is clearly not a real animal brand or known
+         character. Pip must read as a helper, not a friend that needs the child; no romantic,
+         needy or "don't leave me" poses.
+         Recognisable at 48 px as an icon and at full screen.
+
+  Math accuracy (non-negotiable)
+
+
+
+
+                                                                                                   Page 3 of 8
+Tenbright Art Commission Brief
+
+
+
+
+         Any picture that shows quantities must show the exact count: a ten-rod has exactly
+         10 units, a ten-frame has 10 cells, an array of 3 rows of 4 shows 12.
+         Base-ten blocks keep correct proportions: a hundred-flat is 10 by 10 units, a ten-rod is
+         10 units long.
+         Decorative objects must not look countable near a problem, so children don't count
+         the wrong things.
+         Every counting illustration is checked by our team against the item before sign-off.
+
+  Accessibility
+
+         No meaning carried by color alone; regions differ by shape and landmark, not just hue.
+         Text never baked into images; the app sets all words so they can be read aloud and
+         translated.
+         Busy backgrounds stay behind a calm area wherever a question appears.
+
+
+  Deliverables
+  "Core" is what the public launch needs; "Full" can follow in a second contract.
+
+
+     #          Item                    Spec                                                   Tier
+
+     1          Pip character sheet     Front, side, back turnaround; 8 expressions            Core
+                                        (curious, thinking, pleased, cheering, encouraging,
+                                        surprised, pointing, waving); size and color guide
+
+     2          Supporting cast         4 children of varied backgrounds plus 1 adult guide    Full
+                                        per region, each with 3 poses
+
+     3          World map               One full map plus 5 region illustrations: Meadows,     Core
+                                        River, Orchard, Bridge, Village; locked and unlocked
+                                        states
+
+     4          App icon                Pip-based mark, legible at 48 px and 1024 px;          Core
+                                        versions for light and dark backgrounds
+
+     5          Cover / key art         One hero image for the store listing and website,      Core
+                                        with space for the title
+
+     6          UI spot illustrations   About 12: welcome, placement start and end,            Core
+                                        lesson start, mastery, review due, parent page
+                                        header, empty states
+
+
+
+
+                                                                                                      Page 4 of 8
+Tenbright Art Commission Brief
+
+
+
+
+     #          Item               Spec                                                    Tier
+
+     7          Math model skins   Base-ten blocks, ten-frames, counters, coins,           Full
+                                   number line and bar model, drawn to the accuracy
+                                   rules in section 3
+
+     8          Certificate        Printable mastery certificate with space for the        Full
+                                   child's first name, set in the app
+
+
+  File formats for every item
+
+         Layered master files (Procreate, Photoshop or Illustrator) and SVG where the item is
+         vector.
+         PNG exports at 1x, 2x and 3x; icon at the store sizes.
+         Each character pose on a transparent background, no text in images.
+
+
+  Contract terms to require
+  These are the points GMIA's attorney should see in the agreement. They are not legal
+  advice and the attorney should draft or approve the final contract.
+
+  Ownership
+
+         Full copyright assignment of all final art, characters and sketches to GMIA, not just
+         a license. Pip is the brand; GMIA must own it outright.
+         A "work made for hire" label alone is not enough: under US law it covers only certain
+         kinds of commissioned work, and it has no effect for artists outside the US. Use an
+         assignment, with work-for-hire as a backup.
+         If the artist is in California, ask the attorney about work-for-hire wording, which can
+         make the artist an employee under state law.
+         For artists in Canada, the UK or the EU, a written waiver of moral rights, as far as local
+         law allows.
+         A license back for the artist to show the work in their portfolio after launch.
+
+  Originality and AI
+
+         Warranty that the work is original and doesn't copy any existing character, artwork or
+         brand, with indemnity.
+
+
+
+
+                                                                                                  Page 5 of 8
+Tenbright Art Commission Brief
+
+
+
+
+         No generative-AI imagery in any deliverable unless GMIA agrees in writing. The US
+         Copyright Office does not register material generated by AI without human
+         authorship, so AI art could leave Pip unprotected.
+         Process files (sketches, layers) delivered as proof of authorship.
+
+  Delivery and payment
+
+         Milestones: sketches, color roughs, final. Payment split roughly 30% on signing, 40%
+         on approved roughs, 30% on final delivery.
+         Two rounds of revisions per milestone included; further rounds at an agreed hourly
+         rate.
+         Kill fee if GMIA cancels: commonly 25–50% of the unpaid fee depending on the stage
+         reached.
+         Confidentiality until launch; credit line in the app's About page and the store listing.
+
+  Children's safety
+
+         The artist receives no child data and doesn't take part in testing sessions unless the
+         parents agree in writing.
+
+
+
+  Budget and timeline
+  These are planning estimates, not quotes. Agency artists with educational and character
+  experience, buying full copyright, typically fall in these ranges; buying full ownership
+  costs more than a license. Check the quotes against the Graphic Artists Guild Handbook:
+  Pricing & Ethical Guidelines, 17th edition (MIT Press, 2025).
+
+
+     Scope                   Items                 Estimate (USD)          Time
+
+     Test sheets             2–3 finalists, paid   $300–$750 each          1–2 weeks
+
+     Core                    Items 1, 3, 4, 5, 6   about $12,000–$25,000   8–10 weeks
+
+     Full                    All 8 items           about $30,000–$50,000   12–16 weeks
+
+
+  Timeline for Core
+
+         Weeks 1–2: test sheets, child feedback, contract.
+         Weeks 3–4: Pip sheet and map sketches; Pip approved first because everything else
+         depends on it.
+         Weeks 5–7: color roughs for map, icon and key art.
+
+
+
+                                                                                               Page 6 of 8
+Tenbright Art Commission Brief
+
+
+
+
+         Weeks 8–10: finals, spot illustrations, file delivery, accuracy check.
+
+  Ways to lower cost
+
+         Start with Core only, then commission Full after the pilot shows what children use.
+         Keep the math models as the app's built-in graphics and skin them later.
+
+
+  Outreach email
+  Send from your own address. Attach this brief as a PDF (Export menu) and fill in the
+  bracketed parts.
+
+
+       Subject: Illustration commission: children's math app (ages 7–10), character and
+       world
+
+       Hello [name],
+
+       I lead the Global Mathematics Intelligence Academy, which is building Tenbright, a
+       math learning app for children aged 7–10. We'd like to commission one illustrator to
+       create its visual world: a guide character, a five-region map, the app icon, key art and
+       about a dozen spot illustrations. The full brief is attached.
+
+       Could you suggest 3–5 artists on your roster with shipped work for this age group,
+       ideally in education or games, who would be available for an 8–10 week project
+       starting in [month]? For each, we'd welcome a quote for the Core scope in the brief,
+       on the basis of full copyright assignment.
+
+       Two requirements: art that shows quantities must be exact, and no generative AI in
+       any deliverable. We plan to pay 2–3 finalists for a short test sheet before choosing.
+
+       Thank you, and I look forward to hearing from you by [date].
+
+       [Your name] [Title], Global Mathematics Intelligence Academy [Email] · [Phone] ·
+       [Website]
+
+
+
+  Sources
+         MB Artists
+         The Bright Agency
+         Anna Goodson Illustration Agency
+         Curious Media
+
+
+
+                                                                                               Page 7 of 8
+Tenbright Art Commission Brief
+
+
+
+
+         Children's Illustrators (Lemonade)
+         US Copyright Office, Circular 30: Works Made for Hire
+         US Copyright Office: Copyright and Artificial Intelligence
+         Graphic Artists Guild
+
+
+
+
+                                                                      Page 8 of 8
+

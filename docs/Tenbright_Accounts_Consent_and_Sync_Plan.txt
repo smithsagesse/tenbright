@@ -1,0 +1,444 @@
+Tenbright Accounts, Consent and Sync Plan
+
+
+
+
+  Tenbright Accounts, Consent and Sync Plan
+    Nov 3, 2026        ·   ​@Smith
+
+
+
+
+  Summary
+  Recommendation: parent-only accounts, children as profiles under them, "email plus" or
+  "text plus" parental consent at launch, and an event-log sync to a managed Postgres
+  backend. Each choice rests on one fact: Tenbright never discloses children's data to third
+  parties, which the COPPA Rule makes the condition for the lighter consent methods.
+
+  This is a plan for the privacy attorney to review, not legal advice; section 6 lists the
+  questions that must be answered before any child data leaves a device.
+
+  Decisions this plan needs
+
+         Consent method at launch: email plus or text plus (recommended), or a stronger
+         method through a free verification service.
+         Backend: managed Postgres with row-level security (recommended), or a document
+         database.
+         Whether to join an FTC-approved COPPA Safe Harbor program before or after the
+         pilot.
+         The retention periods proposed in section 4.
+         Engage the privacy attorney (Phase 1 budget: about $5–15k) to review this plan, the
+         privacy notice and the consent flow.
+
+
+  What data moves off the device
+  Only the minimum needed to sync a child's progress between a family's devices and send
+  the parent's weekly report leaves the device; nothing goes to advertisers, analytics
+  companies or AI training.
+
+
+     Data                                   Who it     Stored on   Why                Shared with
+                                            is about   server?                        anyone?
+
+     Email, password                        Parent     Yes         Sign-in, consent   Email delivery
+     hash (or passkey)                                             notice, weekly     vendor only, as a
+                                                                   report             processor
+
+
+
+
+                                                                                                    Page 1 of 9
+Tenbright Accounts, Consent and Sync Plan
+
+
+
+
+     Data                                   Who it     Stored on         Why                  Shared with
+                                            is about   server?                                anyone?
+
+     Phone number                           Parent     Only if text      Consent              SMS vendor only,
+                                                       plus is used      confirmation         as a processor
+
+     Consent record                         Parent     Yes               Proof of consent     No
+     (method, date,                                                      for the FTC
+     notice version)
+
+     Nickname, birth                        Child      Yes               Profile, age-based   No
+     year                                                                settings
+
+     Answer events (skill,                  Child      Yes               Mastery engine       No
+     item parameters,                                                    and parent report
+     answer, correct, hint
+     level, time taken)
+
+     Computed mastery                       Child      Yes, derived      Faster loading       No
+     state                                             from events
+
+     Payment details                        Parent     No: held by the   Family               Processor only
+                                                       payment           subscription
+                                                       processor
+
+     Child's real name,                     Child      Never             —                    —
+     photo, voice,                                     collected
+     location, contacts,
+     free text
+
+
+  Two rules that keep this small
+
+         The child side never sends free text. Every child input is a number, a choice or a bead
+         position, so there is nothing personal to leak.
+         The AI phrasing service, when it arrives, receives only engine facts such as "38 + 27,
+         the ones make 15", never a child identifier, so it should not count as a disclosure of a
+         child's personal information. This needs the attorney's confirmation (section 6).
+
+
+  Verifiable parental consent
+  The COPPA Rule lists nine consent methods (16 CFR 312.5); the two lightest, "email plus"
+  and "text plus," are available only to operators that do not disclose children's personal
+  information, which is Tenbright's design, so they are the recommended launch method.
+
+
+                                                                                                            Page 2 of 9
+Tenbright Accounts, Consent and Sync Plan
+
+
+
+
+  The methods in the Rule
+
+
+     Method                                 Friction for   Cost to build        Fits Tenbright?
+                                            parents
+
+     Email plus: consent by                 Low            Low, in-house        Yes, while we never
+     email, then a second                                                       disclose child data
+     confirming step
+
+     Text plus: the same by text            Low            Low, plus SMS fees   Yes, same condition
+     message
+
+     Card or online payment                 Low for        Medium; pairs with   Yes, for paying
+     with a notified transaction            paying         the subscription     families
+                                            families
+
+     Knowledge-based                        Medium         Vendor needed        Possible
+     questions a child could not
+     answer
+
+     Government photo ID                    High           Vendor needed        Overkill for this
+     matched to a face,                                                         product
+     checked by trained staff,
+     then deleted
+
+     Government ID checked                  High           Vendor needed        Overkill
+     against databases, then
+     deleted
+
+     Signed form by mail, fax or            High           Low                  Fallback only
+     scan
+
+     Toll-free call or video call           High           High                 No
+     with trained staff
+
+
+  Verification services, if we want a stronger method
+
+
+
+
+                                                                                                    Page 3 of 9
+Tenbright Accounts, Consent and Sync Plan
+
+
+
+
+     Service                                What it does             Cost               Notes
+
+     Kids Web Services                      Parent verification; a   Free for all       Accessed through
+     (Epic /                                parent verified once     developers since   Epic Online
+     SuperAwesome)                          is recognized across     Sept 2021          Services; confirm
+                                            services using it                           terms for a non-
+                                                                                        game app
+
+     k-ID                                   Age gate plus            Ask vendor         API with webhooks;
+                                            consent through a                           fits a web app
+                                            parent portal; card,
+                                            ID document or SSN
+                                            check
+
+     PRIVO                                  Email and text plus,     Ask vendor         Also an FTC-
+                                            ID proofing, family                         approved Safe
+                                            portal                                      Harbor since 2004
+
+
+  Recommended flow
+
+     1. Parent creates an account with email and password; no child data yet.
+     2. Tenbright shows the direct notice (what we collect, why, retention, rights) and asks
+        for consent.
+     3. Email plus: a consent link goes to the parent's email; after consent, a confirmation
+        email follows, with a link to revoke at any time.
+     4. Only after step 3 completes can the parent add a child profile.
+     5. If a parent later starts a paid plan, the card transaction can serve as a second,
+        stronger record of consent.
+
+  If we ever add a feature that discloses child data (say, sharing a report with a teacher's
+  account), email plus stops being enough for that feature and we would need a stronger
+  method and a separate consent, per the amended Rule.
+
+
+  Backend and sync architecture
+  Recommendation: keep the device as the place learning happens and sync an append-
+  only log of answer events to a managed Postgres database. Each device rebuilds mastery
+  from the same events, so two devices never disagree for long and nothing is lost offline.
+
+
+
+
+                                                                                                        Page 4 of 9
+Tenbright Accounts, Consent and Sync Plan
+
+
+
+
+     Option                                 Strengths              Weaknesses               Verdict
+
+     Managed Postgres                       Standard SQL, per-     We own the schema        Recommended
+     with built-in auth                     family access rules    and migrations           (Phase 1 ADR-6)
+     and row-level                          in the database, low
+     security (e.g.,                        starting cost
+     Supabase)
+
+     Firebase / Firestore                   Mature offline sync,   Document model fits      Acceptable
+                                            quick start            the learner state less   alternative
+                                                                   well; harder to audit
+                                                                   and delete precisely
+
+     Our own server on a                    Full control           Most work and most       Not now
+     cloud provider                                                security burden for a
+                                                                   lean team
+
+
+  How sync works
+
+         Every answer becomes an event with a random ID, the child profile ID, the skill, the
+         result and a timestamp; events are only ever added, never edited.
+         The engine replays events to compute mastery, so any device with the events gets the
+         same state.
+         Offline answers queue on the device and upload when the connection returns;
+         duplicate event IDs are ignored.
+         Deleting a child deletes all their events and derived state on the server, then on every
+         device at next sync.
+
+  Access rules: a parent can read and write only their own family's rows; no child login
+  exists; staff access to production data is limited to named people, logged, and used only
+  for support with the parent's permission.
+
+  Hosting region: US only at launch, matching the beachhead; revisit for GDPR when
+  expanding (Phase 6).
+
+
+  Security program and retention schedule
+  The amended COPPA Rule, in force since April 22, 2026, requires a written information
+  security program and a published retention policy with deletion timeframes; both are
+  drafted here as proposals for the attorney.
+
+
+
+                                                                                                              Page 5 of 9
+Tenbright Accounts, Consent and Sync Plan
+
+
+
+
+  Written security program (outline)
+
+         Named coordinator: you, as founder, until a staff member takes it over.
+         Annual written risk assessment of child data, plus one before launch.
+         Safeguards: encryption in transit and at rest, row-level access rules, multi-factor sign-
+         in for every staff account, no production data on personal laptops, logged staff
+         access.
+         Vendor assurances: a data-processing agreement with each processor (hosting,
+         email, SMS, payments) confirming they protect the data and use it only for our
+         service.
+         Testing: dependency and vulnerability scanning in the build, and an outside security
+         review before public launch.
+         Incident response: who decides, how parents are told, and the timelines state breach
+         laws require.
+         Yearly review of the program itself.
+
+  Proposed retention schedule
+
+
+     Data                                   Kept for              Then
+
+     Answer events                          13 months             Rolled up into monthly skill
+                                                                  summaries; raw events deleted
+
+     Skill summaries and                    While the account     Deleted with the account
+     certificates                           is open
+
+     Consent records                        Account life plus 3   Deleted
+                                            years
+
+     Account with no sign-in                18 months             Parent emailed; deleted 30 days later
+                                                                  unless they sign in
+
+     Parent deletes a child or the          —                     Removed from live systems within 30
+     account                                                      days and from backups within 35 days
+
+     Support messages                       12 months             Deleted
+
+
+  The consent-record period is a guess at what is needed to prove consent; it is the
+  attorney's call.
+
+
+
+
+                                                                                                     Page 6 of 9
+Tenbright Accounts, Consent and Sync Plan
+
+
+
+
+  Safe Harbor programs and state laws
+  Joining an FTC-approved COPPA Safe Harbor program gives "deemed compliance" while
+  we follow its rules, and is worth pricing before the public launch; state laws add a few
+  items to check, none of which blocks the plan.
+
+  Safe Harbor options to price
+
+
+     Program                                Approved          Notes
+                                            since
+
+     kidSAFE Seal                           2014              Also offers EDU and AI-developer seals;
+                                                              fees on application
+
+     PRIVO                                  2004              Also sells consent tools
+
+     iKeepSafe                              2014              Education focus
+
+     CARU (BBB National                     Long-standing     Children's advertising roots
+     Programs)
+
+
+  State laws to check (status from Loeb & Loeb, June 2026)
+
+
+     Law                                     Status                          Why it matters to Tenbright
+
+     California Age-Appropriate              Partly in force after a March   Default high-privacy
+     Design Code                             2026 Ninth Circuit ruling;      settings, data-use limits for
+                                             dark-patterns rules still       products likely used by
+                                             blocked                         children
+
+     Maryland Age-Appropriate                In force since Oct 2024;        Similar duties, including
+     Design Code                             challenged, not enjoined        impact assessments
+
+     Nebraska design code                    In force since Jan 2026;        Check whether it covers a
+                                             scope widened in July           subscription education app
+
+     Vermont design code                     Starts Jan 1, 2027              Applies to services likely
+                                                                             used by minors
+
+     App store age laws: Utah                Mostly 2027                     Matters when we ship native
+     (May 2027), Louisiana (July                                             iOS and Android apps
+     2027), Texas (in litigation),
+     California age signals
+
+
+
+
+                                                                                                          Page 7 of 9
+Tenbright Accounts, Consent and Sync Plan
+
+
+
+
+     Law                                    Status                        Why it matters to Tenbright
+
+     Georgia SB 351                         Enjoined; social media only   Likely not applicable, since
+                                                                          Tenbright has no social
+                                                                          features
+
+
+
+
+  Questions for the attorney, cost and timeline
+  The build can start the day the attorney answers the first three questions; the rest can be
+  settled during the build.
+
+  Questions
+
+     1. Does our design (no third-party disclosure; processors only) qualify us for email plus
+        or text plus under 312.5(b)(2)(viii)–(ix)?
+     2. Is sending engine-only facts (no child identifier) to an AI wording service a
+        "disclosure" of a child's personal information?
+     3. Is our direct notice and online privacy notice complete under the amended Rule? (We
+         will draft both.)
+     4. Are the retention periods in section 4 defensible, especially 13 months for raw answer
+        events?
+     5. Which state design codes apply to a family-subscription education product, and what
+        assessments do they require?
+     6. Is a Safe Harbor membership worth it before the pilot, or only before public launch?
+     7. Can the pilot run on the current on-device preview, with parents' signed consent
+         forms, while the backend is built?
+     8. What should our terms say about a parent's right to review and delete, and about the
+        subscription (clear cancellation)?
+
+  Cost and timeline (estimates)
+
+
+     Item                                                   Estimate
+
+     Attorney review of this plan, notices,                 $5–15k (Phase 1 budget)
+     consent flow and terms
+
+     Safe Harbor membership                                 Ask kidSAFE and PRIVO for quotes
+
+
+
+
+                                                                                                     Page 8 of 9
+Tenbright Accounts, Consent and Sync Plan
+
+
+
+
+     Item                                           Estimate
+
+     Backend hosting during the pilot               Roughly $25–100 a month (unverified; check
+                                                    current pricing)
+
+     Email and SMS for consent and reports          Under $50 a month at pilot scale (unverified)
+
+     Build: accounts, consent, sync, deletion,      About 6–8 weeks of lean, part-time build
+     retention jobs                                 after the attorney's first answers
+
+
+  Build tasks once approved: an event-replay function in the math engine (today it updates
+  state step by step); the account and consent screens; the sync service with its access
+  rules; automated deletion and retention jobs; the written security program; the privacy
+  notice.
+
+
+
+  Sources
+         16 CFR 312.5, parental consent methods (Cornell LII)
+         Federal Register: amended COPPA Rule (2025)
+         SuperAwesome: free parent verification (Sept 30, 2021)
+         Epic Online Services: parent verification free for developers
+         k-ID developer docs: verifiable parental consent
+         PRIVO: verifiable parental consent
+         PRIVO: COPPA Safe Harbor program
+         kidSAFE: FTC-approved COPPA Safe Harbor
+         Loeb & Loeb: children's online privacy in 2026
+
+
+
+
+                                                                                               Page 9 of 9
+

@@ -1,0 +1,1306 @@
+GMIA Phase 1 Executive Package
+
+
+
+
+  GMIA Phase 1 Executive Package
+    Nov 3, 2026       ·   ​@Smith
+
+
+
+
+  Executive summary
+  Recommendation: build one narrow, provably effective product first — a mastery-
+  based number-sense and arithmetic app for ages 5–8, with a parent co-play dashboard
+  and one money simulation — and treat the lifelong ecosystem as the long-term
+  roadmap, not the first release. The vision is sound; the scope as written is a 10-year, multi-
+  million-dollar program, not a launchable product.
+
+  Five corrections to the brief, each explained in its section:
+
+     1. Stage 1 (12–24 months) should not be an app. The AAP tells app makers to stop
+        building apps for children under 18 months until benefit is shown. Deliver it as a
+        printable caregiver guide and physical kit.
+     2. Simulated AI experts are a design tool, not a review. Child safety, COPPA and early-
+        math validation need a small paid panel of real humans before launch.
+     3. Vedic mathematics has weak evidence; mental abacus has mixed evidence. Both
+        belong as optional enrichment tracks from about age 7–8, not as the core method.
+     4. An open-chat AI tutor for children is the highest-risk feature. A 2025 PNAS field trial
+        found unguarded GPT-4 access lowered later test scores. The MVP tutor is a
+        constrained hint engine, not free chat.
+     5. The market is crowded with strong free products. Khan Academy Kids is free;
+        Prodigy's math content is free. Differentiation must be transparent mastery and
+        parent partnership, not more games.
+
+  Decision asked of the founder: approve the ages 5–8 MVP scope, a year-one cash budget
+  of roughly $44k–$132k (estimate, section 11), and recruiting three paid human advisors
+  before any child data is collected.
+
+
+  1. Global Expert Council
+  The council runs as seven divisions under one product lead (you), with simulated AI
+  reviewers for drafting and three real human advisors holding veto power on safety,
+  privacy and early-math validity. Simulated perspectives are labeled as such in every
+  review record; no simulated reviewer is ever presented as an endorsement.
+
+
+
+
+                                                                                             Page 1 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+  Divisions, mandates and deliverables
+
+     Division                    Mandate            Phase 1–2         KPI            Real human
+                                                    deliverables                     needed before
+                                                                                     launch?
+
+     Mathematics                 Mathematical       Skill graph,      0 known        Yes: 1 math
+     Intelligence                correctness        item bank         math errors    educator (K–5
+                                 and sequence       specs,            in shipped     specialist)
+                                 of every skill     misconception     items
+                                                    catalog
+
+     Early Childhood &           Developmental      Age               Session        Yes: 1 early-math or
+     Cognition                   fit, session       boundaries,       length         developmental
+                                 length,            screen-time       within         psychologist
+                                 caregiver role     policy, co-play   policy;
+                                                    scripts           parent-rated
+                                                                      fit
+
+     Global Math                 Evaluate           Evidence          Every          No for MVP
+     Traditions                  soroban,           memo per          method
+                                 Vedic,             tradition         tagged with
+                                 Singapore          (section 6)       an evidence
+                                 CPA,                                 tier
+                                 Montessori
+                                 against
+                                 evidence
+
+     AI & Technology             Architecture,      Architecture,     Crash-free     Contract
+                                 tutor, security,   data model,       sessions ≥     developer, as
+                                 reliability        tutor spec        99.5%; p95     needed
+                                                                      load < 2 s
+
+     Financial                   Money and          Lemonade-         Sim            No for MVP
+     Intelligence &              business-          stand sim         accuracy;
+     Entrepreneurship            simulation         spec, money       transfer-
+                                 curriculum         strand            item scores
+
+     Creative &                  Brand, mascot,     Brand brief,      Child          Freelance
+     Design                      worlds, sound,     mascot            usability:     illustrator/designer
+                                 UX                 concepts,         task success
+                                                    design system     without
+                                                                      adult help
+
+
+
+
+                                                                                                     Page 2 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+     Division                    Mandate         Phase 1–2         KPI           Real human
+                                                 deliverables                    needed before
+                                                                                 launch?
+
+     Safety, Ethics &            COPPA, data     Data map,         0             Yes: COPPA-
+     Governance                  minimization,   privacy notice,   unapproved    experienced
+                                 AI safety,      consent flow,     data flows;   privacy counsel
+                                 accessibility   DPIA              independent
+                                                                   review
+                                                                   passed
+
+
+
+  Decision rights
+         Product lead (founder): final call on scope, budget, priorities.
+         Veto holders: privacy counsel (any data collection), early-childhood advisor (anything
+         shown to under-8s), math educator (any item marked mastery-bearing). A veto must
+         cite a written reason; disagreements are logged, not hidden.
+         Simulated reviewers: draft, critique and red-team. They can block a release only by
+         raising an issue a human then confirms.
+
+
+  Review workflow per feature
+     1. Feature brief (the 10 fields in section 7) drafted.
+     2. Simulated cross-functional critique: math, child-development, safety, engineering,
+         business. Each writes risks and a pass/fail.
+     3. Founder resolves conflicts; dissent recorded in a decision log.
+     4. Build behind a feature flag.
+     5. Human advisor review for anything child-facing or data-touching.
+     6. Test with 3–5 children in a supervised session; record task success and confusion
+        points.
+     7. Ship, then measure against the feature's stated metric at 30 days.
+
+  Cost: three advisors at roughly 2–4 hours a month each, estimated $3k–$12k a year in
+  total; privacy counsel review estimated separately in section 11. These are estimates, not
+  quotes.
+
+
+
+
+                                                                                                 Page 3 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+  2. Product vision and strategic positioning
+  Position GMIA as the math program parents can verify: it shows exactly what a child
+  has mastered, retained and can apply, and it makes the parent a partner rather than a
+  bystander. Incumbents compete on game engagement and free content; few compete on
+  transparent, durable mastery plus money skills.
+
+
+  Market signal
+         The need is real. On NAEP 2024, U.S. 4th-grade math was still 3 points below 2019 and
+         8th grade was 8 points below; gains since 2022 came only from students at or above
+         the median (NCES/NAGB release, Fox/CITC summary).
+         The niche is modest in size. One analyst firm sizes the global kids' math-app market
+         at about $727M in 2026, growing about 8% a year (360iResearch via
+         MarketResearch.com). Treat paid analyst figures as directional only; estimates vary
+         widely.
+         Subscriptions are hard here. RevenueCat's 2026 report lists Education among the
+         toughest categories for new apps to reach revenue thresholds (9to5Mac). On the plus
+         side, Education has the lowest first-month share of annual cancellations, about 30%
+         (9to5Mac).
+
+
+  Competitors (prices as published by third-party trackers, 2026; verify before
+  pricing)
+
+     Product                     Ages /   Model and price   Strength          Gap GMIA can
+                                 grades                                       exploit
+
+     Khan                        2–8      Free, no ads      Quality, trust,   Not math-deep;
+     Academy                                                breadth           mastery not made
+     Kids                                                                     transparent to
+                                                                              parents
+
+     Prodigy Math                Grades   Math free;        Huge reach, RPG   Engagement-first;
+                                 1–8      membership from   engagement        parent pressure via
+                                          $58.95/yr                           cosmetic upsell
+
+     Kahoot! Kids /              ~4–12    $5.99/mo or       Conceptual        Separate apps, no
+     DragonBox                            $35.99/yr         games, algebra    unified mastery
+                                                            intuition         record
+
+
+
+
+                                                                                               Page 4 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+     Product                     Ages /   Model and price   Strength            Gap GMIA can
+                                 grades                                         exploit
+
+     IXL                         K–12     $9.99/mo,         Standards           Drill-heavy; weak on
+                                          $99.90/yr         coverage            play and young
+                                                                                learners
+
+     Synthesis                   5–11     About $119–       Voice-first AI      Premium price;
+     Tutor                                $300/yr           tutor               supplement, limited
+                                                                                variety
+
+     Khanmigo                    Grades   About $44/yr      Low-cost AI tutor   Text-based; not built
+                                 3–12                                           for early learners
+
+     Beast                       Grades   Paid books +      Rigor for           Not for kids at or
+     Academy                     1–5      online            advanced kids       below grade level
+
+
+
+  Positioning statement
+  For parents of 5–8-year-olds who want proof, not screen time, GMIA is a math program
+  that builds number sense to durable mastery through short play sessions, physical
+  activities and real-world money missions. Unlike engagement-first math games, it reports
+  what a child has truly mastered and retained — and never upsells to the child.
+
+
+  Defensible advantages (in order of durability)
+     1. A validated mastery record (immediate + 7/30/90-day retention + transfer) that
+         parents and later schools trust.
+     2. Parent co-play system: offline activities, printable missions, physical manipulatives
+         tied to the digital record.
+     3. Money and entrepreneurship strand from age 5, which most early-math apps lack.
+     4. Child-first trust posture as a selling point: no ads, no third-party trackers, no child-
+         facing purchases.
+
+  Who it serves first: U.S. families, English, ages 5–8, starting with Georgia (your home
+  market and a standards set you can align to). Schools are a year-2+ channel after
+  evidence exists.
+
+
+
+
+                                                                                                     Page 5 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+  3. Educational philosophy and evidence standards
+  Every method in GMIA carries one of four evidence tiers, and only Tier 1–2 methods may
+  drive mastery decisions. The core pedagogy rests on practices with strong evidence:
+  developmental progressions, concrete-to-abstract representation, retrieval, spacing and
+  interleaving.
+
+
+  Evidence tiers
+
+     Tier                        Definition               May be used for    Examples in GMIA
+
+     1 — Established             Replicated RCTs or       Core instruction   Developmental
+                                 IES/WWC practice-        and mastery        progression for number
+                                 guide support            decisions          and operations (IES
+                                                                             early-math guide);
+                                                                             interleaved practice
+                                                                             (Rohrer et al. 2019 RCT);
+                                                                             retrieval and spaced
+                                                                             review
+
+     2 — Promising               Some rigorous studies,   Core instruction   Concrete-Pictorial-
+                                 limited replication or   with monitoring    Abstract sequencing;
+                                 context                                     mental abacus with
+                                                                             multi-year training
+
+     3—                          Small or uncontrolled    Optional tracks,   Vedic calculation
+     Experimental                studies                  A/B tested         techniques; AI-
+                                                                             generated explanations
+
+     4 — Cultural                Historical or cultural   Stories, worlds,   History of the soroban;
+     enrichment                  value; no outcome        context only       African geometric
+                                 claim                                       patterns
+
+
+
+  Principles
+     1. Understanding before speed. Timed modes unlock only after untimed accuracy is
+         mastered; speed is reported separately.
+     2. Developmental progression, not grade level. The IES guide's first recommendation is
+         to teach number and operations along a developmental progression (IES). Age sets
+         safety and content bounds; demonstrated mastery sets progression.
+
+
+
+
+                                                                                                   Page 6 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+     3. Mix practice. In a 787-student, 54-class RCT, interleaved practice beat blocked
+        practice on a delayed test, 61% vs 38% (Rohrer et al. 2019). GMIA review sets mix
+          earlier skills by default.
+     4. Multiple representations, no learning-style labels. Every concept is shown visually,
+        physically and symbolically to every child.
+     5. Caregiver as co-teacher. For under-6s, the app prompts shared play and offline
+        activity.
+     6. Honest claims. No marketing claim about outcomes until GMIA's own pilot data
+        supports it.
+
+
+  Screen-time boundaries (binding product rules)
+  The AAP advises no screen media except video chat under 18 months, co-viewed high-
+  quality media only for 18–24 months, and one hour a day or less of high-quality media for
+  ages 2–5. It also urged app makers to stop making apps for under-18-month-olds until
+  benefit is shown (AAP summary via Fairplay; Allegro Pediatrics summary).
+
+
+     Age                    GMIA delivery                               Default session cap
+
+     12–24                  Printable caregiver guide + physical kit;   None (no screen)
+     months                 no child-facing app
+
+     2–3 years              Caregiver-led app mode only, co-use         5–10 min
+                            required
+
+     3–5 years              Short co-play sessions + offline            10–15 min, daily total under 1 hr
+                            activities                                  across all media
+
+     5–8 years              Independent sessions + weekly parent        15–20 min
+                            mission
+
+     8+                     Independent; parent-set limits              20–30 min
+
+
+
+
+  4. Curriculum architecture
+  The curriculum is a skill graph, not a list of topics: each skill is a node with prerequisites,
+  items, misconceptions, representations and a mastery rule, organized in six strands
+  across eight stages. Phase 2 writes full lessons only for the MVP band (ages 5–8); other
+  stages get their skill maps first and lessons when they are built.
+
+
+
+
+                                                                                                            Page 7 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+  Spine and alignment
+         Strands: Number & Place Value · Operations & Mental Math · Fractions, Ratio &
+         Proportion · Geometry & Measurement · Data, Statistics & Probability · Money,
+         Finance & Enterprise.
+         Alignment: map every node to Georgia's K-12 Mathematics Standards, first
+         implemented in classrooms in 2023–24 and published in machine-readable CASE
+         format (GaDOE, georgiastandards.org), then cross-map to Common Core for other
+         states. International mapping waits for Phase 8.
+
+
+  Stage map
+
+     Stage                       Age   Core skills (summary)     Delivery          Mastery-
+                                                                                   bearing?
+
+     1 Discovery                 12–   More/less, matching,      Caregiver guide   No —
+                                 24    sorting, shapes,          + kit             observation
+                                 mo    counting songs                              checklist only
+
+     2 Foundations               2–3   Counting to 10, one-to-   Caregiver-led     No — caregiver
+                                       one correspondence,       app + offline     checklist
+                                       subitizing to 3–4,
+                                       comparing sets
+
+     3 Early                     3–5   Counting to 20+,          Co-play app +     Light: progress
+     Intelligence                      cardinality, number       offline           markers
+                                       bonds to 5 and 10,
+                                       patterns, measurement
+                                       words, coins by name
+
+     4 Fluency                   5–7   Place value to 100, +/−   Independent app   Yes
+     (MVP)                             within 20 fluently and    + parent
+                                       within 100 with           missions
+                                       strategies, equal
+                                       sharing, time, money to
+                                       $1, word problems
+
+
+
+
+                                                                                                Page 8 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+     Stage                       Age     Core skills (summary)       Delivery             Mastery-
+                                                                                          bearing?
+
+     5 Advanced                  7–10    Multiplication facts,       App + tutor +        Yes
+     Numerical                           multi-digit operations,     sims
+                                         long division, fractions,
+                                         decimals, intro percent;
+                                         abacus and Vedic
+                                         tracks open
+
+     6 Applied                   10–     Ratios, pre-algebra,        App + sims           Yes
+                                 13      statistics, probability,
+                                         compound interest,
+                                         business modeling
+
+     7 Independence              13–18   Algebra, geometry,          App + projects       Yes, aligned to
+                                         trigonometry, statistics,                        coursework
+                                         financial math,
+                                         accounting, data
+                                         science
+
+     8 Lifelong                  18+     Quantitative reasoning,     Courses + tools      Yes,
+                                         financial modeling,                              competency-
+                                         business analytics                               based
+
+
+
+  Skill node specification (every node carries all fields)
+
+     Field                               Example: "Add within 20 using make-ten"
+
+     ID / strand / stage                 OPS-4.07 · Operations · Stage 4
+
+     Prerequisites                       Number bonds to 10 (NUM-3.05); counting on
+                                         (OPS-4.02)
+
+     Objective                           Solves a + b ≤ 20 by decomposing to make 10
+
+     Representations                     Ten-frames (visual), counters (physical), equation
+                                         (symbolic), story
+
+     Teaching sequence                   Demo → guided ten-frame → fade frame → symbolic
+                                         → story problem
+
+
+
+
+                                                                                                        Page 9 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+     Field                       Example: "Add within 20 using make-ten"
+
+     Item types (≥ 3)            Ten-frame fill, missing addend, word problem,
+                                 explain-your-way
+
+     Known misconceptions        Counts all instead of counting on; splits the wrong
+                                 addend
+
+     Mastery rule                Section 5 default, 90% on ≥ 20 independent items
+
+     Real-world application      Lemonade stand: totals cups sold across two hours
+
+     Retention                   7 / 30 / 90-day review items
+
+     Accessibility               Audio prompts, no color-only cues, motor-light
+                                 drag targets
+
+     Standards map               GA K-12 Math grade-1 numeric reasoning standard
+                                 (exact code at mapping)
+
+
+
+  MVP skill sequence (Stage 4, first release ~30 nodes)
+     1. Diagnostic entry: subitizing, counting on, number bonds to 10.
+     2. Number bonds to 10 → doubles and near doubles → make-ten addition.
+     3. Subtraction as missing addend → think-addition strategy → subtraction within 20.
+     4. Place value: tens and ones → numbers to 100 → compare and order.
+     5. Add and subtract within 100 using tens, then mixed strategies.
+     6. Money: coin values, counting mixed coins to $1, making change from $1.
+     7. Word problems: join, separate, compare types.
+     8. Time to the half hour; equal sharing as the bridge to division.
+
+  Unresolved: item-bank size needed per node (estimate 60–120 items to avoid repetition
+  across retention checks) and who writes them (founder + AI drafting + math-educator
+  review is the proposed default).
+
+
+
+  5. Mathematical mastery framework
+  A skill is "Mastered" only after independent accuracy across varied items on two
+  separate days plus one transfer item; it becomes "Durable" only after passing a 30-day
+  retention check. Completing a game, level or world never grants mastery by itself.
+
+
+
+
+                                                                                       Page 10 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+  Mastery states
+
+     State                       Entry rule (configurable defaults)   Parent sees
+
+     Not started                 Prerequisites not met                Greyed, with the missing
+                                                                      prerequisite named
+
+     Learning                    Introduced; guided practice under    "Learning"
+                                 way
+
+     Practicing                  ≥ 80% on guided items                "Practicing"
+
+     Mastered                    ≥ 90% on ≥ 20 independent items,     "Mastered — retention check
+     (provisional)               ≥ 3 item types, across 2 sessions    due in 7 days"
+                                 on different days, hints not used,
+                                 + 1 unfamiliar transfer item
+                                 correct
+
+     Retained                    Passes 7-day check (≥ 85%, 5–8       "Retained"
+                                 mixed items)
+
+     Durable                     Passes 30-day check; 90-day          "Durable" + date
+                                 check scheduled
+
+     Needs refresh               Fails any retention check            Skill reopens at Practicing, with
+                                                                      the failed items shown
+
+
+
+  Learning cycle per skill
+  Diagnostic → concept introduction → visual explanation → guided demonstration → guided
+  practice → independent practice → real-world application → immediate assessment →
+  delayed retention → mastery record. These are the brief's ten steps; GMIA enforces them
+  in order for mastery-bearing skills.
+
+
+  Retention scheduling
+  Default checks at 7, 30 and 90 days, then adaptively: a skill answered quickly and
+  correctly gets a longer next interval; a slow or wrong answer shortens it. Review items are
+  interleaved with current work rather than presented as a separate "review chapter,"
+  consistent with the interleaving evidence in section 3.
+
+
+
+
+                                                                                                    Page 11 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+  What is measured, and kept separate
+
+     Construct                   Measured by                       Why separate
+
+     Memorization                Fact recall items                 Recall alone is not
+                                                                   understanding
+
+     Procedural fluency          Accuracy + median response        Speed is reported, never
+                                 time on standard items            required for mastery below
+                                                                   Stage 5
+
+     Conceptual                  Representation-switching items    Detects rote answers
+     understanding               (show 8 + 5 on a ten-frame)
+
+     Reasoning                   Explain-your-way choice, error-   Captures strategy quality
+                                 spotting items
+
+     Transfer                    Novel-context items held out      The brief's stated standard
+                                 from practice
+
+     Confidence                  Child taps "sure / not sure"      Flags guessing and over-
+     calibration                 before answer (age 6+)            confidence
+
+     Misconceptions              Tagged distractor choices         Drives targeted reteach
+
+
+  Validation requirement: before mastery badges are shown to parents at scale, the math
+  educator reviews item difficulty and the thresholds are checked against a short external
+  assessment in the pilot (section 10, gate G3).
+
+  Unresolved: whether 90% is the right bar for ages 5–6, where tapping errors are common.
+  Proposed: keep 90%, but discount items flagged as motor mis-taps (answer changed
+  within 1 second).
+
+
+  6. Vedic mathematics and mental abacus integration
+  Keep both as signature optional academies, but defer them to Phase 6 and open them
+  from about age 7–8, after place value and addition within 100 are Durable. Neither
+  should be the core method, and neither is in the MVP.
+
+
+
+
+                                                                                                 Page 12 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+  What the evidence says
+
+     Method                      Best evidence found         Finding                    GMIA tier
+
+     Mental abacus               Barner et al. 2016, Child   Abacus students            2 — Promising
+     (soroban)                   Development: 3-year         outperformed controls
+                                 RCT, ~200 children          in arithmetic; no change
+                                 aged 5–7, Gujarat, India    to basic cognitive
+                                                             abilities; children with
+                                                             weaker spatial working
+                                                             memory benefited less
+                                                             (BPS summary)
+
+     Mental abacus,              Barner et al., Journal of   First graders struggled    2 — Promising,
+     short course                Numerical Cognition: 1-     to reach expertise;        long-horizon only
+                                 year classroom RCT,         second graders did
+                                 U.S. grades 1–2             better; no significant
+                                                             computation advantage
+                                                             over controls; authors
+                                                             urge caution
+
+     Vedic                       Mostly small pre/post       Reported gains in          3 — Experimental
+     mathematics                 studies in Indian           speed and attitude;
+                                 journals, e.g. Lakshmi &    rigor varies; no large
+                                 Stanly 2026; some cited     independent RCT found
+                                 studies lack a control
+                                 group
+
+
+
+  Design decisions that follow
+     1. Abacus Academy is a multi-year track, not a quick win. Physical soroban first (sold
+        as a kit), virtual abacus mirrors it, mental visualization only after bead fluency. Entry
+        from age 7, with a spatial-working-memory-friendly path (slower fading of the visual
+        abacus) for children who struggle.
+     2. Measure abacus competence separately — bead-reading accuracy, physical-abacus
+        accuracy, mental accuracy, speed — and never let abacus results substitute for core
+        arithmetic mastery.
+     3. Vedic techniques are taught as "why it works" algebra lessons. Example: multiplying
+        numbers near 100 (97 × 99) is shown alongside the standard algorithm and the
+        distributive property that explains it. Each technique requires its prerequisites to be
+
+
+
+                                                                                                     Page 13 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+         Durable.
+     4. Every technique follows the brief's 8-step format: foundation, traditional method,
+        conventional alternative, when it helps, guided exercises, independent practice,
+        accuracy and efficiency, conceptual test.
+     5. Honest framing in marketing: "traditional techniques from India and Japan" — never
+        "scientifically proven" or "brain-boosting."
+     6. GMIA runs its own A/B evaluation of the Vedic track against standard strategy
+        instruction before promoting it.
+
+  Requires: one soroban-certified instructor as a paid reviewer when Phase 6 starts;
+  sourcing for a low-cost physical abacus kit.
+
+
+  7. Recommended MVP scope
+  MVP = "Number Kingdom": ~30 Stage 4 skills for ages 5–8, mastery tracking with
+  retention checks, a constrained hint tutor, one Lemonade Stand money mission, and a
+  parent dashboard — shipped as a web app first. Ages 5–8 is chosen because it is where
+  number sense is decided, competitors' mastery reporting is weakest, and you have a 7-
+  year-old design partner at home and the Piano Quest build as a working pattern.
+
+
+  In scope vs deferred
+
+     In the MVP                                        Deferred (and to which phase)
+
+     Parent account, consent flow, up to 3 child       Teacher/class accounts (Phase 6)
+     profiles (nickname + age band only)
+
+     Diagnostic placement (8–12 min)                   Ages 12 months–5 content (Phase 6)
+
+     ~30 skill nodes, full learning cycle, item bank   Vedic and Abacus academies (Phase 6)
+
+     Mastery states + 7/30-day retention checks        Open-ended AI chat tutor (re-evaluate
+                                                       after pilot)
+
+     Hint tutor: 3-level progressive hints,            Voice input from children (privacy review
+     misconception-tagged feedback                     first)
+
+     Lemonade Stand mission (buy lemons, price         Additional business sims (Phase 6)
+     cups, count coins, profit)
+
+
+
+
+                                                                                               Page 14 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+     In the MVP                                          Deferred (and to which phase)
+
+     Parent dashboard + weekly email summary +           Multilingual (Phase 8)
+     printable missions
+
+     One world, one mascot, original art and             10 more worlds (Phase 6+)
+     sound
+
+     Offline play for current session; sync on           Full offline curriculum (Phase 6)
+     reconnect
+
+     Accessibility: audio prompts, captions, large       Native iOS/Android store apps (month 10–
+     targets, reduced motion                             12)
+
+
+
+  Feature brief example (format every feature must follow)
+
+     Field                       Lemonade Stand mission
+
+     User                        Child 5–8, parent optional co-player
+
+     Purpose                     Apply addition, subtraction and coin counting to a
+                                 real decision
+
+     Age range                   5–8 (two difficulty bands)
+
+     Educational objective       Compute cost, revenue and profit within $5; make
+                                 change
+
+     Functional spec             Buy supplies with a coin budget, set a price from 3
+                                 options, serve 6–10 customers, count coins, see
+                                 profit, choose to save or reinvest
+
+     Dependencies                OPS-4.07+, MON-4.02 coin values; mastery engine
+                                 events
+
+     Acceptance criteria         Every number in the sim is generated from tested
+                                 formulas; child can finish without reading (audio);
+                                 no loss state shames the child
+
+     Testing                     Unit tests on arithmetic; 5 supervised child
+                                 sessions; parent survey
+
+     Success metric              ≥ 70% of pilot children correctly state profit on a
+                                 transfer item after 3 plays
+
+
+
+
+                                                                                              Page 15 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+     Field                       Lemonade Stand mission
+
+     Known limitations           Simplified demand model; no taxes or wages until
+                                 Stage 5+
+
+
+
+  MVP success metrics (measured in the pilot, section 10)
+         Learning: median pilot child gains ≥ 2 Durable skills in 6 weeks; pre/post gain on an
+         external short assessment beats a waitlist comparison group.
+         Retention of skills: ≥ 75% of Mastered skills pass the 30-day check.
+         Engagement (healthy): ≥ 3 sessions a week for 60% of children, with median session
+         ≤ 20 minutes.
+         Parent trust: ≥ 70% of parents say the dashboard told them something new and
+         accurate (survey).
+         Safety: zero unapproved data flows; zero child-facing purchase prompts.
+
+
+  8. Initial software architecture
+  Build a modular monolith in one TypeScript codebase: a web app (installable PWA) on a
+  managed Postgres backend, with curriculum stored as versioned content files and the
+  AI tutor running server-side with no child identifiers. This is chosen for cost and
+  maintainability by a very small team, not fashion; the 14 modules in the brief become code
+  modules with clean boundaries, split into services only when load demands it.
+
+
+
+
+                                                                                            Page 16 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+  MVP architecture · 3 clients, 12 modules, 3 stores
+
+  All three clients go through one API; the mastery engine is the system of record every
+  other module reads from, and the LLM is reachable only from the server.
+
+
+  Stack (recommended; alternatives noted)
+
+     Layer                       Choice                    Why                    Alternative
+
+     Client                      React + TypeScript PWA;   One codebase for       Expo / React Native
+                                 Capacitor wrapper for     web, tablets, phones
+                                 iOS/Android at month 10
+
+     Interaction                 SVG + Canvas for          Crisp, accessible,     Game engine (heavier,
+     rendering                   manipulatives (ten-       small                  harder accessibility)
+                                 frames, coins, abacus)
+
+     Backend                     Postgres + server         Low ops burden, row-   Firebase (weaker
+                                 functions on one          level security         relational model)
+                                 managed provider, U.S.
+                                 region
+
+
+
+
+                                                                                                      Page 17 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+     Layer                       Choice                       Why                    Alternative
+
+     Content                     Skill nodes and items as     Reviewable diffs,      Headless CMS later
+                                 JSON/YAML in git,            rollback, offline
+                                 validated in CI, published   caching
+                                 as signed bundles
+
+     Offline                     IndexedDB local store;       Sessions survive bad   —
+                                 event log synced on          Wi-Fi
+                                 reconnect
+
+     Analytics                   First-party event table      Apple Kids Category    —
+                                 only; no third-party SDKs    and COPPA (section
+                                 in child mode                12)
+
+     AI                          LLM API called from the      Safety and privacy     Self-hosted small
+                                 server, zero-retention                              model later
+                                 terms, no child PII in
+                                 prompts
+
+     Payments                    App-store billing / web      No child-facing        —
+                                 checkout, parent area        purchases
+                                 only, behind a parental
+                                 gate
+
+
+
+  Data model (core tables)
+          Account (parent): email, consent record, region, subscription.
+          Learner: nickname, avatar, age band, accessibility settings. No real name, birthdate,
+          photo, voice or location.
+          SkillNode / Item: content IDs and versions (from the content bundle).
+          Attempt event: learner, item, answer, correct, response ms, hint level, timestamp,
+          session.
+          MasteryState: learner × skill → state, evidence counts, next review date.
+          Mission run: sim inputs and outcomes.
+          Audit log: every admin read of learner data.
+
+
+  AI tutor design (MVP)
+     1. Deterministic first. Each item ships with three authored hints and misconception-
+        specific feedback; the tutor picks among them from the child's error pattern.
+
+
+                                                                                                         Page 18 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+     2. LLM used offline, not live, for children. The LLM drafts items, hints and explanations
+        at authoring time; a human reviews before they ship. This avoids live hallucinations
+        reaching a 6-year-old.
+     3. Live LLM only in the parent area ("explain this skill and give me a kitchen-table
+        activity"), with guardrails and no child data beyond skill IDs.
+     4. Guardrails grounded in evidence: in a ~1,000-student field experiment, unrestricted
+        GPT-4 practice access raised practice scores but cut later exam performance by
+        about 17%; a tutor with hint-only safeguards largely removed the harm (Bastani et al.,
+        PNAS 2025; Wharton summary). GMIA's tutor never gives the final answer before two
+        hint levels and a retry.
+
+
+  Engineering standards from day one
+  Git with protected main branch · CI running type checks, unit tests on all arithmetic
+  generators and content validation · automated accessibility checks · error reporting
+  without child identifiers · nightly encrypted backups with a tested restore · feature flags ·
+  semantic-versioned content bundles · written release checklist.
+
+
+  9. Brand and creative direction
+  Keep "Global Mathematics Intelligence Academy" as the institution and company
+  name, and launch the consumer product under a short, warm, trademarkable name.
+  "GMIA" works for schools and investors; a parent searching an app store needs something
+  a 6-year-old can say.
+
+
+  Consumer name candidates (all require a USPTO and app-store clearance
+  search)
+
+     Candidate               Rationale                                  Risk
+
+     Numbrio                 Short, ownable, "number" + playful         Coined word; must check app
+                             ending                                     stores
+
+     Count                   Says what it is; quest frame fits worlds   Generic; likely crowded marks
+     Quest
+
+     Tally Town              Tally marks = earliest math; town grows    "Tally" used by fintech brands
+                             as skills grow
+
+
+
+
+                                                                                                         Page 19 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+     Candidate               Rationale                      Risk
+
+     Abaco                   Nods to abacus heritage        Close to existing marks in several
+                                                            languages
+
+
+  Recommendation: shortlist Numbrio and Tally Town for clearance; decide by month 2.
+
+
+  Mascot concept (original)
+  "Pip," a small round seed-sprite who grows one leaf for every Durable skill. Pip doesn't
+  know math; the child teaches Pip, which makes explaining (a mastery signal) part of the
+  story. Pip never shows sadness at mistakes — Pip says "let's try a new way." Supporting
+  cast: a tortoise shopkeeper (money), a fox engineer (geometry), a heron abacus-keeper
+  (Phase 6). All characters are original and must be drawn by a contracted illustrator with
+  full IP assignment.
+
+
+  World design for the MVP
+  Number Kingdom is a garden-village that grows as skills become Durable: bridges built by
+  place value, a market opened by coin skills, a lemonade stall run by the child. Growth is
+  tied to retained learning, not time played, so the visible reward and the educational record
+  are the same thing. Later worlds from the brief (Multiplication City, Fraction Forest,
+  Financial Freedom Island and so on) attach as new regions of the same map.
+
+
+  Design principles
+     1. Calm, not stimulating: muted, warm palette; no flashing, no slot-machine reveals, no
+        loot boxes, no streak-loss shaming.
+     2. Readable without reading: every instruction is spoken; icons over text for ages 5–6.
+     3. Physical-digital bridge: every world has printable missions and a household-object
+         version.
+     4. Accessibility built in: WCAG 2.2 AA target, color-blind-safe coins and counters,
+        reduced-motion mode, switch-friendly targets.
+     5. Sound identity: soft marimba and woodblock palette; each strand has a three-note
+        motif; a quiet "skill grew" chime replaces fanfare.
+
+
+
+
+                                                                                           Page 20 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+  Merchandise concepts (Phase 8, not before evidence)
+  Physical ten-frame and coin kit · Pip plush with counting pockets · soroban starter kit ·
+  printed mission books.
+
+
+  10. First 12-month roadmap
+  Five phases from November 2026 to October 2027, each ending in a gate with pass
+  criteria; nothing child-facing ships to outside families before Gate 2. The pilot is timed
+  for summer 2027, when families look for math practice outside school.
+
+
+     Gate                        When      Pass criteria                   If it fails
+
+     G1 Foundation               End Dec   3 advisors engaged; data        Fix and re-test; do not start
+                                 2026      map and consent design          full build
+                                           approved by counsel;
+                                           consumer name cleared;
+                                           clickable prototype: ≥ 80%
+                                           of 5 test children complete a
+                                           lesson without help
+
+     G2 Launch-                  End Mar   Counsel sign-off on privacy     Slip alpha; do not admit
+     ready MVP                   2027      notice and consent flow;        outside families
+                                           math-educator audit finds 0
+                                           errors in shipped items;
+                                           automated + manual
+                                           accessibility checks pass;
+                                           restore-from-backup tested
+
+     G3 Pilot                    End Jul   Section 7 metrics met,          Redesign weakest skills;
+     evidence                    2027      especially pre/post gain vs     extend pilot 6 weeks; do not
+                                           waitlist group and ≥ 75% of     launch paid tier
+                                           Mastered skills passing 30-
+                                           day check
+
+     G4 Scale                    End Oct   Public beta live on web +       Choose: raise capital, stay
+     decision                    2027      app stores; free-to-paid        bootstrapped and narrow, or
+                                           conversion and 60-day           pivot to schools
+                                           retention vs section 11 base
+                                           case
+
+
+
+
+                                                                                                      Page 21 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+  Weekly operating rhythm: one written update (shipped, metrics, blockers, decisions),
+  one supervised child test session, one decision-log review. As a working supervisor with a
+  full-time role, plan on 10–15 founder hours a week; the roadmap assumes a part-time
+  contract developer from January.
+
+
+  11. Operating and commercialization strategy (preliminary)
+  Run lean and bootstrapped through Gate 3: a free core that includes the full mastery
+  record, a family premium tier at about $59.99 a year, and physical kits as a second
+  revenue line. Schools wait until GMIA has its own outcome data. Every figure below is an
+  estimate or assumption unless linked to a source.
+
+
+  Model
+
+     Tier                        Includes                                   Price (assumption)
+
+     Free forever                Diagnostic, full Number Kingdom core       $0
+                                 skills for 1 learner, mastery record,
+                                 basic dashboard, all safety and privacy
+                                 protections
+
+     Family                      Up to 4 learners, all missions and sims,   $7.99/mo or $59.99/yr
+     Premium                     printable mission packs, detailed
+                                 retention reports, parent AI coach,
+                                 future academies
+
+     Physical kits               Ten-frame and coin kit (MVP), soroban      Target 50%+ gross margin
+                                 kit (Phase 6)
+
+     Schools (year               Class rosters, teacher reports,            Per-student license, to be set
+     2+)                         standards mapping                          after pilot
+
+
+  Price rationale: sits between Kahoot! Kids at $35.99/yr and IXL at $99.90/yr, near Prodigy
+  Core at $58.95/yr, and well below Synthesis at about $119–$300/yr (sources in section 2).
+  RevenueCat's 2026 data shows paywalled apps convert nearly 6× more often than
+  freemium with similar retention (9to5Mac); GMIA accepts lower conversion as the cost of
+  never gating core learning for a child.
+
+
+
+
+                                                                                                       Page 22 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+  Year-1 cash budget (estimates)
+
+     Item                                                       Low        High
+
+     Part-time contract developer (~9 months)                   $25,000    $70,000
+
+     Illustration, mascot, UI design (IP assigned)              $5,000     $20,000
+
+     Privacy counsel: COPPA review, notices, consent            $5,000     $15,000
+     flow
+
+     Three human advisors                                       $3,000     $12,000
+
+     Pilot costs (assessments, family thank-you cards)          $2,000     $5,000
+
+     Trademark search and filing, LLC formation                 $1,000     $3,000
+
+     Hosting, LLM API, tools, store accounts                    $1,500     $4,000
+
+     Cyber liability / E&O insurance                            $1,000     $3,000
+
+     Total                                                      $43,500    $132,000
+
+
+  The low case assumes you and Claude write most code and content, with the contractor
+  on hard parts. Form GMIA as its own LLC, separate from your other ventures, before
+  collecting any family data.
+
+
+  Year-2 revenue scenarios (illustrative)
+
+    Scenario             Free       Free→paid Paying     Net per family (after ~15%   Net subscription
+                         families             families   store fee)                   revenue
+
+    Conservative 6,000              5%         300       ~$51                         ~$15,000
+
+    Base                 20,000     5%         1,000     ~$51                         ~$51,000
+
+    Upside               50,000     6%         3,000     ~$51                         ~$153,000
+
+
+  The 15% store-fee rate assumes small-business/subscription commission programs;
+  verify current Apple and Google terms. Conversion rates are assumptions to be replaced
+  by pilot data. Implication: the base case does not support full-time staff; the business
+  becomes venture-scale only with school licensing or a much larger free base.
+
+
+
+
+                                                                                                    Page 23 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+  Acquisition and retention
+         Acquisition (low-CAC first): homeschool and parent communities, Georgia parent
+         groups, pediatric and library partnerships, teacher-recommended printables, a public
+         "what your 6-year-old should know" free diagnostic. Target paid CAC below $30
+         before spending on ads.
+         Retention: weekly parent summary, monthly printable mission pack, visible Durable
+         skills, summer program. Education apps have the lowest first-month share of annual
+         cancellations, about 30% (9to5Mac), so annual plans are the default offer.
+
+
+  Intellectual property
+  Own all code, content, characters and music through written work-for-hire and
+  assignment agreements; file trademarks for the consumer name and mascot; keep the
+  item bank and mastery data as the core trade secret.
+
+  International expansion is Phase 8 and requires localized curricula, local privacy law
+  review (GDPR and UK Children's Code for Europe and the UK) and native-speaker
+  content review.
+
+
+  12. Risks, dependencies and mitigation
+  The three risks that can end the project are a children's-privacy violation, scope creep
+  beyond a part-time team, and a product that engages but does not measurably teach.
+  Each has a named control and an owner.
+
+
+  Child trust and compliance baseline (binding)
+         COPPA: the FTC's amended COPPA Rule has been fully enforceable since April 22,
+         2026. It adds separate parental consent for disclosing children's data to third parties,
+         written security programs and data-retention policies (Hunton, Finnegan via
+         Mondaq). Civil penalties reach about $51,744 per violation (summary; confirm with
+         counsel).
+         Apple Kids Category: apps should not include third-party analytics or advertising and
+         may not send personal or device information to third parties (Apple guideline 1.3
+         summary). GMIA's first-party-only design satisfies this by construction.
+         GMIA rules: no ads ever; no child-facing purchases; parental gate on every link,
+         setting and payment; no child voice, photo, real name, birthdate or precise location
+         collected in the MVP; learner data deletable by the parent in one action; retention
+
+
+
+                                                                                             Page 24 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+         schedule published.
+         No compliance claim ("COPPA compliant") is made in marketing until counsel's
+         independent review is complete. FERPA and state student-privacy agreements apply
+         only when schools onboard (year 2+).
+
+
+  Risk register
+
+     Risk                        Likelihood   Impact   Mitigation                    Owner
+
+     Privacy or COPPA            Medium       Severe   Data minimization by          Founder +
+     violation                                         design; counsel review        counsel
+                                                       at G1 and G2; quarterly
+                                                       data-flow audit
+
+     Scope creep (building       High         High     Gates in section 10;          Founder
+     worlds before proof)                              feature brief required;
+                                                       "not now" list in section 7
+
+     Engaging but not            Medium       High     Mastery engine is the         Math
+     effective                                         core; external pre/post       advisor
+                                                       assessment in pilot; G3
+                                                       blocks paid launch
+
+     AI tutor gives wrong        Medium       High     No live LLM for children      Founder
+     math or does the work                             in MVP; all generated
+     for the child                                     items human-reviewed;
+                                                       automated answer-key
+                                                       checks
+
+     Founder time (full-time     High         High     10–15 h/week plan;            Founder
+     job + other ventures)                             contractor from January;
+                                                       cut scope before
+                                                       slipping gates
+
+     Crowded market, free        High         Medium   Differentiate on verified     Founder
+     incumbents                                        mastery + parent
+                                                       partnership; low-CAC
+                                                       channels
+
+     Cash exceeds budget         Medium       Medium   Low-case plan as              Founder
+                                                       default; fixed-price
+                                                       contracts; spend only
+                                                       after each gate
+
+
+
+                                                                                             Page 25 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+     Risk                        Likelihood   Impact     Mitigation                  Owner
+
+     Trademark conflict on       Medium       Medium     Clearance search before     Counsel
+     name                                                any branding spend
+
+     Accessibility gaps          Medium       Medium     Accessibility in            Design
+     exclude children                                    acceptance criteria; test
+                                                         with at least 2 children
+                                                         with learning
+                                                         differences in the pilot
+
+     Unsupported cultural-       Low          Medium     Evidence tiers in section   Founder
+     method claims                                       3; claims review before
+                                                         publishing
+
+
+
+  Critical dependencies
+     1. Privacy counsel engaged before the prototype collects any data (G1).
+     2. Math educator available to audit the item bank before G2.
+     3. 10–15 alpha families and 50–100 pilot families recruited by April 2027.
+     4. Contract developer from January 2027.
+     5. Consumer name cleared before illustration work begins.
+
+
+  Open questions for the founder
+         Is the MVP age band 5–8 approved, or must another stage come first?
+         What is the actual year-1 cash ceiling, and is outside funding being considered?
+         Will GMIA be its own LLC, and who besides you holds equity or decision rights?
+         Is a school channel a year-2 goal, or is direct-to-family the long-term model?
+         Do you have candidates for the three human advisors (a Gwinnett County math
+         coach, a developmental psychologist, privacy counsel)?
+         Should Piano Quest and GMIA share a codebase, account system and parent
+         dashboard as a family of learning apps?
+         Which consumer name direction do you prefer for clearance?
+
+
+
+
+                                                                                              Page 26 of 27
+GMIA Phase 1 Executive Package
+
+
+
+
+  Sources
+  Prices and market figures come from third-party trackers and analyst summaries; verify
+  on vendor pages before final pricing.
+
+         NAGB — NAEP 2024 press release
+         CITC/Fox 11 — NAEP 2024 vs 2019
+         360iResearch — Math Learning Apps for Kids market
+         9to5Mac — RevenueCat State of Subscription Apps 2026, part 1
+         9to5Mac — RevenueCat 2026, part 2 (cancellations)
+         ThePricer — Prodigy membership cost
+         App Pricing Lab — Kahoot! Numbers by DragonBox
+         Subger — IXL Math pricing
+         HomeschoolFox — Khanmigo vs Synthesis Tutor
+         Kidslox — Best math apps for kids 2026
+         IES WWC — Teaching Math to Young Children practice guide
+         Rohrer et al. 2019 — RCT of interleaved mathematics practice
+         Barner et al. 2016 — 3-year mental abacus RCT (eScholarship)
+         BPS Research Digest — mental abacus RCT summary
+         Barner et al. — 1-year U.S. classroom mental abacus RCT
+         Lakshmi & Stanly 2026 — Vedic mathematics experimental study
+         Bastani et al. 2025, PNAS — Generative AI without guardrails can harm learning
+         Wharton Knowledge — summary of Bastani et al.
+         Fairplay — AAP media policy statement summary
+         Allegro Pediatrics — AAP screen-time recommendations
+         GaDOE — Georgia's K-12 Mathematics Standards
+         georgiastandards.org — standards in CASE format
+         Hunton — COPPA amendment compliance deadline
+         Finnegan via Mondaq — amended COPPA Rule in full effect
+         DEV Community — COPPA penalty summary
+         ConductAtlas — Apple App Store Kids Category restrictions
+
+
+
+
+                                                                                          Page 27 of 27
+

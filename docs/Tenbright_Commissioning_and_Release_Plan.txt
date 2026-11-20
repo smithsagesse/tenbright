@@ -1,0 +1,249 @@
+Tenbright Commissioning and Release Plan
+
+
+
+
+  Tenbright Commissioning and Release Plan
+    Nov 3, 2026       ·   ​@Smith
+
+
+
+
+  Summary
+  Three things need you personally: choosing and paying the illustrator, engaging and
+  paying the attorney, and approving the public release. Claude can't sign contracts, make
+  payments, or put a children's app live on your behalf. Everything up to your signature is
+  prepared below, and both outreach emails are drafted in chat.
+
+  Order of work
+
+     1. This week: send the attorney inquiry first. Legal review is the longest pole and gates
+        the release.
+     2. This week: send the illustration brief to two or three agencies and ask for artist
+        suggestions and quotes.
+     3. Within 3 weeks: sign both engagements; the attorney's first answers unlock the
+        accounts-and-consent build.
+     4. December to February: illustration production runs alongside the backend build and
+        the G2 and G3 gates.
+     5. Spring 2027: pilot with real families (G5), then public release once every item in
+        section 5 is checked.
+
+  Budget reality check
+
+         The Phase 1 lean budget assumed $8–25k for art and $5–15k for legal.
+         Top-tier names cost more. A senior partner at a leading national firm often bills well
+         above $1,000 an hour, and an agency-represented children's illustrator for a full game
+         world can run into the tens of thousands. These are rough market impressions, not
+         quotes.
+         The way to get top quality inside the budget is a fixed-fee, tightly scoped engagement
+         for each, as sections 2 and 4 describe.
+
+
+  Illustration: who to approach
+  The strongest path to a top children's illustrator for ages 7–10 is an agency that represents
+  many of them. The agent matches the artist, negotiates rights and manages the schedule,
+  which matters for a first-time commissioner.
+
+
+
+                                                                                             Page 1 of 5
+Tenbright Commissioning and Release Plan
+
+
+
+
+     Agency or source                      Strength                 Markets they name       Fit for Tenbright
+
+     The Bright Agency                     Large roster of          Children's              Best for a premium,
+                                           leading children's       publishing, plus        recognizable look;
+                                           illustrators, from       licensing and           likely the highest
+                                           debut to established     advertising divisions   cost
+                                           names; US and UK
+                                           offices
+
+     KidShannon                            Represents               Books, educational      Strong fit: already
+     (Shannon                              children's authors       publishing, gaming      works with games
+     Associates)                           and illustrators;        companies, toy and      and education
+                                           handles the search,      brand teams
+                                           match and
+                                           negotiation
+
+     Lemonade                              25+ years in             Children's books,       Strong fit for
+     Illustration Agency                   children's books and     educational             education-grade
+                                           educational content;     publishing              clarity
+                                           London and New           (Scholastic, Oxford
+                                           York offices             University Press)
+
+     Children's                            Browse thousands         Mixed                   Good for finding
+     Illustrators                          of portfolios directly                           independent artists
+     directory and                                                                          at lower cost
+     IllustrationX
+
+     SCBWI member                          Society of Children's    Mostly picture          Good for
+     galleries                             Book Writers and         books                   independent artists;
+                                           Illustrators members                             check game and app
+                                                                                            experience
+
+
+  What "best for ages 7–10" means for this product
+
+         Bold, readable shapes that work small on a tablet, not delicate picture-book texture.
+         A look that feels grown-up enough for a 9- or 10-year-old; a preschool style will lose
+         them.
+         Experience with characters drawn many times (model sheets, expressions), not single
+         illustrations.
+         Comfort with flat vector or layered files that engineers can animate.
+         A portfolio showing children of many backgrounds, drawn without stereotypes.
+
+
+
+                                                                                                                  Page 2 of 5
+Tenbright Commissioning and Release Plan
+
+
+
+
+  Ask each agency for 3–5 artist suggestions with app, game or educational work, plus a
+  ballpark for the scope in section 2.
+
+
+  Illustration commissioning brief
+  The brief asks the artist to turn the approved drafts (Pip, the night-lantern palette,
+  Number Kingdom) into a finished, animatable art set in two stages, so you can stop after
+  stage 1 if the style isn't right.
+
+  Project: Tenbright, a math-learning app for ages 7–10 built around place value ("ten little
+  lights make one bright idea"). Audience: US families and homeschoolers. Platforms: tablet
+  first, then phone and web.
+
+  Stage 1: style and characters (fixed fee; about 3–4 weeks)
+
+         Pip: final design, turnaround (front, side, back, three-quarter), and 8 expressions:
+         happy, curious, thinking, "a clue!", celebrating, sleepy, surprised, encouraging.
+         Supporting cast: Marta the Mapkeeper, the three Rounders, Captain Carry and
+         Lieutenant Lend.
+         Two style frames: the Kingdom map, and one practice screen with beads and lanterns.
+         Approval point: you sign off before stage 2 starts.
+
+  Stage 2: the world and the interface (fixed fee; about 6–8 weeks)
+
+         Kingdom map with five regions, plus a background for each region.
+         Game cover and app-store key art.
+         Manipulatives as separate layers: beads, lanterns, towers, base-ten blocks, soroban,
+         number line markers, ten-frames.
+         Icon set (about 30 icons: hint, listen, map, check, settings, lock and others).
+         Certificate design, app icon, and a 6-frame animation guide for Pip (idle, talk,
+         celebrate).
+
+  Must-haves
+
+         Original work only: no generative AI imagery, no references to existing franchises.
+         Readable at small sizes; shapes that hold up in both light and dark backgrounds.
+         Children of many backgrounds, no stereotypes; reviewed together before final.
+         Delivery as layered source files (vector or layered PSD) plus exports at 1×, 2× and 3×.
+
+  Rights to negotiate (have the attorney check the contract)
+
+
+
+
+                                                                                                Page 3 of 5
+Tenbright Commissioning and Release Plan
+
+
+
+
+         Ownership of the characters and world, by assignment or an exclusive perpetual
+         license, covering the app, marketing, print materials and future merchandise.
+         Credit to the artist in the app and on the website.
+         The artist may show the work in their portfolio after launch.
+
+  Budget guidance (rough, to confirm with quotes)
+
+         Stage 1: about $3–8k with an independent artist; more through a top agency.
+         Stage 2: about $8–25k independent; potentially $30k or more for a top agency artist
+         with full rights.
+         The Phase 1 budget covers an independent or mid-tier agency artist; a top-tier name
+         likely needs either more budget or a narrower stage 2.
+
+
+  Attorney: who to approach
+  The top of this field is a small group of former FTC officials who now lead children's
+  privacy work at national firms; any of the three below is a credible "best-known" choice,
+  and each firm has associates who can do the detailed work at lower rates.
+
+
+     Lawyer                        Firm             Why                           Verified detail
+
+     Phyllis H.                    Hunton           Led the FTC's children's      Counsels on COPPA,
+     Marcus                        Andrews Kurth    privacy enforcement           parental consent, age
+                                   (DC)             program and the 2013          assurance and age-
+                                                    COPPA Rule overhaul;          appropriate design codes;
+                                                    spent 17 years at the FTC     named a National Law
+                                                                                  Journal Trailblazer in 2023
+                                                                                  (Hunton)
+
+     Maneesha                      Wilson Sonsini   Former head of the FTC's      Recent work on minor
+     Mithal                        (DC)             Division of Privacy and       safety, the proposed
+                                                    Identity Protection; co-      COPPA amendments and
+                                                    chairs the firm's privacy     state design codes
+                                                    practice
+
+     Kelley Drye                   Kelley Drye      Ranked in Chambers'           Ask for a children's
+     privacy team                  (DC)             "Elite" tier for US privacy   privacy partner by name
+                                                    (Chambers); several           when you call
+                                                    former senior FTC
+                                                    officials
+
+
+
+
+                                                                                                         Page 4 of 5
+Tenbright Commissioning and Release Plan
+
+
+
+
+  Lower-cost routes to the same expertise
+
+         Ask the chosen firm for a fixed-fee COPPA review led by the partner and staffed by
+         an associate.
+         An FTC-approved Safe Harbor program (kidSAFE, PRIVO) reviews your practices as
+         part of membership. It's not a substitute for a lawyer, but it reduces what the lawyer
+         must do.
+
+  I could not confirm each lawyer's current availability or rates; confirm both on the first call.
+
+
+  Attorney engagement scope
+  Ask for one fixed-fee engagement that ends with written sign-off for the pilot and a
+  punch list for public launch. "Make all necessary corrections" works best when the
+  attorney marks up and you or Claude implement the changes, so legal hours go to
+  judgment, not editing.
+
+  What they review
+
+     1. The Accounts, Consent and Sync Plan and its 8 questions.
+     2. The live MVP, end to end, as a parent and as a child.
+     3. Drafts we will prepare: the direct notice to parents, the online privacy policy, terms of
+         service with clear subscription cancellation, and the data retention policy.
+     4. The written information security program.
+     5. The illustration contract's rights clauses.
+     6. The marketing claims plan: no learning-outcome or "brain" claims without evidence.
+     7. Trademark clearance for "Tenbright" (Classes 9 and 41), or a referral for it.
+
+  What we want back
+
+         A redline of every document, and a list of required changes to the app.
+         Written answers to the 8 questions.
+         A go or no-go for a consented pilot, and the conditions for public launch.
+
+  How corrections get made: I can implement the app and document changes from their
+  redlines within the same day. Anything they mark as needing their own drafting stays with
+  them.
+
+
+
+
+                                                                                             Page 5 of 5
+

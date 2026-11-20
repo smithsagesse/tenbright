@@ -1,0 +1,1143 @@
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+  GMIA — Phase 2 Educational Blueprint
+    Nov 3, 2026        ·   ​@Smith
+
+
+
+
+  Summary
+  Phase 2 turns the approved strategy into a buildable curriculum: 52 micro-skills for the
+  MVP strand, a misconception library, the item and verification spec, the mastery engine
+  rules, a placement test, and outline curricula for the lifelong map, Mental Math Strategies,
+  Soroban, and Financial Intelligence. The MVP strand is specified to build-ready depth;
+  later programs are specified to the level Phase 3 design needs.
+
+  Carried forward from Phase 1 (approved)
+
+         Beachhead: US families, ages 7–10, grades 2–4, plus homeschoolers.
+         MVP strand: place value → addition and subtraction within 1,000 → multiplication
+         meaning and facts to 10×10, in Number Kingdom.
+         "Mental Math Strategies" with an honest Vedic history panel; soroban as a long-
+         horizon track with a place-value mode in the MVP.
+         No open AI chat for under-13s; deterministic math engine as the source of truth.
+         No ads, no in-game purchases.
+
+  Assumptions I made, which you can overrule
+
+         Build path: the lean, founder-led path from Phase 1's budget, since the funded path
+         was framed as waiting for pilot results.
+         Piano Quest: still open. I designed the learner profile and parent report generically, so
+         sharing an engine later stays possible without rework.
+         Standards: aligned to Common Core codes, with a Georgia K–12 Mathematics
+         Standards crosswalk column, since Georgia replaced Common Core-based standards
+         in 2023–24 and is your likely pilot state.
+
+  What Gate G2 needs (section 11): a paid math-education specialist reviews sections 1–5
+  and signs off on the micro-skill map, misconceptions and item templates.
+
+
+
+
+                                                                                             Page 1 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+  Competency framework
+  The MVP strand has 52 micro-skills in four domains; every micro-skill has a single ID, a
+  standards code, named prerequisites and the representations its lessons use, and
+  nothing unlocks until its prerequisites are Mastered.
+
+  Schema for every micro-skill (stored as a content file)
+
+          id , name , domain , ccss , ga_code , prerequisites[]
+
+          representations[] : base-ten blocks (BT), number line (NL), soroban rods (SR),
+          arrays (AR), bar or schema diagram (SD), symbols (SY)
+          misconceptions[] (IDs from section 2), item_templates[] (section 3),
+          strategies[] (section 7 links)
+
+          mastery_overrides (only if a skill needs a different threshold)
+
+  Georgia crosswalk at domain level (codes per skill to be confirmed in the G2 review):
+  Place value → GA 2.NR.1, 3.NR.1; Addition and subtraction → GA 2.NR.2, 3.PAR.2;
+  Multiplication → GA 2.NR.3, 3.PAR.3; Word problems → GA 2.NR.2.3, 3.PAR.2–3.
+
+  Domain A: Place value to 1,000 (14)
+
+
+     ID            Micro-skill                               CCSS         Prerequisites   Reps
+
+     PV01          10 ones make 1 ten                        2.NBT.A.1a   entry           BT, SR
+
+     PV02          10 tens make 1 hundred                    2.NBT.A.1b   PV01            BT, SR
+
+     PV03          Read and build 3-digit numbers            2.NBT.A.1    PV02            BT, SR,
+                                                                                          SY
+
+     PV04          Value of a digit by its place             2.NBT.A.1    PV03            BT, SY
+
+     PV05          Expanded form                             2.NBT.A.3    PV04            BT, SY
+
+     PV06          Number names to 1,000                     2.NBT.A.3    PV03            SY
+
+     PV07          Count and skip-count by 5, 10, 100        2.NBT.A.2    PV03            NL
+
+     PV08          Zero as a placeholder                     2.NBT.A.1    PV04            BT, SR
+
+     PV09          Flexible decomposition (342 = 34 tens 2   2.NBT.A.1    PV05            BT
+                   ones)
+
+     PV10          Compare with >, =, <                      2.NBT.A.4    PV04            BT, NL
+
+
+
+
+                                                                                                 Page 2 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+     ID            Micro-skill                                  CCSS        Prerequisites   Reps
+
+     PV11          Locate numbers on a number line              2.MD.B.6    PV07            NL
+
+     PV12          Add or subtract 10 or 100 mentally           2.NBT.B.8   PV04, PV07      NL, SR
+
+     PV13          Round to the nearest 10                      3.NBT.A.1   PV11            NL
+
+     PV14          Round to the nearest 100                     3.NBT.A.1   PV13            NL
+
+
+  Domain B: Addition and subtraction within 1,000 (17)
+
+
+     ID            Micro-skill                                  CCSS        Prerequisites     Reps
+
+     AS01          Add and subtract within 20 fluently          2.OA.B.2    entry             NL,
+                                                                                              SY
+
+     AS02          Make-ten strategy                            2.OA.B.2    AS01              BT, SR
+
+     AS03          Fact families: addition undoes subtraction   2.OA.B.2    AS01              SD
+
+     AS04          Add 2-digit numbers, no regrouping           2.NBT.B.5   PV04, AS01        BT,
+                                                                                              NL
+
+     AS05          Add 2-digit numbers, composing a ten         2.NBT.B.5   AS04, PV01,       BT, SR
+                                                                            AS02
+
+     AS06          Subtract 2-digit numbers, no regrouping      2.NBT.B.5   PV04, AS03        BT,
+                                                                                              NL
+
+     AS07          Subtract 2-digit numbers, decomposing a      2.NBT.B.5   AS06, PV09        BT, SR
+                   ten
+
+     AS08          Add up to four 2-digit numbers               2.NBT.B.6   AS05              BT, SY
+
+     AS09          Compensation (49 + 26 = 50 + 25)             2.NBT.B.9   AS05              NL
+
+     AS10          Counting up to find a difference             2.NBT.B.9   AS07, PV11        NL
+
+     AS11          Add 3-digit numbers, composing tens and      2.NBT.B.7   AS05, PV02        BT, SR
+                   hundreds
+
+     AS12          Subtract 3-digit numbers, decomposing        2.NBT.B.7   AS07, PV09        BT, SR
+                   tens and hundreds
+
+     AS13          Subtract across zeros (400 − 167)            3.NBT.A.2   AS12, PV08        BT, SR
+
+
+
+
+                                                                                                   Page 3 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+     ID            Micro-skill                                 CCSS           Prerequisites           Reps
+
+     AS14          Standard algorithm for addition             3.NBT.A.2      AS11                    BT, SY
+
+     AS15          Standard algorithm for subtraction          3.NBT.A.2      AS12, AS13              BT, SY
+
+     AS16          Estimate and check reasonableness           3.OA.D.8       PV13, PV14, AS14        NL
+
+     AS17          Explain why a strategy works                2.NBT.B.9      AS09, AS14              BT, SY
+
+
+  Domain C: Multiplication meaning and facts (16)
+
+
+     ID             Micro-skill                            CCSS        Prerequisites             Reps
+
+     MU01           Odd and even by pairing                2.OA.C.3    AS01                      AR
+
+     MU02           Arrays as repeated addition            2.OA.C.4    AS08                      AR
+
+     MU03           a × b means a groups of b              3.OA.A.1    MU02                      AR, SD
+
+     MU04           Skip-count to multiply                 3.OA.A.1    MU03, PV07                NL
+
+     MU05           Turn-around (commutative) property     3.OA.B.5    MU03                      AR
+
+     MU06           Facts × 2, × 5, × 10                   3.OA.C.7    MU04                      NL, AR
+
+     MU07           Facts × 0 and × 1                      3.OA.B.5    MU03                      AR
+
+     MU08           Doubling: × 4 from × 2, × 8 from × 4   3.OA.B.5    MU06                      AR
+
+     MU09           × 3, then × 6 as double × 3            3.OA.C.7    MU06, MU08                AR
+
+     MU10           × 9 as × 10 minus one group            3.OA.B.5    MU06                      AR
+
+     MU11           × 7 by splitting into 5 + 2            3.OA.B.5    MU06                      AR
+
+     MU12           Square facts and remaining facts       3.OA.C.7    MU09, MU10, MU11          AR
+
+     MU13           Unknown factor (8 × ? = 48)            3.OA.A.4    MU12                      SD
+
+     MU14           One-digit × multiples of 10            3.NBT.A.3   MU06, PV04                BT
+
+     MU15           Patterns in the times table            3.OA.D.9    MU12                      AR, SY
+
+     MU16           All products to 10 × 10 from memory    3.OA.C.7    MU12                      SY
+
+
+  Domain D: Word problems (5)
+
+
+
+
+                                                                                                        Page 4 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+     ID             Micro-skill                                 CCSS        Prerequisites        Reps
+
+     WP01           Change problems (join, separate)            2.OA.A.1    AS04, AS06           SD
+
+     WP02           Part-part-whole problems                    2.OA.A.1    AS03                 SD
+
+     WP03           Compare problems (how many more,            2.OA.A.1    AS10                 SD
+                    fewer)
+
+     WP04           Equal-groups and array problems             3.OA.A.3    MU03                 SD,
+                                                                                                 AR
+
+     WP05           Two-step problems                           3.OA.D.8    WP01, WP02,          SD
+                                                                            WP03
+
+
+  Sequencing follows the WWC guidance: systematic instruction, explicit math language,
+  and schema-based word-problem instruction. The fact strategies (MU08–MU11) follow the
+  derived-fact approach used in state guidance, which recommends strategy work over
+  timed tests while facts are being learned.
+
+
+  Misconception library
+  The MVP detects 18 documented error patterns by computing each one's predicted
+  wrong answer and matching it to what the child entered; a match routes the child to the
+  named prerequisite with a different representation instead of simply marking the answer
+  wrong.
+
+  Many subtraction entries come from the classic "buggy arithmetic" research (Brown and
+  Burton, 1978), now catalogued in executable form in MalruleLib; the smaller-from-larger
+  error is among the most frequently observed across countries (Vermeulen et al., 2020).
+
+
+     ID          Error pattern                 Example (wrong      Skills       Remediation route
+                                               answer)
+
+     M01         Smaller-from-larger in        43 − 17 = 34        AS07,        PV09 with base-ten
+                 each column                                       AS12,        blocks: "Can we take 7
+                                                                   AS15         ones from 3 ones?"
+
+     M02         Regroups but forgets to       43 − 17 = 36        AS07,        Soroban rods: show the
+                 reduce the tens                                   AS12         ten leaving its rod
+
+
+
+
+                                                                                                    Page 5 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+     ID          Error pattern               Example (wrong     Skills   Remediation route
+                                             answer)
+
+     M03         Borrows when not            47 − 13 = 214      AS07,    Sort-it task: regroup or
+                 needed                                         AS15     not, before computing
+
+     M04         0 − N written as N          307 − 125 = 222    AS13     PV08, then decompose
+                                                                         a hundred into tens on
+                                                                         blocks
+
+     M05         Column sum written          58 + 67 = 1115     AS05,    PV01: trade 10 ones for a
+                 without carrying                               AS11,    ten
+                                                                AS14
+
+     M06         Carries but adds the        58 + 67 = 115 or   AS05,    Worked example with
+                 carry twice or not at all   135                AS14     highlighted carry
+
+     M07         Digit read by face value,   "the 4 in 342 is   PV04,    Expanded form with
+                 not place                   4"                 PV05     blocks
+
+     M08         Placeholder zero            "three hundred     PV08,    Place-value chart with
+                 dropped                     five" written 35   PV06     empty column
+
+     M09         Labels concatenated (3      300402             PV05     Blocks, then expanded
+                 hundreds 4 tens 2 ones                                  form addition
+                 → 300402)
+
+     M10         Compares by first digit     98 > 102           PV10     Number line placement
+                 regardless of length, or
+                 by digit sum
+
+     M11         Rounds by truncation        67 → 60            PV13,    Number line: which ten
+                                                                PV14     is closer?
+
+     M12         Off-by-one counting on      8 + 5 = 12         AS01,    Number line hops,
+                 (counts the start                              AS10     starting after the
+                 number)                                                 number
+
+     M13         Subtracts in the wrong      "how many          WP03     Compare bar diagram
+                 order in word problems      more" solved as
+                                             addition
+
+     M14         Keyword trap ("more"        adds in a          WP01–    Schema diagram before
+                 always means add)           compare            WP03     any numbers
+                                             problem
+
+
+
+
+                                                                                              Page 6 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+     ID          Error pattern                       Example (wrong         Skills       Remediation route
+                                                     answer)
+
+     M15         × treated as +                      4×3=7                  MU03         Equal groups with
+                                                                                         counters
+
+     M16         × 0 equals the other                6 × 0 = 6; 6 × 1 = 1   MU07         Story: 6 bags with
+                 factor, or × 1 equals 1                                                 nothing in them
+
+     M17         Skip-count drift (loses             7 × 6 = 49             MU04,        Split 7 × 6 into 5 × 6 + 2
+                 place in the sequence)                                     MU11         × 6 on an array
+
+     M18         Adjacent-fact confusion             7 × 8 = 54 or 48       MU12,        Derive from a known
+                                                                            MU16         neighbor fact, then
+                                                                                         spaced retrieval
+
+
+  Detection rules
+
+          Each misconception is a function that, given an item, returns its predicted wrong
+          answer. If the child's answer matches, the error is tagged.
+          One match is logged as a possible misconception. Two matches across different items
+          within five attempts confirm it and trigger remediation; this avoids reacting to slips.
+          If no pattern matches, the error is tagged "unclassified" and the hint ladder runs.
+          Unclassified errors that cluster in pilot data become candidates for new library
+          entries.
+          Remediation always ends by re-presenting an item like the one originally missed. The
+          misconception is cleared only after three correct items of the diagnostic type.
+
+
+  Item template and verification specification
+  No item is ever written as a fixed question: every item is a template with parameter
+  constraints, and the math engine computes the answer, the worked steps, and each
+  misconception's predicted wrong answer before the item can be shown.
+
+  Template fields
+
+
+     Field                             Purpose                                Example (AS07, subtract 2-digit
+                                                                              with regrouping)
+
+      params                           Variables and ranges                   a in 20–99, b in 10–a
+
+
+
+
+                                                                                                                Page 7 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+     Field                             Purpose                              Example (AS07, subtract 2-digit
+                                                                            with regrouping)
+
+      constraints                      What makes the item test the skill   ones digit of a < ones digit of b;
+                                                                            result ≥ 10
+
+      answer                           Computed, never typed                a−b
+
+      steps                            Worked example generated from        decompose 1 ten → 10 ones;
+                                       params                               subtract ones; subtract tens
+
+      format                           One of the formats below             number entry, multiple choice,
+                                                                            drag-to-model
+
+      distractors                      For multiple choice: predicted       43 − 17 → 34, 36, 214
+                                       answers from M01, M02, M03
+
+      representation                   Model shown with the item            base-ten blocks
+
+      context                          Optional story wrapper from          "43 stickers, 17 given away"
+                                       section 10
+
+      reading_level                    Max text complexity                  audio narration required for age
+                                                                            band 7
+
+
+  Formats required for the Mastered gate (at least three per skill): number entry; multiple
+  choice with diagnostic distractors; build-it with a manipulative; true/false with
+  explanation choice; and error analysis ("Pip got 34; what went wrong?").
+
+  Verification pipeline (every template, every release)
+
+     1. Exhaustive or sampled generation: enumerate all parameter combinations where
+        feasible, otherwise 10,000 samples.
+     2. Constraint check: every generated item satisfies its constraints; any that don't fail the
+         build.
+     3. Answer check: answer recomputed by an independent second implementation;
+        mismatch fails the build.
+     4. Distractor check: no distractor equals the correct answer; distractors are distinct.
+     5. Step check: the final step of the worked example equals the answer.
+     6. Text check: reading level within the band; no unsafe or culturally loaded words in
+         contexts.
+
+
+
+
+                                                                                                             Page 8 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+     7. Human review: a specialist approves each new template once, with 20 sample items,
+        before it ships.
+
+  Acceptance: 100% of shipped templates pass steps 1–6 automatically on every build; step
+  7 is logged with the reviewer's name and date.
+
+
+  Mastery engine specification
+  A micro-skill becomes Mastered only when two independent checks agree: the
+  knowledge-tracing estimate reaches 0.95 and the observable gate from Phase 1 is met;
+  that pairing prevents both lucky streaks and a model that is too optimistic.
+
+  States and transitions
+
+
+     From                              To           Trigger
+
+     Locked                            Learning     All prerequisites Mastered (or placed out)
+
+     Learning                          Practiced    Lesson cycle complete through guided practice
+
+     Practiced                         Mastered     P(known) ≥ 0.95 and ≥90% on ≥10 independent
+                                                    items, ≥3 formats, 1 transfer and 1 explain item
+                                                    correct
+
+     Mastered                          Certified    7-day and 30-day checks each ≥80%
+
+     Mastered or Certified             Practiced    A missed retention check, or two confirmed
+                                                    misconceptions in review
+
+     Any                               Placed-out   Placement test shows mastery; still receives a 7-
+                                                    day check
+
+
+  Knowledge tracing (Bayesian Knowledge Tracing, per micro-skill)
+
+         Four parameters: prior known (L0), learn rate (T), guess (G), slip (S); a 0.95 threshold
+         is the common operational choice (MetricGate).
+         Starting values until pilot data exist: L0 = 0.10 (or set by placement), T = 0.15, S = 0.10,
+         G by format: number entry 0.05, 4-option multiple choice 0.25, true/false 0.50.
+         Only independent items update the estimate; hinted items at level 2 or above are
+         logged but don't count.
+         Refit parameters per skill once a skill has 200+ learners' data; flag skills whose fitted
+         learn rate stays near zero, since that usually means the skill mixes two skills.
+
+
+
+                                                                                                        Page 9 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+  Session composition (default; tuned in pilot)
+
+         About 40% new learning, 30% practice on current skills, 30% interleaved review of
+         mastered skills. Interleaving starts only after a skill has been taught in a blocked
+         lesson, as the research recommends.
+         Session length: age 7, 15 minutes default and 20 maximum; ages 8–10, 20 default and
+         30 maximum. A natural stopping point always ends the session; there are no streak
+         penalties.
+
+  Review scheduler
+
+         Retention checks at 7, 30 and 90 days after Mastered, each 4–5 interleaved items,
+         delivered inside normal sessions rather than as tests.
+         Between checks, mastered skills reappear in review at expanding gaps (2, 4, 10, 20
+         days).
+         If a learner is away, overdue checks are spread out, at most two checks per session.
+
+  Hint ladder
+
+
+     Level        What the child sees                         Counts as independent?
+
+     0            Nothing                                     Yes
+
+     1            A nudge: "Look at the ones column"          Yes, with a small penalty to P(known)
+                                                              update
+
+     2            Strategy reminder with the model            No
+
+     3            First step done for them                    No
+
+     4            Full worked example, then a fresh similar   No
+                  item
+
+
+  Next-activity rule (in order)
+
+     1. Any confirmed misconception → remediation.
+     2. Any due retention check → include it.
+     3. Current Learning or Practiced skill with the lowest P(known).
+     4. Otherwise unlock the next skill whose prerequisites are met, preferring the one on
+        the shortest path to the strand goal.
+
+  The parent dashboard shows which rule chose each activity, in plain words.
+
+
+
+
+                                                                                                 Page 10 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+  Placement assessment design
+  Placement is an adaptive walk down the prerequisite graph that finishes in 15 minutes or
+  less, places the child on the graph rather than in a grade, and errs toward placing slightly
+  too low, because a too-easy start costs a few minutes while a too-hard start costs
+  confidence.
+
+  Design
+
+         Presented as "Explore the Kingdom map," not a test; no score shown to the child.
+         Starting point set by the caregiver's answer to "Which math is your child working on
+         now?" (four plain-language options), not by age alone.
+         8 anchor skills probed first, each with 2–3 items: PV04, PV10, AS05, AS07, AS12, AS15,
+         MU03, MU12.
+         Rule per anchor: 3 of 3 correct → mark it and its ancestors Placed-out, probe further
+         along; 0–1 of 3 → probe its prerequisites; 2 of 3 → one more item decides.
+         Misconception matches during placement are recorded and seed the first week's
+         remediation.
+         Hard stop at 25 items or 15 minutes; untested skills default to Locked or Learning.
+
+  Output to the parent (on screen and in the first report)
+
+         "Already strong at," "Ready to learn next," and "We'll strengthen first," each in plain
+         words with one example item.
+         The first two weeks' plan.
+
+  Validation in the pilot (Phase 1 acceptance criterion): retest 20+ children within 7 days;
+  placements must agree on at least 80% of micro-skills. Also compare placement with an
+  independent measure, a short teacher- or parent-administered paper probe, for 30
+  children.
+
+
+  Lifelong curriculum map
+  Ten strands run through Stages 4–8, so every future world plugs into the same graph; each
+  cell names the stage's core competency, and the MVP covers the bold cells of Stage 5.
+
+
+    Strand                    Stage 4 (5–7)   Stage 5 (7–10)      Stage 6 (10–13)   Stage 7 (13–18)   Stage 8 (18+)
+
+    Number and                Numbers to      To 1,000, then to   Decimals,         Real numbers,     Estimation and
+    place value               120; tens and   1,000,000           negatives,        scientific        magnitude in
+                              ones                                powers of 10      notation          news and work
+
+
+
+
+                                                                                                                 Page 11 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+    Strand                    Stage 4 (5–7)    Stage 5 (7–10)       Stage 6 (10–13)   Stage 7 (13–18)    Stage 8 (18+)
+
+    Operations                Add and          +/− within 1,000;    Fraction and      Exponents,         Fluent mental
+                              subtract         × facts; ÷; multi-   decimal           radicals           and
+                              within 20        digit ×              operations                           spreadsheet
+                                                                                                         calculation
+
+    Fractions,                Halves,          Unit fractions,      All four          Percent change,    Interest,
+    decimals,                 quarters as      equivalence,         operations;       compound           inflation,
+    percent                   shares           number line          percent           growth             discounts
+
+    Ratio and                 Doubling         Scaling recipes      Ratios, rates,    Proportional       Rates in finance
+    proportion                patterns                              unit price        reasoning,         and health
+                                                                                      similarity
+
+    Algebraic                 Patterns,        Unknown factor;      Expressions,      Linear and         Modeling with
+    thinking                  missing          patterns in          one-step          quadratic          formulas
+                              numbers          tables               equations         functions,
+                                                                                      systems
+
+    Geometry and              Shapes,          Area, perimeter,     Angles,           Proof,             Space, design
+    measurement               length           time, money          volume,           trigonometry       and
+                              comparison                            coordinate                           construction
+                                                                    plane                                problems
+
+    Data, statistics,         Sorting, tally   Bar and line         Mean, median,     Distributions,     Reading studies,
+    probability               charts           plots                chance            sampling,          risk and
+                                                                                      inference          evidence
+
+    Financial                 Coins, needs     Making change,       Budgets, profit, Credit, investing   Personal
+    intelligence              vs wants         saving goals,        simple interest basics, taxes        planning,
+                                               lemonade                                                  business
+                                               business                                                  analytics
+
+    Mental math               Subitizing,      Strategies;          Advanced          Estimation and     Lifelong fluency
+    and soroban               ten-frames       soroban place        strategies;       checking
+                                               value, then          soroban 6–8
+                                               levels 1–5
+
+    Reasoning and             "How do you      Explain              Justify with      Formal proof       Evaluating
+    proof                     know?"           strategies           properties                           arguments with
+                                                                                                         numbers
+
+
+  Stages 1–3 (ages 1–5) are delivered as caregiver co-play and printable activity cards that
+  build the Stage 4 entry skills (counting, subitizing, comparing), consistent with the AAP
+  guidance adopted in Phase 1.
+
+  Each later stage gets the same Phase 2 treatment (micro-skills, misconceptions,
+  templates) only when its build phase starts.
+
+
+
+
+                                                                                                                      Page 12 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+  Mental Math Strategies curriculum
+  Ten techniques are sequenced by prerequisite, five of them in the MVP; each is taught
+  with the algebra or place-value reason behind it, compared side by side with the standard
+  method, and assessed on accuracy, explanation and choosing when to use it, never on
+  speed alone.
+
+  History panel (shown to learners and parents, plain language). Several techniques come
+  from Vedic Mathematics, a book by Bharati Krishna Tirtha published in 1965, after his
+  death. He presented 16 short Sanskrit phrases (sutras) as rules for calculation. Historians,
+  including the mathematician S. G. Dani, and the book's own editor note the sutras are not
+  found in known Vedic texts. GMIA teaches these methods because the math is sound and
+  sometimes useful, and celebrates the documented history of Indian mathematics
+  separately (for example, place-value numerals with zero and the Śulba-sūtras' geometry).
+
+
+    #          Technique               Source label   Why it works         Prereqs      Stage   Use when /
+                                                                                                avoid when
+
+    T1         Make ten (bridge        Standard       8+5=8+2+3            AS01         5       Sums crossing
+               through 10)             strategy                                         (MVP)   10
+
+    T2         Compensation            Standard       49 + 26 = (49 +      AS05         5       One number
+                                       strategy       1) + (26 − 1)                     (MVP)   near a ten / both
+                                                                                                far from a ten
+
+    T3         Complement from         Vedic          1,000 = 999 + 1,     PV09, AS13   5       Change from
+               100 or 1,000: "all      Mathematics    so each digit                     (MVP)   $10 or $100;
+               from 9 and the last     (Nikhilam)     subtracted                                subtracting
+               from 10"                               from 9 never                              from a power of
+                                                      needs                                     ten
+                                                      borrowing
+
+    T4         × 9 as × 10 minus       Standard       9 × 7 = 10 × 7 − 7   MU06         5       Any × 9 fact
+               one group               strategy                                         (MVP)
+
+    T5         Doubling and            Standard       4 × 6 = 2 × (2 ×     MU08         5       Even factors, ×
+               halving                 strategy       6); 5 × 18 = 10 ×                 (MVP)   5
+                                                      9
+
+    T6         × 11 for 2-digit        Vedic          11 × ab = 100a +     MU12, AS05   6       Mental × 11 / 3-
+               numbers                 Mathematics–   10(a + b) + b                             digit numbers
+                                       style                                                    (more carries)
+
+    T7         Squares of              Vedic          (10a + 5)² =         MU16         6       25², 65², 105² /
+               numbers ending in       Mathematics    100·a(a + 1) + 25                         any other
+               5                       (Ekadhikena                                              ending
+                                       Purvena)
+
+
+
+
+                                                                                                            Page 13 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+    #          Technique               Source label        Why it works       Prereqs         Stage   Use when /
+                                                                                                      avoid when
+
+    T8         Near-base               Vedic               (100 − x)(100 −    T3, MU16        6       Both numbers
+               multiplication          Mathematics         y) = 100(100 − x                           near 10, 100 or
+                                       (Nikhilam)          − y) + xy                                  1,000 / numbers
+                                                                                                      far from a base
+
+    T9         Vertically and          Vedic               (10a + b)(10c +    MU16, multi-    6       2-digit × 2-digit
+               crosswise               Mathematics         d) = 100ac +       digit ×                 on paper; links
+                                       (Urdhva             10(ad + bc) +                              to the area
+                                       Tiryagbhyam)        bd                                         model
+
+    T10        Checking with           Older than the      A number and       Division with   6       Catching errors
+               digit sums (casting     book; used          its digit sum      remainders              / it cannot catch
+               out nines)              across traditions   leave the same                             swapped digits
+                                                           remainder
+                                                           when divided
+                                                           by 9
+
+
+  Lesson pattern per technique
+
+     1. Puzzle hook: "Can you find 1,000 − 368 without borrowing?"
+     2. Visual demonstration with blocks, soroban or an area model.
+     3. The reason, at the child's level (T3: "999 never needs borrowing").
+     4. Side-by-side with the standard method on the same problem.
+     5. Guided, then independent practice.
+     6. "Which way would you choose?" items mixing problems where the technique helps
+        and where it doesn't.
+     7. Retention checks at 7, 30 and 90 days, like any other skill.
+
+  Mastery for a technique: ≥90% accuracy on 10 independent items, 1 correct "why it
+  works" item, and ≥4 of 5 correct method-choice items. Speed is reported to parents only
+  after accuracy is met.
+
+
+  Soroban and mental abacus curriculum
+  The Soroban Academy is an optional, multi-year track of eight levels; the MVP ships Levels
+  1–2 as a place-value tool inside the core lessons, and every level checks that the child can
+  say what the beads mean, not only move them fast.
+
+
+
+
+                                                                                                                 Page 14 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+  The virtual soroban (MVP spec). Each rod has one upper bead worth 5 and four lower
+  beads worth 1; rods are ones, tens, hundreds from right to left, with a marked unit rod. The
+  displayed numeral always updates with bead state. Modes: free play; "show me" (build a
+  number); place-value link (rod highlights match base-ten blocks); and guided calculation
+  with ghost beads showing the next move.
+
+
+     Level        Focus                 Key skills             Mastery check        Typical time at
+                                                                                    ~10 min/day
+                                                                                    (estimate)
+
+     1            Understanding the     Parts, bead values,    Build and read 20    1–2 weeks
+                  soroban               clearing, numbers 0–   single-rod
+                                        9 on one rod           numbers at ≥95%
+
+     2            Place value on rods   Numbers to 999,        Build and read 3-    2–3 weeks
+                                        zero rods, link to     digit numbers
+                                        PV01–PV08              ≥95%; explain a
+                                                               rod's value
+
+     3            Direct addition and   Moves needing no       ≥90% on 1-digit      2–4 weeks
+                  subtraction           complements (e.g., 3   chains, untimed
+                                        + 1)
+
+     4            Complement            "Small friends"        ≥90% on 2-digit      6–10 weeks
+                  moves                 (complements of 5)     chains of 3–5
+                                        and "big friends"      numbers; explain
+                                        (complements of 10),   why 7 = 10 − 3
+                                        multi-rod carrying
+
+     5            Independent           2–3-digit addition     ≥90% untimed;        2–3 months
+                  calculation           and subtraction        then timed fluency
+                                        chains;                reported
+                                        multiplication by 1    separately
+                                        digit
+
+     6            Mental                Same problems with     ≥85% with            3–6 months
+                  visualization         the soroban hidden     soroban hidden, on
+                                        after the first        Level 5 problems
+                                        number, then fully
+                                        hidden
+
+
+
+
+                                                                                                Page 15 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+     Level        Focus                Key skills             Mastery check     Typical time at
+                                                                                ~10 min/day
+                                                                                (estimate)
+
+     7            Mental calculation   Flash numbers and      ≥85% on 2-digit   6+ months
+                  without the          dictated chains        chains of 5
+                  interface                                   numbers
+
+     8            Advanced             Multi-digit × and ÷;   Benchmarks set    Ongoing
+                  challenges           optional preparation   with an abacus
+                                       for external kyu-      specialist
+                                       style exams
+
+
+  Understanding checks at every level
+
+         Translation items: soroban → numeral → base-ten blocks, both directions.
+         "Why" items: "Why did you push the 5-bead down and take 2 away?"
+         Transfer: the same problem on paper with a strategy from section 7.
+
+  Honest positioning. The 3-year RCT found arithmetic gains after about 3 hours a week of
+  training; the 1-year US trial found no computation advantage, especially for younger first
+  graders. Parents are told the track rewards long, steady practice, and GMIA makes no
+  claims about memory or intelligence. Soroban practice counts toward the same
+  competencies, so time spent here is never wasted for the core curriculum.
+
+  Human review: an experienced soroban instructor reviews Levels 4–8 move sequences
+  and benchmarks before Phase 5.
+
+
+  Financial intelligence and entrepreneurship curriculum
+  The financial strand follows the six topics of the 2021 National Standards for Personal
+  Financial Education (Council for Economic Education and Jump$tart): earning income,
+  spending, saving, investing, managing credit and managing risk. Every activity is first a
+  math lesson with a measurable math objective, and it uses play money only.
+
+  Scope by stage (the national standards set benchmarks at grades 4, 8 and 12)
+
+
+
+
+                                                                                            Page 16 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+     Topic                    Stage 5 (7–10), grade-4      Stage 6 (10–13),          Stage 7 (13–18), grade-12
+                              benchmarks                   grade-8 benchmarks        benchmarks
+
+     Earning                  Jobs earn money; doing       Wages × hours;            Pay stubs, taxes, career
+     income                   chores or selling goods      gross vs net              earnings
+
+     Spending                 Needs vs wants; making       Unit price,               Consumer contracts,
+                              change; comparing            discounts, budgets        opportunity cost
+                              prices
+
+     Saving                   Saving goals, "how many      Simple interest           Compound interest,
+                              weeks to save $20?"                                    emergency funds
+
+     Investing                Saving vs investing:         Risk and return in        Diversification, index
+                              what's the difference?       simple terms              funds (education only)
+
+     Managing                 Borrowing means paying       Interest on               Credit scores, APR, loans
+     credit                   back                         borrowing
+
+     Managing                 Protecting things we own     Insurance as shared       Insurance types, identity
+     risk                                                  risk                      theft
+
+
+  Cell contents are GMIA's scope choices under each national topic, not quotations of the
+  benchmarks. The Stage 5 money items build on the MVP math directly: making change
+  uses T3 complements and AS13 subtraction across zeros; saving goals use repeated
+  addition and multiplication facts.
+
+  Lemonade Enterprise (first business simulation, Phase 5)
+
+
+     Level        Age          Decisions the learner makes               Math objective
+
+     1            7–8          Buy ingredients for 10, 20 or 30          Cost = cups × cost per cup; revenue
+                               cups; set price from 3 choices            = cups sold × price; profit = revenue
+                                                                         − cost (whole cents, within $20)
+
+     2            8–9          Also choose by weather forecast;          Unsold inventory as loss; comparing
+                               leftover lemons spoil                     two days' profit
+
+     3            9–10         Any price from $0.25 to $1.50; save       Reading a demand table;
+                               or reinvest profit                        reinvestment toward a goal; multi-
+                                                                         step problems
+
+
+
+
+                                                                                                          Page 17 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+     Level        Age          Decisions the learner makes      Math objective
+
+     4            10–          Markup %, a stand upgrade, a     Unit cost, percent markup, break-
+                  13           helper's wage                    even, simple wages
+
+
+  Worked example for Level 1: lemons $0.20 + sugar $0.05 + cup $0.05 = $0.30 per cup.
+  Selling 20 cups at $0.50 gives $10.00 revenue, $6.00 cost and $4.00 profit.
+
+  Simulation rules
+
+          Demand is a published table (price × weather → customers), so every result can be
+          checked by hand; no hidden randomness at Levels 1–2.
+          Losses happen and are explained, never punished: the learner keeps playing and can
+          see what would have changed the result.
+          No real money, no links to real financial products, no advice. Investing content is
+          labeled "how it works," not "what to buy."
+          Business scenarios later expand to the directive's list (bakery, grocery, toy company,
+          real estate), each reusing the same profit and inventory engine.
+
+
+  Real-world application library
+  Every micro-skill needs at least one "Apply" scenario in an unfamiliar context; the library
+  starts with 20 scenarios and grows in Phase 3 until every one of the 52 MVP skills has at
+  least one, and each scenario is a story wrapper around engine-generated numbers, so one
+  scenario yields thousands of distinct items.
+
+  Scenario schema: id , context , skills[] , story_template , param_bindings (which
+  item parameters fill the story), visual , reading_level , cultural_review (pass/fail
+  with reviewer), objective (one sentence a parent can read).
+
+
+     ID             Context                      Skills        Task for the learner
+
+     RW01           Market stall                 PV03, PV05    Pay for a $342 bike with $100, $10 and
+                                                               $1 notes
+
+     RW02           Library                      PV10, PV11    Shelve books by call number on a
+                                                               number-line shelf
+
+     RW03           Road trip                    PV13, PV14,   Estimate miles left between two
+                                                 AS16          towns, then check
+
+
+
+
+                                                                                                  Page 18 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+     ID             Context             Skills        Task for the learner
+
+     RW04           Bakery              AS05, AS08    Total muffins baked across four trays
+
+     RW05           Soccer season       AS11, WP03    How many more goals did one team
+                                                      score over the season?
+
+     RW06           Piggy bank          AS13, T3      Change from $100 after buying a $63
+                                                      game
+
+     RW07           Garden              MU02, MU03,   Plant seedlings in rows and columns
+                                        WP04
+
+     RW08           Classroom party     MU06, MU14    Packs of 10 juice boxes for 7 tables
+
+     RW09           Music practice      MU09, WP05    Minutes practiced over 6 days, then
+                                                      minutes left to reach a goal
+
+     RW10           Science lab         PV07, MU04    Count seeds sprouting by 5s each day
+
+     RW11           Construction site   AS12, AS15    Bricks left after delivering part of a
+                                                      pallet
+
+     RW12           Zoo feeding         MU08, MU11    Food for 7 animals that each eat 8
+                                                      scoops
+
+     RW13           Art studio          MU05, MU15    Two ways to arrange 24 tiles in a
+                                                      mosaic
+
+     RW14           Train timetable     AS10, WP03    How many minutes until the next
+                                                      train?
+
+     RW15           Nature hike         AS09, AS17    Add trail lengths using a friendly
+                                                      number
+
+     RW16           Fundraiser          WP02, WP05    Raised so far plus still needed equals
+                                                      the goal
+
+     RW17           Toy factory         MU10, MU16    Wheels needed for 9 trucks with 6
+                                                      wheels each
+
+     RW18           Recipe              MU13          How many batches make 48 cookies at
+                                                      8 per batch?
+
+     RW19           Lemonade stand      AS04, AS06,   Cups sold in the morning and
+                    (preview)           WP01          afternoon
+
+
+
+
+                                                                                           Page 19 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+     ID             Context                   Skills               Task for the learner
+
+     RW20           Space station             PV12, AS14           Fuel readings rising by 10s and 100s,
+                                                                   then a total
+
+
+  Rules: every scenario is reviewed for reading level and cultural fit; names and settings
+  rotate across cultures without stereotypes; no brands, real people or licensed characters;
+  money scenarios use dollars in the US edition, with currency swappable later. The library
+  grows to the hundreds the directive calls for through new contexts on the same
+  templates, starting in Phase 5.
+
+
+  Human review plan and Gate G2
+  Gate G2 passes when an independent elementary math-education specialist signs off on
+  sections 1–5, with every required change either made or logged as a decision; target date
+  is late December 2026.
+
+  Reviewers and scope
+
+
+     Reviewer                          Reviews                           Est.      Est. cost       When
+                                                                         hours     (approx.)
+
+     Elementary math-                  Sections 1–5: skill map,          30–40     $3–6k           Dec
+     education specialist (e.g.,       prerequisites,                                              2026
+     former K–3 math coach or          misconceptions, templates,
+     education faculty)                mastery and placement
+                                       rules
+
+     Experienced grade 2–3             Georgia crosswalk codes           8–12      $0.8–1.5k       Dec
+     teacher in Georgia                per skill; reading level; real                              2026
+                                       classroom pacing
+
+     Soroban instructor                Section 8, Levels 1–4 now;        4–6       $0.4–0.8k       Jan
+                                       Levels 5–8 before Phase 5                                   2027
+
+     Cultural and bias                 Section 7 history panel;          4         $0.4–0.6k       Jan
+     reviewer                          section 10 scenarios                                        2027
+
+
+  Where to find reviewers: university colleges of education in the Atlanta area, retired
+  district math coaches, and the Georgia Council of Teachers of Mathematics network; the
+  soroban instructor from a local abacus school.
+
+
+
+                                                                                                      Page 20 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+  G2 pass criteria
+
+         Every micro-skill's prerequisites approved or corrected
+         Georgia code confirmed for every micro-skill
+         Misconception list approved; any missing high-frequency errors added
+         5 sample item templates (one per domain plus a technique) reviewed with 20
+         generated items each
+         Mastery thresholds and session caps approved, or changes logged
+         Placement anchors approved
+
+  Open items for you
+
+         Approve the review budget (about $5–9k total), or tell me to cut scope, for example by
+         deferring the soroban and cultural reviews to Phase 5.
+         Confirm the lean build path, which this plan assumes.
+         Decide on a shared engine with Piano Quest before Phase 4 data modeling starts.
+         Choose a working name for the helper character ("Pip" is a placeholder) or leave it for
+         Phase 3 brand work.
+
+  Next: Phase 3, Product Design: brand identity, mascot, Number Kingdom world map, user
+  journeys for child and parent, wireframes of the lesson cycle, and a clickable prototype for
+  Gate G3 testing with 5–8 children.
+
+
+  Sources
+  Research as of November 3, 2026, in addition to the Phase 1 sources.
+
+  Standards
+
+         Common Core Grade 3 standards text (Math is Fun index)
+         TERC Investigations: Grade 3 Common Core correlation
+         Georgia K–12 Mathematics Standards: Grade 2 alignment (Heinemann)
+         Georgia K–12 Mathematics Standards: Grade 3 alignment (Eureka Math²)
+         Cobb County Grade 2 framework with Georgia codes
+         2021 National Standards for Personal Financial Education (CEE and Jump$tart)
+
+  Misconceptions and instruction
+
+         MalruleLib: executable misconception library (arXiv 2601.03217)
+         Vermeulen et al. (2020), diagnostic items for subtraction errors
+
+
+
+                                                                                           Page 21 of 22
+GMIA — Phase 2 Educational Blueprint
+
+
+
+
+         CPALMS: multiplication fact strategies and guidance on timed tests
+         IES WWC practice guide (2021)
+
+  Mastery engine
+
+         MetricGate: knowledge tracing and the 0.95 threshold
+         Rohrer et al. (2019), interleaved practice RCT
+
+  Mental Math Strategies and soroban
+
+         Vedic Mathematics: history, Dani's critique and worked techniques
+         Dartmouth Undergraduate Journal of Science: algebraic proofs of Vedic techniques
+         Soroban overview and Japanese standard methods
+         Barner et al. (2016), 3-year mental abacus RCT
+         Barner et al. (2017), 1-year US mental abacus trial
+
+
+
+
+                                                                                      Page 22 of 22
+
