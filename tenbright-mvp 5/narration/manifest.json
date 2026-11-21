@@ -1,0 +1,3751 @@
+{
+ "voice": {
+  "character": "Pip",
+  "provider": "ElevenLabs",
+  "voice_name": "Simone – Pro British Female Teacher",
+  "voice_id": "4jTQ1AHQa8pGUOeRIiC8",
+  "model_id": "eleven_v4",
+  "chosen": "2026-11-03",
+  "audition": "https://elevenlabs.io/app/flows/BIIrccplmrAUMOpfPF0r",
+  "license_note": "Generate final clips only on a paid ElevenLabs plan (Starter or higher). Free-plan audio is not licensed for commercial use.",
+  "disclosure": "Pip's voice is AI-generated. State this in the privacy notice and in Pip's intro."
+ },
+ "clips": 745,
+ "characters": 16127,
+ "byKind": {
+  "line": 325,
+  "piece": 179,
+  "name": 16,
+  "thing": 8,
+  "num": 110,
+  "numEnd": 101,
+  "numPlural": 6
+ },
+ "items": [
+  {
+   "id": "line_75d760ba4b",
+   "kind": "line",
+   "text": "Pip has too many beads to count one by one!"
+  },
+  {
+   "id": "line_0109f8f860",
+   "kind": "line",
+   "text": "Ten ones can click together into one ten."
+  },
+  {
+   "id": "line_f951d88da3",
+   "kind": "line",
+   "text": "Make as many tens as you can."
+  },
+  {
+   "id": "line_37484eed1e",
+   "kind": "line",
+   "text": "Then count tens and the ones left over."
+  },
+  {
+   "id": "line_1eca552753",
+   "kind": "line",
+   "text": "Can you make one more ten from the ones?"
+  },
+  {
+   "id": "line_8a72ddd9dd",
+   "kind": "line",
+   "text": "Every 10 ones is 1 ten."
+  },
+  {
+   "id": "line_469d2aed96",
+   "kind": "line",
+   "text": "Ten lanterns stack into one tower!"
+  },
+  {
+   "id": "line_d22508d35a",
+   "kind": "line",
+   "text": "Ten tens make one hundred."
+  },
+  {
+   "id": "line_58b3c8c0f2",
+   "kind": "line",
+   "text": "Make as many hundreds as you can from the tens."
+  },
+  {
+   "id": "line_0bfe094cad",
+   "kind": "line",
+   "text": "Then count hundreds and tens."
+  },
+  {
+   "id": "line_a0de3e7a5f",
+   "kind": "line",
+   "text": "Can you make a hundred from 10 of the tens?"
+  },
+  {
+   "id": "line_48e2f54b4a",
+   "kind": "line",
+   "text": "Every 10 tens is 1 hundred."
+  },
+  {
+   "id": "line_99da991cc1",
+   "kind": "line",
+   "text": "Pip found some beads in the meadow. How many are there?"
+  },
+  {
+   "id": "line_e5dbb643dd",
+   "kind": "line",
+   "text": "A flat square is 1 hundred."
+  },
+  {
+   "id": "line_7cae3e4df4",
+   "kind": "line",
+   "text": "A long rod is 1 ten."
+  },
+  {
+   "id": "line_77ea65ba17",
+   "kind": "line",
+   "text": "A little cube is 1 one."
+  },
+  {
+   "id": "line_840155cf72",
+   "kind": "line",
+   "text": "Count the hundreds, then the tens, then the ones."
+  },
+  {
+   "id": "line_aef3285e0c",
+   "kind": "line",
+   "text": "Start with the big squares. How many hundreds?"
+  },
+  {
+   "id": "line_01bf754ab1",
+   "kind": "line",
+   "text": "Each square is 100, each rod is 10, each cube is 1."
+  },
+  {
+   "id": "line_0e152bd4de",
+   "kind": "line",
+   "text": "Every digit lives in a house: hundreds, tens or ones."
+  },
+  {
+   "id": "line_5ae3a2810d",
+   "kind": "line",
+   "text": "In 372, the 3 is in the hundreds house, so it is worth 300."
+  },
+  {
+   "id": "line_06354a08f3",
+   "kind": "line",
+   "text": "The 7 is in the tens house, so it is worth 70."
+  },
+  {
+   "id": "line_0bbc7ba964",
+   "kind": "line",
+   "text": "The 2 is in the ones house, so it is worth 2."
+  },
+  {
+   "id": "line_21ff4ad62d",
+   "kind": "line",
+   "text": "Which house is that digit in?"
+  },
+  {
+   "id": "line_5fe496e02d",
+   "kind": "line",
+   "text": "A digit in the tens house is worth that many tens."
+  },
+  {
+   "id": "line_8c13ed0f29",
+   "kind": "line",
+   "text": "A number can be split into its places."
+  },
+  {
+   "id": "line_da0e33ddf1",
+   "kind": "line",
+   "text": "347 is 300 + 40 + 7."
+  },
+  {
+   "id": "line_0fc8fba4d8",
+   "kind": "line",
+   "text": "Each part is one place: hundreds, tens, ones."
+  },
+  {
+   "id": "line_6f25d795ce",
+   "kind": "line",
+   "text": "Put the parts back together to make the number."
+  },
+  {
+   "id": "line_8409ce20c3",
+   "kind": "line",
+   "text": "Which part is the hundreds?"
+  },
+  {
+   "id": "line_8d739c1c34",
+   "kind": "line",
+   "text": "Hundreds, tens and ones each get their own place."
+  },
+  {
+   "id": "line_79ba6a893e",
+   "kind": "line",
+   "text": "Pip hears a number name. Can you write it?"
+  },
+  {
+   "id": "line_5e073bc6c3",
+   "kind": "line",
+   "text": "\"Four hundred six\" means 4 hundreds and 6 ones."
+  },
+  {
+   "id": "line_9a6dae1d3e",
+   "kind": "line",
+   "text": "There are no tens, so the tens place holds a 0."
+  },
+  {
+   "id": "line_9e0170d355",
+   "kind": "line",
+   "text": "How many hundreds? How many tens? How many ones?"
+  },
+  {
+   "id": "line_c0d124a9c5",
+   "kind": "line",
+   "text": "Write one digit for each place, using 0 for an empty place."
+  },
+  {
+   "id": "line_adf31563b9",
+   "kind": "line",
+   "text": "Pip hops along the number path."
+  },
+  {
+   "id": "line_85382d9f70",
+   "kind": "line",
+   "text": "Counting by 10s changes the tens digit."
+  },
+  {
+   "id": "line_9d908b8657",
+   "kind": "line",
+   "text": "Counting by 100s changes the hundreds digit."
+  },
+  {
+   "id": "line_531b4d5eee",
+   "kind": "line",
+   "text": "Counting by 5s goes 0, 5, 0, 5 in the ones."
+  },
+  {
+   "id": "line_697a6ed02b",
+   "kind": "line",
+   "text": "How much does each jump add?"
+  },
+  {
+   "id": "line_067d96b2bd",
+   "kind": "line",
+   "text": "Add the same jump each time."
+  },
+  {
+   "id": "line_f2b27420c8",
+   "kind": "line",
+   "text": "Some houses are empty. Zero keeps their spot."
+  },
+  {
+   "id": "line_e7c038f504",
+   "kind": "line",
+   "text": "4 hundreds and 5 ones has no tens."
+  },
+  {
+   "id": "line_69f66c923d",
+   "kind": "line",
+   "text": "Write a 0 in the tens place: 405."
+  },
+  {
+   "id": "line_7cc90137e9",
+   "kind": "line",
+   "text": "Without the 0, it would read 45."
+  },
+  {
+   "id": "line_d325c97c7e",
+   "kind": "line",
+   "text": "Is any place empty?"
+  },
+  {
+   "id": "line_e5e656177d",
+   "kind": "line",
+   "text": "Zero holds a place so the other digits stay put."
+  },
+  {
+   "id": "line_9e5f692159",
+   "kind": "line",
+   "text": "A hundred is also ten tens."
+  },
+  {
+   "id": "line_e9d2944b76",
+   "kind": "line",
+   "text": "342 has 3 hundreds, 4 tens, 2 ones."
+  },
+  {
+   "id": "line_28da83be3a",
+   "kind": "line",
+   "text": "Each hundred is 10 tens, so 3 hundreds is 30 tens."
+  },
+  {
+   "id": "line_a6b0daf2e5",
+   "kind": "line",
+   "text": "30 tens + 4 tens = 34 tens."
+  },
+  {
+   "id": "line_c99cf18b5a",
+   "kind": "line",
+   "text": "How many tens are in the hundreds?"
+  },
+  {
+   "id": "line_b315475822",
+   "kind": "line",
+   "text": "Count all the tens, including the ones inside the hundreds."
+  },
+  {
+   "id": "line_cb191b26cc",
+   "kind": "line",
+   "text": "Two ferries are racing. Which one carries more?"
+  },
+  {
+   "id": "line_6f7e88ff26",
+   "kind": "line",
+   "text": "Compare the hundreds first."
+  },
+  {
+   "id": "line_deb89dcacf",
+   "kind": "line",
+   "text": "If the hundreds are the same, compare the tens."
+  },
+  {
+   "id": "line_302829556b",
+   "kind": "line",
+   "text": "If the tens are the same too, compare the ones."
+  },
+  {
+   "id": "line_3a0df9583b",
+   "kind": "line",
+   "text": "Look at the hundreds first."
+  },
+  {
+   "id": "line_a4725c62ac",
+   "kind": "line",
+   "text": "The number with more hundreds is bigger, no matter what the tens and ones say."
+  },
+  {
+   "id": "line_16c65a07bb",
+   "kind": "line",
+   "text": "Where does this number live on the line?"
+  },
+  {
+   "id": "line_4ddcbb7fee",
+   "kind": "line",
+   "text": "Find where the line starts."
+  },
+  {
+   "id": "line_fb24125d60",
+   "kind": "line",
+   "text": "Find how much each jump is."
+  },
+  {
+   "id": "line_a06eb14026",
+   "kind": "line",
+   "text": "Count the jumps to the arrow."
+  },
+  {
+   "id": "line_7983d6e9e0",
+   "kind": "line",
+   "text": "How much is each jump?"
+  },
+  {
+   "id": "line_9eb7832642",
+   "kind": "line",
+   "text": "Start number + jumps × jump size."
+  },
+  {
+   "id": "line_f4f8952b7b",
+   "kind": "line",
+   "text": "Pip adds one more lantern, or one more tower. What changes?"
+  },
+  {
+   "id": "line_9ff5c21782",
+   "kind": "line",
+   "text": "Adding 10 adds one ten. Only the tens digit changes."
+  },
+  {
+   "id": "line_0fbf05e725",
+   "kind": "line",
+   "text": "Adding 100 adds one hundred. Only the hundreds digit changes."
+  },
+  {
+   "id": "line_ca99540299",
+   "kind": "line",
+   "text": "Which place gets one more, or one less?"
+  },
+  {
+   "id": "line_13b8093c6d",
+   "kind": "line",
+   "text": "10 more means one more ten. Keep the ones the same."
+  },
+  {
+   "id": "line_65eef18228",
+   "kind": "line",
+   "text": "Which ten is closer?"
+  },
+  {
+   "id": "line_ef91ae3b54",
+   "kind": "line",
+   "text": "Find the two tens the number sits between."
+  },
+  {
+   "id": "line_70cd3d23dc",
+   "kind": "line",
+   "text": "Look at the ones digit."
+  },
+  {
+   "id": "line_32fde295ad",
+   "kind": "line",
+   "text": "5 or more goes up; 4 or less goes down."
+  },
+  {
+   "id": "line_b41c38438d",
+   "kind": "line",
+   "text": "Which two tens is it between?"
+  },
+  {
+   "id": "line_990ce48e62",
+   "kind": "line",
+   "text": "The ones digit decides: 5 or more rounds up."
+  },
+  {
+   "id": "line_6ef0105708",
+   "kind": "line",
+   "text": "Which hundred is closer?"
+  },
+  {
+   "id": "line_3fd894f977",
+   "kind": "line",
+   "text": "Find the two hundreds the number sits between."
+  },
+  {
+   "id": "line_f5651dcd54",
+   "kind": "line",
+   "text": "Look at the tens digit."
+  },
+  {
+   "id": "line_8f3e6776a1",
+   "kind": "line",
+   "text": "Which two hundreds is it between?"
+  },
+  {
+   "id": "line_865ab86f72",
+   "kind": "line",
+   "text": "The tens digit decides when rounding to the nearest 100."
+  },
+  {
+   "id": "line_45ec413fd6",
+   "kind": "line",
+   "text": "Quick adding and taking away."
+  },
+  {
+   "id": "line_0f27b464b0",
+   "kind": "line",
+   "text": "To add, count on from the bigger number."
+  },
+  {
+   "id": "line_7680b29b57",
+   "kind": "line",
+   "text": "To subtract, count back, or think of the adding fact."
+  },
+  {
+   "id": "line_fe6607a069",
+   "kind": "line",
+   "text": "Start from the bigger number and count on."
+  },
+  {
+   "id": "line_b94ef687da",
+   "kind": "line",
+   "text": "Start counting on the next number."
+  },
+  {
+   "id": "line_089e6243ca",
+   "kind": "line",
+   "text": "Make a ten to add faster!"
+  },
+  {
+   "id": "line_3d5c8c8c07",
+   "kind": "line",
+   "text": "8 + 5: give 2 from the 5 to the 8 to make 10."
+  },
+  {
+   "id": "line_d6ac417a04",
+   "kind": "line",
+   "text": "10 + 3 = 13."
+  },
+  {
+   "id": "line_c019e7b84b",
+   "kind": "line",
+   "text": "How many more does the first number need to make 10?"
+  },
+  {
+   "id": "line_d601fad49d",
+   "kind": "line",
+   "text": "Fill the ten-frame first, then add what is left."
+  },
+  {
+   "id": "line_822551e443",
+   "kind": "line",
+   "text": "Adding and subtracting are a family."
+  },
+  {
+   "id": "line_63f9912d9e",
+   "kind": "line",
+   "text": "7 + 8 = 15, so 15 − 8 = 7 and 15 − 7 = 8."
+  },
+  {
+   "id": "line_efb2a87fde",
+   "kind": "line",
+   "text": "If you know one fact, you know the family."
+  },
+  {
+   "id": "line_45c91945b1",
+   "kind": "line",
+   "text": "What adding fact uses these numbers?"
+  },
+  {
+   "id": "line_618e83450b",
+   "kind": "line",
+   "text": "Subtracting undoes adding."
+  },
+  {
+   "id": "line_0b01589452",
+   "kind": "line",
+   "text": "The ferry carries two groups of beads across the river."
+  },
+  {
+   "id": "line_98a7360958",
+   "kind": "line",
+   "text": "Add the ones to the ones."
+  },
+  {
+   "id": "line_2a04fceb0d",
+   "kind": "line",
+   "text": "Add the tens to the tens."
+  },
+  {
+   "id": "line_b9c3a91145",
+   "kind": "line",
+   "text": "Put them together."
+  },
+  {
+   "id": "line_8f36c17e51",
+   "kind": "line",
+   "text": "Start with the ones."
+  },
+  {
+   "id": "line_7b758cf8de",
+   "kind": "line",
+   "text": "Ones add with ones, tens add with tens."
+  },
+  {
+   "id": "line_3e80342258",
+   "kind": "line",
+   "text": "Too many ones for one dock! Ten ones can ride together as one ten."
+  },
+  {
+   "id": "line_b486341c8d",
+   "kind": "line",
+   "text": "Add the ones. If you get 10 or more, make a ten."
+  },
+  {
+   "id": "line_a3be62a54a",
+   "kind": "line",
+   "text": "Move the new ten to the tens place."
+  },
+  {
+   "id": "line_b47a46f728",
+   "kind": "line",
+   "text": "Add the tens, including the new one."
+  },
+  {
+   "id": "line_3cb6c64de2",
+   "kind": "line",
+   "text": "Look at the ones. Is it more than 9?"
+  },
+  {
+   "id": "line_51dfa01858",
+   "kind": "line",
+   "text": "Ten ones make one ten. Carry it to the tens."
+  },
+  {
+   "id": "line_693e1f9079",
+   "kind": "line",
+   "text": "Some beads hop off the ferry. How many stay?"
+  },
+  {
+   "id": "line_be4edbd658",
+   "kind": "line",
+   "text": "Take the ones from the ones."
+  },
+  {
+   "id": "line_782c43ed86",
+   "kind": "line",
+   "text": "Take the tens from the tens."
+  },
+  {
+   "id": "line_e62944ab02",
+   "kind": "line",
+   "text": "Ones from ones, tens from tens."
+  },
+  {
+   "id": "line_774fcf3d1a",
+   "kind": "line",
+   "text": "Not enough ones to take away? Break a ten into ten ones."
+  },
+  {
+   "id": "line_8e23235f6a",
+   "kind": "line",
+   "text": "Look at the ones. Can you take the bottom ones from the top ones?"
+  },
+  {
+   "id": "line_efbe6671d6",
+   "kind": "line",
+   "text": "If not, break one ten into ten ones."
+  },
+  {
+   "id": "line_1100694437",
+   "kind": "line",
+   "text": "Now there is one fewer ten. Subtract each place."
+  },
+  {
+   "id": "line_12d60edea8",
+   "kind": "line",
+   "text": "Can you take those ones away? If not, break a ten."
+  },
+  {
+   "id": "line_9942f5ba6c",
+   "kind": "line",
+   "text": "Break one ten into ten ones, then remember there is one less ten."
+  },
+  {
+   "id": "line_41a762375d",
+   "kind": "line",
+   "text": "The ferry carries three or four groups at once!"
+  },
+  {
+   "id": "line_4e2d7f2d3c",
+   "kind": "line",
+   "text": "Add all the ones first."
+  },
+  {
+   "id": "line_e92c6ccc3a",
+   "kind": "line",
+   "text": "Make tens from the ones."
+  },
+  {
+   "id": "line_e297994767",
+   "kind": "line",
+   "text": "Add all the tens, including the new ones."
+  },
+  {
+   "id": "line_012e3edd98",
+   "kind": "line",
+   "text": "Add the ones column first."
+  },
+  {
+   "id": "line_44988597ae",
+   "kind": "line",
+   "text": "Ones first, make tens, then add the tens."
+  },
+  {
+   "id": "line_e17f848352",
+   "kind": "line",
+   "text": "Use a friendly number!"
+  },
+  {
+   "id": "line_1dc27bf4fa",
+   "kind": "line",
+   "text": "49 + 26: give 1 from 26 to 49."
+  },
+  {
+   "id": "line_e1da8f305c",
+   "kind": "line",
+   "text": "Now it is 50 + 25 = 75."
+  },
+  {
+   "id": "line_cdf838d583",
+   "kind": "line",
+   "text": "Same total, easier numbers."
+  },
+  {
+   "id": "line_098ceb4877",
+   "kind": "line",
+   "text": "Can you make one number a ten?"
+  },
+  {
+   "id": "line_f3f1b32007",
+   "kind": "line",
+   "text": "Move a little from one number to the other to make a ten."
+  },
+  {
+   "id": "line_7d1ceb6270",
+   "kind": "line",
+   "text": "How far is it from one number to the other?"
+  },
+  {
+   "id": "line_b2386c1a94",
+   "kind": "line",
+   "text": "Hop to the next ten."
+  },
+  {
+   "id": "line_2b08281d56",
+   "kind": "line",
+   "text": "Hop by tens."
+  },
+  {
+   "id": "line_9ea99635cf",
+   "kind": "line",
+   "text": "Add up your hops."
+  },
+  {
+   "id": "line_329e45c4b9",
+   "kind": "line",
+   "text": "Hop to the next ten first."
+  },
+  {
+   "id": "line_27501f9e15",
+   "kind": "line",
+   "text": "Counting up finds the difference."
+  },
+  {
+   "id": "line_2a73b730d1",
+   "kind": "line",
+   "text": "A big ferry with hundreds, tens and ones!"
+  },
+  {
+   "id": "line_ec479d5146",
+   "kind": "line",
+   "text": "Add the ones, and make a ten if you need to."
+  },
+  {
+   "id": "line_6b6b5a834d",
+   "kind": "line",
+   "text": "Add the tens, and make a hundred if you need to."
+  },
+  {
+   "id": "line_867617e46d",
+   "kind": "line",
+   "text": "Add the hundreds."
+  },
+  {
+   "id": "line_7d74ab953b",
+   "kind": "line",
+   "text": "Start with the ones. Did you get 10 or more?"
+  },
+  {
+   "id": "line_f41d49ab4a",
+   "kind": "line",
+   "text": "Ten tens make one hundred, just like ten ones make one ten."
+  },
+  {
+   "id": "line_1586ba6592",
+   "kind": "line",
+   "text": "Break a ten, or break a hundred, when there are not enough."
+  },
+  {
+   "id": "line_eac2272e15",
+   "kind": "line",
+   "text": "Start with the ones. Break a ten if you need to."
+  },
+  {
+   "id": "line_ad4f8a98d2",
+   "kind": "line",
+   "text": "Then the tens. Break a hundred if you need to."
+  },
+  {
+   "id": "line_075965f17d",
+   "kind": "line",
+   "text": "Then the hundreds."
+  },
+  {
+   "id": "line_ffa2e9c63f",
+   "kind": "line",
+   "text": "Start with the ones. Is the top digit big enough?"
+  },
+  {
+   "id": "line_aae4ea6e28",
+   "kind": "line",
+   "text": "Break one of the next place when a place is too small."
+  },
+  {
+   "id": "line_f24f8873b6",
+   "kind": "line",
+   "text": "Not enough tens either? Break a hundred."
+  },
+  {
+   "id": "line_01c11c7e3d",
+   "kind": "line",
+   "text": "400 − 167: no ones, no tens."
+  },
+  {
+   "id": "line_b9052b83c4",
+   "kind": "line",
+   "text": "Break a hundred into 10 tens, then a ten into 10 ones."
+  },
+  {
+   "id": "line_495ab4b9ee",
+   "kind": "line",
+   "text": "400 becomes 3 hundreds, 9 tens, 10 ones."
+  },
+  {
+   "id": "line_f4ef105928",
+   "kind": "line",
+   "text": "There are no tens to break. What can you break instead?"
+  },
+  {
+   "id": "line_49dc47d5be",
+   "kind": "line",
+   "text": "Break a hundred into tens, then a ten into ones."
+  },
+  {
+   "id": "line_5e89183fc7",
+   "kind": "line",
+   "text": "The column method for adding."
+  },
+  {
+   "id": "line_29ac253727",
+   "kind": "line",
+   "text": "Line up the places."
+  },
+  {
+   "id": "line_81ad11d1f6",
+   "kind": "line",
+   "text": "Add ones, then tens, then hundreds."
+  },
+  {
+   "id": "line_90c19c8cba",
+   "kind": "line",
+   "text": "Carry when a place makes 10 or more."
+  },
+  {
+   "id": "line_ae91db8e94",
+   "kind": "line",
+   "text": "Start with the ones column."
+  },
+  {
+   "id": "line_056d7140f5",
+   "kind": "line",
+   "text": "Line up places, add right to left, carry tens."
+  },
+  {
+   "id": "line_ca3ca8597b",
+   "kind": "line",
+   "text": "The column method for subtracting."
+  },
+  {
+   "id": "line_08bedbd04a",
+   "kind": "line",
+   "text": "Break a ten or a hundred when a place is too small."
+  },
+  {
+   "id": "line_73c4700c5f",
+   "kind": "line",
+   "text": "Is the top digit big enough?"
+  },
+  {
+   "id": "line_814d358fb0",
+   "kind": "line",
+   "text": "Line up places, subtract right to left, regroup when needed."
+  },
+  {
+   "id": "line_7adfe8a373",
+   "kind": "line",
+   "text": "About how much? Round first."
+  },
+  {
+   "id": "line_73c71c4326",
+   "kind": "line",
+   "text": "Round each number to the nearest hundred."
+  },
+  {
+   "id": "line_ea4a3b854f",
+   "kind": "line",
+   "text": "Add the rounded numbers."
+  },
+  {
+   "id": "line_e1ec0673f8",
+   "kind": "line",
+   "text": "Use it to check if an exact answer makes sense."
+  },
+  {
+   "id": "line_a15b462141",
+   "kind": "line",
+   "text": "Round each number first."
+  },
+  {
+   "id": "line_df44a0cd3c",
+   "kind": "line",
+   "text": "Rounded numbers give a quick check."
+  },
+  {
+   "id": "line_d1974d73fa",
+   "kind": "line",
+   "text": "Why does it work?"
+  },
+  {
+   "id": "line_4bfbeba10f",
+   "kind": "line",
+   "text": "Ten ones are the same as one ten."
+  },
+  {
+   "id": "line_bbca572a87",
+   "kind": "line",
+   "text": "That is why we carry a ten, or break one."
+  },
+  {
+   "id": "line_26abe2420a",
+   "kind": "line",
+   "text": "Think about what ten ones are worth."
+  },
+  {
+   "id": "line_868a260b7a",
+   "kind": "line",
+   "text": "Every carry and every break is a trade of 10 for 1."
+  },
+  {
+   "id": "line_638cd36d3a",
+   "kind": "line",
+   "text": "Can everyone find a partner?"
+  },
+  {
+   "id": "line_d765d97c79",
+   "kind": "line",
+   "text": "Put the dots in pairs."
+  },
+  {
+   "id": "line_8542fc31b6",
+   "kind": "line",
+   "text": "If none is left over, the number is even."
+  },
+  {
+   "id": "line_287ac48328",
+   "kind": "line",
+   "text": "If one is left over, it is odd."
+  },
+  {
+   "id": "line_81ad1d4927",
+   "kind": "line",
+   "text": "Make pairs. Is one left over?"
+  },
+  {
+   "id": "line_0ddd8622ff",
+   "kind": "line",
+   "text": "Even numbers split into pairs with none left."
+  },
+  {
+   "id": "line_5cd301d8a0",
+   "kind": "line",
+   "text": "Rows and rows of seeds."
+  },
+  {
+   "id": "line_a0781e304b",
+   "kind": "line",
+   "text": "An array has equal rows."
+  },
+  {
+   "id": "line_2c580cd05a",
+   "kind": "line",
+   "text": "Add the same number for each row."
+  },
+  {
+   "id": "line_753c419a7c",
+   "kind": "line",
+   "text": "3 rows of 4 is 4 + 4 + 4 = 12."
+  },
+  {
+   "id": "line_a33751f149",
+   "kind": "line",
+   "text": "How many in each row? How many rows?"
+  },
+  {
+   "id": "line_e1ea7d89c3",
+   "kind": "line",
+   "text": "Add the row amount once for each row."
+  },
+  {
+   "id": "line_29cfafa111",
+   "kind": "line",
+   "text": "Pip plants seeds in equal rows in the orchard."
+  },
+  {
+   "id": "line_e219518bc1",
+   "kind": "line",
+   "text": "3 × 4 means 3 groups of 4."
+  },
+  {
+   "id": "line_55dc5696d8",
+   "kind": "line",
+   "text": "Count all of them: 4 + 4 + 4 = 12."
+  },
+  {
+   "id": "line_714036df4b",
+   "kind": "line",
+   "text": "Equal groups is what times means."
+  },
+  {
+   "id": "line_ddaa81e360",
+   "kind": "line",
+   "text": "How many groups? How many in each?"
+  },
+  {
+   "id": "line_79b787ab14",
+   "kind": "line",
+   "text": "Add the same number again for each group."
+  },
+  {
+   "id": "line_576191ab01",
+   "kind": "line",
+   "text": "Hop along by the same amount."
+  },
+  {
+   "id": "line_4281e1f363",
+   "kind": "line",
+   "text": "Skip-count by the number in each group."
+  },
+  {
+   "id": "line_8721dfa781",
+   "kind": "line",
+   "text": "Count how many hops."
+  },
+  {
+   "id": "line_ef9a965c7f",
+   "kind": "line",
+   "text": "Where you land is the product."
+  },
+  {
+   "id": "line_c7c1efcc85",
+   "kind": "line",
+   "text": "How many hops? How big is each hop?"
+  },
+  {
+   "id": "line_f1951eba18",
+   "kind": "line",
+   "text": "Skip-count once for each group."
+  },
+  {
+   "id": "line_a435741da7",
+   "kind": "line",
+   "text": "Turn it around!"
+  },
+  {
+   "id": "line_810e132905",
+   "kind": "line",
+   "text": "3 × 6 is 3 rows of 6."
+  },
+  {
+   "id": "line_69dc7834bb",
+   "kind": "line",
+   "text": "Turn the array on its side: 6 rows of 3."
+  },
+  {
+   "id": "line_c20611d279",
+   "kind": "line",
+   "text": "Same dots, same answer."
+  },
+  {
+   "id": "line_dd29e411c1",
+   "kind": "line",
+   "text": "Does turning the array change the number of dots?"
+  },
+  {
+   "id": "line_135b3aadf7",
+   "kind": "line",
+   "text": "Swapping the numbers does not change the product."
+  },
+  {
+   "id": "line_023d7fc1ad",
+   "kind": "line",
+   "text": "Count by 2s, 5s and 10s to multiply fast."
+  },
+  {
+   "id": "line_a1a0dcc3b9",
+   "kind": "line",
+   "text": "× 2: double the number."
+  },
+  {
+   "id": "line_73b83441a2",
+   "kind": "line",
+   "text": "× 5: count by fives, or half of × 10."
+  },
+  {
+   "id": "line_0bcc42787f",
+   "kind": "line",
+   "text": "× 10: put a zero on the end, because each one becomes a ten."
+  },
+  {
+   "id": "line_d57164cbbc",
+   "kind": "line",
+   "text": "Skip-count. How many jumps?"
+  },
+  {
+   "id": "line_7d4d68d4ef",
+   "kind": "line",
+   "text": "Times 10 makes each one a ten. Times 5 is half of that."
+  },
+  {
+   "id": "line_f4f745eb83",
+   "kind": "line",
+   "text": "Zero groups and one group."
+  },
+  {
+   "id": "line_f6904588dd",
+   "kind": "line",
+   "text": "Anything times 0 is 0: groups with nothing inside."
+  },
+  {
+   "id": "line_5201c0652a",
+   "kind": "line",
+   "text": "Anything times 1 is itself: one group."
+  },
+  {
+   "id": "line_37f883af38",
+   "kind": "line",
+   "text": "How many are in each group?"
+  },
+  {
+   "id": "line_1b941e770a",
+   "kind": "line",
+   "text": "× 0 makes 0. × 1 keeps the number."
+  },
+  {
+   "id": "line_5a3b7c1231",
+   "kind": "line",
+   "text": "Double, then double again!"
+  },
+  {
+   "id": "line_f88e7a1259",
+   "kind": "line",
+   "text": "× 4 is double × 2."
+  },
+  {
+   "id": "line_a33d7f8130",
+   "kind": "line",
+   "text": "× 8 is double × 4."
+  },
+  {
+   "id": "line_655a798fff",
+   "kind": "line",
+   "text": "What is the × 2 fact? Now double it."
+  },
+  {
+   "id": "line_60cdb4f309",
+   "kind": "line",
+   "text": "Double to go from 2s to 4s, and 4s to 8s."
+  },
+  {
+   "id": "line_2851d7c370",
+   "kind": "line",
+   "text": "Threes, then double for sixes."
+  },
+  {
+   "id": "line_2660fe036d",
+   "kind": "line",
+   "text": "× 3 is three equal groups."
+  },
+  {
+   "id": "line_663b3a5c44",
+   "kind": "line",
+   "text": "× 6 is double × 3."
+  },
+  {
+   "id": "line_221ac5300f",
+   "kind": "line",
+   "text": "Find the × 3 fact first."
+  },
+  {
+   "id": "line_db88109df4",
+   "kind": "line",
+   "text": "× 6 is double the × 3 fact."
+  },
+  {
+   "id": "line_d8d29847c6",
+   "kind": "line",
+   "text": "The nines trick: ten groups take away one."
+  },
+  {
+   "id": "line_18f1fc385f",
+   "kind": "line",
+   "text": "9 × 7 = 10 × 7 − 7."
+  },
+  {
+   "id": "line_07f049ef07",
+   "kind": "line",
+   "text": "70 − 7 = 63."
+  },
+  {
+   "id": "line_1438597a36",
+   "kind": "line",
+   "text": "What is 10 groups? Now take one group away."
+  },
+  {
+   "id": "line_8e3658d27c",
+   "kind": "line",
+   "text": "9 groups is 10 groups minus one group."
+  },
+  {
+   "id": "line_c51e75fed8",
+   "kind": "line",
+   "text": "Sevens are 5 and 2."
+  },
+  {
+   "id": "line_d25b1fa384",
+   "kind": "line",
+   "text": "7 × 6 = 5 × 6 + 2 × 6."
+  },
+  {
+   "id": "line_f3d2f21271",
+   "kind": "line",
+   "text": "30 + 12 = 42."
+  },
+  {
+   "id": "line_6a5a9733f7",
+   "kind": "line",
+   "text": "Split the 7 into 5 and 2."
+  },
+  {
+   "id": "line_de43409b1e",
+   "kind": "line",
+   "text": "Use two facts you know and add them."
+  },
+  {
+   "id": "line_88151fa247",
+   "kind": "line",
+   "text": "The last few facts."
+  },
+  {
+   "id": "line_8367949ea2",
+   "kind": "line",
+   "text": "Use a fact you know nearby."
+  },
+  {
+   "id": "line_d08bc7a612",
+   "kind": "line",
+   "text": "Squares like 6 × 6 are good anchors."
+  },
+  {
+   "id": "line_b03add33c9",
+   "kind": "line",
+   "text": "7 × 8 is 7 × 7 + 7."
+  },
+  {
+   "id": "line_02594a2448",
+   "kind": "line",
+   "text": "Which fact nearby do you know?"
+  },
+  {
+   "id": "line_dfe721a5e3",
+   "kind": "line",
+   "text": "Start from a known fact and add or take away a group."
+  },
+  {
+   "id": "line_c862af60a6",
+   "kind": "line",
+   "text": "Find the missing number."
+  },
+  {
+   "id": "line_49fbb78055",
+   "kind": "line",
+   "text": "8 × ? = 48."
+  },
+  {
+   "id": "line_a4165ad412",
+   "kind": "line",
+   "text": "How many 8s make 48?"
+  },
+  {
+   "id": "line_d678f9dd56",
+   "kind": "line",
+   "text": "Count by 8s: 8, 16, 24, 32, 40, 48: six 8s."
+  },
+  {
+   "id": "line_254927e1e7",
+   "kind": "line",
+   "text": "How many groups of that number make the total?"
+  },
+  {
+   "id": "line_169f1a6957",
+   "kind": "line",
+   "text": "Think of multiplication backwards."
+  },
+  {
+   "id": "line_9fdb39ce44",
+   "kind": "line",
+   "text": "Times tens!"
+  },
+  {
+   "id": "line_ce940c1e2b",
+   "kind": "line",
+   "text": "60 is 6 tens."
+  },
+  {
+   "id": "line_dbbb6a0450",
+   "kind": "line",
+   "text": "4 × 6 tens = 24 tens."
+  },
+  {
+   "id": "line_870b001dae",
+   "kind": "line",
+   "text": "24 tens is 240."
+  },
+  {
+   "id": "line_a1e7e174e6",
+   "kind": "line",
+   "text": "How many tens is that number?"
+  },
+  {
+   "id": "line_f3b1863304",
+   "kind": "line",
+   "text": "Multiply the tens, then name them as tens."
+  },
+  {
+   "id": "line_ad1b68b4d3",
+   "kind": "line",
+   "text": "Patterns in the times table."
+  },
+  {
+   "id": "line_f2a7006d99",
+   "kind": "line",
+   "text": "Times an even number is even."
+  },
+  {
+   "id": "line_3690737936",
+   "kind": "line",
+   "text": "The 9s digits add up to 9."
+  },
+  {
+   "id": "line_7ed736cd36",
+   "kind": "line",
+   "text": "Patterns help you check answers."
+  },
+  {
+   "id": "line_32dbdd537a",
+   "kind": "line",
+   "text": "Look for a pattern you know."
+  },
+  {
+   "id": "line_30282e3248",
+   "kind": "line",
+   "text": "Odd × odd is odd; anything × even is even."
+  },
+  {
+   "id": "line_49c79c4f30",
+   "kind": "line",
+   "text": "All the facts, from memory."
+  },
+  {
+   "id": "line_78a35051e6",
+   "kind": "line",
+   "text": "Use your strategies to work out any fact."
+  },
+  {
+   "id": "line_be658f1e46",
+   "kind": "line",
+   "text": "Practice a few each day."
+  },
+  {
+   "id": "line_a138e54bee",
+   "kind": "line",
+   "text": "Soon they come quickly."
+  },
+  {
+   "id": "line_062c716e2b",
+   "kind": "line",
+   "text": "Which strategy fits this fact?"
+  },
+  {
+   "id": "line_6f10526089",
+   "kind": "line",
+   "text": "Every fact can be built from one you know."
+  },
+  {
+   "id": "line_54e9f6b99d",
+   "kind": "line",
+   "text": "Things join, or go away."
+  },
+  {
+   "id": "line_5f79c2af1b",
+   "kind": "line",
+   "text": "Draw the story as a bar."
+  },
+  {
+   "id": "line_05c763529b",
+   "kind": "line",
+   "text": "Is the start, the change or the end missing?"
+  },
+  {
+   "id": "line_b7afcb5162",
+   "kind": "line",
+   "text": "Add or subtract to find it."
+  },
+  {
+   "id": "line_2325759594",
+   "kind": "line",
+   "text": "Draw the story. What is missing?"
+  },
+  {
+   "id": "line_c0e4370d54",
+   "kind": "line",
+   "text": "Find the missing part of the story, then choose the operation."
+  },
+  {
+   "id": "line_9d7ab8a7f4",
+   "kind": "line",
+   "text": "Two parts make a whole."
+  },
+  {
+   "id": "line_9a06127e9b",
+   "kind": "line",
+   "text": "Draw the whole bar."
+  },
+  {
+   "id": "line_e2a03960b0",
+   "kind": "line",
+   "text": "Split it into the two parts."
+  },
+  {
+   "id": "line_8cb4116147",
+   "kind": "line",
+   "text": "If a part is missing, subtract. If the whole is missing, add."
+  },
+  {
+   "id": "line_685e388cd5",
+   "kind": "line",
+   "text": "Is a part missing, or the whole?"
+  },
+  {
+   "id": "line_f7fa6d7878",
+   "kind": "line",
+   "text": "Parts add to the whole."
+  },
+  {
+   "id": "line_38d61221f7",
+   "kind": "line",
+   "text": "Who has more, and how many more?"
+  },
+  {
+   "id": "line_476058df67",
+   "kind": "line",
+   "text": "Draw two bars."
+  },
+  {
+   "id": "line_1465213103",
+   "kind": "line",
+   "text": "The difference is the extra piece."
+  },
+  {
+   "id": "line_829d7d6bc7",
+   "kind": "line",
+   "text": "Subtract to find it."
+  },
+  {
+   "id": "line_257f881539",
+   "kind": "line",
+   "text": "Draw two bars. How long is the extra piece?"
+  },
+  {
+   "id": "line_21d0e5dd71",
+   "kind": "line",
+   "text": "\"How many more\" means find the difference."
+  },
+  {
+   "id": "line_d158194cfa",
+   "kind": "line",
+   "text": "Equal groups in a story."
+  },
+  {
+   "id": "line_166eb1cc5f",
+   "kind": "line",
+   "text": "How many groups?"
+  },
+  {
+   "id": "line_1ef4f06ec5",
+   "kind": "line",
+   "text": "How many in each group?"
+  },
+  {
+   "id": "line_33cc1fb583",
+   "kind": "line",
+   "text": "Multiply."
+  },
+  {
+   "id": "line_93d8bc9fd7",
+   "kind": "line",
+   "text": "Groups × in each group = total."
+  },
+  {
+   "id": "line_b7f8b646c3",
+   "kind": "line",
+   "text": "A story with two steps."
+  },
+  {
+   "id": "line_71edda7c8b",
+   "kind": "line",
+   "text": "Find what happens first."
+  },
+  {
+   "id": "line_b51b5bb6c8",
+   "kind": "line",
+   "text": "Then find what happens next."
+  },
+  {
+   "id": "line_ef214ed1a2",
+   "kind": "line",
+   "text": "Use the first answer in the second step."
+  },
+  {
+   "id": "line_8415c5a266",
+   "kind": "line",
+   "text": "What happens first in the story?"
+  },
+  {
+   "id": "line_f76aced559",
+   "kind": "line",
+   "text": "Do step one, then use its answer for step two."
+  },
+  {
+   "id": "line_63b6a3c498",
+   "kind": "line",
+   "text": "Pip's puzzle: find 100 − 37 without breaking a ten!"
+  },
+  {
+   "id": "line_fa58c3c3e9",
+   "kind": "line",
+   "text": "Take every digit from 9, except the last one."
+  },
+  {
+   "id": "line_72c3a2f14d",
+   "kind": "line",
+   "text": "Take the last digit from 10."
+  },
+  {
+   "id": "line_f72dd1b2c1",
+   "kind": "line",
+   "text": "100 − 37: 9 − 3 = 6, 10 − 7 = 3, so the answer is 63."
+  },
+  {
+   "id": "line_272e9f510c",
+   "kind": "line",
+   "text": "It works because 100 is 99 + 1, and 99 never needs regrouping."
+  },
+  {
+   "id": "line_469714d404",
+   "kind": "line",
+   "text": "All from 9, and the last from 10."
+  },
+  {
+   "id": "line_b7e11d333b",
+   "kind": "line",
+   "text": "100 is 99 + 1. Subtract from the 9s, then add the 1 to the last place."
+  },
+  {
+   "id": "line_045cb87178",
+   "kind": "line",
+   "text": "This trick appears in the 1965 book Vedic Mathematics by Bharati Krishna Tirtha. Historians note it is not found in the ancient Vedas themselves. We teach it because the math is sound and it is useful."
+  },
+  {
+   "id": "line_abec1a1200",
+   "kind": "line",
+   "text": "You counted hundreds, tens and ones!"
+  },
+  {
+   "id": "line_8f117df630",
+   "kind": "line",
+   "text": "You found the right house for that digit!"
+  },
+  {
+   "id": "line_25e85d2bff",
+   "kind": "line",
+   "text": "You compared the biggest place first!"
+  },
+  {
+   "id": "line_74f6afdf9b",
+   "kind": "line",
+   "text": "You changed just one place!"
+  },
+  {
+   "id": "line_381a6ed765",
+   "kind": "line",
+   "text": "Ones with ones, tens with tens!"
+  },
+  {
+   "id": "line_3ccce1dd79",
+   "kind": "line",
+   "text": "You made a ten!"
+  },
+  {
+   "id": "line_71e03a4bf8",
+   "kind": "line",
+   "text": "Ones from ones, tens from tens!"
+  },
+  {
+   "id": "line_056e63ea74",
+   "kind": "line",
+   "text": "You broke a ten!"
+  },
+  {
+   "id": "line_fd0e956eb8",
+   "kind": "line",
+   "text": "You regrouped like a pro!"
+  },
+  {
+   "id": "line_276ad4dc8b",
+   "kind": "line",
+   "text": "You broke a ten when you needed to!"
+  },
+  {
+   "id": "line_e826f979ce",
+   "kind": "line",
+   "text": "Equal groups, counted right!"
+  },
+  {
+   "id": "line_d7b811013f",
+   "kind": "line",
+   "text": "Nice skip-counting!"
+  },
+  {
+   "id": "line_bb9bdae215",
+   "kind": "line",
+   "text": "All from 9, the last from 10!"
+  },
+  {
+   "id": "line_8297bb17c6",
+   "kind": "line",
+   "text": "Got it!"
+  },
+  {
+   "id": "line_f6ef475609",
+   "kind": "line",
+   "text": "Thanks! Let's keep exploring."
+  },
+  {
+   "id": "line_9cc39b8cbe",
+   "kind": "line",
+   "text": "You fixed it."
+  },
+  {
+   "id": "line_624fb210c9",
+   "kind": "line",
+   "text": "Try again."
+  },
+  {
+   "id": "line_840c06c9a9",
+   "kind": "line",
+   "text": "Let's look at how it works together. The answer is"
+  },
+  {
+   "id": "line_c1540ffd08",
+   "kind": "line",
+   "text": "Let’s solve one together:"
+  },
+  {
+   "id": "line_543ce58e7a",
+   "kind": "line",
+   "text": "That’s how it works! Now it’s your turn."
+  },
+  {
+   "id": "line_e237f70e9f",
+   "kind": "line",
+   "text": "Nice thinking!"
+  },
+  {
+   "id": "piece_ad2908d875",
+   "kind": "piece",
+   "text": "tens and"
+  },
+  {
+   "id": "piece_1bf4839102",
+   "kind": "piece",
+   "text": "ones. How many in all?"
+  },
+  {
+   "id": "piece_957ae02c02",
+   "kind": "piece",
+   "text": "ones make"
+  },
+  {
+   "id": "piece_cffa50a32c",
+   "kind": "piece",
+   "text": "and"
+  },
+  {
+   "id": "piece_c5cecf01e5",
+   "kind": "piece",
+   "text": "ones."
+  },
+  {
+   "id": "piece_30792f9db5",
+   "kind": "piece",
+   "text": "That is"
+  },
+  {
+   "id": "piece_232fa7032e",
+   "kind": "piece",
+   "text": "Together:"
+  },
+  {
+   "id": "piece_2d35d32775",
+   "kind": "piece",
+   "text": "hundreds and"
+  },
+  {
+   "id": "piece_f10c7f7cbe",
+   "kind": "piece",
+   "text": "tens. What number is that?"
+  },
+  {
+   "id": "piece_9ce9218f60",
+   "kind": "piece",
+   "text": "tens make"
+  },
+  {
+   "id": "piece_ddfdf0e860",
+   "kind": "piece",
+   "text": "tens."
+  },
+  {
+   "id": "piece_b769ae73ba",
+   "kind": "piece",
+   "text": "What number do the blocks show?"
+  },
+  {
+   "id": "piece_c318878c4e",
+   "kind": "piece",
+   "text": "hundreds is"
+  },
+  {
+   "id": "piece_d51b1eb28f",
+   "kind": "piece",
+   "text": "tens is"
+  },
+  {
+   "id": "piece_fa328e0405",
+   "kind": "piece",
+   "text": "ones is"
+  },
+  {
+   "id": "piece_d97d1ee339",
+   "kind": "piece",
+   "text": "Show"
+  },
+  {
+   "id": "piece_bb9366ee99",
+   "kind": "piece",
+   "text": "on the soroban."
+  },
+  {
+   "id": "piece_ccc52f5cb3",
+   "kind": "piece",
+   "text": "hundreds"
+  },
+  {
+   "id": "piece_92bc05122b",
+   "kind": "piece",
+   "text": "tens"
+  },
+  {
+   "id": "piece_c7d08f6c98",
+   "kind": "piece",
+   "text": "ones"
+  },
+  {
+   "id": "piece_da1e86f947",
+   "kind": "piece",
+   "text": "What is the value of the"
+  },
+  {
+   "id": "piece_af10ef20dd",
+   "kind": "piece",
+   "text": "in"
+  },
+  {
+   "id": "piece_93ef0dd827",
+   "kind": "piece",
+   "text": "The"
+  },
+  {
+   "id": "piece_d599ee46ed",
+   "kind": "piece",
+   "text": "is in the ones place."
+  },
+  {
+   "id": "piece_31720c4dcb",
+   "kind": "piece",
+   "text": "is in the tens place."
+  },
+  {
+   "id": "piece_7abf8a2278",
+   "kind": "piece",
+   "text": "is in the hundreds place."
+  },
+  {
+   "id": "piece_6a8437dd00",
+   "kind": "piece",
+   "text": "plus"
+  },
+  {
+   "id": "piece_7b7e5bcbd9",
+   "kind": "piece",
+   "text": "equals what?"
+  },
+  {
+   "id": "piece_706083379f",
+   "kind": "piece",
+   "text": "Hundreds:"
+  },
+  {
+   "id": "piece_386af101bd",
+   "kind": "piece",
+   "text": "tens:"
+  },
+  {
+   "id": "piece_169a2d9fe7",
+   "kind": "piece",
+   "text": "ones:"
+  },
+  {
+   "id": "piece_2cb57b92ea",
+   "kind": "piece",
+   "text": "Type the number:"
+  },
+  {
+   "id": "piece_b47f363e2b",
+   "kind": "piece",
+   "text": "is"
+  },
+  {
+   "id": "piece_b7b0e53d33",
+   "kind": "piece",
+   "text": "Count by"
+  },
+  {
+   "id": "piece_631e0ef1d5",
+   "kind": "piece",
+   "text": "Each jump adds"
+  },
+  {
+   "id": "piece_80b2f559a1",
+   "kind": "piece",
+   "text": "equals"
+  },
+  {
+   "id": "piece_0c974f75b8",
+   "kind": "piece",
+   "text": "ones. What number is that?"
+  },
+  {
+   "id": "piece_5eed505815",
+   "kind": "piece",
+   "text": "There are no tens, so the tens place holds a"
+  },
+  {
+   "id": "piece_b268e63276",
+   "kind": "piece",
+   "text": "is how many tens and"
+  },
+  {
+   "id": "piece_ddb2e5cabb",
+   "kind": "piece",
+   "text": "ones?"
+  },
+  {
+   "id": "piece_f6f39fbf67",
+   "kind": "piece",
+   "text": "has"
+  },
+  {
+   "id": "piece_3633746b06",
+   "kind": "piece",
+   "text": "Each"
+  },
+  {
+   "id": "piece_3c05a92d92",
+   "kind": "piece",
+   "text": "tens, so that is"
+  },
+  {
+   "id": "piece_a605c742fc",
+   "kind": "piece",
+   "text": "Which sign makes it true?"
+  },
+  {
+   "id": "piece_4cf9ba2891",
+   "kind": "piece",
+   "text": "Compare hundreds first, then tens, then ones."
+  },
+  {
+   "id": "piece_4fd9ee075d",
+   "kind": "piece",
+   "text": "is greater than"
+  },
+  {
+   "id": "piece_04ba37a0ef",
+   "kind": "piece",
+   "text": "is less than"
+  },
+  {
+   "id": "piece_029964e781",
+   "kind": "piece",
+   "text": "Type the greater number:"
+  },
+  {
+   "id": "piece_1758356db2",
+   "kind": "piece",
+   "text": "or"
+  },
+  {
+   "id": "piece_b332745168",
+   "kind": "piece",
+   "text": "What number is at the arrow?"
+  },
+  {
+   "id": "piece_53f363c9b1",
+   "kind": "piece",
+   "text": "The line starts at"
+  },
+  {
+   "id": "piece_8cc76f81ba",
+   "kind": "piece",
+   "text": "and each jump is"
+  },
+  {
+   "id": "piece_95709fb5f2",
+   "kind": "piece",
+   "text": "jumps of"
+  },
+  {
+   "id": "piece_f9c07b5f68",
+   "kind": "piece",
+   "text": "more than"
+  },
+  {
+   "id": "piece_5a6646b62b",
+   "kind": "piece",
+   "text": "is?"
+  },
+  {
+   "id": "piece_b48c4ae9e6",
+   "kind": "piece",
+   "text": "Only the tens digit changes."
+  },
+  {
+   "id": "piece_6bb2aa987a",
+   "kind": "piece",
+   "text": "less than"
+  },
+  {
+   "id": "piece_33dcfa4855",
+   "kind": "piece",
+   "text": "Only the hundreds digit changes."
+  },
+  {
+   "id": "piece_ec7b598335",
+   "kind": "piece",
+   "text": "Round"
+  },
+  {
+   "id": "piece_2c45535f7a",
+   "kind": "piece",
+   "text": "to the nearest"
+  },
+  {
+   "id": "piece_dc57580fc0",
+   "kind": "piece",
+   "text": "It is between"
+  },
+  {
+   "id": "piece_9d0dead2fa",
+   "kind": "piece",
+   "text": "The ones digit is"
+  },
+  {
+   "id": "piece_77a7b4565f",
+   "kind": "piece",
+   "text": "so it is closer to"
+  },
+  {
+   "id": "piece_b17f03184a",
+   "kind": "piece",
+   "text": "Look at the tens:"
+  },
+  {
+   "id": "piece_cdd4e7cd3d",
+   "kind": "piece",
+   "text": "So it is closer to"
+  },
+  {
+   "id": "piece_59b6536256",
+   "kind": "piece",
+   "text": "minus"
+  },
+  {
+   "id": "piece_240e1ac68a",
+   "kind": "piece",
+   "text": "Start at"
+  },
+  {
+   "id": "piece_9eaa54a6ad",
+   "kind": "piece",
+   "text": "and count back"
+  },
+  {
+   "id": "piece_d15c3e9d8f",
+   "kind": "piece",
+   "text": "and count on"
+  },
+  {
+   "id": "piece_56806a1ffd",
+   "kind": "piece",
+   "text": "Take"
+  },
+  {
+   "id": "piece_48022c60b4",
+   "kind": "piece",
+   "text": "from the"
+  },
+  {
+   "id": "piece_7939f35b99",
+   "kind": "piece",
+   "text": "to make"
+  },
+  {
+   "id": "piece_f404d09646",
+   "kind": "piece",
+   "text": "plus ? equals"
+  },
+  {
+   "id": "piece_9500da3685",
+   "kind": "piece",
+   "text": "What do you add to"
+  },
+  {
+   "id": "piece_751c68a347",
+   "kind": "piece",
+   "text": "If"
+  },
+  {
+   "id": "piece_6f8f8e9f76",
+   "kind": "piece",
+   "text": "then"
+  },
+  {
+   "id": "piece_b09ada1e78",
+   "kind": "piece",
+   "text": "Adding and subtracting undo each other."
+  },
+  {
+   "id": "piece_0b23d11286",
+   "kind": "piece",
+   "text": "make a"
+  },
+  {
+   "id": "piece_bba6c5e181",
+   "kind": "piece",
+   "text": "Break a"
+  },
+  {
+   "id": "piece_d38cde41c0",
+   "kind": "piece",
+   "text": "ones become"
+  },
+  {
+   "id": "piece_18de6d110a",
+   "kind": "piece",
+   "text": "Ones:"
+  },
+  {
+   "id": "piece_2d6bd961d3",
+   "kind": "piece",
+   "text": "Tens:"
+  },
+  {
+   "id": "piece_a94431ee22",
+   "kind": "piece",
+   "text": "Make"
+  },
+  {
+   "id": "piece_392cea3298",
+   "kind": "piece",
+   "text": "a friendly number:"
+  },
+  {
+   "id": "piece_0b1e95cfd9",
+   "kind": "piece",
+   "text": "from"
+  },
+  {
+   "id": "piece_8c29af9e2a",
+   "kind": "piece",
+   "text": "is the same as which?"
+  },
+  {
+   "id": "piece_fbefae1e96",
+   "kind": "piece",
+   "text": "Give"
+  },
+  {
+   "id": "piece_4374aaee24",
+   "kind": "piece",
+   "text": "to"
+  },
+  {
+   "id": "piece_3da61f436d",
+   "kind": "piece",
+   "text": "How far is it from"
+  },
+  {
+   "id": "piece_bd111d932e",
+   "kind": "piece",
+   "text": "Hop from"
+  },
+  {
+   "id": "piece_47192c3d6b",
+   "kind": "piece",
+   "text": "hundreds:"
+  },
+  {
+   "id": "piece_9dc6ac4a3d",
+   "kind": "piece",
+   "text": "tens become"
+  },
+  {
+   "id": "piece_65f324ef3e",
+   "kind": "piece",
+   "text": "Round each number to the nearest"
+  },
+  {
+   "id": "piece_b86ffb3c00",
+   "kind": "piece",
+   "text": "then add. About how much is"
+  },
+  {
+   "id": "piece_26075183f5",
+   "kind": "piece",
+   "text": "rounds to"
+  },
+  {
+   "id": "piece_a1a61548d5",
+   "kind": "piece",
+   "text": "The exact answer"
+  },
+  {
+   "id": "piece_36998586f3",
+   "kind": "piece",
+   "text": "is close to"
+  },
+  {
+   "id": "piece_28941339ca",
+   "kind": "piece",
+   "text": "so it makes sense."
+  },
+  {
+   "id": "piece_aef36502d6",
+   "kind": "piece",
+   "text": "In"
+  },
+  {
+   "id": "piece_5e639b90f3",
+   "kind": "piece",
+   "text": "the ones make"
+  },
+  {
+   "id": "piece_8518f66537",
+   "kind": "piece",
+   "text": "Why do we write a"
+  },
+  {
+   "id": "piece_2d764c1e5a",
+   "kind": "piece",
+   "text": "in the tens?"
+  },
+  {
+   "id": "piece_618f1aeb61",
+   "kind": "piece",
+   "text": "ones are the same amount as"
+  },
+  {
+   "id": "piece_c230f8946d",
+   "kind": "piece",
+   "text": "ones equals"
+  },
+  {
+   "id": "piece_e59c5b9040",
+   "kind": "piece",
+   "text": "why do we break a"
+  },
+  {
+   "id": "piece_2b2259bf4b",
+   "kind": "piece",
+   "text": "We need more ones, so we trade"
+  },
+  {
+   "id": "piece_43eef9a62a",
+   "kind": "piece",
+   "text": "for"
+  },
+  {
+   "id": "piece_c0a6e98aed",
+   "kind": "piece",
+   "text": "How many tens do you carry?"
+  },
+  {
+   "id": "piece_9fb4116e8c",
+   "kind": "piece",
+   "text": "Carry"
+  },
+  {
+   "id": "piece_f3dbcc82b4",
+   "kind": "piece",
+   "text": "children make pairs. How many pairs?"
+  },
+  {
+   "id": "piece_b8cbf22d78",
+   "kind": "piece",
+   "text": "is even: everyone has a partner."
+  },
+  {
+   "id": "piece_2279b2441d",
+   "kind": "piece",
+   "text": "divided by"
+  },
+  {
+   "id": "piece_079bc3b6a5",
+   "kind": "piece",
+   "text": "Is"
+  },
+  {
+   "id": "piece_05ec0cc2b4",
+   "kind": "piece",
+   "text": "odd or even?"
+  },
+  {
+   "id": "piece_c94c4a5aed",
+   "kind": "piece",
+   "text": "dot is left over, so it is odd."
+  },
+  {
+   "id": "piece_751f4ce000",
+   "kind": "piece",
+   "text": "Every dot has a partner, so it is even."
+  },
+  {
+   "id": "piece_a247bd6931",
+   "kind": "piece",
+   "text": "rows of"
+  },
+  {
+   "id": "piece_26d2e4f29f",
+   "kind": "piece",
+   "text": "How many dots?"
+  },
+  {
+   "id": "piece_ff797988c3",
+   "kind": "piece",
+   "text": "groups of"
+  },
+  {
+   "id": "piece_5ed7de41cc",
+   "kind": "piece",
+   "text": "How many in all?"
+  },
+  {
+   "id": "piece_7196b5875f",
+   "kind": "piece",
+   "text": "times"
+  },
+  {
+   "id": "piece_6150cff9d7",
+   "kind": "piece",
+   "text": "means"
+  },
+  {
+   "id": "piece_07809bb35e",
+   "kind": "piece",
+   "text": "Skip-count by"
+  },
+  {
+   "id": "piece_b9d17e0caf",
+   "kind": "piece",
+   "text": "times. Where do you land?"
+  },
+  {
+   "id": "piece_366dff443c",
+   "kind": "piece",
+   "text": "Count:"
+  },
+  {
+   "id": "piece_26c0ca793e",
+   "kind": "piece",
+   "text": "So"
+  },
+  {
+   "id": "piece_06b7f0bdb0",
+   "kind": "piece",
+   "text": "Turn the array on its side: same dots."
+  },
+  {
+   "id": "piece_11a572aeca",
+   "kind": "piece",
+   "text": "times."
+  },
+  {
+   "id": "piece_7f94468af7",
+   "kind": "piece",
+   "text": "group of"
+  },
+  {
+   "id": "piece_509aa67465",
+   "kind": "piece",
+   "text": "Groups with nothing in them make"
+  },
+  {
+   "id": "piece_ea127dce49",
+   "kind": "piece",
+   "text": "Take away"
+  },
+  {
+   "id": "piece_fc8230b411",
+   "kind": "piece",
+   "text": "Split"
+  },
+  {
+   "id": "piece_a379c85f8c",
+   "kind": "piece",
+   "text": "into"
+  },
+  {
+   "id": "piece_12a9c87abd",
+   "kind": "piece",
+   "text": "times ? equals"
+  },
+  {
+   "id": "piece_582573b598",
+   "kind": "piece",
+   "text": "How many groups of"
+  },
+  {
+   "id": "piece_5821eb27d7",
+   "kind": "piece",
+   "text": "make"
+  },
+  {
+   "id": "piece_74386f690d",
+   "kind": "piece",
+   "text": "so ? equals"
+  },
+  {
+   "id": "piece_389ec857a5",
+   "kind": "piece",
+   "text": "tens equals"
+  },
+  {
+   "id": "piece_b6abefb0eb",
+   "kind": "piece",
+   "text": "In the"
+  },
+  {
+   "id": "piece_c3ee137d4f",
+   "kind": "piece",
+   "text": "table"
+  },
+  {
+   "id": "piece_96f3cf07c8",
+   "kind": "piece",
+   "text": "Add its digits. What do you get?"
+  },
+  {
+   "id": "piece_4a0cd820ab",
+   "kind": "piece",
+   "text": "The digits of"
+  },
+  {
+   "id": "piece_8fad50e11d",
+   "kind": "piece",
+   "text": "facts up to"
+  },
+  {
+   "id": "piece_4251b56438",
+   "kind": "piece",
+   "text": "add to"
+  },
+  {
+   "id": "piece_3b1e23d2b4",
+   "kind": "piece",
+   "text": "Times an even number is always even."
+  },
+  {
+   "id": "piece_d159a63734",
+   "kind": "piece",
+   "text": "Odd times odd is odd."
+  },
+  {
+   "id": "piece_85d72cb875",
+   "kind": "piece",
+   "text": "had"
+  },
+  {
+   "id": "piece_2739bb260c",
+   "kind": "piece",
+   "text": "found"
+  },
+  {
+   "id": "piece_f1a86f5993",
+   "kind": "piece",
+   "text": "more. How many"
+  },
+  {
+   "id": "piece_344bed2f03",
+   "kind": "piece",
+   "text": "now?"
+  },
+  {
+   "id": "piece_952f375412",
+   "kind": "piece",
+   "text": "Start"
+  },
+  {
+   "id": "piece_58d1bbce29",
+   "kind": "piece",
+   "text": "add"
+  },
+  {
+   "id": "piece_6292ad4381",
+   "kind": "piece",
+   "text": "and gave away"
+  },
+  {
+   "id": "piece_1c094b01dd",
+   "kind": "piece",
+   "text": "How many are left?"
+  },
+  {
+   "id": "piece_66acf4aeec",
+   "kind": "piece",
+   "text": "take away"
+  },
+  {
+   "id": "piece_fd92a2da3e",
+   "kind": "piece",
+   "text": "then found some more. Now there are"
+  },
+  {
+   "id": "piece_bf37cc4cf8",
+   "kind": "piece",
+   "text": "How many more did"
+  },
+  {
+   "id": "piece_ed17381300",
+   "kind": "piece",
+   "text": "find?"
+  },
+  {
+   "id": "piece_542531307d",
+   "kind": "piece",
+   "text": "The whole is"
+  },
+  {
+   "id": "piece_b359535013",
+   "kind": "piece",
+   "text": "part is"
+  },
+  {
+   "id": "piece_d795f186ae",
+   "kind": "piece",
+   "text": "There are"
+  },
+  {
+   "id": "piece_6918b89eae",
+   "kind": "piece",
+   "text": "are red and the rest are blue. How many are blue?"
+  },
+  {
+   "id": "piece_cd4d9237b0",
+   "kind": "piece",
+   "text": "A box has"
+  },
+  {
+   "id": "piece_78988010b8",
+   "kind": "piece",
+   "text": "red"
+  },
+  {
+   "id": "piece_4c9a82ce72",
+   "kind": "piece",
+   "text": "blue"
+  },
+  {
+   "id": "piece_a9cfad3f27",
+   "kind": "piece",
+   "text": "Both parts make the whole."
+  },
+  {
+   "id": "piece_54119caeb9",
+   "kind": "piece",
+   "text": "How many more does"
+  },
+  {
+   "id": "piece_6744f80dc5",
+   "kind": "piece",
+   "text": "have?"
+  },
+  {
+   "id": "piece_619848a8f7",
+   "kind": "piece",
+   "text": "Compare: find the difference."
+  },
+  {
+   "id": "piece_06873dbd32",
+   "kind": "piece",
+   "text": "boxes with"
+  },
+  {
+   "id": "piece_c981d2230b",
+   "kind": "piece",
+   "text": "in each. How many"
+  },
+  {
+   "id": "piece_c3c8d43d3f",
+   "kind": "piece",
+   "text": "in all?"
+  },
+  {
+   "id": "piece_6950d15ed7",
+   "kind": "piece",
+   "text": "rows with"
+  },
+  {
+   "id": "piece_2c767f2b04",
+   "kind": "piece",
+   "text": "baskets with"
+  },
+  {
+   "id": "piece_ebc5686893",
+   "kind": "piece",
+   "text": "bags with"
+  },
+  {
+   "id": "piece_816ade6559",
+   "kind": "piece",
+   "text": "got"
+  },
+  {
+   "id": "piece_cc9a3c33f4",
+   "kind": "piece",
+   "text": "more, then gave"
+  },
+  {
+   "id": "piece_10eff9e611",
+   "kind": "piece",
+   "text": "to a friend. How many now?"
+  },
+  {
+   "id": "piece_dc416e1088",
+   "kind": "piece",
+   "text": "Step"
+  },
+  {
+   "id": "name_0f752f56d5",
+   "kind": "name",
+   "text": "Ava"
+  },
+  {
+   "id": "name_53a846ed83",
+   "kind": "name",
+   "text": "Kofi"
+  },
+  {
+   "id": "name_adaa5a858e",
+   "kind": "name",
+   "text": "Mei"
+  },
+  {
+   "id": "name_1b47e87d02",
+   "kind": "name",
+   "text": "Diego"
+  },
+  {
+   "id": "name_00c7c65657",
+   "kind": "name",
+   "text": "Amara"
+  },
+  {
+   "id": "name_ead3dbb089",
+   "kind": "name",
+   "text": "Liam"
+  },
+  {
+   "id": "name_7c34c0e6da",
+   "kind": "name",
+   "text": "Priya"
+  },
+  {
+   "id": "name_2bbb114689",
+   "kind": "name",
+   "text": "Noah"
+  },
+  {
+   "id": "name_3e08adebe5",
+   "kind": "name",
+   "text": "Zara"
+  },
+  {
+   "id": "name_e1ae45707f",
+   "kind": "name",
+   "text": "Mateo"
+  },
+  {
+   "id": "name_abc5608c87",
+   "kind": "name",
+   "text": "Hana"
+  },
+  {
+   "id": "name_76cc1929b8",
+   "kind": "name",
+   "text": "Elijah"
+  },
+  {
+   "id": "name_dc81691d3f",
+   "kind": "name",
+   "text": "Sofia"
+  },
+  {
+   "id": "name_3a2e072910",
+   "kind": "name",
+   "text": "Kai"
+  },
+  {
+   "id": "name_89dd90f201",
+   "kind": "name",
+   "text": "Nia"
+  },
+  {
+   "id": "name_b109762fd8",
+   "kind": "name",
+   "text": "Omar"
+  },
+  {
+   "id": "thing_7989c03eaf",
+   "kind": "thing",
+   "text": "beads"
+  },
+  {
+   "id": "thing_ebbc5f564b",
+   "kind": "thing",
+   "text": "stickers"
+  },
+  {
+   "id": "thing_71c29cd5b5",
+   "kind": "thing",
+   "text": "shells"
+  },
+  {
+   "id": "thing_cab8708c01",
+   "kind": "thing",
+   "text": "marbles"
+  },
+  {
+   "id": "thing_34aefa8bee",
+   "kind": "thing",
+   "text": "stamps"
+  },
+  {
+   "id": "thing_841117513f",
+   "kind": "thing",
+   "text": "leaves"
+  },
+  {
+   "id": "thing_c8d3756e45",
+   "kind": "thing",
+   "text": "cards"
+  },
+  {
+   "id": "thing_ebce5c68af",
+   "kind": "thing",
+   "text": "acorns"
+  },
+  {
+   "id": "num_aa8c413305",
+   "kind": "num",
+   "text": "zero"
+  },
+  {
+   "id": "numEnd_8d4b79e3b4",
+   "kind": "numEnd",
+   "text": "zero."
+  },
+  {
+   "id": "num_fe05bcdcdc",
+   "kind": "num",
+   "text": "one"
+  },
+  {
+   "id": "numEnd_70e3918783",
+   "kind": "numEnd",
+   "text": "one."
+  },
+  {
+   "id": "num_ad782ecdac",
+   "kind": "num",
+   "text": "two"
+  },
+  {
+   "id": "numEnd_c30ed1c123",
+   "kind": "numEnd",
+   "text": "two."
+  },
+  {
+   "id": "num_b802f38430",
+   "kind": "num",
+   "text": "three"
+  },
+  {
+   "id": "numEnd_0bf163b45d",
+   "kind": "numEnd",
+   "text": "three."
+  },
+  {
+   "id": "num_9f8f7eec5d",
+   "kind": "num",
+   "text": "four"
+  },
+  {
+   "id": "numEnd_45246ad0fe",
+   "kind": "numEnd",
+   "text": "four."
+  },
+  {
+   "id": "num_4db2c1df46",
+   "kind": "num",
+   "text": "five"
+  },
+  {
+   "id": "numEnd_77cc7ba2ed",
+   "kind": "numEnd",
+   "text": "five."
+  },
+  {
+   "id": "num_bec9703f7a",
+   "kind": "num",
+   "text": "six"
+  },
+  {
+   "id": "numEnd_4c1115dd88",
+   "kind": "numEnd",
+   "text": "six."
+  },
+  {
+   "id": "num_a00bbe560e",
+   "kind": "num",
+   "text": "seven"
+  },
+  {
+   "id": "numEnd_5757b9fbb3",
+   "kind": "numEnd",
+   "text": "seven."
+  },
+  {
+   "id": "num_d479fa0ef9",
+   "kind": "num",
+   "text": "eight"
+  },
+  {
+   "id": "numEnd_79e649d103",
+   "kind": "numEnd",
+   "text": "eight."
+  },
+  {
+   "id": "num_b4ddce182e",
+   "kind": "num",
+   "text": "nine"
+  },
+  {
+   "id": "numEnd_922bef2f48",
+   "kind": "numEnd",
+   "text": "nine."
+  },
+  {
+   "id": "num_dd35624491",
+   "kind": "num",
+   "text": "ten"
+  },
+  {
+   "id": "numEnd_4853a148c6",
+   "kind": "numEnd",
+   "text": "ten."
+  },
+  {
+   "id": "num_cc5a0c5067",
+   "kind": "num",
+   "text": "eleven"
+  },
+  {
+   "id": "numEnd_34f9e3308a",
+   "kind": "numEnd",
+   "text": "eleven."
+  },
+  {
+   "id": "num_b521f9394f",
+   "kind": "num",
+   "text": "twelve"
+  },
+  {
+   "id": "numEnd_bc39358d4a",
+   "kind": "numEnd",
+   "text": "twelve."
+  },
+  {
+   "id": "num_c24f5cff02",
+   "kind": "num",
+   "text": "thirteen"
+  },
+  {
+   "id": "numEnd_ea3e9d01ff",
+   "kind": "numEnd",
+   "text": "thirteen."
+  },
+  {
+   "id": "num_8a13a01d70",
+   "kind": "num",
+   "text": "fourteen"
+  },
+  {
+   "id": "numEnd_6b74dd8669",
+   "kind": "numEnd",
+   "text": "fourteen."
+  },
+  {
+   "id": "num_5cf896e678",
+   "kind": "num",
+   "text": "fifteen"
+  },
+  {
+   "id": "numEnd_f9d6c184be",
+   "kind": "numEnd",
+   "text": "fifteen."
+  },
+  {
+   "id": "num_c0d94d09a9",
+   "kind": "num",
+   "text": "sixteen"
+  },
+  {
+   "id": "numEnd_248a5d78b1",
+   "kind": "numEnd",
+   "text": "sixteen."
+  },
+  {
+   "id": "num_c1777d8e84",
+   "kind": "num",
+   "text": "seventeen"
+  },
+  {
+   "id": "numEnd_178516cf22",
+   "kind": "numEnd",
+   "text": "seventeen."
+  },
+  {
+   "id": "num_70c6adb615",
+   "kind": "num",
+   "text": "eighteen"
+  },
+  {
+   "id": "numEnd_fa9cc387f6",
+   "kind": "numEnd",
+   "text": "eighteen."
+  },
+  {
+   "id": "num_885c39aca0",
+   "kind": "num",
+   "text": "nineteen"
+  },
+  {
+   "id": "numEnd_07d3db9a62",
+   "kind": "numEnd",
+   "text": "nineteen."
+  },
+  {
+   "id": "num_fc955a19ae",
+   "kind": "num",
+   "text": "twenty"
+  },
+  {
+   "id": "numEnd_4680df6534",
+   "kind": "numEnd",
+   "text": "twenty."
+  },
+  {
+   "id": "num_85246f3d95",
+   "kind": "num",
+   "text": "twenty-one"
+  },
+  {
+   "id": "numEnd_2368e4be50",
+   "kind": "numEnd",
+   "text": "twenty-one."
+  },
+  {
+   "id": "num_581c18fcfb",
+   "kind": "num",
+   "text": "twenty-two"
+  },
+  {
+   "id": "numEnd_7c1c61cd40",
+   "kind": "numEnd",
+   "text": "twenty-two."
+  },
+  {
+   "id": "num_f9e0588d42",
+   "kind": "num",
+   "text": "twenty-three"
+  },
+  {
+   "id": "numEnd_b968d64399",
+   "kind": "numEnd",
+   "text": "twenty-three."
+  },
+  {
+   "id": "num_871ff9d0bd",
+   "kind": "num",
+   "text": "twenty-four"
+  },
+  {
+   "id": "numEnd_aa2f63dcf6",
+   "kind": "numEnd",
+   "text": "twenty-four."
+  },
+  {
+   "id": "num_631cf56c0c",
+   "kind": "num",
+   "text": "twenty-five"
+  },
+  {
+   "id": "numEnd_2f7c8b5185",
+   "kind": "numEnd",
+   "text": "twenty-five."
+  },
+  {
+   "id": "num_b91d85b68a",
+   "kind": "num",
+   "text": "twenty-six"
+  },
+  {
+   "id": "numEnd_d7fa37224a",
+   "kind": "numEnd",
+   "text": "twenty-six."
+  },
+  {
+   "id": "num_43b5e00875",
+   "kind": "num",
+   "text": "twenty-seven"
+  },
+  {
+   "id": "numEnd_4ecb9218dc",
+   "kind": "numEnd",
+   "text": "twenty-seven."
+  },
+  {
+   "id": "num_943e082332",
+   "kind": "num",
+   "text": "twenty-eight"
+  },
+  {
+   "id": "numEnd_8c34ee1ef9",
+   "kind": "numEnd",
+   "text": "twenty-eight."
+  },
+  {
+   "id": "num_c298530012",
+   "kind": "num",
+   "text": "twenty-nine"
+  },
+  {
+   "id": "numEnd_12c5f4b964",
+   "kind": "numEnd",
+   "text": "twenty-nine."
+  },
+  {
+   "id": "num_c54450b325",
+   "kind": "num",
+   "text": "thirty"
+  },
+  {
+   "id": "numEnd_bb0d778141",
+   "kind": "numEnd",
+   "text": "thirty."
+  },
+  {
+   "id": "num_013ff6972b",
+   "kind": "num",
+   "text": "thirty-one"
+  },
+  {
+   "id": "numEnd_9168554d3e",
+   "kind": "numEnd",
+   "text": "thirty-one."
+  },
+  {
+   "id": "num_592f3ce14a",
+   "kind": "num",
+   "text": "thirty-two"
+  },
+  {
+   "id": "numEnd_5f929e3df3",
+   "kind": "numEnd",
+   "text": "thirty-two."
+  },
+  {
+   "id": "num_974e63feb4",
+   "kind": "num",
+   "text": "thirty-three"
+  },
+  {
+   "id": "numEnd_da0169b181",
+   "kind": "numEnd",
+   "text": "thirty-three."
+  },
+  {
+   "id": "num_d488263ae0",
+   "kind": "num",
+   "text": "thirty-four"
+  },
+  {
+   "id": "numEnd_4757a04871",
+   "kind": "numEnd",
+   "text": "thirty-four."
+  },
+  {
+   "id": "num_c5c53c7dea",
+   "kind": "num",
+   "text": "thirty-five"
+  },
+  {
+   "id": "numEnd_0aa5563cb3",
+   "kind": "numEnd",
+   "text": "thirty-five."
+  },
+  {
+   "id": "num_4335eeff40",
+   "kind": "num",
+   "text": "thirty-six"
+  },
+  {
+   "id": "numEnd_4d066a207c",
+   "kind": "numEnd",
+   "text": "thirty-six."
+  },
+  {
+   "id": "num_4fded106d0",
+   "kind": "num",
+   "text": "thirty-seven"
+  },
+  {
+   "id": "numEnd_5257b5f772",
+   "kind": "numEnd",
+   "text": "thirty-seven."
+  },
+  {
+   "id": "num_3cf28b33c5",
+   "kind": "num",
+   "text": "thirty-eight"
+  },
+  {
+   "id": "numEnd_d8e5ed310e",
+   "kind": "numEnd",
+   "text": "thirty-eight."
+  },
+  {
+   "id": "num_152beb9908",
+   "kind": "num",
+   "text": "thirty-nine"
+  },
+  {
+   "id": "numEnd_5d8a76e784",
+   "kind": "numEnd",
+   "text": "thirty-nine."
+  },
+  {
+   "id": "num_88ddff0da7",
+   "kind": "num",
+   "text": "forty"
+  },
+  {
+   "id": "numEnd_d9547c4157",
+   "kind": "numEnd",
+   "text": "forty."
+  },
+  {
+   "id": "num_f0df6b7d32",
+   "kind": "num",
+   "text": "forty-one"
+  },
+  {
+   "id": "numEnd_284321f2d8",
+   "kind": "numEnd",
+   "text": "forty-one."
+  },
+  {
+   "id": "num_1866a538f0",
+   "kind": "num",
+   "text": "forty-two"
+  },
+  {
+   "id": "numEnd_d53c7012bf",
+   "kind": "numEnd",
+   "text": "forty-two."
+  },
+  {
+   "id": "num_42efdd720c",
+   "kind": "num",
+   "text": "forty-three"
+  },
+  {
+   "id": "numEnd_8c6e6b211c",
+   "kind": "numEnd",
+   "text": "forty-three."
+  },
+  {
+   "id": "num_9909c5ffbd",
+   "kind": "num",
+   "text": "forty-four"
+  },
+  {
+   "id": "numEnd_757898ff3d",
+   "kind": "numEnd",
+   "text": "forty-four."
+  },
+  {
+   "id": "num_f00087f261",
+   "kind": "num",
+   "text": "forty-five"
+  },
+  {
+   "id": "numEnd_e34e4005b9",
+   "kind": "numEnd",
+   "text": "forty-five."
+  },
+  {
+   "id": "num_55b647f51b",
+   "kind": "num",
+   "text": "forty-six"
+  },
+  {
+   "id": "numEnd_79f25940e1",
+   "kind": "numEnd",
+   "text": "forty-six."
+  },
+  {
+   "id": "num_bf8744c9bf",
+   "kind": "num",
+   "text": "forty-seven"
+  },
+  {
+   "id": "numEnd_1f5b5023a8",
+   "kind": "numEnd",
+   "text": "forty-seven."
+  },
+  {
+   "id": "num_deea3eef06",
+   "kind": "num",
+   "text": "forty-eight"
+  },
+  {
+   "id": "numEnd_6e7439eaa3",
+   "kind": "numEnd",
+   "text": "forty-eight."
+  },
+  {
+   "id": "num_fdd15d6fb9",
+   "kind": "num",
+   "text": "forty-nine"
+  },
+  {
+   "id": "numEnd_f11ecbbca9",
+   "kind": "numEnd",
+   "text": "forty-nine."
+  },
+  {
+   "id": "num_1f7a7912b3",
+   "kind": "num",
+   "text": "fifty"
+  },
+  {
+   "id": "numEnd_76ac1f0d66",
+   "kind": "numEnd",
+   "text": "fifty."
+  },
+  {
+   "id": "num_e575919997",
+   "kind": "num",
+   "text": "fifty-one"
+  },
+  {
+   "id": "numEnd_994d1de870",
+   "kind": "numEnd",
+   "text": "fifty-one."
+  },
+  {
+   "id": "num_a66fe08beb",
+   "kind": "num",
+   "text": "fifty-two"
+  },
+  {
+   "id": "numEnd_f4ef95f7b9",
+   "kind": "numEnd",
+   "text": "fifty-two."
+  },
+  {
+   "id": "num_ac29ee6211",
+   "kind": "num",
+   "text": "fifty-three"
+  },
+  {
+   "id": "numEnd_b821818e33",
+   "kind": "numEnd",
+   "text": "fifty-three."
+  },
+  {
+   "id": "num_bc0690c4d3",
+   "kind": "num",
+   "text": "fifty-four"
+  },
+  {
+   "id": "numEnd_3dc7bb7820",
+   "kind": "numEnd",
+   "text": "fifty-four."
+  },
+  {
+   "id": "num_07a90cdc8d",
+   "kind": "num",
+   "text": "fifty-five"
+  },
+  {
+   "id": "numEnd_45b53a7af0",
+   "kind": "numEnd",
+   "text": "fifty-five."
+  },
+  {
+   "id": "num_310b10440a",
+   "kind": "num",
+   "text": "fifty-six"
+  },
+  {
+   "id": "numEnd_73fbf0b2e8",
+   "kind": "numEnd",
+   "text": "fifty-six."
+  },
+  {
+   "id": "num_05bb011cdf",
+   "kind": "num",
+   "text": "fifty-seven"
+  },
+  {
+   "id": "numEnd_454cba79d9",
+   "kind": "numEnd",
+   "text": "fifty-seven."
+  },
+  {
+   "id": "num_1e6f755f54",
+   "kind": "num",
+   "text": "fifty-eight"
+  },
+  {
+   "id": "numEnd_64ccbe332b",
+   "kind": "numEnd",
+   "text": "fifty-eight."
+  },
+  {
+   "id": "num_30948f5286",
+   "kind": "num",
+   "text": "fifty-nine"
+  },
+  {
+   "id": "numEnd_6693dbd9ea",
+   "kind": "numEnd",
+   "text": "fifty-nine."
+  },
+  {
+   "id": "num_387f1fe4b7",
+   "kind": "num",
+   "text": "sixty"
+  },
+  {
+   "id": "numEnd_fa4d6e7960",
+   "kind": "numEnd",
+   "text": "sixty."
+  },
+  {
+   "id": "num_49ba8a4e84",
+   "kind": "num",
+   "text": "sixty-one"
+  },
+  {
+   "id": "numEnd_fbebe8eceb",
+   "kind": "numEnd",
+   "text": "sixty-one."
+  },
+  {
+   "id": "num_7d3620d657",
+   "kind": "num",
+   "text": "sixty-two"
+  },
+  {
+   "id": "numEnd_b7960dd49b",
+   "kind": "numEnd",
+   "text": "sixty-two."
+  },
+  {
+   "id": "num_d6786348cd",
+   "kind": "num",
+   "text": "sixty-three"
+  },
+  {
+   "id": "numEnd_fd9460e0c2",
+   "kind": "numEnd",
+   "text": "sixty-three."
+  },
+  {
+   "id": "num_4dc8c39cea",
+   "kind": "num",
+   "text": "sixty-four"
+  },
+  {
+   "id": "numEnd_7a74d9b09f",
+   "kind": "numEnd",
+   "text": "sixty-four."
+  },
+  {
+   "id": "num_7354948b0f",
+   "kind": "num",
+   "text": "sixty-five"
+  },
+  {
+   "id": "numEnd_cf584d5225",
+   "kind": "numEnd",
+   "text": "sixty-five."
+  },
+  {
+   "id": "num_310b66a9fd",
+   "kind": "num",
+   "text": "sixty-six"
+  },
+  {
+   "id": "numEnd_f62701a465",
+   "kind": "numEnd",
+   "text": "sixty-six."
+  },
+  {
+   "id": "num_496a063161",
+   "kind": "num",
+   "text": "sixty-seven"
+  },
+  {
+   "id": "numEnd_35ce59d983",
+   "kind": "numEnd",
+   "text": "sixty-seven."
+  },
+  {
+   "id": "num_03fcc994bf",
+   "kind": "num",
+   "text": "sixty-eight"
+  },
+  {
+   "id": "numEnd_4360a17741",
+   "kind": "numEnd",
+   "text": "sixty-eight."
+  },
+  {
+   "id": "num_1bd478fee3",
+   "kind": "num",
+   "text": "sixty-nine"
+  },
+  {
+   "id": "numEnd_f321fccba5",
+   "kind": "numEnd",
+   "text": "sixty-nine."
+  },
+  {
+   "id": "num_bb0c0c867f",
+   "kind": "num",
+   "text": "seventy"
+  },
+  {
+   "id": "numEnd_267e35a3f7",
+   "kind": "numEnd",
+   "text": "seventy."
+  },
+  {
+   "id": "num_85551f2dca",
+   "kind": "num",
+   "text": "seventy-one"
+  },
+  {
+   "id": "numEnd_9a045808ec",
+   "kind": "numEnd",
+   "text": "seventy-one."
+  },
+  {
+   "id": "num_c80e78cd6e",
+   "kind": "num",
+   "text": "seventy-two"
+  },
+  {
+   "id": "numEnd_724c026b6a",
+   "kind": "numEnd",
+   "text": "seventy-two."
+  },
+  {
+   "id": "num_c626ad012c",
+   "kind": "num",
+   "text": "seventy-three"
+  },
+  {
+   "id": "numEnd_ba500659d6",
+   "kind": "numEnd",
+   "text": "seventy-three."
+  },
+  {
+   "id": "num_a3c72173e9",
+   "kind": "num",
+   "text": "seventy-four"
+  },
+  {
+   "id": "numEnd_feaca705a6",
+   "kind": "numEnd",
+   "text": "seventy-four."
+  },
+  {
+   "id": "num_4a225ae416",
+   "kind": "num",
+   "text": "seventy-five"
+  },
+  {
+   "id": "numEnd_748e442162",
+   "kind": "numEnd",
+   "text": "seventy-five."
+  },
+  {
+   "id": "num_4f70f92649",
+   "kind": "num",
+   "text": "seventy-six"
+  },
+  {
+   "id": "numEnd_0878c1926b",
+   "kind": "numEnd",
+   "text": "seventy-six."
+  },
+  {
+   "id": "num_184e4283dd",
+   "kind": "num",
+   "text": "seventy-seven"
+  },
+  {
+   "id": "numEnd_517593c916",
+   "kind": "numEnd",
+   "text": "seventy-seven."
+  },
+  {
+   "id": "num_f86c49c5ae",
+   "kind": "num",
+   "text": "seventy-eight"
+  },
+  {
+   "id": "numEnd_5242095434",
+   "kind": "numEnd",
+   "text": "seventy-eight."
+  },
+  {
+   "id": "num_67b3b953df",
+   "kind": "num",
+   "text": "seventy-nine"
+  },
+  {
+   "id": "numEnd_cf7fda1661",
+   "kind": "numEnd",
+   "text": "seventy-nine."
+  },
+  {
+   "id": "num_20cec707d8",
+   "kind": "num",
+   "text": "eighty"
+  },
+  {
+   "id": "numEnd_60c10f834d",
+   "kind": "numEnd",
+   "text": "eighty."
+  },
+  {
+   "id": "num_bd182d73f6",
+   "kind": "num",
+   "text": "eighty-one"
+  },
+  {
+   "id": "numEnd_4e587e5a4c",
+   "kind": "numEnd",
+   "text": "eighty-one."
+  },
+  {
+   "id": "num_5dc8221cf6",
+   "kind": "num",
+   "text": "eighty-two"
+  },
+  {
+   "id": "numEnd_ed3a8e2f33",
+   "kind": "numEnd",
+   "text": "eighty-two."
+  },
+  {
+   "id": "num_54576d0541",
+   "kind": "num",
+   "text": "eighty-three"
+  },
+  {
+   "id": "numEnd_eee74d92a6",
+   "kind": "numEnd",
+   "text": "eighty-three."
+  },
+  {
+   "id": "num_8cd1ed0cfb",
+   "kind": "num",
+   "text": "eighty-four"
+  },
+  {
+   "id": "numEnd_5a67c95b27",
+   "kind": "numEnd",
+   "text": "eighty-four."
+  },
+  {
+   "id": "num_79e791b385",
+   "kind": "num",
+   "text": "eighty-five"
+  },
+  {
+   "id": "numEnd_6f5cde3bcf",
+   "kind": "numEnd",
+   "text": "eighty-five."
+  },
+  {
+   "id": "num_82bad57040",
+   "kind": "num",
+   "text": "eighty-six"
+  },
+  {
+   "id": "numEnd_b72770a60e",
+   "kind": "numEnd",
+   "text": "eighty-six."
+  },
+  {
+   "id": "num_9553e82d40",
+   "kind": "num",
+   "text": "eighty-seven"
+  },
+  {
+   "id": "numEnd_fa4b12eaa2",
+   "kind": "numEnd",
+   "text": "eighty-seven."
+  },
+  {
+   "id": "num_2540b5a981",
+   "kind": "num",
+   "text": "eighty-eight"
+  },
+  {
+   "id": "numEnd_2fbcead2ce",
+   "kind": "numEnd",
+   "text": "eighty-eight."
+  },
+  {
+   "id": "num_bfc86ca882",
+   "kind": "num",
+   "text": "eighty-nine"
+  },
+  {
+   "id": "numEnd_4bf5f20feb",
+   "kind": "numEnd",
+   "text": "eighty-nine."
+  },
+  {
+   "id": "num_fd3575d2ba",
+   "kind": "num",
+   "text": "ninety"
+  },
+  {
+   "id": "numEnd_900767cc49",
+   "kind": "numEnd",
+   "text": "ninety."
+  },
+  {
+   "id": "num_39448f7f4b",
+   "kind": "num",
+   "text": "ninety-one"
+  },
+  {
+   "id": "numEnd_6b1411ca95",
+   "kind": "numEnd",
+   "text": "ninety-one."
+  },
+  {
+   "id": "num_4c6f16d407",
+   "kind": "num",
+   "text": "ninety-two"
+  },
+  {
+   "id": "numEnd_07da4c3c50",
+   "kind": "numEnd",
+   "text": "ninety-two."
+  },
+  {
+   "id": "num_7f72f0b092",
+   "kind": "num",
+   "text": "ninety-three"
+  },
+  {
+   "id": "numEnd_5d88d377dd",
+   "kind": "numEnd",
+   "text": "ninety-three."
+  },
+  {
+   "id": "num_d9b747b38c",
+   "kind": "num",
+   "text": "ninety-four"
+  },
+  {
+   "id": "numEnd_bd04a9a313",
+   "kind": "numEnd",
+   "text": "ninety-four."
+  },
+  {
+   "id": "num_6a912eb365",
+   "kind": "num",
+   "text": "ninety-five"
+  },
+  {
+   "id": "numEnd_467f04745f",
+   "kind": "numEnd",
+   "text": "ninety-five."
+  },
+  {
+   "id": "num_39d15ef2fa",
+   "kind": "num",
+   "text": "ninety-six"
+  },
+  {
+   "id": "numEnd_0d60979da7",
+   "kind": "numEnd",
+   "text": "ninety-six."
+  },
+  {
+   "id": "num_029aea39a2",
+   "kind": "num",
+   "text": "ninety-seven"
+  },
+  {
+   "id": "numEnd_f8304849ea",
+   "kind": "numEnd",
+   "text": "ninety-seven."
+  },
+  {
+   "id": "num_5bd325dda6",
+   "kind": "num",
+   "text": "ninety-eight"
+  },
+  {
+   "id": "numEnd_1561271f4a",
+   "kind": "numEnd",
+   "text": "ninety-eight."
+  },
+  {
+   "id": "num_effad28245",
+   "kind": "num",
+   "text": "ninety-nine"
+  },
+  {
+   "id": "numEnd_eb26ed9a8f",
+   "kind": "numEnd",
+   "text": "ninety-nine."
+  },
+  {
+   "id": "num_4e4592a978",
+   "kind": "num",
+   "text": "one hundred"
+  },
+  {
+   "id": "num_42ea386c7c",
+   "kind": "num",
+   "text": "two hundred"
+  },
+  {
+   "id": "num_b8a2b748a4",
+   "kind": "num",
+   "text": "three hundred"
+  },
+  {
+   "id": "num_7fea2d0ff0",
+   "kind": "num",
+   "text": "four hundred"
+  },
+  {
+   "id": "num_0144a7a183",
+   "kind": "num",
+   "text": "five hundred"
+  },
+  {
+   "id": "num_7f3dd97d9b",
+   "kind": "num",
+   "text": "six hundred"
+  },
+  {
+   "id": "num_7eae86af19",
+   "kind": "num",
+   "text": "seven hundred"
+  },
+  {
+   "id": "num_02696e331c",
+   "kind": "num",
+   "text": "eight hundred"
+  },
+  {
+   "id": "num_c396de52fe",
+   "kind": "num",
+   "text": "nine hundred"
+  },
+  {
+   "id": "numPlural_d3963ae0ee",
+   "kind": "numPlural",
+   "text": "twos"
+  },
+  {
+   "id": "numPlural_f1ffbfdaa6",
+   "kind": "numPlural",
+   "text": "threes"
+  },
+  {
+   "id": "numPlural_4eeb69282e",
+   "kind": "numPlural",
+   "text": "fours"
+  },
+  {
+   "id": "numPlural_9815e20f94",
+   "kind": "numPlural",
+   "text": "fives"
+  },
+  {
+   "id": "numPlural_92bc05122b",
+   "kind": "numPlural",
+   "text": "tens"
+  },
+  {
+   "id": "numPlural_ccc52f5cb3",
+   "kind": "numPlural",
+   "text": "hundreds"
+  },
+  {
+   "id": "num_ee3e43b801",
+   "kind": "num",
+   "text": "one thousand"
+  },
+  {
+   "id": "numEnd_8caae7c031",
+   "kind": "numEnd",
+   "text": "one thousand."
+  }
+ ]
+}
