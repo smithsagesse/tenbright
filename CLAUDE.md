@@ -72,7 +72,7 @@ START_HERE.md             ← owner's step-by-step setup guide
 app/                      ← the latest BUILT app (v22), downloaded from the live artifact
   index.html              ← the whole app (about 1.7 MB: inline JS, CSS, embedded fonts and translations)
   sw.js, manifest.webmanifest, icon-*.png, art/, audio/
-source/                   ← put the full source here (unzip tenbright-mvp.zip from the original chat)
+source/tenbright-mvp/     ← the full v22 source (build.js, src/, test/, narration/); dist/ is build output, not committed
 docs/                     ← planning and legal documents (Phases 1–3, compliance, accounts plan, art brief, release plan)
 docs/DECISIONS_AND_HISTORY.md, docs/LINKS.md
 ```
@@ -82,7 +82,10 @@ docs/DECISIONS_AND_HISTORY.md, docs/LINKS.md
 `app/index.html` is the **built output**. Edit it only for small fixes, and only if the source zip is missing.
 Note that line 1 of `app/index.html` carries a small hosting header added by claude.ai. It is harmless.
 
-The **real project** is `tenbright-mvp.zip`, the last file attached in the original chat (v22). Unzipped into `source/`, it contains:
+The **real project** is `source/tenbright-mvp/` (from `tenbright-mvp.zip`, the last file attached in the original chat, v22).
+The owner uploaded it without the art and audio; `src/art/*.webp` and `narration/audio/*.mp3` were restored from `app/`.
+On Nov 21, 2026 `node build.js` reproduced the live v22 page byte for byte (apart from the claude.ai hosting wrapper),
+with identical sw.js, manifest, icons, art and audio. It contains:
 - `src/app.html`: the main source. Also `src/i18n/*.js` (es, fr, ht, zh, ar), `src/art/`, `narration/audio/map.json`.
 - `build.js`: run `node build.js` to produce `dist/index.html` (and `dist/test.html` with test hooks).
 - Tests: `node test/engine.test.js` (math engine, millions of generated checks); Playwright suites
@@ -90,16 +93,16 @@ The **real project** is `tenbright-mvp.zip`, the last file attached in the origi
   `test/separation_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
 - `docs/animation-system.md` and `README.md`.
 
-If `source/` is empty, tell the owner to download `tenbright-mvp.zip` from the original chat
-(https://claude.ai/chat/1d8f02fd-906c-4fa5-ae9a-a66610593d22, the most recent attachment) before any large change.
+Make changes in `source/tenbright-mvp/src/`, rebuild, run every suite, then copy `dist/` into `app/` for release.
 
 ## How to run
 
 - Quick look: open `app/index.html` in a browser. It works offline, without the service worker.
 - As a real web app: `cd app && python3 -m http.server 8080`, then open http://localhost:8080
 - Source build: `cd source/tenbright-mvp && node build.js && node test/engine.test.js`
-- Playwright tests need `pip install playwright` and `playwright install chromium`. The old test scripts pointed at
-  `/usr/bin/google-chrome`, so adjust `executable_path` for this machine if needed. Use a full Chrome or Chromium:
+- Playwright tests need `pip install playwright` (match the Node Playwright version) and a full Chrome or Chromium at
+  `/usr/bin/google-chrome`, which the test scripts use. In Claude Code cloud sessions that path already wraps
+  `/opt/pw-browsers/chromium`, so do not run `playwright install`. Use a full Chrome or Chromium:
   Playwright's bundled headless shell crashed on this 1.7 MB page during the Nov 10 handoff check. Full Chrome loaded it
   with 0 errors and 0 outside requests, at desktop and phone width, over http and from file://.
 
