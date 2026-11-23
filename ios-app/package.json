@@ -1,0 +1,19 @@
+{
+  "name": "tenbright-ios",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Tenbright iOS app: a native shell around the offline store build (source/tenbright-mvp/dist-store).",
+  "scripts": {
+    "build:web": "node ../source/tenbright-mvp/build.js --store",
+    "build:web:draft": "node ../source/tenbright-mvp/build.js --store --draft",
+    "sync": "node scripts/check-web.js && cap sync ios",
+    "open": "cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "8.6.0",
+    "@capacitor/ios": "8.6.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.0"
+  }
+}

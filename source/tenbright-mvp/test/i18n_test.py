@@ -7,7 +7,7 @@ import os, sys, pathlib, re, json
 from playwright.sync_api import sync_playwright
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-URL = (ROOT / 'dist' / 'test.html').as_uri()
+URL = (ROOT / os.environ.get('DIST', 'dist') / 'test.html').as_uri()
 OUT = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / 'test' / 'shots'
 OUT.mkdir(parents=True, exist_ok=True)
 HTML_LANG = {'es': 'es-419', 'fr': 'fr', 'ht': 'ht', 'zh': 'zh-Hant-TW', 'ar': 'ar'}

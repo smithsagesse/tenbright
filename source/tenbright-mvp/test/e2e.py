@@ -1,10 +1,11 @@
 """End-to-end walk through the MVP in headless Chrome: parent setup, child, placement, map, lesson, practice, parent report."""
+import os
 import sys, pathlib
 from playwright.sync_api import sync_playwright
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-URL = (ROOT / 'dist' / 'test.html').as_uri()
-RELEASE = (ROOT / 'dist' / 'index.html').as_uri()
+URL = (ROOT / os.environ.get('DIST', 'dist') / 'test.html').as_uri()
+RELEASE = (ROOT / os.environ.get('DIST', 'dist') / 'index.html').as_uri()
 network = []
 OUT = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / 'test' / 'shots'
 OUT.mkdir(parents=True, exist_ok=True)
@@ -117,7 +118,12 @@ with sync_playwright() as p:
     page.select_option('#child-focus', 'all')
     assert page.locator('#child-focus').input_value() == 'all'
     print('dashboard grade settings: ok')
-    page.get_by_text('Demo: move the clock 7 days ahead').click()
+    if os.environ.get('DIST') == 'dist-store':
+        # App Store build: no demo clock and no preview badge
+        assert page.get_by_text('Demo: move the clock 7 days ahead').count() == 0, 'demo clock shown in store build'
+        print('store build: demo clock hidden: ok')
+    else:
+        page.get_by_text('Demo: move the clock 7 days ahead').click()
     page.screenshot(path=str(OUT / 'dashboard.png'), full_page=True)
     # sample learner, phone width, dark theme
     page.get_by_text('Back to kids').click()
@@ -154,7 +160,7 @@ with sync_playwright() as p:
         report = phone.locator('main').inner_text()
         phone.get_by_role('button', name='See everything stored').click()
         stored_view = phone.locator('#data-json').input_value()[:40]
-    rel = b.new_page(); rel.on('request', lambda r: network.append(r.url) if not r.url.startswith(('file:', 'data:', 'blob:')) else None); rel.goto(RELEASE); rel.get_by_role('button', name='Privacy notice').click(); notice_ok = rel.get_by_text('Who runs Tenbright').count() > 0
+    rel = b.new_page(); rel.on('request', lambda r: network.append(r.url) if not r.url.startswith(('file:', 'data:', 'blob:')) else None); rel.goto(RELEASE); store_badge_ok = os.environ.get('DIST') != 'dist-store' or (rel.get_by_text('MVP preview').count() == 0 and rel.get_by_text('Deleting the app erases it.').count() == 1); assert store_badge_ok, 'store welcome screen still shows preview wording'; rel.get_by_role('button', name='Privacy notice').click(); notice_ok = rel.get_by_text('Who runs Tenbright').count() > 0
     # render every skill's items, with and without the full hint, and look for broken output
     t = b.new_page(viewport={'width': 1024, 'height': 768})
     t.on('pageerror', lambda e: errors.append('selftest pageerror: ' + str(e)))

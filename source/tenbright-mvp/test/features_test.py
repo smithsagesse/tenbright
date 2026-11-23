@@ -1,9 +1,10 @@
 """New learning features: Fix Pip's mistake, Why did that work, Lantern Line, journal, accessibility of new screens, offline app.
 Run after build: python3 test/features_test.py"""
+import os
 import pathlib, subprocess, sys, time, socket
 from playwright.sync_api import sync_playwright
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-URL = (ROOT / 'dist' / 'test.html').as_uri() + '#selftest'
+URL = (ROOT / os.environ.get('DIST', 'dist') / 'test.html').as_uri() + '#selftest'
 AXE = (ROOT / 'test' / 'axe.min.js').read_text()
 errors = []
 def axe(pg, name):
@@ -84,7 +85,7 @@ with sync_playwright() as p:
     b.close()
 # 6. offline app when served from a website
 sock = socket.socket(); sock.bind(('127.0.0.1', 0)); PORT = sock.getsockname()[1]; sock.close()
-srv = subprocess.Popen([sys.executable, '-m', 'http.server', str(PORT), '--bind', '127.0.0.1'], cwd=ROOT / 'dist', stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+srv = subprocess.Popen([sys.executable, '-m', 'http.server', str(PORT), '--bind', '127.0.0.1'], cwd=ROOT / os.environ.get('DIST', 'dist'), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(0.8)
 try:
     with sync_playwright() as p:

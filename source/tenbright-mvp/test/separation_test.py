@@ -1,10 +1,11 @@
 """Each child's work stays separate: secret pictures open only the right profile, answers land only in the active
 child's record, the code is stored hashed, ids never collide, and every new screen is accessible and translated.
 Run after build: python3 test/separation_test.py"""
+import os
 import json, pathlib, re
 from playwright.sync_api import sync_playwright
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-URL = (ROOT / 'dist' / 'test.html').as_uri() + '#selftest'
+URL = (ROOT / os.environ.get('DIST', 'dist') / 'test.html').as_uri() + '#selftest'
 AXE = (ROOT / 'test' / 'axe.min.js').read_text()
 errors, outside = [], []
 def axe(pg, name):

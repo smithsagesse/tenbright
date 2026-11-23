@@ -1,0 +1,16 @@
+{
+  "appId": "org.gmia.tenbright",
+  "appName": "Tenbright",
+  "webDir": "../source/tenbright-mvp/dist-store",
+  "loggingBehavior": "none",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#1B2438",
+    "allowsLinkPreview": false,
+    "limitsNavigationsToAppBoundDomains": false,
+    "preferredContentMode": "mobile"
+  },
+  "server": {
+    "allowNavigation": []
+  }
+}

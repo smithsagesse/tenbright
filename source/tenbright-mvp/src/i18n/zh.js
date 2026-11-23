@@ -2268,3 +2268,6 @@ TBi18n.add("zh", {"Count to {N}":"數到{N}",
 "Pip the superhero, flying":"超級英雄Pip在飛",
 "Watch my capoeira moves!":"看我的巴西戰舞動作！",
 "Let me play you a song!":"我來彈一首歌給你聽！"});
+
+/* store build (App Store) wording, machine-drafted, pending native-speaker review */
+TBi18n.add("zh", {"Tenbright keeps everything on this device.": "Tenbright 把所有資料都留在這台裝置上。", "Deleting the app erases it.": "刪除 App 就會全部刪除。", "{N} skills across Grades {N} to {N}, including one Mental Math Strategy.": "{N2}到{N3}年級共{N1}項技能，包含一個心算策略。", "Data stays on this device only.": "資料只留在這台裝置上。"});

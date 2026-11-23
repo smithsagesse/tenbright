@@ -72,9 +72,12 @@ START_HERE.md             ← owner's step-by-step setup guide
 app/                      ← the latest BUILT app (v22), downloaded from the live artifact
   index.html              ← the whole app (about 1.7 MB: inline JS, CSS, embedded fonts and translations)
   sw.js, manifest.webmanifest, icon-*.png, art/, audio/
-source/tenbright-mvp/     ← the full v22 source (build.js, src/, test/, narration/); dist/ is build output, not committed
+source/tenbright-mvp/     ← the full v22 source (build.js, src/, test/, narration/); dist/ and dist-store/ are build output, not committed
+ios-app/                  ← iOS app (Capacitor 8.6.0, SPM): native shell around dist-store/. See ios-app/README.md
 docs/                     ← planning and legal documents (Phases 1–3, compliance, accounts plan, art brief, release plan)
 docs/DECISIONS_AND_HISTORY.md, docs/LINKS.md
+docs/APP_STORE_LISTING.md ← App Store listing, privacy label, Kids Category check, review notes, submission checklist
+docs/store-screenshots/   ← iPhone 6.9" and iPad 13" screenshots (made by ios-app/scripts/screenshots.py)
 ```
 
 ### The built app vs. the real source
@@ -88,6 +91,10 @@ On Nov 21, 2026 `node build.js` reproduced the live v22 page byte for byte (apar
 with identical sw.js, manifest, icons, art and audio. It contains:
 - `src/app.html`: the main source. Also `src/i18n/*.js` (es, fr, ht, zh, ar), `src/art/`, `narration/audio/map.json`.
 - `build.js`: run `node build.js` to produce `dist/index.html` (and `dist/test.html` with test hooks).
+  `node build.js --store` produces the App Store build in `dist-store/` (the `STORE` flag in `src/app.html` hides the
+  preview badge, the demo clock and browser-only wording). It **refuses to build** while launch blockers remain
+  (privacy-notice placeholders, "preview" wording in the legal text); `--store --draft` builds anyway, for TestFlight only.
+  Test suites take `DIST=dist-store` to run against the store build.
 - Tests: `node test/engine.test.js` (math engine, millions of generated checks); Playwright suites
   `test/e2e.py`, `test/features_test.py`, `test/audio_test.py`, `test/living_test.py`,
   `test/separation_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
@@ -117,7 +124,9 @@ Make changes in `source/tenbright-mvp/src/`, rebuild, run every suite, then copy
    before release. Earlier scene art was AI-generated, then upscaled and restyled. Final art is planned as a human commission
    with no generative AI and full copyright assignment (`docs/Tenbright_Art_Commission_Brief.txt`).
 6. **Native-speaker review** of all 5 translations.
-7. **Next build step the owner was offered:** App Store prep (store build with preview items hidden, iOS project, store listing).
+7. **App Store prep: done Nov 23, 2026** (store build, iOS project, listing draft). Remaining submission steps are in
+   `docs/APP_STORE_LISTING.md` §7: Apple Developer enrollment as an organization, bundle ID, Kids age band,
+   public privacy-policy and support URLs, a 1024 px icon master, and the archive on a Mac with Xcode 26 or later.
 8. **Gate G3 usability sessions** with 5–8 children aged 7–9 (Phase 3 test plan), planned through Gwinnett County homeschool co-ops.
 
 ## Working style the owner expects

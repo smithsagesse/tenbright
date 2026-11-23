@@ -1,10 +1,11 @@
 """Living Pip: animation levels, reactions to learning moments, sound channels and parent controls, celebrations,
 badges and Pip's look, math pictures that animate what changed, accessibility in full motion, no outside requests.
 Run after build: python3 test/living_test.py [--shots DIR]"""
+import os
 import pathlib, sys
 from playwright.sync_api import sync_playwright
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-URL = (ROOT / 'dist' / 'test.html').as_uri() + '#selftest'
+URL = (ROOT / os.environ.get('DIST', 'dist') / 'test.html').as_uri() + '#selftest'
 AXE = (ROOT / 'test' / 'axe.min.js').read_text()
 SHOTS = pathlib.Path(sys.argv[sys.argv.index('--shots') + 1]) if '--shots' in sys.argv else None
 errors, outside = [], []

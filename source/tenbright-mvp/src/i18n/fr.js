@@ -2268,3 +2268,6 @@ TBi18n.add("fr", {"Count to {N}":"Compter jusqu'à {N}",
 "Pip the superhero, flying":"Pip, le super-héros, qui vole",
 "Watch my capoeira moves!":"Regarde mes mouvements de capoeira !",
 "Let me play you a song!":"Je vais te jouer une chanson !"});
+
+/* store build (App Store) wording, machine-drafted, pending native-speaker review */
+TBi18n.add("fr", {"Tenbright keeps everything on this device.": "Tenbright garde tout sur cet appareil.", "Deleting the app erases it.": "Supprimer l'app efface tout.", "{N} skills across Grades {N} to {N}, including one Mental Math Strategy.": "{N} compétences du niveau {N} au niveau {N}, dont une stratégie de calcul mental.", "Data stays on this device only.": "Les données restent uniquement sur cet appareil."});

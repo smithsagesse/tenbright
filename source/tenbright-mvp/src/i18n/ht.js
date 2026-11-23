@@ -2268,3 +2268,6 @@ TBi18n.add("ht", {"Count to {N}":"Konte jiska {N}",
 "Pip the superhero, flying":"Pip, superewo a, k ap vole",
 "Watch my capoeira moves!":"Gade mouvman kapoyera mwen yo!",
 "Let me play you a song!":"Kite m jwe yon chante pou ou!"});
+
+/* store build (App Store) wording, machine-drafted, pending native-speaker review */
+TBi18n.add("ht", {"Tenbright keeps everything on this device.": "Tenbright kenbe tout bagay sou aparèy sa a.", "Deleting the app erases it.": "Si ou efase aplikasyon an, sa efase tout.", "{N} skills across Grades {N} to {N}, including one Mental Math Strategy.": "{N} konpetans soti Ane {N} rive Ane {N}, ansanm ak yon estrateji kalkil mantal.", "Data stays on this device only.": "Done yo rete sou aparèy sa a sèlman."});

@@ -1,10 +1,11 @@
 """Pip's recorded voice: every sentence Pip can say maps to recorded clips, every clip holds speech,
 and the app plays clips through Web Audio from its own files. Run after build: python3 test/audio_test.py"""
+import os
 import json, pathlib, subprocess, sys, time, socket
 from playwright.sync_api import sync_playwright
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-DIST = ROOT / 'dist'
+DIST = ROOT / os.environ.get('DIST', 'dist')
 sock = socket.socket(); sock.bind(('127.0.0.1', 0)); PORT = sock.getsockname()[1]; sock.close()
 server = subprocess.Popen([sys.executable, '-m', 'http.server', str(PORT), '--bind', '127.0.0.1'], cwd=DIST, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 time.sleep(0.8)

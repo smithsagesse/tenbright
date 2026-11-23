@@ -912,6 +912,8 @@ tr:last-child td { border-bottom: none; }
   'use strict';
   const E = window.TBEngine, C = window.TBContent;
   const KEY = 'tenbright-mvp-v1';
+  // store build (node build.js --store): hides preview-only items such as the demo clock
+  const STORE = /*STORE*/false;
   const NOTICE_VERSION = 'Privacy notice v1.2, November 5, 2026';
   document.documentElement.lang = 'en';
   const app = document.getElementById('app');
@@ -2304,7 +2306,7 @@ tr:last-child td { border-bottom: none; }
         <div class="hero-media" aria-hidden="true" data-3d><picture class="hero-pic"><img class="hero-img" src="art/welcome.webp" srcset="art/welcome.webp 960w, art/welcome-1600.webp 1600w, art/welcome-2560.webp 2560w" sizes="(min-width: 721px) 640px, 100vw" width="960" height="1023" alt="" decoding="async" fetchpriority="high" data-depth="art/welcome-depth.webp" data-pos="50 30" data-amp="0.018 0.012" data-focus="0.45"></picture>
         <div class="hero-scrim"></div></div>
         <div class="hero-bar">
-          <div class="wordmark">${markSvg} Tenbright <small>MVP preview</small></div>
+          <div class="wordmark">${markSvg} Tenbright${STORE ? '' : ' <small>MVP preview</small>'}</div>
           <div class="row lang-pick" role="group" aria-label="Language" data-notr>${Object.entries(I.LANGS).map(([k, v]) => `<button class="btn ${lang() === k ? 'primary' : ''}" data-act="lang" data-l="${k}" lang="${I.HTML_LANG[k]}" aria-pressed="${lang() === k}">${v}</button>`).join('')}</div>
         </div>
         <div class="hero-copy">
@@ -2318,7 +2320,7 @@ tr:last-child td { border-bottom: none; }
           <div class="card"><span class="eyebrow">For grown-ups first</span><p>You set things up and give consent. Your child never sees a form, a price or an ad.</p><button class="btn primary" data-act="gate" data-next="consent">Set up as a parent</button></div>
           <div class="card"><span class="eyebrow">Just looking?</span><p>Open a sample learner with a week of made-up progress, including a common subtraction mix-up.</p><button class="btn" data-act="gate" data-next="sample">Try the sample learner</button></div>
         </div>
-        <p class="note">This preview keeps everything on this device, in this browser. Nothing is sent to a server, shared, or used to train AI. Clearing your browser data erases it.</p>
+        <p class="note">${STORE ? 'Tenbright keeps everything on this device. Nothing is sent to a server, shared, or used to train AI. Deleting the app erases it.' : 'This preview keeps everything on this device, in this browser. Nothing is sent to a server, shared, or used to train AI. Clearing your browser data erases it.'}</p>
         ${footerLinks()}
       </main>`;
     },
@@ -2742,11 +2744,11 @@ tr:last-child td { border-bottom: none; }
           </fieldset>
           <div class="field"><label for="sess-len">Session length</label><select id="sess-len">${[10, 15, 20].map((m) => `<option value="${m}" ${S.settings.sessionMin === m ? 'selected' : ''}>${m} minutes</option>`).join('')}</select></div>
           <div class="row"><button class="btn" data-act="go" data-to="data">See everything stored</button></div>
-          <div class="row"><button class="btn" data-act="skip">Demo: move the clock 7 days ahead</button>${S.timeOffset ? '<button class="btn" data-act="resetClock">Reset demo clock</button>' : ''}</div>
-          <p class="hint-text">The demo clock lets you see retention checks without waiting a week. It exists only in this preview.</p>
+          ${STORE ? '' : `<div class="row"><button class="btn" data-act="skip">Demo: move the clock 7 days ahead</button>${S.timeOffset ? '<button class="btn" data-act="resetClock">Reset demo clock</button>' : ''}</div>
+          <p class="hint-text">The demo clock lets you see retention checks without waiting a week. It exists only in this preview.</p>`}
           ${confirmDelete === ch.id ? `<div class="confirm"><p><b>Delete ${esc(ch.nickname)} and all their learning data from this device?</b> This cannot be undone.</p><div class="row"><button class="btn danger" data-act="doDelete" data-id="${ch.id}">Delete ${esc(ch.nickname)}</button><button class="btn" data-act="cancelDelete">Keep</button></div></div>` : confirmDelete === 'ALL' ? `<div class="confirm"><p><b>Erase every child, your PIN and all data from this device?</b></p><div class="row"><button class="btn danger" data-act="doDeleteAll">Erase everything</button><button class="btn" data-act="cancelDelete">Keep</button></div></div>` : `<div class="row"><button class="btn danger" data-act="askDelete" data-id="${ch.id}">Delete this child's data</button><button class="btn danger" data-act="askDeleteAll">Erase everything</button></div>`}
         </section>
-        <p class="note">Preview: ${E.SKILL_ORDER.length} skills across Grades 1 to 5, including one Mental Math Strategy. Data stays in this browser only.${S.parent && S.parent.consentAt ? ' Consent recorded ' + new Date(S.parent.consentAt).toLocaleDateString() + ' under ' + esc(S.parent.notice || NOTICE_VERSION) + '.' : ''}</p>
+        <p class="note">${STORE ? `${E.SKILL_ORDER.length} skills across Grades 1 to 5, including one Mental Math Strategy. Data stays on this device only.` : `Preview: ${E.SKILL_ORDER.length} skills across Grades 1 to 5, including one Mental Math Strategy. Data stays in this browser only.`}${S.parent && S.parent.consentAt ? ' Consent recorded ' + new Date(S.parent.consentAt).toLocaleDateString() + ' under ' + esc(S.parent.notice || NOTICE_VERSION) + '.' : ''}</p>
         ${footerLinks()}
       </main>`;
     }
@@ -3073,7 +3075,7 @@ tr:last-child td { border-bottom: none; }
       }
       case 'pinDel': pinEntry = pinEntry.slice(0, -1); render(); break;
       case 'dashChild': view.childId = b.dataset.id; confirmDelete = null; render(); break;
-      case 'skip': S.timeOffset = (S.timeOffset || 0) + 7 * E.DAY; save(); render(); break;
+      case 'skip': if (STORE) break; S.timeOffset = (S.timeOffset || 0) + 7 * E.DAY; save(); render(); break;
       case 'resetClock': S.timeOffset = 0; save(); render(); break;
       case 'askDelete': confirmDelete = b.dataset.id; render(); break;
       case 'askDeleteAll': confirmDelete = 'ALL'; render(); break;
@@ -3120,7 +3122,7 @@ tr:last-child td { border-bottom: none; }
       if (!document.getElementById('c-guardian').checked || !document.getElementById('c-record').checked) { err.textContent = T('Please check both boxes to continue. Tenbright cannot keep a learning record without your agreement.'); err.hidden = false; return; }
       if (!/^\d{4}$/.test(pin)) { err.textContent = T('Your PIN needs exactly 4 digits, like 2580.'); err.hidden = false; return; }
       const salt = Math.random().toString(36).slice(2, 10);
-      S.parent = { name: document.getElementById('pname').value.trim().slice(0, 30), salt, pinHash: hashPin(pin, salt), consentAt: Date.now(), notice: NOTICE_VERSION, method: 'on-device agreement (preview)' };
+      S.parent = { name: document.getElementById('pname').value.trim().slice(0, 30), salt, pinHash: hashPin(pin, salt), consentAt: Date.now(), notice: NOTICE_VERSION, method: STORE ? 'on-device agreement' : 'on-device agreement (preview)' };
       save(); view = { name: 'addChild' }; render();
     }
     if (e.target.id === 'child-form') {
