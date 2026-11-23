@@ -4,6 +4,7 @@ name: Build and test
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -43,5 +44,5 @@ jobs:
           path: |
             source/tenbright-mvp/dist/
             !source/tenbright-mvp/dist/test.html
-          retention-days: 30
+          retention-days: 7
           if-no-files-found: ignore
