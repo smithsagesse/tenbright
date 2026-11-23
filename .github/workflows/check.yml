@@ -1,0 +1,48 @@
+# Every change pushed to GitHub is built and tested automatically.
+# Results: the "Actions" tab. The built app is attached to each run as "tenbright-app" (download, unzip, open index.html).
+name: Build and test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: source/tenbright-mvp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright (uses the runner's own Google Chrome, no browser download)
+        run: pip install playwright==1.63.0
+      - name: Check Chrome is present
+        run: /usr/bin/google-chrome --version
+      - name: Build and run every test suite
+        run: python test/run_all.py
+      - name: Attach the built app
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tenbright-app
+          path: |
+            source/tenbright-mvp/dist/
+            !source/tenbright-mvp/dist/test.html
+          retention-days: 7
+          if-no-files-found: ignore

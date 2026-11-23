@@ -100,6 +100,9 @@ Make changes in `source/tenbright-mvp/src/`, rebuild, run every suite, then copy
 - Quick look: open `app/index.html` in a browser. It works offline, without the service worker.
 - As a real web app: `cd app && python3 -m http.server 8080`, then open http://localhost:8080
 - Source build: `cd source/tenbright-mvp && node build.js && node test/engine.test.js`
+- Everything (build plus all suites; fails on page errors or outside requests): `cd source/tenbright-mvp && python3 test/run_all.py` (`QUICK=1` for build plus engine only).
+  GitHub Actions (`.github/workflows/check.yml`) runs the same on every push and attaches the built app as `tenbright-app`.
+- The owner's editing guide is `EDITING.md`. Keep its file map accurate when code moves.
 - Playwright tests need `pip install playwright` (match the Node Playwright version) and a full Chrome or Chromium at
   `/usr/bin/google-chrome`, which the test scripts use. In Claude Code cloud sessions that path already wraps
   `/opt/pw-browsers/chromium`, so do not run `playwright install`. Use a full Chrome or Chromium:
