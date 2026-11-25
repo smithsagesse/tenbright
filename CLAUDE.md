@@ -132,4 +132,10 @@ still needs the owner's approval.
 ## Working style the owner expects
 
 He wants work that is business-focused, factual and no-nonsense, with thorough research. Lead with the result. Flag decisions that need him clearly.
+
+**Git workflow (owner's standing instruction, Nov 25, 2026):** do each piece of work on a `claude/...` branch. Once every
+test suite passes, merge it into `main` yourself (fast-forward; rebase first if `main` moved), push, and then tell him what
+was merged. He does not need to approve each merge. This covers development work only: anything that publishes to
+families (the live link, a website, the app stores) still needs his approval.
+Current focus (Nov 25, 2026): developing the app. Do not raise launch items or plans unless he asks.
 Do not claim legal sign-off, hiring or payments. Those are his.
