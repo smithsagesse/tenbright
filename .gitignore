@@ -4,3 +4,4 @@ node_modules/
 *.log
 source/tenbright-mvp/dist/
 __pycache__/
+source/tenbright-mvp/narration/say.wav

@@ -2881,7 +2881,7 @@ tr:last-child td { border-bottom: none; }
     } else {
       session.tries++;
       react('tilt'); sfx('clue');
-      const clue = res.misconception ? E.MISCONCEPTIONS[res.misconception].clue : 'Hmm, a clue! ' + C[it.skill].nudge;
+      const clue = res.misconception ? E.MISCONCEPTIONS[res.misconception].clue : 'A clue! ' + C[it.skill].nudge;
       if (session.tries >= 2) session.feedback = { ok: false, final: true, showSteps: true, text: 'Let\'s look at how it works together. The answer is ' + it.answer + '.' };
       else session.feedback = { ok: false, text: clue + ' Try again.' };
       speak(session.feedback.text);
@@ -3280,7 +3280,7 @@ tr:last-child td { border-bottom: none; }
         const c = C[id];
         F(c.hook); c.teach.forEach(F); F(c.nudge); F(c.strategy); if (c.history) F(c.history);
         F(c.hook + ' ' + c.teach.join(' '));
-        F('Nice thinking! ' + c.strategy); F('Nice thinking! ' + c.strategy + ' You fixed it.'); F('Hmm, a clue! ' + c.nudge + ' Try again.');
+        F('Nice thinking! ' + c.strategy); F('Nice thinking! ' + c.strategy + ' You fixed it.'); F('A clue! ' + c.nudge + ' Try again.');
         for (let r = 0; r < per; r++) {
           let it = E.generate(id, rng);
           if (it.format === 'build') it = E.generate(id, rng);

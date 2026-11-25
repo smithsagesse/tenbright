@@ -68,3 +68,16 @@ python3 test/i18n_test.py
 python3 test/living_test.py
 python3 test/separation_test.py
 ```
+
+Pip's recorded voice (English). Run after `node build.js` whenever Pip's wording changes, then rebuild and run the suites:
+
+```
+python3 narration/record.py                       # record only the clips the app needs and does not have yet
+python3 narration/record.py --drop "P:old phrase"  # also remove clips that are no longer used
+python3 narration/record.py --all                  # re-record everything after changing the voice in narration/voice.json (about 40 minutes)
+python3 narration/record.py --say "Hi, I'm Pip!"   # try a sentence; writes narration/say.wav
+```
+
+It needs `pip install kokoro-onnx soundfile playwright`, ffmpeg, and the Kokoro v1.0 model files
+(`kokoro-v1.0.onnx`, `voices-v1.0.bin` from the kokoro-onnx GitHub release "model-files-v1.0") in `~/kokoro-model`
+or `$KOKORO_MODEL_DIR`. It runs entirely on this machine.

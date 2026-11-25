@@ -30,8 +30,14 @@ https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
 - **Lessons:** illustrated step-by-step walkthroughs with Pip and "Work it with Pip" guided practice. Models include
   base-ten blocks, place-value charts, number lines, ten-frames, bar models, arrays and an interactive soroban.
 - **Lantern Line**, a number-line warm-up game, plus a child journal and a parent dashboard.
-- **Narration:** free, on-device **Kokoro TTS**, voice `af_heart`, pre-recorded to `audio/pip-*.mp3`.
+- **Narration:** free, on-device **Kokoro TTS**, voice `af_heart` at speed 0.95, pre-recorded to `audio/pip-*.mp3`.
   An earlier ElevenLabs "Simone" voice was dropped because the paid plan was insufficient.
+  On Nov 25, 2026 the owner auditioned 13 Kokoro voices and kept `af_heart` as is. His rule for Pip's speech:
+  **no filler words** ("Hmm", "um", "well"...); use pauses instead (sentence breaks, commas).
+  When Pip's English wording changes, run `python3 narration/record.py` after the build (see README.md):
+  it records only the missing clips, from the app's own list of everything Pip says. The model files (about 350 MB) are not
+  in the repo: a fresh cloud session must `pip install kokoro-onnx soundfile` and download them again (README.md says how).
+  `kokoro-onnx` is used because PyTorch's download server is blocked in cloud sessions.
 - **Voice answers** (opt-in) use the on-device Web Speech API. Children write problems on paper while Pip
   works them step by step, then answer by voice.
 - **Languages:** English, Spanish (Latin America), French, Haitian Creole, Traditional Chinese (Taiwan)

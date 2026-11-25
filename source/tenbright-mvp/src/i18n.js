@@ -161,7 +161,7 @@
   // sentence wrappers: the inside is translated on its own
   const FRAMES = [
     [/^Step (\d+): ([\s\S]+)$/, 'Step {N}: {S}'], [/^Let’s solve one together: ([\s\S]+)$/, 'Let’s solve one together: {S}'], [/^Not quite\. Look again: ([\s\S]+)$/, 'Not quite. Look again: {S}'],
-    [/^Here it is: ([\s\S]+)$/, 'Here it is: {S}'], [/^Here is why: ([\s\S]+)$/, 'Here is why: {S}'], [/^Hmm, a clue! ([\s\S]+)$/, 'Hmm, a clue! {S}'], [/^Nice thinking! ([\s\S]+)$/, 'Nice thinking! {S}'],
+    [/^Here it is: ([\s\S]+)$/, 'Here it is: {S}'], [/^Here is why: ([\s\S]+)$/, 'Here is why: {S}'], [/^A clue! ([\s\S]+)$/, 'A clue! {S}'], [/^Nice thinking! ([\s\S]+)$/, 'Nice thinking! {S}'],
     [/^Yes! ([\s\S]+)$/, 'Yes! {S}'], [/^Not quite\. ([\s\S]+)$/, 'Not quite. {S}'], [/^Write the problem: ([\s\S]+)$/, 'Write the problem: {S}'], [/^Pip's idea: ([\s\S]+)$/, "Pip's idea: {S}"], [/^I heard: ([\s\S]+)$/, 'I heard: {S}'], [/^Story numbers: ([\s\S]+)$/, 'Story numbers: {S}'],
     [/^The answer is ([\s\S]+)$/, 'The answer is {S}'], [/^Look again: ([\s\S]+)$/, 'Look again: {S}'], [/^Next on the map: ([\s\S]+)$/, 'Next on the map: {S}']
   ];
