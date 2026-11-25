@@ -1,4 +1,3 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <meta charset="utf-8">
 <title>Tenbright</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -15049,6 +15048,10 @@ TBi18n.add("ar", {"Count to {N}":"العدّ حتى {N}",
   function afterRender() {
     const lvl = animLevel(), html = document.documentElement;
     html.classList.toggle('motion-full', lvl === 'full'); html.classList.toggle('motion-gentle', lvl === 'gentle'); html.classList.toggle('motion-still', lvl === 'still');
+    // flights and dives are Full-only: one already in the air stops at once when motion is turned down
+    if (lvl !== 'full') {
+      document.querySelectorAll('.pip-flyby, .pip-dive').forEach((el) => el.remove()); html.classList.remove('pip-away');
+    }
     if (view.name !== VIS.lastView) {
       FX.nextFly = Date.now() + 5000 + Math.random() * 5000; FX.lastInput = Date.now(); FX.idlePlayed = false;
       const m = app.querySelector('main.stage'); if (m && lvl !== 'still' && VIS.lastView !== null) m.classList.add('view-in'); // child screens only; grown-up pages stay plain
@@ -16734,5 +16737,3 @@ TBi18n.add("ar", {"Count to {N}":"العدّ حتى {N}",
   render();
 })();
 </script>
-
-</body></html>

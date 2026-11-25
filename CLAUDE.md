@@ -69,7 +69,7 @@ https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
 ```
 CLAUDE.md                 ← this file
 START_HERE.md             ← owner's step-by-step setup guide
-app/                      ← the latest BUILT app (v22), downloaded from the live artifact
+app/                      ← the latest BUILT app, refreshed from source/tenbright-mvp/dist/ after every source change
   index.html              ← the whole app (about 1.7 MB: inline JS, CSS, embedded fonts and translations)
   sw.js, manifest.webmanifest, icon-*.png, art/, audio/
 source/tenbright-mvp/     ← the full v22 source (build.js, src/, test/, narration/); dist/ is build output, not committed
@@ -79,8 +79,9 @@ docs/DECISIONS_AND_HISTORY.md, docs/LINKS.md
 
 ### The built app vs. the real source
 
-`app/index.html` is the **built output**. Edit it only for small fixes, and only if the source zip is missing.
-Note that line 1 of `app/index.html` carries a small hosting header added by claude.ai. It is harmless.
+`app/index.html` is the **built output**. Never edit it by hand; change the source and rebuild.
+Up to Nov 25, 2026 it was the copy downloaded from the live artifact, with a small claude.ai hosting header on line 1.
+Since then it is the plain build output, without that header.
 
 The **real project** is `source/tenbright-mvp/` (from `tenbright-mvp.zip`, the last file attached in the original chat, v22).
 The owner uploaded it without the art and audio; `src/art/*.webp` and `narration/audio/*.mp3` were restored from `app/`.
@@ -93,7 +94,15 @@ with identical sw.js, manifest, icons, art and audio. It contains:
   `test/separation_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
 - `docs/animation-system.md` and `README.md`.
 
-Make changes in `source/tenbright-mvp/src/`, rebuild, run every suite, then copy `dist/` into `app/` for release.
+Make changes in `source/tenbright-mvp/src/`, rebuild and run every suite.
+
+**Owner's standing instruction (Nov 25, 2026): refresh `app/` every time the source changes.** Once the suites pass,
+copy the build into `app/` in the same commit as the source change:
+`index.html`, `sw.js`, `manifest.webmanifest`, `icon-192.png`, `icon-512.png`, and replace `app/art/` and `app/audio/` whole.
+**Never copy `dist/test.html`**: it carries the test hooks, and shipping a test hook was compliance finding F11.
+Afterwards `diff -rq source/tenbright-mvp/dist app` must report only `test.html`.
+Refreshing `app/` in the repository is not a release. Publishing to families (the live link, a website or the app stores)
+still needs the owner's approval.
 
 ## How to run
 
