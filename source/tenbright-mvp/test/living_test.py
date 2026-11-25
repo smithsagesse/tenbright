@@ -12,8 +12,14 @@ errors, outside = [], []
 AUDIO_SPY = """(() => { const AC = window.AudioContext; if (!AC) return; window.__osc = 0;
   const o = AC.prototype.createOscillator; AC.prototype.createOscillator = function () { window.__osc++; return o.call(this); }; })();"""
 def axe(pg, name):
-    # finite animations (entrances, pops) settle first; axe judges the resting screen
-    pg.wait_for_function("() => document.getAnimations().every(a => a.playState !== 'running' || a.effect.getComputedTiming().iterations === Infinity)", timeout=8000)
+    # finite animations (entrances, pops) settle first; axe judges the resting screen.
+    # Pip's flyover is skipped: the map, journal and end screens schedule one 5-10 s after they open, and it is
+    # an aria-hidden, click-through decoration, so waiting for it would only make this step flaky.
+    try:
+        pg.wait_for_function("() => document.getAnimations().every(a => a.playState !== 'running' || a.effect.getComputedTiming().iterations === Infinity || (a.effect.target && a.effect.target.closest && a.effect.target.closest('.pip-flyby')))", timeout=8000)
+    except Exception:
+        busy = pg.evaluate("() => document.getAnimations().filter(a => a.playState === 'running' && a.effect.getComputedTiming().iterations !== Infinity).map(a => (a.animationName || a.constructor.name) + ' on ' + ((a.effect.target && (a.effect.target.className.baseVal ?? a.effect.target.className)) || '?') + ' @' + Math.round(a.currentTime) + 'ms')")
+        raise AssertionError((name, 'animations still running after 8 s', busy))
     if not pg.evaluate('!!window.axe'): pg.add_script_tag(content=AXE)
     v = pg.evaluate("async () => (await axe.run(document, { runOnly: ['wcag2a','wcag2aa','wcag21aa','wcag22aa'] })).violations.map(v => v.id + ':' + v.nodes.length)")
     assert not v, (name, v)
@@ -59,8 +65,14 @@ with sync_playwright() as p:
         # a flyover crosses the top and cleans itself up
         pg.evaluate('() => window.__tbFlyby()')
         assert pg.locator('.pip-flyby svg.pip.mood-fly').count() == 1, 'no flyover'
-        pg.wait_for_timeout(6600)
-        assert pg.locator('.pip-flyby').count() == 0, 'flyover not removed'
+        # tag this flyover: the map's own schedule may start a new one right after it ends, which is fine
+        pg.evaluate("() => { document.querySelector('.pip-flyby').dataset.forced = '1'; }")
+        pg.wait_for_timeout(5000)
+        assert pg.locator('.pip-flyby[data-forced]').count() == 1, 'flyover removed before it finished crossing'
+        try:
+            pg.wait_for_selector('.pip-flyby[data-forced]', state='detached', timeout=3000)
+        except Exception:
+            raise AssertionError('flyover not removed')
         axe(pg, 'map ' + scheme)
         if scheme == 'light': shot(pg, 'map')
         # practice question: Pip sits beside it and reacts to each moment
@@ -164,7 +176,10 @@ with sync_playwright() as p:
         pg.evaluate("() => { window.__tbLife().settings.anim = 'gentle'; }"); pg.evaluate("() => window.__tbView('map')")
         assert pg.evaluate("document.documentElement.classList.contains('motion-gentle')")
         assert pg.locator('canvas.d3-canvas').count() == 0
+        # a flyover already in the air stops as soon as motion is turned down to Still
+        pg.evaluate('() => window.__tbFlyby()'); assert pg.locator('.pip-flyby').count() == 1, 'no flyover to stop'
         pg.evaluate("() => { window.__tbLife().settings.anim = 'still'; }"); pg.evaluate("() => window.__tbShow('AS04', 0)")
+        assert pg.locator('.pip-flyby, .pip-dive').count() == 0, 'a flight kept going after switching to Still'
         assert pg.evaluate("document.documentElement.classList.contains('motion-still')")
         anims = pg.evaluate("() => document.getAnimations().filter(a => a.playState === 'running').length")
         assert anims == 0, 'something moves in Still: %d' % anims

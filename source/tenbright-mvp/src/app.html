@@ -1487,6 +1487,10 @@ tr:last-child td { border-bottom: none; }
   function afterRender() {
     const lvl = animLevel(), html = document.documentElement;
     html.classList.toggle('motion-full', lvl === 'full'); html.classList.toggle('motion-gentle', lvl === 'gentle'); html.classList.toggle('motion-still', lvl === 'still');
+    // flights and dives are Full-only: one already in the air stops at once when motion is turned down
+    if (lvl !== 'full') {
+      document.querySelectorAll('.pip-flyby, .pip-dive').forEach((el) => el.remove()); html.classList.remove('pip-away');
+    }
     if (view.name !== VIS.lastView) {
       FX.nextFly = Date.now() + 5000 + Math.random() * 5000; FX.lastInput = Date.now(); FX.idlePlayed = false;
       const m = app.querySelector('main.stage'); if (m && lvl !== 'still' && VIS.lastView !== null) m.classList.add('view-in'); // child screens only; grown-up pages stay plain
