@@ -44,7 +44,7 @@ GMIA's math app for Grades 1–5 (Tenbright 2.0): 126 skills, from counting to 1
 
 - `src/engine.js` — the math engine (items, answers, worked steps, misconception predictions, BKT, mastery, scheduling, placement).
 - `src/content.js` — lesson text, hints and home activities.
-- `src/explain.js` — plain-words worked examples: what the numbers mean, each step in words with the engine's number sentence, and a check (all 103 skills, Grades 1–5, including subtracting across zeros; Fix Pip's mistake questions keep the engine's steps).
+- `src/explain.js` — plain-words worked examples: what the numbers mean, each step in words with the engine's number sentence, and a check (all 126 skills, Grades 1–5, including subtracting across zeros; Fix Pip's mistake questions keep the engine's steps).
 - `src/app.html` — the app shell and UI.
 - `src/i18n.js` — translation engine: sentences become patterns with number, name and object slots, filled back in each language's style; also spoken-math wording and spoken-number parsing per language.
 - `src/i18n/es.js`, `fr.js`, `ht.js`, `zh.js`, `ar.js` — about 2,220 translated patterns per language.

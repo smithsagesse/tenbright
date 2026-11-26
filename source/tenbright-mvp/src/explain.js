@@ -788,6 +788,215 @@
     }
   });
 
+  // ---------- Phase 7 and Money & Wealth: money, time, measuring, shapes and the math of money ----------
+  // Each builder reads the engine's own steps (and picture model), so every number is the engine's.
+  const COIN = { 1: 'penny', 5: 'nickel', 10: 'dime', 25: 'quarter' };
+  const ADDSUB = /^([\d.]+) ([+−]) ([\d.]+) = ([\d.]+)$/;
+  const tm = (hh, mm) => hh + ':' + String(mm).padStart(2, '0');
+  function clockWords(it) {
+    const md = it.model;
+    if (!md || md.type !== 'clock' || it.steps.length !== 3) return null;
+    const h = md.h, m = md.m, n = Math.floor(m / 5), e = m % 5, after = h === 12 ? 1 : h + 1;
+    const s0 = 'Look at the short hand. It shows the hour. ' + (m === 0 ? 'It points at ' + h + ', so the hour is ' + h + '.' : 'It is between ' + h + ' and ' + after + '. So the hour is ' + h + '.');
+    let s1;
+    if (m === 0) s1 = 'Now look at the long hand. It points straight up at 12. That means 0 minutes, so we say o’clock.';
+    else if (m === 30) s1 = 'Now look at the long hand. It points straight down at 6. That is half way around: half past.';
+    else if (e === 0) s1 = 'Now look at the long hand. It points to ' + n + '. Each number on the clock is 5 minutes. ' + n + ' × 5 = ' + m;
+    else if (n === 0) s1 = 'Now look at the long hand. It is ' + plural(e, 'mark', 'marks') + ' past 12. The 12 means 0 minutes. Each small mark is 1 minute. 0 + ' + e + ' = ' + m;
+    else s1 = 'Now look at the long hand. It is ' + plural(e, 'mark', 'marks') + ' past ' + n + '. Count by 5s up to ' + n + '. Then each small mark is 1 minute. ' + 5 * n + ' + ' + e + ' = ' + m;
+    const s2 = /^So it is/.test(it.steps[2]) ? 'The minutes tell how far past the hour it is. ' + it.steps[2] : 'Say the hour, then the minutes. ' + it.steps[2];
+    return { meaning: ['A clock has two hands.', 'The short hand shows the hour. The long hand shows the minutes.'], say: [s0, s1, s2], check: null };
+  }
+  Object.assign(B, {
+    MY01(it) {
+      const c = /^An? (\w+) is worth (\d+) cents?\.$/.exec(it.steps[0] || ''), coins = (it.model && it.model.coins) || [];
+      if (!c || it.steps.length !== 2 || !coins.length) return null;
+      const v = +c[2], k = coins.length, t = v * k;
+      const say0 = 'Look at the coin. Its value is printed on it. ' + it.steps[0];
+      if (k === 1) return { meaning: ['We count money in cents.', 'A coin’s value is how many cents it is worth.'], say: [say0, 'There is just one coin, so its value is the answer. ' + it.steps[1]], check: null };
+      return { meaning: ['We count money in cents.', 'A coin’s value is how many cents it is worth.'], say: [say0, 'Count the value of each coin, not the number of coins. Add ' + v + ' once for each coin. ' + adds(v, k) + ' = ' + t], check: 'Check: ' + k + ' × ' + v + ' = ' + t + '.' };
+    },
+    MY02(it) {
+      const first = /^Start with the coin worth the most: (\d+)\.$/.exec(it.steps[0] || ''), coins = (it.model && it.model.coins) || [];
+      if (!first || coins.length !== it.steps.length) return null;
+      const say = ['Put the coins in order, from the biggest value to the smallest. ' + it.steps[0]];
+      for (let i = 1; i < it.steps.length; i++) {
+        const m = ADDSUB.exec(it.steps[i]); if (!m || !COIN[+m[3]]) return null;
+        say.push('Count on ' + (m[3] === '1' ? 'a penny, 1 more. ' : 'a ' + COIN[+m[3]] + ', ' + m[3] + ' more. ') + it.steps[i]);
+      }
+      const total = coins.reduce((a, x) => a + x, 0);
+      return { meaning: ['Count coins by their values, not by how many coins there are.', 'Start with the biggest value. Then count on.'], say, check: 'Check: there are ' + plural(coins.length, 'coin', 'coins') + ', and they are worth ' + total + ' cents.' };
+    },
+    MY03(it) {
+      const m = ADDSUB.exec(it.steps[1] || '');
+      if (!m || it.steps.length !== 2) return null;
+      const [a, op, b, c] = [m[1], m[2], m[3], m[4]];
+      if (op === '−') return { meaning: ['The money at the start is ' + a + ' cents. The price is ' + b + ' cents.'], say: ['When you buy something, the price goes away from your money. So we take away.', 'Start with ' + a + ' cents. Take away the price, ' + b + ' cents. ' + it.steps[1]], check: 'Check: ' + c + ' + ' + b + ' = ' + a + '.' };
+      return { meaning: ['The money at the start is ' + a + ' cents. Then ' + b + ' cents more are found.'], say: ['Finding money means there is more. So we add.', 'Start with ' + a + ' cents. Add ' + b + ' cents. ' + it.steps[1]], check: 'Check: ' + c + ' − ' + b + ' = ' + a + '.' };
+    },
+    MY04(it) {
+      const meaning = ['Change is the money you get back.', 'Count up from the price to 100 cents. The jumps make the change.'];
+      if (it.steps.length === 3) {
+        const j1 = /(\d+) \+ (\d+) = (\d+)$/.exec(it.steps[0]), j2 = /(\d+) \+ (\d+) = 100$/.exec(it.steps[1]), j3 = /(\d+) \+ (\d+) = (\d+)$/.exec(it.steps[2]);
+        if (!j1 || !j2 || !j3) return null;
+        return { meaning, say: ['Start at the price, ' + j1[1] + ' cents. Jump to the next ten. ' + j1[0], 'Now jump by tens to 100 cents, which is one dollar. ' + j2[0], 'The change is both jumps together. ' + j3[0]], check: 'Check: 100 − ' + j1[1] + ' = ' + j3[3] + '.' };
+      }
+      const j = /(\d+) \+ (\d+) = 100$/.exec(it.steps[0]), d = /100 − (\d+) = (\d+)$/.exec(it.steps[1] || '');
+      if (!j || !d || it.steps.length !== 2) return null;
+      return { meaning, say: ['The price, ' + j[1] + ' cents, is already a ten. Jump by tens to 100 cents. ' + j[0], 'That one jump is the change. ' + d[0]], check: 'Check: ' + j[1] + ' + ' + d[2] + ' = 100.' };
+    },
+    TM01: clockWords, TM02: clockWords, TM03: clockWords,
+    TM04(it) {
+      const meaning = ['Elapsed time is how long something lasts.', 'Count on from the start time to the end time. An hour is 60 minutes.'];
+      const st = it.steps, A = /^From (\d+:\d+) to (\d+:\d+) is (\d+) hours?(?:, or 60 minutes\.|\.)(?: (\d+) × 60 = (\d+))?$/.exec(st[0] || '');
+      if (A && st.length === 3) {
+        const more = /^From (\d+:\d+) to (\d+:\d+) is (\d+) more minutes\.$/.exec(st[1]), add = /(\d+) \+ (\d+) = (\d+)$/.exec(st[2]);
+        if (!more || !add) return null;
+        const H = +A[3];
+        return { meaning, say: ['Jump whole hours first. From ' + A[1] + ' to ' + A[2] + ' is ' + plural(H, 'hour', 'hours') + '. ' + (H === 1 ? 'That is 60 minutes.' : 'Each hour is 60 minutes. ' + H + ' × 60 = ' + 60 * H), 'Then count the minutes that are left. From ' + more[1] + ' to ' + more[2] + ' is ' + more[3] + ' more minutes.', 'Add the hours and the minutes together. ' + add[0]], check: null };
+      }
+      if (A && st.length === 2) {
+        const e = /(\d+) × 60 = (\d+)$/.exec(st[1]);
+        if (!e) return null;
+        return { meaning, say: ['Jump whole hours. From ' + A[1] + ' to ' + A[2] + ' is ' + plural(+A[3], 'hour', 'hours') + '.', 'Each hour is 60 minutes. ' + e[0]], check: null };
+      }
+      if (/^Both times are in the same hour/.test(st[0] || '')) {
+        const d = /^(\d+) − (\d+) = (\d+)$/.exec(st[1] || '');
+        if (!d) return null;
+        return { meaning, say: ['Both times have the same hour. So we only need the minutes.', 'Take the start minutes from the end minutes. ' + d[0]], check: 'Check: ' + d[2] + ' + ' + d[3] + ' = ' + d[1] + '.' };
+      }
+      const nh = /^It ends on the next hour\. Count on from (\d+:\d+) to (\d+:\d+)\.$/.exec(st[0] || '');
+      if (nh) {
+        const d = /^60 − (\d+) = (\d+)$/.exec(st[1] || '');
+        if (!d) return null;
+        return { meaning, say: ['It ends right on the hour, at ' + nh[2] + '. Count on from ' + nh[1] + ' to ' + nh[2] + '.', 'An hour has 60 minutes. The start is ' + d[1] + ' minutes past. ' + d[0]], check: null };
+      }
+      const c1 = /^Count on to the next hour first\. From (\d+:\d+) to (\d+:\d+) is (\d+) minutes\.$/.exec(st[0] || '');
+      if (c1 && st.length === 3) {
+        const more = /^From (\d+:\d+) to (\d+:\d+) is (\d+) more minutes\.$/.exec(st[1]), add = /(\d+) \+ (\d+) = (\d+)$/.exec(st[2]);
+        if (!more || !add) return null;
+        return { meaning, say: ['Jump to the next hour first. From ' + c1[1] + ' to ' + c1[2] + ' is ' + c1[3] + ' minutes.', 'Then count the minutes after the hour. From ' + more[1] + ' to ' + more[2] + ' is ' + more[3] + ' more minutes.', 'Add the two jumps. ' + add[0]], check: null };
+      }
+      return null;
+    },
+    MS01(it) {
+      const meaning = ['Length is how many units long something is.', 'A unit is one space between two marks on the ruler.'];
+      const z = /^It starts at 0 and ends at (\d+)\.$/.exec(it.steps[0] || '');
+      if (z && it.steps.length === 2) return { meaning, say: ['Look where it starts. ' + it.steps[0], 'When it starts at 0, the end mark tells the length. ' + it.steps[1]], check: null };
+      const s = /^It starts at (\d+), not at 0\.$/.exec(it.steps[0] || ''), d = /^(\d+) − (\d+) = (\d+)$/.exec(it.steps[2] || '');
+      if (!s || !d || it.steps.length !== 3) return null;
+      return { meaning, say: ['Look where it starts. ' + it.steps[0], 'So the end mark is not the length. Count the spaces from ' + d[2] + ' to ' + d[1] + '.', 'Or take the start from the end. ' + d[0]], check: 'Check: count on from ' + d[2] + ' to ' + d[1] + '. You make ' + plural(+d[3], 'jump', 'jumps') + '.' };
+    },
+    MS02(it) {
+      const d = /^(\d+) − (\d+) = (\d+)$/.exec(it.steps[1] || '');
+      if (!d || it.steps.length !== 2) return null;
+      return { meaning: ['"How much longer" compares two lengths.'], say: ['Compare the two ribbons. How much longer asks for the difference, so we take away.', 'Take the shorter length from the longer one. ' + d[0]], check: 'Check: ' + d[2] + ' + ' + d[3] + ' = ' + d[1] + '.' };
+    },
+    MS03(it) {
+      const meaning = ['Perimeter is the distance all the way around a shape.'];
+      const all = /^Add all 4 sides: (\d+) \+ (\d+) \+ \d+ \+ \d+ = (\d+)$/.exec(it.steps[1] || '');
+      if (all && it.steps.length === 2) {
+        const [w, h, P] = [+all[1], +all[2], +all[3]];
+        return { meaning, say: ['A rectangle has 4 sides. The sides across from each other are the same length.', 'Go all the way around and add each side. ' + all[0].replace(/^Add all 4 sides: /, '')], check: 'Check: ' + w + ' + ' + h + ' = ' + (w + h) + ', and ' + (w + h) + ' + ' + (w + h) + ' = ' + P + '.' };
+      }
+      const l = /(\d+) \+ \d+ = (\d+)$/.exec(it.steps[0] || ''), r = /(\d+) − (\d+) = (\d+)$/.exec(it.steps[1] || ''), hf = /(\d+) ÷ 2 = (\d+)$/.exec(it.steps[2] || '');
+      if (!l || !r || !hf || it.steps.length !== 3) return null;
+      const w = +l[1], h = +hf[2];
+      return { meaning: meaning.concat(['The perimeter is all 4 sides added together.']), say: ['Two of the sides are the length, ' + w + ' each. ' + l[0], 'The other two sides share what is left. ' + r[0], 'Those two sides are the same, so split it in half. ' + hf[0]], check: 'Check: ' + w + ' + ' + h + ' + ' + w + ' + ' + h + ' = ' + r[1] + '.' };
+    },
+    MS04(it) {
+      const g = /^There are (\d+) rows with (\d+) squares in each row\.$/.exec(it.steps[0] || ''), x = /^(\d+) × (\d+) = (\d+)$/.exec(it.steps[1] || '');
+      if (!x || it.steps.length !== 2) return null;
+      const [a, b, A] = [+x[1], +x[2], +x[3]];
+      if (g) return { meaning: ['Area is how many squares cover a shape.'], say: ['Count the rows, then the squares in one row. ' + it.steps[0], 'Every row has the same number of squares. So multiply. ' + x[0]], check: 'Check: ' + adds(b, a) + ' = ' + A + '.' };
+      if (!/^Area is the length times the width/.test(it.steps[0])) return null;
+      return { meaning: ['Area is how many unit squares cover a shape.'], say: ['Picture unit squares covering the rectangle. There are ' + b + ' rows of ' + a + ' squares. So area is the length times the width.', 'Multiply the length by the width. ' + x[0]], check: 'Check: ' + b + ' × ' + a + ' = ' + A + '.' };
+    },
+    GE01(it) {
+      const meaning = ['Shapes are named by how many straight sides they have.'];
+      const CLUE = { triangle: 'Tri means 3.', quadrilateral: 'Quad means 4.', pentagon: 'Penta means 5.', hexagon: 'Hexa means 6.' };
+      if (it.steps.length === 2 && /^Count the straight sides/.test(it.steps[0])) return { meaning, say: ['Touch each straight side as you count. ' + it.steps[0], 'The number of sides gives the name. ' + it.steps[1]], check: 'Check: count the corners too. A shape has as many corners as sides.' };
+      const n = /^An? (\w+) has (\d+) sides and \d+ corners\.$/.exec(it.steps[0] || '');
+      if (!n || it.steps.length !== 1 || !CLUE[n[1]]) return null;
+      return { meaning, say: ['The start of the name is a clue. ' + CLUE[n[1]] + ' ' + it.steps[0]], check: 'Check: draw one and count its sides.' };
+    },
+    GE02(it) {
+      const d = /^(90|180) − (\d+) = (\d+)$/.exec(it.steps[1] || '');
+      if (!d || it.steps.length !== 2) return null;
+      const right = d[1] === '90';
+      return { meaning: [right ? 'A right angle is a square corner, like the corner of a page.' : 'A straight angle makes a straight line.'], say: ['The two angles together make the whole ' + (right ? 'right' : 'straight') + ' angle. ' + it.steps[0], 'Take the angle we know from the whole. ' + d[0]], check: 'Check: ' + d[3] + ' + ' + d[2] + ' = ' + d[1] + '.' };
+    },
+    GE03(it) {
+      const x = /^Go across to (\d+)\.$/.exec(it.steps[1] || ''), y = /^Then go up to (\d+)\.$/.exec(it.steps[2] || '');
+      if (!x || !y || it.steps.length !== 4) return null;
+      return { meaning: ['A point on a grid has two numbers: how far across, then how far up.'], say: ['Put your finger on 0, the corner where the lines start.', 'Move along the bottom first. Go across to ' + x[1] + '.', 'Now move straight up. Go up to ' + y[1] + '.', 'Across comes first, then up. ' + it.steps[3]], check: null };
+    },
+    FN01(it) {
+      const x = /^(\d+) × (\d+) = (\d+)$/.exec(it.steps[1] || '');
+      if (!x || it.steps.length !== 2) return null;
+      const [n, p, c] = [+x[1], +x[2], +x[3]];
+      if (/^Money that comes in/.test(it.steps[0])) return { meaning: ['Money that comes in from selling is called revenue.'], say: ['Each cup brings in $' + p + '. ' + it.steps[0], n + ' cups at $' + p + ' each is ' + n + ' groups of ' + p + '. ' + x[0]], check: 'Check: ' + c + ' ÷ ' + n + ' = ' + p + '.' };
+      if (!/groups of/.test(it.steps[0])) return null;
+      return { meaning: ['When each one costs the same, multiply.'], say: ['Every one costs $' + p + '. So ' + n + ' of them make ' + n + ' groups of ' + p + '.', 'Multiply how many by the price. ' + x[0]], check: 'Check: ' + adds(p, n) + ' = ' + c + '.' };
+    },
+    FN02(it) {
+      const r = /^Revenue: (\d+) × (\d+) = (\d+)$/.exec(it.steps[0] || ''), c = /^Cost of the cups: (\d+) × (\d+) = (\d+)$/.exec(it.steps[1] || ''), p = /^Profit: (\d+) − (\d+)(?: − (\d+))? = (\d+)$/.exec(it.steps[2] || '');
+      if (!r || !c || !p || it.steps.length !== 3) return null;
+      const e = p[3], P = p[4];
+      return { meaning: ['Revenue is the money that comes in. Costs are the money that goes out.', 'Profit is the money left after paying every cost.'], say: ['First find the money that comes in, the revenue. ' + r[1] + ' × ' + r[2] + ' = ' + r[3], 'Then find what the cups cost to make. ' + c[1] + ' × ' + c[2] + ' = ' + c[3], (e ? 'Profit is what is left. Take away the cups and the sign. ' : 'Profit is what is left. Take away the cost of the cups. ') + p[0].replace(/^Profit: /, '')], check: 'Check: ' + P + ' + ' + c[3] + (e ? ' + ' + e : '') + ' = ' + r[3] + '.' };
+    },
+    FN04(it) {
+      const meaning = ['A saving plan puts the same amount aside each week.'];
+      if (it.steps.length === 2) {
+        const n = /^Still needed: (\d+) − (\d+) = (\d+)$/.exec(it.steps[0]), w = /^Weeks: (\d+) ÷ (\d+) = (\d+)$/.exec(it.steps[1]);
+        if (!n || !w) return null;
+        return { meaning, say: ['Some money is saved already. Find what is still needed. ' + n[1] + ' − ' + n[2] + ' = ' + n[3], 'Each week adds $' + w[2] + '. How many groups of ' + w[2] + ' make ' + w[1] + '? ' + w[1] + ' ÷ ' + w[2] + ' = ' + w[3]], check: 'Check: ' + w[3] + ' × ' + w[2] + ' = ' + w[1] + '.' };
+      }
+      const w = /^Weeks: (\d+) ÷ (\d+) = (\d+)$/.exec(it.steps[0] || '');
+      if (!w || it.steps.length !== 1) return null;
+      return { meaning, say: ['Each week adds $' + w[2] + '. How many groups of ' + w[2] + ' make ' + w[1] + '? ' + w[1] + ' ÷ ' + w[2] + ' = ' + w[3]], check: 'Check: ' + w[3] + ' × ' + w[2] + ' = ' + w[1] + '.' };
+    },
+    FN03(it) {
+      const m = ADDSUB.exec(it.steps[1] || '');
+      if (!m || it.steps.length !== 2 || !/^Line up the decimal points/.test(it.steps[0])) return null;
+      const add = m[2] === '+', show = add ? m[1] : m[3], [dl, ct] = show.split('.');
+      return { meaning: ['In $' + show + ', ' + dl + ' is the dollars and ' + ct + ' is the cents.', 'One dollar is 100 cents.'], say: ['Write the amounts one above the other. Line up the decimal points. Dollars go with dollars, cents with cents.', (add ? 'Add the cents, then the dollars. If the cents make 100, regroup them as a dollar. ' : 'Take away the cents, then the dollars. Regroup a dollar as 100 cents if you need more cents. ') + m[0]], check: 'Check: ' + (add ? m[4] + ' − ' + m[3] + ' = ' + m[1] : m[4] + ' + ' + m[3] + ' = ' + m[1]) + '.' };
+    },
+    FN05(it) {
+      const e = /^Each share gets (\d+) ÷ (\d+) = (\d+)$/.exec(it.steps[0] || ''), k = /^(\d+) shares? gets? (\d+) × (\d+) = (\d+)$/.exec(it.steps[1] || '');
+      if (!e || !k || it.steps.length !== 2) return null;
+      return { meaning: ['A company can be split into equal shares.', 'Owning shares means owning that part of the profit.'], say: ['The profit is shared equally. Split ' + e[1] + ' into ' + e[2] + ' equal shares. ' + e[1] + ' ÷ ' + e[2] + ' = ' + e[3], 'Owning ' + k[1] + ' shares means ' + k[1] + ' of those parts. ' + k[2] + ' × ' + k[3] + ' = ' + k[4]], check: 'Check: the part is less than the whole profit.' };
+    },
+    FN06(it) {
+      if (it.steps.length === 2) {
+        const d = /^([\d.]+) ÷ (\d+) = ([\d.]+)$/.exec(it.steps[1]);
+        if (!d || !/^One costs the pack price/.test(it.steps[0])) return null;
+        return { meaning: ['The unit price is the price for one item.'], say: ['The pack price pays for all ' + d[2] + ' items. To find one, share the price equally.', 'Divide the pack price by ' + d[2] + '. ' + d[0]], check: 'Check: ' + d[3] + ' × ' + d[2] + ' = ' + d[1] + '.' };
+      }
+      const a = /^Pack A: ([\d.]+) ÷ (\d+) = ([\d.]+)$/.exec(it.steps[0] || ''), b = /^Pack B: ([\d.]+) ÷ (\d+) = ([\d.]+)$/.exec(it.steps[1] || '');
+      if (!a || !b || it.steps.length !== 3) return null;
+      return { meaning: ['To compare packs, find the price for one item in each pack.'], say: ['Find the price for one in Pack A. ' + a[1] + ' ÷ ' + a[2] + ' = ' + a[3], 'Now do the same for Pack B. ' + b[1] + ' ÷ ' + b[2] + ' = ' + b[3], 'Compare the two prices for one. The smaller price is the better buy.'], check: null };
+    },
+    FN07(it) {
+      const y1 = /^Year 1: one tenth of (\d+) is (\d+)\. (\d+) \+ (\d+) = (\d+)$/.exec(it.steps[0] || ''), y2 = /^Year 2: one tenth of (\d+) is (\d+)\. (\d+) \+ (\d+) = (\d+)$/.exec(it.steps[1] || '');
+      if (!y1 || !y2 || (it.steps.length !== 2 && it.steps.length !== 3)) return null;
+      const say = ['Year 1: split ' + y1[1] + ' into 10 equal parts. One part is ' + y1[2] + '. Add it to the jar. ' + y1[3] + ' + ' + y1[4] + ' = ' + y1[5], 'Year 2: the jar now has ' + y2[1] + '. One tenth of ' + y2[1] + ' is ' + y2[2] + '. ' + y2[3] + ' + ' + y2[4] + ' = ' + y2[5]];
+      if (it.steps.length === 3) { const g = /(\d+) − (\d+) = (\d+)$/.exec(it.steps[2]); if (!g) return null; say.push('The growth is how much the jar went up. ' + g[0]); }
+      return { meaning: ['One tenth of a number is one of 10 equal parts of it.', 'Each year the growth is added to the jar.'], say, check: 'Check: year 2 grows more than year 1, because the jar had more in it.' };
+    },
+    FN08(it) {
+      const meaning = ['A price line shows the price each week.', 'Each point is one week. A higher point means a higher price.'];
+      const wk = /^Week (\d+): (\d+)\. Week (\d+): (\d+)\.$/.exec(it.steps[0] || ''), d = /^(\d+) − (\d+) = (\d+)$/.exec(it.steps[1] || '');
+      if (wk && d && it.steps.length === 2) {
+        const up = +wk[4] > +wk[2];
+        return { meaning, say: ['Find week ' + wk[1] + ' along the bottom. Its point shows ' + wk[2] + ' dollars. Week ' + wk[3] + ' shows ' + wk[4] + ' dollars.', 'The price went ' + (up ? 'up' : 'down') + '. Take the smaller price from the bigger one. ' + d[0]], check: 'Check: ' + d[2] + ' + ' + d[3] + ' = ' + d[1] + '.' };
+      }
+      const hi = /^The highest point is (\d+) dollars\.$/.exec(it.steps[0] || ''), at = /^That point is above week (\d+)\. So the week is (\d+)\.$/.exec(it.steps[1] || '');
+      if (!hi || !at || it.steps.length !== 2) return null;
+      return { meaning, say: ['Look for the point that is highest up. It shows ' + hi[1] + ' dollars.', 'Look straight down from that point to the bottom. ' + it.steps[1]], check: null };
+    }
+  });
+
   function explain(item) {
     // Fix Pip's mistake questions show Pip's own wrong work, so they keep the engine's steps
     if (!item || !item.steps || item.format === 'mistake') return null;

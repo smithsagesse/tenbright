@@ -2234,7 +2234,7 @@ tr:last-child td { border-bottom: none; }
     }
     const sc = Math.min(260 / m.w, 150 / m.h, 32), W = m.w * sc, H = m.h * sc, x0 = 20, y0 = 34, ua = unitAb(m.cm), hl = m.unknownH ? '?' : m.h + ' ' + ua;
     const g = `<rect x="${x0}" y="${y0}" width="${W}" height="${H}" fill="#CDEBDD" stroke="${INK}" stroke-width="4"></rect>` + svgT(x0 + W / 2, y0 - 10, m.w + ' ' + ua, 18) + svgT(x0 + W + 34, y0 + H / 2 + 6, hl, 18);
-    const label = 'A rectangle. The long side is ' + m.w + '. The short side is ' + (m.unknownH ? 'not known' : m.h) + '.';
+    const label = 'A rectangle. The length is ' + m.w + '. The width is ' + (m.unknownH ? 'not known' : m.h) + '.';
     return `<svg class="mpic sq" viewBox="0 0 ${x0 + W + 76} ${y0 + H + 14}" role="img" aria-label="${esc(label)}">${g}</svg>`;
   }
   function shapeHtml(m) {

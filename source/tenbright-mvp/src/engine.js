@@ -1297,7 +1297,7 @@
       const P = 2 * (w + h);
       if (r.next() < 0.35) {
         const pred = {}; if (P - w !== h) pred.MM2 = P - w;
-        return num('MS03', 'A rectangle has a perimeter of ' + P + ' ' + unit + '. It is ' + w + ' ' + unit + ' long. How wide is it?', h, pred, ['The two long sides: ' + w + ' + ' + w + ' = ' + 2 * w, 'The two short sides share the rest: ' + P + ' − ' + 2 * w + ' = ' + 2 * h, 'Each short side is half of that: ' + 2 * h + ' ÷ 2 = ' + h], { type: 'rect', w, h, cm, show: 'perim', unknownH: true });
+        return num('MS03', 'A rectangle has a perimeter of ' + P + ' ' + unit + '. It is ' + w + ' ' + unit + ' long. How wide is it?', h, pred, ['The two length sides: ' + w + ' + ' + w + ' = ' + 2 * w, 'The two width sides share the rest: ' + P + ' − ' + 2 * w + ' = ' + 2 * h, 'Each width side is half of that: ' + 2 * h + ' ÷ 2 = ' + h], { type: 'rect', w, h, cm, show: 'perim', unknownH: true });
       }
       return num('MS03', 'A rectangle is ' + w + ' ' + unit + ' long and ' + h + ' ' + unit + ' wide. What is its perimeter in ' + unit + '?', P, { MM2: w + h, MM3: w * h !== P ? w * h : null }, ['A rectangle has 4 sides. Opposite sides are the same length.', 'Add all 4 sides: ' + w + ' + ' + h + ' + ' + w + ' + ' + h + ' = ' + P], { type: 'rect', w, h, cm, show: 'perim' });
     },

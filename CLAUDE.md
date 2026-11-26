@@ -166,7 +166,7 @@ Current focus (Nov 25, 2026): developing the app. Do not raise launch items or p
 - **Coins only as math objects** (a Money Market world), never a reward currency.
 - **Parent intake:** only two optional questions (enjoys math? how confident?), kept under privacy notice v1.3.
   Any new kind of stored data needs a notice version bump and re-agreement (the parent page shows the update card).
-- **Build order:** 2 Discovery Adventure (done Nov 26) · 3 foundation lessons (done Nov 26: all 103 skills, Grades 1–5) (micro-step rewrite, Grades 1–2 first,
+- **Build order:** 2 Discovery Adventure (done Nov 26) · 3 foundation lessons (done Nov 26: all 126 skills, Grades 1–5; the 23 money, time, measuring, shapes and money-math skills got plain words on Nov 26 too) (micro-step rewrite, Grades 1–2 first,
   keep math words with plain explanations, translations in the same pass) · 4 adaptive Pip + independence and mastery
   evidence (done Nov 26) · 5 games (done Nov 26) · 6 strategy library (verify the cited research first; done Nov 26) · 7 geometry, measurement, time, money (done Nov 26) ·
   8 parent dashboard v2 (done Nov 26) · 9 pilot and effectiveness study (needs the owner: families, consent, study design).
@@ -181,6 +181,10 @@ enforces: same result per step as the engine, every number sentence true, senten
 "borrow"/"carry"/fillers. Within a step that asks for a result, never say the result in words before its number
 sentence (Work it with Pip hides only the number). Add a builder per skill in `explain.js`; a skill without one keeps
 the engine's steps. Fix Pip's mistake questions always keep the engine's steps.
+The 23 newer skills (MY, TM, MS, GE, FN) read the engine's own steps and picture model (coins, clock hands) with regexes,
+so if an engine step's wording changes, its builder returns null and the engine steps show until the builder is updated
+(test/explain.test.js then fails, because every Grade 1–5 skill must get plain words for all 2,000 test questions).
+MS03 and the rectangle picture say "length" and "width" sides (not "long" and "short": the width can be the longer side).
 **How Pip adapts (Phase 4):** all on the device, no AI at run time.
 - *Explanation variants* (`explainPick`/`explainShown`/`explainOutcome` in engine.js): steps (Phase 3 plain words),
   pictures (the lesson's step pictures, for questions that have a picture model) and the big idea (the skill's teach lines,
