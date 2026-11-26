@@ -20,7 +20,7 @@ Full history: `docs/DECISIONS_AND_HISTORY.md`. Planning documents: `docs/`.
 
 ## Current state (Tenbright 2.0, Nov 26, 2026; started from v22 of Nov 10)
 
-The working MVP is a single-page HTML/JS app plus assets. The live private link (updated Nov 26, 2026 to the Tenbright 2.0 build at the owner's request; version 24 carries the first audit's fixes; the plain-words lessons for the 23 newer skills and the release-audit fixes are in `app/` but not yet published) is
+The working MVP is a single-page HTML/JS app plus assets. The live private link (updated Nov 26, 2026 at the owner's request; version 25 carries the plain-words lessons for the 23 newer skills and the release-audit fixes) is
 https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
 
 - A **deterministic math engine**: all problems, answers and worked steps come from code, never from an LLM.
