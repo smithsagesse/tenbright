@@ -20,7 +20,7 @@ Full history: `docs/DECISIONS_AND_HISTORY.md`. Planning documents: `docs/`.
 
 ## Current state (v22, Nov 10, 2026)
 
-The working MVP is a single-page HTML/JS app plus assets. The live private link is
+The working MVP is a single-page HTML/JS app plus assets. The live private link (updated Nov 26, 2026 to the Tenbright 2.0 build, artifact version 23, at the owner's request) is
 https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
 
 - A **deterministic math engine**: all problems, answers and worked steps come from code, never from an LLM.
