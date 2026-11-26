@@ -239,8 +239,9 @@ tenths (no percent or exponents); spending choices are not kept (keeping them ne
 invitations get parent switches. Every adventure step is an engine question; a first answer counts as story evidence
 (`kind: 'transfer'`) for its skill; adventures never light a lantern by themselves.
 Step 1 (done Nov 26): skills FN01 price × quantity, FN02 revenue/cost/profit, FN04 saving plan, FN05 share of a company,
-FN07 growth year by year (Money Market region); clues MF1 revenue as profit, MF2 forgot a cost, MF3 added the costs,
-MF4 growth added once, MF5 whole instead of part; `E.ADVENTURES`/`adventure(id, r)`/`adventureOpen`; the runner is the
+FN07 growth year by year (Money Market region); clues MW1 revenue as profit, MW2 forgot a cost, MW3 added the costs,
+MW4 growth added once, MW5 whole instead of part (MW, not MF: MF1-MF12 are fraction clues; a repeated code silently
+replaced four fraction clues until Nov 26, and test/engine.test.js now fails on any clue code defined twice); `E.ADVENTURES`/`adventure(id, r)`/`adventureOpen`; the runner is the
 games shell with `game: 'adventure'` (story strip, idea-check choices, "What math did you use?" end screen), reached by a
 "Money adventures" map button shown only when an adventure is open; results in `ch.adventures` (at, first, steps, idea).
 Step 2 (done Nov 26): ten adventures in `ADV_BUILD` (piggy, shelf, kite, jar, change, twenty, stall, lemonade, company,

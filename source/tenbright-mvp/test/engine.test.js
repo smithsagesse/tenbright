@@ -216,6 +216,18 @@ ok(!L2.skills.PV01.activeMis, 'three correct clears it');
 E.SKILL_ORDER.forEach((id) => E.SKILLS[id].prereqs.forEach((p) => ok(E.SKILLS[p], id + ' has unknown prereq ' + p)));
 E.SKILL_ORDER.forEach((id) => ok(!E.ancestors(id).has(id), 'cycle at ' + id));
 ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 122, '122 core skills (102 + 8 money and time + 7 measurement and geometry + 5 money math)');
+// every clue code is defined once: a repeated key in an object literal silently replaces the earlier one
+{
+  const src = require('fs').readFileSync(require('path').join(__dirname, '../src/engine.js'), 'utf8');
+  const block = (start, end) => src.slice(src.indexOf(start), src.indexOf(end, src.indexOf(start)));
+  const keysIn = (txt) => (txt.match(/^ {4}([A-Z][A-Z0-9]{1,4}):/gm) || []).map((k) => k.trim().slice(0, -1));
+  const dupes = (ks) => ks.filter((k, i) => ks.indexOf(k) !== i);
+  const misKeys = keysIn(block('const MISCONCEPTIONS = {', '\n  };')), didKeys = keysIn(block('const PIP_DID = {', '\n  };'));
+  ok(misKeys.length > 50 && !dupes(misKeys).length, 'clue codes defined once: ' + dupes(misKeys).join());
+  ok(didKeys.length > 50 && !dupes(didKeys).length, 'Pip mistake lines defined once: ' + dupes(didKeys).join());
+  ok(E.MISCONCEPTIONS.MF1.name === 'Adds to top and bottom' && /money/.test(E.MISCONCEPTIONS.MW1.clue), 'fraction and money clues keep their own codes');
+  ok(/top and bottom/.test(E.PIP_DID.MF1) && /money/.test(E.PIP_DID.MW1), 'and their own Pip lines');
+}
 // Money & Wealth Adventures, step 1: five money skills and the lemonade adventure; every number sentence is true
 {
   const RF = E.makeRng(909);
@@ -236,7 +248,7 @@ ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 122, '122 cor
     const [s1, s2, s3, s4] = a.steps;
     ok(+s3.answer === +s1.answer - +s2.answer && +s4.answer < +s3.answer && +s4.answer > 0, 'profit is revenue minus costs, then less after the sign');
     a.steps.forEach((st) => { trueSentences(st.how, 'lemonade'); if (!st.idea) ok(E.SKILLS[st.skill] && new RegExp('= ' + st.answer + '$').test(st.how), 'lemonade step ends with its answer: ' + st.how); });
-    ok(s4.predicted.MF2 === s3.answer && s3.predicted.MF1 === s1.answer, 'money-idea clues: forgot a cost, revenue as profit');
+    ok(s4.predicted.MW2 === s3.answer && s3.predicted.MW1 === s1.answer, 'money-idea clues: forgot a cost, revenue as profit');
   }
   // all ten adventures: each step an engine question with a true worked sentence ending in its answer; the idea check last
   const ids = Object.keys(E.ADVENTURES);

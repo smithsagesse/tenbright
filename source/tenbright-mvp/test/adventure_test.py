@@ -64,12 +64,12 @@ with sync_playwright() as p:
         # step 3: revenue given as profit gets the money-idea clue
         rd = step(pg)
         assert 'Sales' in pg.locator('.story-strip').inner_text() and 'Costs' in pg.locator('.story-strip').inner_text()
-        answer(pg, rd, rd['predicted']['MF1'])
+        answer(pg, rd, rd['predicted']['MW1'])
         assert 'That is all the money in. What is left after costs?' in pg.locator('.feedback').inner_text()
         axe(pg, 'money clue ' + scheme)
         answer(pg, rd, rd['answer']); pg.locator('[data-act="gameNext"]').click()
         # step 4: forgetting the sign is "forgot a cost"
-        rd = step(pg); answer(pg, rd, rd['predicted']['MF2'])
+        rd = step(pg); answer(pg, rd, rd['predicted']['MW2'])
         assert 'Is there another cost?' in pg.locator('.feedback').inner_text()
         answer(pg, rd, rd['answer']); pg.locator('[data-act="gameNext"]').click()
         # step 5: the idea check
@@ -83,7 +83,7 @@ with sync_playwright() as p:
         # 4. what is kept: first answers as story evidence, and the result like a game; nothing about spending
         rec = pg.evaluate("() => { const c = window.__tbChild(); return { a: c.adventures.lemonade, f1: c.skills.FN01.attempts.map((x) => [x.correct, x.kind]), f2: c.skills.FN02.attempts.map((x) => [x.correct, x.kind, x.mis]) }; }")
         assert rec['f1'] == [[True, 'transfer'], [False, 'transfer']], rec['f1']
-        assert rec['f2'] == [[False, 'transfer', 'MF1'], [False, 'transfer', 'MF2']], rec['f2']
+        assert rec['f2'] == [[False, 'transfer', 'MW1'], [False, 'transfer', 'MW2']], rec['f2']
         assert len(rec['a']) == 1 and sorted(rec['a'][0].keys()) == ['at', 'first', 'idea', 'steps'] and rec['a'][0]['first'] == 1 and rec['a'][0]['idea'] is True, rec['a']
         # 5. no money carries over: a new run starts fresh, and nothing in the app is a wallet or balance
         pg.locator('[data-act="advStart"]').click()

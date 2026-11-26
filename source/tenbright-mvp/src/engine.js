@@ -90,11 +90,11 @@
     MM3: { name: 'Area and perimeter mixed', parent: 'Finds the distance around when the question asks for the squares inside, or the other way around.', clue: 'A clue! Area counts the squares inside. Perimeter is the distance around the edge.' },
     MG1: { name: 'Right angle as 100', parent: 'Treats a right angle as 100 degrees instead of 90.', clue: 'A clue! A right angle is 90 degrees, not 100.' },
     MG2: { name: 'Up before across', parent: 'Reads how far up a point is before how far across on a grid.', clue: 'A clue! Go across first, then up.' },
-    MF1: { name: 'Revenue as profit', parent: 'Gives all the money that came in when the question asks for the profit left after costs.', clue: 'A clue! That is all the money in. What is left after costs?' },
-    MF2: { name: 'Forgot a cost', parent: 'Takes away one cost but not another one in the story.', clue: 'A clue! Look again. Is there another cost?' },
-    MF3: { name: 'Added the costs', parent: 'Adds the costs to the money that came in instead of taking them away.', clue: 'A clue! Costs are money going out. Take them away.' },
-    MF4: { name: 'Growth added once', parent: 'Adds the first year\u2019s growth again instead of growing the new, bigger amount.', clue: 'A clue! This year the tenth is of the new amount.' },
-    MF5: { name: 'Whole instead of part', parent: 'Gives the whole company\u2019s profit to one owner instead of the owner\u2019s share of it.', clue: 'A clue! You own only some of the shares. Find your part.' },
+    MW1: { name: 'Revenue as profit', parent: 'Gives all the money that came in when the question asks for the profit left after costs.', clue: 'A clue! That is all the money in. What is left after costs?' },
+    MW2: { name: 'Forgot a cost', parent: 'Takes away one cost but not another one in the story.', clue: 'A clue! Look again. Is there another cost?' },
+    MW3: { name: 'Added the costs', parent: 'Adds the costs to the money that came in instead of taking them away.', clue: 'A clue! Costs are money going out. Take them away.' },
+    MW4: { name: 'Growth added once', parent: 'Adds the first year\u2019s growth again instead of growing the new, bigger amount.', clue: 'A clue! This year the tenth is of the new amount.' },
+    MW5: { name: 'Whole instead of part', parent: 'Gives the whole company\u2019s profit to one owner instead of the owner\u2019s share of it.', clue: 'A clue! You own only some of the shares. Find your part.' },
     MO1: { name: 'Left to right only', parent: 'Works from left to right and ignores parentheses or the order of operations.', clue: 'A clue! Parentheses first, then times, then plus and minus.' }
   };
 
@@ -1213,8 +1213,8 @@
       const name = r.pick(NAMES);
       const prompt = name + ' sells ' + n + ' cups of lemonade at $' + p + ' each. Each cup costs $' + c + ' to make.' + (e ? ' The sign cost $' + e + '.' : '') + ' What is the profit in dollars?';
       const steps = ['Revenue: ' + n + ' × ' + p + ' = ' + R, 'Cost of the cups: ' + n + ' × ' + c + ' = ' + C, e ? 'Profit: ' + R + ' − ' + C + ' − ' + e + ' = ' + P : 'Profit: ' + R + ' − ' + C + ' = ' + P];
-      const pred = { MF1: R, MF3: R + C + e };
-      if (e) pred.MF2 = R - C;
+      const pred = { MW1: R, MW3: R + C + e };
+      if (e) pred.MW2 = R - C;
       return num('FN02', prompt, P, pred, steps, { type: 'paper' });
     },
     FN04(r) {
@@ -1229,14 +1229,14 @@
       const T = r.pick([4, 5, 10]), k = r.int(1, T - 1), m = r.int(2, 9), P = T * m, name = r.pick(NAMES);
       const prompt = 'A lemonade company is split into ' + T + ' equal shares. ' + name + ' owns ' + k + ' of them. The company makes $' + P + ' profit. How many dollars is ' + name + '\u2019s part?';
       const steps = ['Each share gets ' + P + ' ÷ ' + T + ' = ' + m, k + ' shares get ' + k + ' × ' + m + ' = ' + k * m];
-      return num('FN05', prompt, k * m, { MF5: P, M15: k + m }, steps, { type: 'paper' });
+      return num('FN05', prompt, k * m, { MW5: P, M15: k + m }, steps, { type: 'paper' });
     },
     FN07(r) {
       const A = r.int(1, 9) * 100, a = A / 10, A1 = A + a, b = A1 / 10, A2 = A1 + b, name = r.pick(NAMES);
       const intro = name + ' puts $' + A + ' in a savings jar. Each year the jar grows by one tenth of what is in it.';
       const steps = ['Year 1: one tenth of ' + A + ' is ' + a + '. ' + A + ' + ' + a + ' = ' + A1, 'Year 2: one tenth of ' + A1 + ' is ' + b + '. ' + A1 + ' + ' + b + ' = ' + A2];
-      if (r.next() < 0.35) return num('FN07', intro + ' How many dollars does the jar grow in year 2?', b, { MF4: a }, steps.concat(['Growth in year 2: ' + A2 + ' − ' + A1 + ' = ' + b]), { type: 'paper' });
-      return num('FN07', intro + ' How many dollars are in the jar after 2 years?', A2, { MF4: A + 2 * a }, steps, { type: 'paper' });
+      if (r.next() < 0.35) return num('FN07', intro + ' How many dollars does the jar grow in year 2?', b, { MW4: a }, steps.concat(['Growth in year 2: ' + A2 + ' − ' + A1 + ' = ' + b]), { type: 'paper' });
+      return num('FN07', intro + ' How many dollars are in the jar after 2 years?', A2, { MW4: A + 2 * a }, steps, { type: 'paper' });
     },
     // ===== Phase 7: measurement and geometry =====
     MS01(r) {
@@ -1331,11 +1331,11 @@
   // ---------- Fix Pip's mistake: an erroneous worked example built from a real misconception ----------
   // What Pip did wrong, in words a child can read
   const PIP_DID = {
-    MF1: 'Pip gave all the money that came in, not the profit.',
-    MF2: 'Pip forgot one of the costs.',
-    MF3: 'Pip added the costs instead of taking them away.',
-    MF4: 'Pip added the first year\u2019s growth again.',
-    MF5: 'Pip gave the whole profit to one owner.',
+    MW1: 'Pip gave all the money that came in, not the profit.',
+    MW2: 'Pip forgot one of the costs.',
+    MW3: 'Pip added the costs instead of taking them away.',
+    MW4: 'Pip added the first year\u2019s growth again.',
+    MW5: 'Pip gave the whole profit to one owner.',
     MM1: 'Pip read the number at the end instead of counting from the start.',
     MM2: 'Pip added only two sides of the rectangle.',
     MM3: 'Pip mixed up area and perimeter.',
@@ -1392,7 +1392,7 @@
     MO1: 'Pip worked left to right and ignored the order rules.'
   };
   const MIS_FAMILIES = [
-    ['MF1', 'MF2', 'MF3', 'M14', 'MN6'], ['MF4', 'MF5', 'M15', 'MN6'],
+    ['MW1', 'MW2', 'MW3', 'M14', 'MN6'], ['MW4', 'MW5', 'M15', 'MN6'],
     ['MM1', 'MM2', 'MM3', 'M12', 'M15'], ['MG1', 'MG2', 'MT4', 'M14'],
     ['MY1', 'MY2', 'M12', 'M13'], ['MT4', 'M01', 'M02', 'M13'],
     ['M01', 'M02', 'M04', 'M05', 'M06', 'M12', 'M13', 'M1T', 'MP1', 'ME1', 'MC1', 'M14', 'MN6'],
@@ -1639,8 +1639,8 @@
       return { intro: 'Let’s run a lemonade stand. Every number is pretend money for this story.', explain: { cups: n, price: p, cost: c, sign: e }, steps: [
         advStep('FN01', 'You sold ' + n + ' cups at ' + D(p) + ' each. How many dollars came in?', R, 'Money in is revenue. ' + n + ' × ' + p + ' = ' + R, [['Cups', n], ['Price', D(p)]], { M15: n + p }),
         advStep('FN01', 'Each cup cost ' + D(c) + ' to make. How many dollars did the ' + n + ' cups cost?', C, n + ' × ' + c + ' = ' + C, [['Cups', n], ['Price', D(p)], ['Sales', D(R)]]),
-        advStep('FN02', 'Profit is the money in take away the costs. What is the profit?', G, R + ' − ' + C + ' = ' + G, [['Cups', n], ['Price', D(p)], ['Sales', D(R)], ['Costs', D(C)]], { MF1: R, MF3: R + C }),
-        advStep('FN02', 'The sign for the stand cost ' + D(e) + '. What is the profit now?', N, R + ' − ' + C + ' − ' + e + ' = ' + N, [['Cups', n], ['Price', D(p)], ['Sales', D(R)], ['Costs', D(C + e)]], { MF1: R, MF2: G, MF3: R + C + e }),
+        advStep('FN02', 'Profit is the money in take away the costs. What is the profit?', G, R + ' − ' + C + ' = ' + G, [['Cups', n], ['Price', D(p)], ['Sales', D(R)], ['Costs', D(C)]], { MW1: R, MW3: R + C }),
+        advStep('FN02', 'The sign for the stand cost ' + D(e) + '. What is the profit now?', N, R + ' − ' + C + ' − ' + e + ' = ' + N, [['Cups', n], ['Price', D(p)], ['Sales', D(R)], ['Costs', D(C + e)]], { MW1: R, MW2: G, MW3: R + C + e }),
         idea('Which is bigger, the revenue or the profit?', 'Revenue', ['Revenue', 'Profit'], 'The revenue is ' + R + '. The profit is ' + N + '. Profit is what is left after costs, so it is smaller.', [['Sales', D(R)], ['Costs', D(C + e)], ['Profit', D(N)]])
       ] };
     },
@@ -1648,8 +1648,8 @@
       const T = 10, k = r.int(2, 5), m = r.int(3, 9), P = T * m, m2 = r.int(1, m - 1), P2 = T * m2;
       return { intro: 'A lemonade company is split into 10 equal shares. You own ' + k + ' of them. The money is pretend.', explain: { shares: T, own: k, profit: P, profit2: P2 }, steps: [
         advStep('F408', 'The company makes ' + D(P) + ' profit. How many dollars does each share get?', m, P + ' ÷ ' + T + ' = ' + m, [['Shares', T], ['You own', k], ['Profit', D(P)]], {}),
-        advStep('FN05', 'You own ' + k + ' shares. How many dollars is your part?', k * m, k + ' × ' + m + ' = ' + k * m, [['You own', k], ['Each share', D(m)]], { MF5: P, M15: k + m }),
-        advStep('FN05', 'Next year the profit is only ' + D(P2) + '. How many dollars is your part now?', k * m2, P2 + ' ÷ ' + T + ' = ' + m2 + ', and ' + k + ' × ' + m2 + ' = ' + k * m2, [['You own', k], ['Profit', D(P2)]], { MF5: P2 }),
+        advStep('FN05', 'You own ' + k + ' shares. How many dollars is your part?', k * m, k + ' × ' + m + ' = ' + k * m, [['You own', k], ['Each share', D(m)]], { MW5: P, M15: k + m }),
+        advStep('FN05', 'Next year the profit is only ' + D(P2) + '. How many dollars is your part now?', k * m2, P2 + ' ÷ ' + T + ' = ' + m2 + ', and ' + k + ' × ' + m2 + ' = ' + k * m2, [['You own', k], ['Profit', D(P2)]], { MW5: P2 }),
         idea('Is owning a share a promise of money every year?', 'No', ['Yes', 'No'], 'Profit can go up or down, so a share is not a promise.', [['Your part', D(k * m2)]])
       ] };
     },
@@ -1658,7 +1658,7 @@
       return { intro: 'Two jars each start with ' + D(A) + '. Which one grows more? The money is pretend.', explain: { start: A }, steps: [
         advStep('FN07', 'Jar A adds ' + D(a) + ' each year. How many dollars after 2 years?', flat2, A + ' + ' + a + ' + ' + a + ' = ' + flat2, [['Jar A', D(A)]], {}),
         advStep('FN07', 'Jar B grows by one tenth of what is in it. How many dollars after 1 year?', A1, 'One tenth of ' + A + ' is ' + a + '. ' + A + ' + ' + a + ' = ' + A1, [['Jar B', D(A)]], {}),
-        advStep('FN07', 'How many dollars are in Jar B after 2 years?', A2, 'One tenth of ' + A1 + ' is ' + b + '. ' + A1 + ' + ' + b + ' = ' + A2, [['Jar B', D(A1)]], { MF4: A1 + a }),
+        advStep('FN07', 'How many dollars are in Jar B after 2 years?', A2, 'One tenth of ' + A1 + ' is ' + b + '. ' + A1 + ' + ' + b + ' = ' + A2, [['Jar B', D(A1)]], { MW4: A1 + a }),
         advStep('FN07', 'How many more dollars does Jar B have than Jar A after 2 years?', diff, A2 + ' − ' + flat2 + ' = ' + diff, [['Jar A', D(flat2)], ['Jar B', D(A2)]], {}),
         idea('Why does Jar B grow more?', 'It grows on its growth', ['It grows on its growth', 'It started with more'], 'Both started the same. Jar B adds a tenth of a bigger amount each year.', [['Jar B', D(A2)]])
       ] };
