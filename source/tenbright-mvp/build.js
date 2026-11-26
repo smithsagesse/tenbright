@@ -22,6 +22,10 @@ const release = full.replace(/\/\*SELFTEST-START\*\/[\s\S]*?\/\*SELFTEST-END\*\/
 if (/https?:\/\/(?!www\.w3\.org)/.test(release.replace(/<!--[\s\S]*?-->/g, ''))) {
   const m = release.match(/https?:\/\/(?!www\.w3\.org)[^\s"'<)]+/g); throw new Error('external URL in release build: ' + m.slice(0, 5).join(', '));
 }
+// Safari before 16.4 (iPhone 6s/7, iPad Air 2, iPad mini 4 on iOS 15) cannot parse regex lookbehind: one would blank the app
+if (/\(\?<[=!]/.test(release)) throw new Error('regex lookbehind in release build (breaks Safari before 16.4)');
+// the page must stand on its own (standards mode, phone viewport, browser-enforced no-outside-connections policy)
+if (!/^<!doctype html>/i.test(release) || !/name="viewport"/.test(release) || !/Content-Security-Policy/.test(release)) throw new Error('release page is missing its doctype, viewport or security policy');
 // test hooks must never ship to families (compliance finding F11)
 if (/__tb[A-Z]|SELFTEST/.test(release)) throw new Error('test hook in release build: ' + release.match(/__tb[A-Z]\w*|SELFTEST\w*/)[0]);
 fs.mkdirSync(path.join(__dirname, 'dist'), { recursive: true });

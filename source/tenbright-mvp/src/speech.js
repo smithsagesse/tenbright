@@ -38,7 +38,8 @@
       .replace(/\s{2,}/g, ' ').trim();
   }
   // sentence ends are . ! ? followed by a space or the end (a decimal point is not a sentence end)
-  const sentences = (text) => speakable(text).split(/(?<=[.!?])\s+/).map((s) => s.trim()).filter(Boolean);
+  // sentence ends keep their mark (no regex lookbehind: Safari before 16.4 cannot parse it)
+  const sentences = (text) => { const t = speakable(text), out = []; let last = 0, m; const re = /[.!?]\s+/g; while ((m = re.exec(t))) { out.push(t.slice(last, m.index + 1)); last = m.index + m[0].length; } out.push(t.slice(last)); return out.map((s) => s.trim()).filter(Boolean); };
 
   const ONES = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
   const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];

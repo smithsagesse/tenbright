@@ -106,8 +106,8 @@
     '\\b(?:twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)-(?:one|two|three|four|five|six|seven|eight|nine)\\b',
     '\\d+(?:,\\d{3})*(?:\\.\\d+)?',
     '\\b(?:' + NAMES.join('|') + ')\\b',
-    '(?<=(?:\\d|\\bthe|\\bsome|\\bof|\\bmany|\\ball|\\bloose|\\bmore) )(?:' + THINGS.join('|') + ')\\b',
-    '(?<![A-Za-z0-9])\\?(?=$|[\\s/,.)])'
+    '\\b(?:' + THINGS.join('|') + ')\\b',
+    '\\?(?=$|[\\s/,.)])'
   ].join('|'), 'g');
   // children's nicknames (typed by parents, any spelling) are name slots too, so "Settings for Zed" translates
   let NICKS = [], NICK_RE = null;
@@ -116,11 +116,40 @@
     if (n.join('\u0001') === NICKS.join('\u0001')) return;
     NICKS = n;
     const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    NICK_RE = n.length ? new RegExp('(?<![A-Za-z0-9\u00C0-\uFFFF])(?:' + n.map(esc).join('|') + ')(?![A-Za-z0-9\u00C0-\uFFFF])|' + SLOT_RE.source, 'g') : null;
+    NICK_RE = n.length ? new RegExp('(?:' + n.map(esc).join('|') + ')(?![A-Za-z0-9\u00C0-\uFFFF])|' + SLOT_RE.source, 'g') : null;
   }
   function patternOf(s) {
     const slots = [];
-    const key = String(s).replace(NICK_RE || SLOT_RE, (m, off, all) => {
+    // Safari before 16.4 cannot parse regex lookbehind, so the "what comes before" checks are made here:
+    // a thing word is a slot only after a number or a counting word; "?" and nicknames only after a non-letter.
+    const str = String(s), RE = NICK_RE || SLOT_RE;
+    let key = '', last = 0, m0;
+    RE.lastIndex = 0;
+    while ((m0 = RE.exec(str))) {
+      let m = m0[0], off = m0.index;
+      const before = str.slice(0, off);
+      let ok = true;
+      if (NICKS.includes(m) && /[A-Za-z0-9\u00C0-\uFFFF]$/.test(before)) ok = false;
+      else if (m === '?' && /[A-Za-z0-9]$/.test(before)) ok = false;
+      else if (THINGS.includes(m) && !NICKS.includes(m) && !NAMES.includes(m) && !/(?:\d|\bthe|\bsome|\bof|\bmany|\ball|\bloose|\bmore) $/.test(before)) ok = false;
+      if (!ok && RE === NICK_RE && NICKS.includes(m)) {
+        // a nickname inside a longer word is not a name; another slot may still start here
+        const y = new RegExp(SLOT_RE.source, 'y'); y.lastIndex = off;
+        const alt = y.exec(str);
+        if (alt) { m = alt[0]; ok = !((m === '?' && /[A-Za-z0-9]$/.test(before)) || (THINGS.includes(m) && !NAMES.includes(m) && !/(?:\d|\bthe|\bsome|\bof|\bmany|\ball|\bloose|\bmore) $/.test(before))); }
+      }
+      if (!ok) {
+        // not a slot here: look again from the next character, as the old lookbehind did
+        RE.lastIndex = off + 1;
+        continue;
+      }
+      key += str.slice(last, off) + slotFor(m);
+      last = off + m.length;
+      RE.lastIndex = last || 1;
+    }
+    key += str.slice(last);
+    return { key, slots };
+    function slotFor(m) {
       let type;
       if (NICKS.includes(m)) type = 'P';
       else if (/^\d\.[A-Z]/.test(m)) type = 'C';
@@ -132,8 +161,7 @@
       // a "?" right after a word is punctuation, not a blank
       slots.push({ type, value: m });
       return '{' + type + '}';
-    });
-    return { key, slots };
+    }
   }
   function renderSlot(lang, slot) {
     if (slot.type === 'N') return fmtNumber(lang, slot.value);
@@ -166,7 +194,19 @@
     [/^The answer is ([\s\S]+)$/, 'The answer is {S}'], [/^Look again: ([\s\S]+)$/, 'Look again: {S}'], [/^Next on the map: ([\s\S]+)$/, 'Next on the map: {S}']
   ];
   // sentence ends, plus the seam between a math line and the words after it ("4 + ? = 10 Pip answered 14.")
-  const splitSentences = (s) => String(s).split(/(?<=\.["”]?)\s+(?=[A-Za-z0-9¿¡“"(×÷=<>+−])|(?<=[!?]["”]?)\s+(?=[A-Z0-9¿¡“"(])|(?<=!)\s+(?=[×÷])|(?<=\S)\s+(?=(?:Pip answered|Work it out|Get your paper|Tell me when|Write this on|Write that down|Then we)\b)/);
+  // split after a mark, keeping the mark (group 1) and dropping the spaces: the same cuts lookbehind made
+  function splitAfter(str, re) {
+    const out = []; let last = 0, m; re.lastIndex = 0;
+    while ((m = re.exec(str))) {
+      const keep = m.slice(1).find((g) => g !== undefined) || '';
+      out.push(str.slice(last, m.index + keep.length)); last = m.index + m[0].length;
+      if (!m[0].length) re.lastIndex++;
+    }
+    out.push(str.slice(last));
+    return out;
+  }
+  const SPLIT_RE = /(\.["”]?)\s+(?=[A-Za-z0-9¿¡“"(×÷=<>+−])|([!?]["”]?)\s+(?=[A-Z0-9¿¡“"(])|(!)\s+(?=[×÷])|(\S)\s+(?=(?:Pip answered|Work it out|Get your paper|Tell me when|Write this on|Write that down|Then we)\b)/g;
+  const splitSentences = (s) => splitAfter(String(s), SPLIT_RE);
   let LANG = 'en';
   const misses = new Set();
   const has = (d, k) => Object.prototype.hasOwnProperty.call(d, k);
@@ -398,7 +438,7 @@
   const setLang = (l) => { LANG = LANGS[l] ? l : 'en'; };
   const getLang = () => LANG;
   const add = (lang, entries) => Object.assign(DICT[lang], entries);
-  const api = { RTL, setNicknames, speakableL, wordsNumber, parseVoiceL, LANGS, HTML_LANG, SPEECH_LANG, DICT, add, t, setLang, getLang, patternOf, fill, numberWords, fmtNumber, misses, splitSentences, NAMES, THINGS };
+  const api = { splitAfter, RTL, setNicknames, speakableL, wordsNumber, parseVoiceL, LANGS, HTML_LANG, SPEECH_LANG, DICT, add, t, setLang, getLang, patternOf, fill, numberWords, fmtNumber, misses, splitSentences, NAMES, THINGS };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.TBi18n = api;
 })(typeof window !== 'undefined' ? window : globalThis);

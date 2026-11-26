@@ -20,7 +20,7 @@ Full history: `docs/DECISIONS_AND_HISTORY.md`. Planning documents: `docs/`.
 
 ## Current state (Tenbright 2.0, Nov 26, 2026; started from v22 of Nov 10)
 
-The working MVP is a single-page HTML/JS app plus assets. The live private link (updated Nov 26, 2026 to the Tenbright 2.0 build at the owner's request; version 24 carries the audit fixes) is
+The working MVP is a single-page HTML/JS app plus assets. The live private link (updated Nov 26, 2026 to the Tenbright 2.0 build at the owner's request; version 24 carries the first audit's fixes; the plain-words lessons for the 23 newer skills and the release-audit fixes are in `app/` but not yet published) is
 https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
 
 - A **deterministic math engine**: all problems, answers and worked steps come from code, never from an LLM.
@@ -65,6 +65,20 @@ https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
   and the lock is on by default from the second child.
 - **PWA:** installable and offline, using `sw.js` and `manifest.webmanifest`. The service worker registers only over http(s).
 - **Art:** the welcome, celebrate and journal scenes in `art/` have depth maps for mouse and device-tilt parallax.
+
+## Release audit rules (Nov 26, 2026; report: https://claude.ai/artifact/ApwqaLXDvYgev5PwtMUJzv)
+
+- The page stands on its own: `src/app.html` starts with `<!doctype html>`, `<html lang>`, a phone viewport
+  (`viewport-fit=cover`) and a Content-Security-Policy that allows only the app's own files. Until Nov 26 the claude.ai host
+  added the doctype and viewport, so the app ran in quirks mode at 980 px on phones anywhere else. `build.js` fails without them.
+- No regex lookbehind (`(?<=`, `(?<!`) anywhere in the app: Safari before 16.4 cannot parse it and the whole app goes blank
+  (iPhone 6s/7, iPad Air 2, iPad mini 4). `build.js` fails if one appears; `i18n.js` has `splitAfter` for "split after a mark".
+- Data safety (`DATA` in app.html): unreadable saved data is copied to `tenbright-mvp-v1-unreadable-<time>` and never
+  overwritten; once another tab saves or erases, this tab stops saving and shows a Reload card; a failed save shows a warning on
+  the grown-ups page; `navigator.storage.persist()` is asked on grown-up screens; iPhone/iPad Safari (not installed) shows a
+  Home Screen tip because Safari can clear site data after 7 days without use.
+- Older Safari: every `color-mix()` declaration has a plain fallback before it; blur effects carry the `-webkit-` prefix.
+- Child controls keep 64/88 px on every screen, including Pip's wardrobe, icon buttons in crowded bars and short translated labels.
 
 ## Hard rules (do not break)
 
@@ -111,7 +125,7 @@ with identical sw.js, manifest, icons, art and audio. It contains:
 - `build.js`: run `node build.js` to produce `dist/index.html` (and `dist/test.html` with test hooks).
 - Tests: `node test/engine.test.js` (math engine, millions of generated checks); `node test/explain.test.js` (plain-words lessons); `node test/strategies.test.js` (strategy library); Playwright suites
   `test/e2e.py`, `test/features_test.py`, `test/audio_test.py`, `test/living_test.py`,
-  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py`, `test/money_time_test.py`, `test/measure_shape_test.py`, `test/dashboard2_test.py`, `test/adventure_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
+  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py`, `test/money_time_test.py`, `test/measure_shape_test.py`, `test/dashboard2_test.py`, `test/adventure_test.py`, `test/data_safety_test.py` (unreadable data, two tabs, failed saves, standards mode and phone viewport), `test/keyboard_test.py` (keyboard-only journey, focus rings) and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
 - `docs/animation-system.md` and `README.md`.
 
 Make changes in `source/tenbright-mvp/src/`, rebuild and run every suite.
