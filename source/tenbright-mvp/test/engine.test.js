@@ -228,6 +228,14 @@ ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 125, '125 cor
   ok(E.MISCONCEPTIONS.MF1.name === 'Adds to top and bottom' && /money/.test(E.MISCONCEPTIONS.MW1.clue), 'fraction and money clues keep their own codes');
   ok(/top and bottom/.test(E.PIP_DID.MF1) && /money/.test(E.PIP_DID.MW1), 'and their own Pip lines');
 }
+// every clue code a question or adventure predicts is defined (a typo or a renamed code would silently give no clue)
+{
+  const RC = E.makeRng(77), used = new Set();
+  for (const id of E.SKILL_ORDER) for (let i = 0; i < 400; i++) Object.keys(E.generate(id, RC).predicted || {}).forEach((k) => used.add(k));
+  for (const id of Object.keys(E.ADVENTURES)) for (let i = 0; i < 300; i++) E.adventure(id, RC).steps.forEach((st) => Object.keys(st.predicted || {}).forEach((k) => used.add(k)));
+  const unknown = [...used].filter((k) => !E.MISCONCEPTIONS[k]);
+  ok(used.size > 50 && !unknown.length, 'predicted clue codes are defined: ' + unknown.join());
+}
 // Money & Wealth Adventures, step 1: five money skills and the lemonade adventure; every number sentence is true
 {
   const RF = E.makeRng(909);

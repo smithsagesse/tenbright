@@ -46,6 +46,10 @@ for (const id of E.SKILL_ORDER) {
   }
 }
 Object.entries(E.GAMES).map(([id, g]) => Object.assign({ id }, g)).forEach((g) => { feed(g.name, 'game'); feed(g.what, 'game'); for (let lv = 1; lv <= 3; lv++) for (let i = 0; i < 200; i++) { try { const r = E.gameRound(g.id, lv, R); if (r) { feed(r.prompt, 'game'); feed(r.clue, 'game'); feed(r.how, 'game'); (r.choices || []).forEach((c) => feed(String(c), 'game')); (r.steps || []).forEach((s) => feed(s, 'game')); } } catch (e) {} } });
+// money adventures and their explainers
+Object.keys(E.ADVENTURES || {}).forEach((id) => { const A = E.ADVENTURES[id]; feed(A.name, 'money adventure'); feed(A.idea, 'money adventure'); feed(A.real, 'money adventure'); feed(A.home, 'parent: home activity');
+  for (let i = 0; i < 80; i++) { const a = E.adventure(id, R); feed(a.intro, 'money adventure'); a.steps.forEach((st) => { feed(st.prompt, 'money adventure'); feed(st.how, 'money adventure'); (st.choices || []).forEach((c) => feed(c, 'answer choice')); (st.story || []).forEach((x) => { feed(x[0], 'money adventure'); feed(String(x[1]), 'money adventure'); }); }); }
+  if (A.explainer) for (let i = 0; i < 40; i++) E.adventureExplainer(id, R).forEach((f) => { feed(f.say, 'money adventure'); (f.pic.bars || []).forEach((b) => feed(b[0], 'money adventure')); }); });
 try { const ST = require(process.cwd() + '/src/strategies.js'); ST.LIST.forEach((x) => { feed(x.name, 'strategy library'); }); } catch (e) { process.stderr.write('strategies: ' + e.message + '\n'); }
 // 4. the app's own words (interface, parent pages, screen-reader labels, privacy notice)
 const app = fs.readFileSync('src/app.html', 'utf8');

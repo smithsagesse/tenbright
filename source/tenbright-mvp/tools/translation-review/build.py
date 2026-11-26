@@ -70,7 +70,7 @@ n_new = sum(1 for r in rows if r['key'] not in old)
 text = [
     ('Tenbright translation review', 'title'),
     ('Spanish (Latin America), French (international), Haitian Creole (standard spelling), Traditional Chinese (Taiwan) and Modern Standard Arabic. All text was machine-drafted and checked by software for missing numbers and slots, not by native speakers. Nothing ships to families until this review is done.', None),
-    ('This file lists every phrase the app translates: %d per language (%d of them added since the previous review file of November 25, 2026, mostly lessons, money, time, measuring, shapes, games and the parent pages). Prepared November 26, 2026 from the app source.' % (len(rows), n_new), None),
+    ('This file lists every phrase the app translates: %d per language (%d of them new since the previous version of this file). Prepared %s from the app source.' % (len(rows), n_new, __import__('datetime').date.today().strftime('%B %d, %Y').replace(' 0', ' ')), None),
     (None, None),
     ('What to do', 'head'),
     ('1. Open the "Strings" tab and go to your language\'s three columns: F–H Spanish, I–K French, L–N Haitian Creole, O–Q Chinese, R–T Arabic. Columns A–E (number, where it appears, English, an example, notes) are the same for everyone.', None),
