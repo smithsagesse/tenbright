@@ -32,24 +32,24 @@
   const MISCONCEPTIONS = {
     M01: { name: 'Smaller-from-larger', parent: 'Takes the smaller digit from the larger one in each column instead of regrouping.', clue: 'A clue! Look at the ones. Are there enough on top to take the bottom ones away? If not, break a ten.' },
     M02: { name: 'Regroups but keeps the ten', parent: 'Breaks a ten into ones but forgets that one fewer ten is left.', clue: 'A clue! You broke one ten into ones. So there is one less ten now. How many tens are left?' },
-    M04: { name: 'Zero minus a number', parent: 'Writes the bottom digit when the top digit is zero, instead of regrouping across the zero.', clue: 'A clue! We cannot take a number away from 0. Break one from the next place to the left.' },
+    M04: { name: 'Zero minus a number', parent: 'Writes the bottom digit when the top digit is zero, instead of regrouping across the zero.', clue: 'A clue! We cannot take a number away from 0. Break one from the next place. If that place is 0 too, break a hundred first.' },
     M05: { name: 'No column limit', parent: 'Writes a two-digit column sum in one place instead of making a ten.', clue: 'A clue! One place can hold only 9. Make a ten from 10 of them and move it over.' },
     M06: { name: 'Lost the new ten', parent: 'Makes a ten from the ones but forgets to add it to the tens.', clue: 'A clue! You made a new ten from the ones. Add it to the tens too.' },
     M07: { name: 'Face value', parent: 'Reads a digit as its face value instead of its place value (the 7 in 372 as 7, not 70).', clue: 'A clue! Look at the place the digit is in. The place tells what it is worth.' },
     M08: { name: 'Dropped placeholder zero', parent: 'Leaves out a zero that holds an empty place (writes 35 for 305).', clue: 'A clue! Is any place empty? Write a 0 to hold its spot.' },
     M09: { name: 'Labels stuck together', parent: 'Writes place-value parts side by side (3 hundreds 4 tens 2 ones as 300402) instead of combining them.', clue: 'A clue! Write one digit for each place. Then read it as one number.' },
-    M11: { name: 'Rounds by cutting off', parent: 'Rounds by dropping the last digit instead of choosing the closer ten or hundred.', clue: 'A clue! Which one is closer on the number line?' },
+    M11: { name: 'Rounds by cutting off', parent: 'Rounds by dropping the last digit instead of choosing the closer ten or hundred.', clue: 'A clue! Rounding finds the closer ten or hundred. Which one is closer on the number line?' },
     M12: { name: 'Counts the starting number', parent: 'Counts the starting number when counting on, so the answer comes out one short.', clue: 'A clue! Start counting on the next number.' },
     M13: { name: 'Wrong order in subtraction', parent: 'Subtracts in the wrong direction in a word problem.', clue: 'A clue! Which amount is bigger? Start there.' },
     M14: { name: 'Keyword trap', parent: 'Picks the operation from a word like "more" instead of from the story.', clue: 'A clue! Draw the story first. Is a part missing, or the whole?' },
     M15: { name: 'Times as plus', parent: 'Adds the two numbers instead of multiplying (4 × 3 = 7).', clue: 'A clue! Times means equal groups. Count every group.' },
-    M16: { name: 'Zero and one rules mixed up', parent: 'Treats × 0 as keeping the number, or × 1 as making 1.', clue: 'A clue! 6 groups with nothing in them is how many?' },
+    M16: { name: 'Zero and one rules mixed up', parent: 'Treats × 0 as keeping the number, or × 1 as making 1.', clue: 'A clue! Groups with nothing in them make how many?' },
     M18: { name: 'Neighbor fact', parent: 'Gives the answer to a nearby fact, one group short or one group extra.', clue: 'A clue! Count the groups again. Start from a fact you know.' },
     MC1: { name: 'Complement from 10 in every place', parent: 'Takes every digit from 10 when subtracting from 100, so the tens come out one too big.', clue: 'A clue! Take each digit from 9. Only the last digit comes from 10.' },
     MN1: { name: 'Ticks counted as ones', parent: 'Counts each tick on a number line as 1 even when the ticks jump by 10.', clue: 'A clue! How much is each jump on this line?' },
     MN3: { name: 'Forgot to take one group away', parent: 'Uses × 10 for × 9 but forgets to subtract one group.', clue: 'A clue! 9 groups is 10 groups take away one group.' },
     MN4: { name: 'Subtracts to find a missing factor', parent: 'Subtracts or adds to find a missing factor instead of thinking about equal groups.', clue: 'A clue! How many groups of that number make the total?' },
-    MN5: { name: 'Lost the zero', parent: 'Multiplies by a multiple of ten but drops the zero (4 × 60 = 24).', clue: 'A clue! 60 is 6 tens. How many tens do you have?' },
+    MN5: { name: 'Lost the zero', parent: 'Multiplies by a multiple of ten but drops the zero (4 × 60 = 24).', clue: 'A clue! The answer is a number of tens. A number of tens ends in 0.' },
     MN6: { name: 'Stopped after one step', parent: 'Does the first step of a two-step problem and stops.', clue: 'A clue! The story has two parts. Did you do both?' },
     // Grade 1
     MP1: { name: 'Adds in a missing-part problem', parent: 'Adds the numbers shown instead of finding the missing part (7 + ? = 10 answered 17).', clue: 'A clue! The total is already there. Which part is missing?' },
@@ -520,7 +520,7 @@
       let a, b;
       do { a = r.int(31, 79); b = r.int(11, 49); } while ((a % 10) + (b % 10) < 10 || a + b > 99);
       const s = (a % 10) + (b % 10);
-      return num('AS17', 'In ' + a + ' + ' + b + ', the ones make ' + s + '. How many tens do you carry?', 1, { M05: String(s) }, [s + ' ones is 1 ten and ' + (s - 10) + ' ones.', 'Carry 1 ten.'], { type: 'add', a, b, places: 2 });
+      return num('AS17', 'In ' + a + ' + ' + b + ', the ones make ' + s + '. How many tens move to the tens place?', 1, { M05: String(s) }, [s + ' ones is 1 ten and ' + (s - 10) + ' ones.', 'The 1 ten moves to the tens place.'], { type: 'add', a, b, places: 2 });
     },
     MU01(r) {
       const n = r.int(6, 30);

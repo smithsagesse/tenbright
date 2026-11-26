@@ -48,8 +48,13 @@ for (const id of covered) {
       t.split(/(?<=[.!?])\s+/).forEach((sen) => ok(words(sen) <= 16, tag + ': sentence too long (' + words(sen) + ' words): ' + sen));
     });
   }
-  // Grade 1 and the column skills always get plain words; a later slice may leave rare cases to the engine steps
-  ok(made >= (E.gradeOf(id) <= 2 ? 2000 : 1900), id + ': plain words for ' + made + ' of 2000 questions');
+  // Grades 1–3 always get plain words; a later slice may leave rare cases to the engine steps
+  ok(made >= (E.gradeOf(id) <= 3 ? 2000 : 1900), id + ': plain words for ' + made + ' of 2000 questions');
+}
+// the engine's own questions and steps for Grades 1–3 use the same math words ("make a ten", "regroup")
+for (const id of E.SKILL_ORDER.filter((s) => E.gradeOf(s) <= 3)) for (let i = 0; i < 300; i++) {
+  const it = E.generate(id, R);
+  [it.prompt].concat(it.steps).forEach((t) => ok(!BANNED.test(t), id + ': banned word in the engine text: ' + t));
 }
 // Fix Pip's mistake questions and any odd item fall back to the engine's steps, never to broken words
 for (const id of covered) for (let i = 0; i < 300; i++) {

@@ -50,18 +50,31 @@
   function columnSub(it) {
     const { a, b } = it, places = it.model.places, da = digitsOf(a, places), db = digitsOf(b, places);
     const names = PLACES.slice(4 - places), say = [], lent = new Set();
+    let zeroChain = false;
     for (let i = places - 1; i >= 0; i--) {
       const p = names[i], first = i === places - 1;
       let broke = false;
+      if (zeroChain && p === 'tens') {
+        // the engine shows the hundred it broke as its own step here: the tens were 0, got 10, and gave 1 to the ones
+        say.push('Now the tens. We broke 1 hundred into 10 tens. Then 1 of those tens went to the ones. So there are ' + count(da[i], p) + ' now.');
+      }
       if (da[i] < db[i]) {
         const up = names[i - 1];
-        if (!up || da[i - 1] <= 0) return null; // across a zero: explained in a later slice
-        da[i - 1] -= 1; da[i] += 10; lent.add(up); broke = true;
-        say.push('Look at the ' + p + '. Can we take ' + db[i] + ' away from ' + (da[i] - 10) + '? No, there are not enough ' + p + '. Break one ' + UNIT[up] + ' into 10 ' + p + '. Now there are ' + count(da[i - 1], up) + ' and ' + count(da[i], p) + '. This is called regrouping.');
+        if (!up) return null;
+        if (da[i - 1] <= 0) {
+          // across a zero (Grade 3): no tens to break, so break a hundred first, then a ten
+          if (places !== 3 || p !== 'ones' || da[0] <= 0) return null;
+          const had = da[i];
+          da[0] -= 1; da[1] = 9; da[2] += 10; lent.add('hundreds'); zeroChain = true; broke = true;
+          say.push('Look at the ones. Can we take ' + db[i] + ' away from ' + had + '? No, there are not enough ones. We need to break a ten, but there are 0 tens. So first break 1 hundred into 10 tens. Then break 1 ten into 10 ones. Now there are ' + count(da[2], 'ones') + '. This is called regrouping.');
+        } else {
+          da[i - 1] -= 1; da[i] += 10; lent.add(up); broke = true;
+          say.push('Look at the ' + p + '. Can we take ' + db[i] + ' away from ' + (da[i] - 10) + '? No, there are not enough ' + p + '. Break one ' + UNIT[up] + ' into 10 ' + p + '. Now there are ' + count(da[i - 1], up) + ' and ' + count(da[i], p) + '. This is called regrouping.');
+        }
       }
       const sentence = da[i] + ' − ' + db[i] + ' = ' + (da[i] - db[i]);
-      if (broke) say.push('Take away the ' + p + '. ' + sentence);
-      else if (lent.has(p)) say.push('Now the ' + p + '. We used one ' + UNIT[p] + ', so there are ' + count(da[i], p) + ' now. ' + sentence);
+      if (broke || (zeroChain && p === 'tens')) say.push('Take away the ' + p + '. ' + sentence);
+      else if (lent.has(p)) say.push('Now the ' + p + '. We used one ' + UNIT[p] + ', so there ' + (da[i] === 1 ? 'is ' : 'are ') + count(da[i], p) + ' now. ' + sentence);
       else if (first) say.push('Start with the ' + p + '. Take ' + p + ' from ' + p + '. ' + sentence);
       else say.push('Now the ' + p + '. ' + sentence);
     }
@@ -332,6 +345,166 @@
     }
   });
   ['AS04', 'AS05', 'AS06', 'AS07', 'AS11', 'AS12'].forEach((id) => { B[id] = column; });
+
+  // ---------- Grade 3 ----------
+  const between = (n, size) => { const lo = Math.floor(n / size) * size; return [lo, lo + size]; };
+  const roundWords = (n, size, digit, place) => {
+    const [lo, hi] = between(n, size), up = digit >= 5;
+    if (digit === 5 && n % (size / 10) === 0) return 'The ' + place + ' digit is 5. ' + n + ' is exactly halfway. When a number is halfway, we round up. So ' + n + ' rounds to ' + hi + '.';
+    return 'The ' + place + ' digit is ' + digit + '. That is ' + (up ? '5 or more' : 'less than 5') + ', so ' + n + ' is closer to ' + (up ? hi : lo) + '. So ' + n + ' rounds to ' + (up ? hi : lo) + '.';
+  };
+  const plural = (n, one, many) => n + ' ' + (n === 1 ? one : many);
+  const adds = (x, k) => Array(k).fill(x).join(' + ');
+  const skip = (f, k) => Array.from({ length: k }, (_, i) => f * (i + 1)).join(', ');
+  // one fact a × b told with an easier fact: f is the bigger number, x the other
+  function factWords(a, b) {
+    const f = Math.max(a, b), x = Math.min(a, b), c = a * b;
+    const turn = a !== f ? a + ' × ' + b + ' is the same as ' + f + ' × ' + x + '. ' : '';
+    if (f === x) {
+      if (f > 5) return { s0: a + ' × ' + a + ' is a square fact. The array is a square. Split ' + a + ' into 5 and ' + (a - 5) + '.', s1: '5 × ' + a + ' = ' + 5 * a + '. ' + (a - 5) + ' × ' + a + ' = ' + (a - 5) * a + '. ' + 5 * a + ' + ' + (a - 5) * a + ' = ' + c };
+      return { s0: a + ' × ' + a + ' is a square fact. The array is a square, ' + a + ' rows of ' + a + '.', s1: 'Add ' + a + ' once for each row. ' + adds(a, a) + ' = ' + c };
+    }
+    if (x === 2) return { s0: turn + 'Times 2 means double. Two groups of ' + f + ' is ' + f + ' and ' + f + ' again.', s1: 'Double ' + f + '. ' + f + ' + ' + f + ' = ' + c };
+    if (f === 10) return { s0: turn + '10 groups of ' + x + ' make ' + x + ' tens.', s1: x + ' tens is ' + x + ' with a 0 after it. So ' + a + ' × ' + b + ' = ' + c };
+    if (f > 5) return { s0: turn + 'Split ' + f + ' into 5 and ' + (f - 5) + '. Then ' + f + ' groups of ' + x + ' are 5 groups and ' + plural(f - 5, 'group', 'groups') + '.', s1: '5 × ' + x + ' = ' + 5 * x + '. ' + (f - 5) + ' × ' + x + ' = ' + (f - 5) * x + '. ' + 5 * x + ' + ' + (f - 5) * x + ' = ' + c };
+    return { s0: turn + 'That is ' + f + ' groups of ' + x + '.', s1: 'Add ' + x + ' once for each group. ' + adds(x, f) + ' = ' + c };
+  }
+  const factCheck = (a, b) => (b ? 'Check: ' + a * b + ' ÷ ' + b + ' = ' + a + '.' : null);
+  Object.assign(B, {
+    PV13(it) {
+      const n = Number((/^Round (\d+) to/.exec(it.prompt) || [])[1]), [lo, hi] = between(n, 10), d = n % 10;
+      if (!n || it.steps.length !== 2) return null;
+      return { meaning: ['Rounding finds the nearest ten.', 'A rounded number is easy to work with.'], say: [n + ' is between ' + lo + ' and ' + hi + '. Picture them on a number line.', roundWords(n, 10, d, 'ones')], check: 'Check: ' + n + ' is ' + (n - lo) + ' away from ' + lo + ' and ' + (hi - n) + ' away from ' + hi + '.' };
+    },
+    PV14(it) {
+      const n = Number((/^Round (\d+) to/.exec(it.prompt) || [])[1]), [lo, hi] = between(n, 100), t = Math.floor(n / 10) % 10;
+      if (!n || it.steps.length !== 2) return null;
+      return { meaning: ['Rounding finds the nearest hundred.', 'The tens digit tells which hundred is closer.'], say: [n + ' is between ' + lo + ' and ' + hi + '. Picture them on a number line.', roundWords(n, 100, t, 'tens')], check: 'Check: ' + n + ' is ' + (n - lo) + ' away from ' + lo + ' and ' + (hi - n) + ' away from ' + hi + '.' };
+    },
+    AS16(it) {
+      const m = /About how much is (\d+) \+ (\d+)\?/.exec(it.prompt), est = Number(it.answer);
+      if (!m || it.steps.length !== 3) return null;
+      const a = +m[1], b = +m[2], ra = between(a, 100)[(Math.floor(a / 10) % 10) >= 5 ? 1 : 0], rb = between(b, 100)[(Math.floor(b / 10) % 10) >= 5 ? 1 : 0];
+      if (ra + rb !== est) return null;
+      const why = (x, rx) => x + ' has ' + count(Math.floor(x / 10) % 10, 'tens') + ', so it rounds ' + (rx > x ? 'up' : 'down') + ' to ' + rx + '.';
+      return { meaning: ['"About how much" asks for an estimate.', 'An estimate is a close answer that is quick to find.'], say: ['Round each number to the nearest hundred. ' + why(a, ra) + ' ' + why(b, rb), 'Now add the round numbers. ' + ra + ' + ' + rb + ' = ' + est, 'The exact answer is ' + (a + b) + '. That is close to ' + est + ', so the estimate makes sense.'], check: null };
+    },
+    MU03(it) {
+      const g = it.a, s = it.b, c = Number(it.answer);
+      if (it.steps.length !== 2) return null;
+      return { meaning: ['The × sign means "groups of".'], say: ['Picture ' + g + ' groups. Each group has ' + s + '. We write it as ' + g + ' × ' + s + '.', 'Add ' + s + ' once for each group. ' + adds(s, g) + ' = ' + c], check: 'Check: count by ' + s + 's: ' + skip(s, g) + '.' };
+    },
+    MU04(it) {
+      const f = it.b, x = it.a, c = Number(it.answer);
+      if (it.steps.length !== 2) return null;
+      return { meaning: ['Skip-counting by ' + f + 's means each jump adds ' + f + '.'], say: ['Start at 0. Jump by ' + f + ', ' + x + ' times. Say each number: ' + skip(f, x) + '.', x + ' jumps of ' + f + ' is the same as ' + x + ' × ' + f + '. ' + x + ' × ' + f + ' = ' + c], check: 'Check: ' + adds(f, x) + ' = ' + c + '.' };
+    },
+    MU05(it) {
+      const m = /^(\d+) × (\d+) = (\d+)\. So/.exec(it.prompt), c = Number(it.answer);
+      if (!m || it.steps.length !== 2) return null;
+      const A = +m[1], Bn = +m[2];
+      return { meaning: ['Turn-around facts use the same two numbers in a different order.'], say: [A + ' × ' + Bn + ' is ' + A + ' rows of ' + Bn + '. Turn the array on its side. Now it is ' + Bn + ' rows of ' + A + '. The dots are the same.', 'Turning does not change how many dots there are. So ' + Bn + ' × ' + A + ' = ' + c], check: 'Check: ' + A + ' × ' + Bn + ' and ' + Bn + ' × ' + A + ' are both ' + c + '.' };
+    },
+    MU06(it) {
+      const m = /Skip-count by (\d+), (\d+) times/.exec(it.steps[0]), c = Number(it.answer);
+      if (!m || it.steps.length !== 2) return null;
+      const f = +m[1], x = +m[2];
+      const tip = f === 10 ? 'Check: counting by 10s always lands on a number that ends in 0.' : f === 5 ? 'Check: counting by 5s always lands on a number that ends in 0 or 5.' : 'Check: counting by 2s always lands on an even number.';
+      return { meaning: [it.a + ' × ' + it.b + ' means ' + it.a + ' groups of ' + it.b + '.', 'Facts with 2, 5 and 10 are quick to skip-count.'], say: ['Count by ' + f + 's. Hold up a finger for each jump. Stop at ' + plural(x, 'jump', 'jumps') + '.', 'Count: ' + skip(f, x) + '. The last number you say is the answer. So ' + it.a + ' × ' + it.b + ' is ' + c + '.'], check: tip };
+    },
+    MU07(it) {
+      const { a, b } = it, c = Number(it.answer);
+      if (it.steps.length !== 2) return null;
+      let s0, check;
+      if (a === 0) { s0 = '0 × ' + b + ' means 0 groups of ' + b + '. There are no groups at all.'; check = 'Check: any number times 0 is 0.'; }
+      else if (b === 0) { s0 = a + ' × 0 means ' + a + ' groups of 0. Every group is empty.'; check = 'Check: any number times 0 is 0.'; }
+      else if (a === 1) { s0 = '1 × ' + b + ' means 1 group of ' + b + '. One group of ' + b + ' is just ' + b + '.'; check = 'Check: any number times 1 stays the same.'; }
+      else { s0 = a + ' × 1 means ' + a + ' groups of 1. That is ' + a + ' ones.'; check = 'Check: any number times 1 stays the same.'; }
+      return { meaning: ['Times 0 and times 1 follow easy rules.'], say: [s0, (c === 0 ? 'Empty groups add up to nothing. So ' : 'So ') + a + ' × ' + b + ' = ' + c], check };
+    },
+    MU08(it) {
+      const { a, b } = it, c = Number(it.answer), f = (b === 4 || b === 8) ? b : a, x = f === b ? a : b;
+      if (it.steps.length !== 2 || (f !== 4 && f !== 8)) return null;
+      const d = [x, 2 * x, 4 * x, 8 * x], times = f === 4 ? 2 : 3;
+      const chain = d.slice(0, times).map((v) => v + ' + ' + v + ' = ' + 2 * v + '.').join(' ');
+      return { meaning: ['Doubling means adding a number to itself.', 'Times ' + f + ' is doubling ' + (f === 4 ? 'two' : 'three') + ' times.'], say: [a + ' × ' + b + ' means ' + a + ' groups of ' + b + '. To times by ' + f + ', double ' + x + ', then double again' + (f === 8 ? ', and again.' : '.'), chain.replace(/\.$/, '') + '. So ' + a + ' × ' + b + ' = ' + c], check: factCheck(a, b) };
+    },
+    MU09(it) {
+      const { a, b } = it, c = Number(it.answer), f = (b === 3 || b === 6) ? b : a, x = f === b ? a : b;
+      if (it.steps.length !== 2 || (f !== 3 && f !== 6)) return null;
+      const k = f === 3 ? 2 : 5;
+      return { meaning: [f + ' is ' + k + ' and 1 more.', 'So ' + f + ' groups are ' + k + ' groups and 1 more group.'], say: [a + ' × ' + b + ' means ' + a + ' groups of ' + b + '. Start with the easier fact, ' + k + ' × ' + x + '.', k + ' × ' + x + ' = ' + k * x + '. Add one more group of ' + x + '. ' + k * x + ' + ' + x + ' = ' + c], check: factCheck(a, b) };
+    },
+    MU10(it) {
+      const { a, b } = it, c = Number(it.answer), x = a === 9 ? b : a;
+      if (it.steps.length !== 2) return null;
+      return { meaning: ['Times 9 is close to times 10.', '10 groups take away 1 group leaves 9 groups.'], say: ['9 is one less than 10. Start with 10 groups of ' + x + '. 10 × ' + x + ' = ' + 10 * x + '.', 'We need only 9 groups, so take away one group of ' + x + '. ' + 10 * x + ' − ' + x + ' = ' + c], check: 'Check: the digits of ' + c + ' add up to 9.' };
+    },
+    MU11(it) {
+      const { a, b } = it, c = Number(it.answer), x = a === 7 ? b : a;
+      if (it.steps.length !== 3) return null;
+      return { meaning: ['A hard fact can be split into two easy facts.'], say: ['7 is 5 and 2. So 7 groups of ' + x + ' are 5 groups and 2 groups.', 'Find 5 groups of ' + x + '. 5 × ' + x + ' = ' + 5 * x + '. Then find 2 groups. 2 × ' + x + ' = ' + 2 * x + '.', 'Put the two parts together. ' + 5 * x + ' + ' + 2 * x + ' = ' + c], check: factCheck(a, b) };
+    },
+    MU12(it) {
+      const { a, b } = it;
+      if (it.steps.length !== 2) return null;
+      const w = factWords(a, b);
+      return { meaning: [a + ' × ' + b + ' means ' + a + ' groups of ' + b + '.', 'We can use easier facts we know.'], say: [w.s0, w.s1], check: factCheck(a, b) };
+    },
+    MU13(it) {
+      const g = it.b, p = it.a, x = Number(it.answer);
+      if (it.steps.length !== 2) return null;
+      return { meaning: [g + ' × ? = ' + p + ' asks: how many groups of ' + g + ' make ' + p + '?'], say: ['Count by ' + g + 's until you reach ' + p + ': ' + skip(g, x) + '.', 'Count how many numbers you said. That is how many groups. ' + g + ' × ' + x + ' = ' + p + ', so ? = ' + x], check: 'Check: ' + p + ' ÷ ' + g + ' = ' + x + '.' };
+    },
+    MU14(it) {
+      const a = it.a, n = it.b, t = n / 10, c = Number(it.answer);
+      if (it.steps.length !== 2 || n % 10) return null;
+      return { meaning: ['A multiple of 10 is a number of tens, like 20, 30 or 40.'], say: [n + ' is ' + count(t, 'tens') + '. So ' + a + ' × ' + n + ' is ' + a + ' groups of ' + count(t, 'tens') + '.', 'First find ' + a + ' × ' + t + '. ' + a + ' × ' + t + ' = ' + a * t + '. So there are ' + a * t + ' tens. ' + a + ' × ' + n + ' = ' + c], check: 'Check: ' + a * t + ' tens is ' + a * t + ' with a 0 after it.' };
+    },
+    MU15(it) {
+      const oe = /^Is (\d+) × (\d+) odd or even\?/.exec(it.prompt);
+      if (oe && it.steps.length === 2) {
+        const a = +oe[1], b = +oe[2], p = a * b, even = a % 2 === 0 || b % 2 === 0;
+        return { meaning: ['Even numbers make pairs. Odd numbers leave one over.'], say: [even ? 'One of the numbers is even. Groups like that can always be put in pairs. So the answer is even.' : 'Both numbers are odd. An odd number of odd groups leaves one over. So the answer is odd.', 'Check with the fact. ' + a + ' × ' + b + ' = ' + p], check: 'Check: ' + p + ' ends in ' + (p % 10) + ', so it is ' + (even ? 'even' : 'odd') + '.' };
+      }
+      const m = /9 × (\d+) = (\d+)\. Add its digits/.exec(it.prompt);
+      if (!m || it.steps.length !== 2) return null;
+      const ds = m[2].split('');
+      return { meaning: [m[2] + ' has two digits: ' + ds[0] + ' and ' + ds[1] + '.'], say: ['Add the two digits. ' + ds.join(' + ') + ' = ' + it.answer, 'Try another 9s fact. The digits add to 9 every time, up to 9 × 10.'], check: null };
+    },
+    MU16(it) {
+      const { a, b } = it;
+      if (it.steps.length !== 2) return null;
+      const w = factWords(a, b);
+      return { meaning: [a + ' × ' + b + ' means ' + a + ' groups of ' + b + '.', 'We can use easier facts we know.'], say: [w.s0, w.s1], check: factCheck(a, b) };
+    },
+    WP04(it) {
+      const m = /^There are (\d+) \w+ with (\d+) /.exec(it.prompt), c = Number(it.answer);
+      if (!m || it.steps.length !== 2) return null;
+      const g = +m[1], s = +m[2];
+      return { meaning: ['"In each" tells us every group has the same number.'], say: ['There are ' + g + ' groups. Each group has ' + s + '. Equal groups mean we can multiply.', g + ' groups of ' + s + ' is ' + g + ' × ' + s + '. ' + g + ' × ' + s + ' = ' + c], check: 'Check: ' + adds(s, g) + ' = ' + c + '.' };
+    },
+    WP05(it) {
+      const m1 = lastEq(it.steps[0]), m2 = lastEq(it.steps[1]);
+      if (!m1 || !m2 || it.steps.length !== 2) return null;
+      const a = +m1[1], b = +m1[3], s = +m1[4], c = +m2[3], r = +m2[4];
+      return { meaning: ['This story has two steps. Do them in order.'], say: ['First, ' + b + ' more come. Getting more means we add. ' + a + ' + ' + b + ' = ' + s + '.', 'Then ' + c + ' are given to a friend. Giving away means we take away. ' + s + ' − ' + c + ' = ' + r + '.'], check: 'Check: ' + r + ' + ' + c + ' = ' + s + ', and ' + s + ' − ' + b + ' = ' + a + '.' };
+    },
+    F301(it) {
+      const fr = it.frac || (it.model && it.model.bars && [it.model.bars[0].n, it.model.bars[0].d]);
+      if (!fr || it.steps.length !== 2) return null;
+      const [n, d] = fr;
+      const meaning = ['A fraction names part of a whole.', 'The whole is cut into equal parts.'];
+      if (/\/\?$/.test(it.prompt)) return { meaning, say: ['The bottom number tells how many equal parts make the whole. Count all the parts.', 'There are ' + d + ' equal parts, so the bottom number is ' + d], check: 'Check: ' + n + ' of the ' + d + ' equal parts ' + (n === 1 ? 'is' : 'are') + ' shaded.' };
+      return { meaning, say: ['Count all the equal parts. There are ' + d + '. That is the bottom number.', 'Now count the shaded parts. There ' + (n === 1 ? 'is ' : 'are ') + n + '. That is the top number.'], check: 'Check: ' + n + ' of the ' + d + ' equal parts ' + (n === 1 ? 'is' : 'are') + ' shaded.' };
+    },
+    F302(it) {
+      const d = it.model && it.model.d, n = Number(it.answer);
+      if (!d || it.steps.length !== 2) return null;
+      return { meaning: ['The line from 0 to 1 is one whole.'], say: ['The whole is cut into ' + d + ' equal jumps. So each jump is 1/' + d + '.', 'Count the jumps from 0 to the arrow: ' + n + '. That is the top number.'], check: 'Check: ' + (d - n) + ' more ' + (d - n === 1 ? 'jump reaches' : 'jumps reach') + ' 1.' };
+    }
+  });
+  ['AS13', 'AS14', 'AS15'].forEach((id) => { B[id] = column; });
 
   function explain(item) {
     // Fix Pip's mistake questions show Pip's own wrong work, so they keep the engine's steps
