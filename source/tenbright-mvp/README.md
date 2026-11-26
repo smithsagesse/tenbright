@@ -5,7 +5,8 @@ The GMIA Phase 4 MVP: all 52 grade 2–3 skills plus the T3 Mental Math Strategy
 ## What works
 
 - Parent setup: consent checkboxes, a 4-digit grown-ups PIN, child profile (nickname, birth year, current math).
-- Pip intro and an adaptive placement walk over 8 anchors (at most 25 items): 3 of 3 passes, 2 of 3 gets a deciding item, and a failed anchor skips the anchors that depend on it.
+- Discovery Adventure (the adaptive starting walk, at most 25 questions): starts near the school grade, or with an easier check when the parent said math feels hard; checks key skills including story problems, each in two kinds of question; 3 of 3 passes, 2 of 3 gets a deciding item, and a failed check skips the checks that depend on it. One follow-up after a miss tells a reading difficulty (same math without a story), a missing foundation or a new step (a question from the skill underneath). Rest stops every 3 checks; the walk saves and resumes. The child never sees a grade or score; parents get "What the Discovery Adventure found" and an understanding state per skill.
+- Two optional parent questions (does your child enjoy math, how do they feel about it), kept only under privacy notice v1.3; parents who agreed to an older notice are asked again first.
 - School grade (Grades 1–5 or homeschool) at setup, editable by parents. A grade-level selector (All levels / Grade 2 / Grade 3) on the map and in parent settings makes Pip suggest that grade's skills first; it never locks anything, clues and retention checks still come first, and earlier skills a grade needs are practiced before it. Parents see progress by grade, and every skill is labelled with its grade and Common Core code.
 - Kingdom map with five regions; Pip's idea follows the Phase 2 next-activity rule: remediation, then due retention checks, then the lowest-mastery skill, then unlocks.
 - 103 skills across Grades 1–5 (Common Core): Grade 1 (C101–C114: counting to 120, facts within 10 and 20, make ten, doubles, three addends, missing numbers, the equal sign, tens and ones, comparing, 10 more/less, adding and subtracting tens, story problems); the 52-skill Grade 2–3 map (PV01–PV14, AS01–AS17, MU01–MU16, WP01–WP05) plus the Mental Math Strategy T3; Grade 3 fractions (F301–F302); Grade 4 (F401–F419: place value to a million, comparing and rounding, multi-digit add/subtract, multiplying and dividing, remainders, factors and primes, times as many, patterns, equivalent/comparing/adding fractions, mixed numbers, fraction × whole, tenths and hundredths, comparing decimals); Grade 5 (F501–F515: expressions, powers of 10, decimals to thousandths, comparing and rounding decimals, multi-digit multiply and divide, decimal operations, unlike fractions, fractions as division, multiplying and dividing fractions, volume). Decimal and fraction answers are exact; fractions are drawn stacked and read aloud as words.
@@ -53,6 +54,7 @@ The GMIA Phase 4 MVP: all 52 grade 2–3 skills plus the T3 Mental Math Strategy
 - `test/e2e.py` — headless-browser walkthrough of the whole flow, including the lesson walkthrough and an automatic check that every number sentence, block count, ten-frame and group shown in the lesson pictures is correct.
 - `test/separation_test.py` — secret pictures (set, mismatch, unlock, misses, grown-up help, change, turn off), answers landing only in the active child's record, hashed storage, unique ids, axe in light and dark, translations in all five languages.
 - `test/living_test.py` — Pip's moods, capoeira, flyover, galaxy dive and piano and one-shot reactions to each learning moment, sound channels and parent controls, confetti and its cleanup, badges and Pip's look, math pictures that animate changes, Still and reduced motion (no running animations), axe in light and dark, translations of every new word.
+- `test/discovery_test.py` — the Discovery Adventure: gentle and grade-aware starts, two kinds of question, the no-story follow-up, rest stops with break and resume, no grade shown to the child, the parent report and understanding states, the notice update before new answers are kept, axe in light and dark.
 - `test/i18n_test.py` — walks the whole app in Spanish, French, Haitian Creole and Chinese at phone width, fails on any English left on screen, runs axe-core per language, and checks spoken output and voice parsing in each language.
 - `narration/` — Pip's chosen voice (`voice.json`) and `build-manifest.js`, which lists every clip Pip needs.
 
@@ -67,6 +69,7 @@ python3 test/audio_test.py
 python3 test/i18n_test.py
 python3 test/living_test.py
 python3 test/separation_test.py
+python3 test/discovery_test.py
 ```
 
 Pip's recorded voice (English). Run after `node build.js` whenever Pip's wording changes, then rebuild and run the suites:

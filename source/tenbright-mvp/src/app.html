@@ -912,7 +912,16 @@ tr:last-child td { border-bottom: none; }
   'use strict';
   const E = window.TBEngine, C = window.TBContent;
   const KEY = 'tenbright-mvp-v1';
-  const NOTICE_VERSION = 'Privacy notice v1.2, November 5, 2026';
+  const NOTICE_VERSION = 'Privacy notice v1.3, November 26, 2026';
+  // Discovery Adventure (Tenbright 2.0): Pip's words for the starting walk
+  const ADV = {
+    intro: "Hi, I'm Pip! I'm a helper made by the Tenbright team using a computer, and my voice is made by a computer too. Welcome, Math Explorer! Let's go on a number adventure. I'll give you some puzzles. Some will be easy. Some may be tricky. That's okay! Every puzzle helps me learn how to help you.",
+    back: "Welcome back, Math Explorer! I saved your place in the adventure. Let's keep going.",
+    rest: 'You can keep going, or take a break. I will save your place.',
+    found: 'We also found some skills to practice. Let\'s build them together!'
+  };
+  const gentleStart = (ch) => !!(ch && ch.feel && (ch.feel.enjoy === 'notyet' || ch.feel.confidence === 'worried'));
+  const consentCurrent = () => !!(S.parent && S.parent.notice === NOTICE_VERSION);
   document.documentElement.lang = 'en';
   const app = document.getElementById('app');
 
@@ -974,6 +983,8 @@ tr:last-child td { border-bottom: none; }
     { id: 'falls', name: 'Fraction Falls', what: 'Fractions' },
     { id: 'docks', name: 'Decimal Docks', what: 'Decimals' }
   ];
+  // understanding states for parents (Tenbright 2.0): plain words, never shown to the child
+  const UNDER_LABEL = { understands: 'Understands', partly: 'Partly understands', withHelp: 'Understands with help', cantExplainYet: 'Can do it, and explaining why comes next', notYet: 'Not yet', needsCheck: 'Still checking', notStarted: 'Not started' };
   const STATUS_LABEL = { locked: 'Not yet open', learning: 'Learning', practiced: 'Practicing', mastered: 'Mastered', certified: 'Certified', placed: 'Already strong' };
 
   // Picks the most natural on-device English voice. Online voices are never used:
@@ -2173,7 +2184,7 @@ tr:last-child td { border-bottom: none; }
       el.textContent = ''; el.appendChild(frag);
     });
   }
-  const VIEW_TITLES = { welcome: 'Tenbright', gate: 'Grown-ups check', consent: 'Parent agreement', addChild: 'Add a child', who: "Who's playing?", intro: 'Meet Pip', map: 'Kingdom map', learn: 'Lesson with Pip', item: 'Practice question', end: 'Session finished', pin: 'Grown-ups PIN', dashboard: 'Parent page', privacy: 'Privacy notice', terms: 'Terms of use', data: 'Everything stored', line: 'Lantern Line', lineEnd: 'Lantern Line finished', journal: 'My journal' };
+  const VIEW_TITLES = { welcome: 'Tenbright', gate: 'Grown-ups check', consent: 'Parent agreement', addChild: 'Add a child', who: "Who's playing?", intro: 'Meet Pip', rest: 'Adventure rest stop', map: 'Kingdom map', learn: 'Lesson with Pip', item: 'Practice question', end: 'Session finished', pin: 'Grown-ups PIN', dashboard: 'Parent page', privacy: 'Privacy notice', terms: 'Terms of use', data: 'Everything stored', line: 'Lantern Line', lineEnd: 'Lantern Line finished', journal: 'My journal' };
 
   // ---------- 3D artwork: depth-based parallax ----------
   // Each scene has a depth map (near = light) estimated once at build time. A small WebGL shader shifts near things
@@ -2344,7 +2355,7 @@ tr:last-child td { border-bottom: none; }
           <h2 style="font-size:20px">Who runs Tenbright</h2>
           <p>Tenbright is a product of the Global Mathematics Intelligence Academy (GMIA). Contact: [operator legal name, mailing address, email and phone, to be added before public launch].</p>
           <h2 style="font-size:20px">What we collect from children, and how</h2>
-          <p>With a parent's consent, the app keeps a child's nickname and birth year, and a record of their answers: which skill, whether it was right, which hints they used, which strategy they chose and how long they took, plus how close their number-line warm-up estimates were, the badges they earned and the look they chose for Pip. If a parent turns on secret pictures, only a scrambled code of the child's pictures is kept, so that only that child opens the profile. Children type numbers and tap choices. The app has no chat, camera, photos, location or contacts, and asks for no real name.</p>
+          <p>With a parent's consent, the app keeps a child's nickname and birth year, and a record of their answers: which skill, whether it was right, which hints they used, which strategy they chose and how long they took, plus how close their number-line warm-up estimates were, the badges they earned and the look they chose for Pip. If a parent turns on secret pictures, only a scrambled code of the child's pictures is kept, so that only that child opens the profile. If a parent chooses to answer them, two optional answers about how the child feels about math are kept, only to start the first puzzles more gently. Children type numbers and tap choices. The app has no chat, camera, photos, location or contacts, and asks for no real name.</p>
           <h2 style="font-size:20px">Voice answers (off unless you turn them on)</h2>
           <p>If you switch on voice answers on the grown-ups page, your child can tap the Talk button and say a number or a short command such as "next". Speech is turned into text by your browser on this device; Tenbright uses it only if the browser can promise this happens on the device. The words are used once to read the answer and are then discarded. No audio and no transcript is recorded, kept or sent to us or anyone else. The microphone is used only after a tap on Talk, for one short answer. Pip never asks your child to say their name or anything about themselves. You can switch voice answers off at any time.</p>
           <h2 style="font-size:20px">Where it is kept</h2>
@@ -2391,7 +2402,7 @@ tr:last-child td { border-bottom: none; }
           <div class="field"><label for="pname">Your first name (optional)</label><input type="text" id="pname" autocomplete="given-name" maxlength="30"></div>
           <fieldset class="field" style="border:none;padding:0;margin:0;gap:10px">
             <legend>What Tenbright keeps</legend>
-            <p class="hint-text">Your child's nickname and birth year, their answers, timings, hints used, which strategies they chose, and the badges they earned. That is all. It stays on this device.</p>
+            <p class="hint-text">Your child's nickname and birth year, their answers, timings, hints used, which strategies they chose, and the badges they earned. If you choose to answer them, two questions about how your child feels about math. That is all. It stays on this device.</p>
             <label class="check"><input type="checkbox" id="c-guardian"> I am this child's parent or legal guardian.</label>
             <label class="check"><input type="checkbox" id="c-record"> I agree that Tenbright may keep my child's learning record on this device to choose their next activity and show me their progress.</label>
             <p class="hint-text">Sharing with anyone else is not offered: there are no ads, no analytics companies and no AI training on your child's data. You can review or delete it at any time. Full details: <button class="btn" type="button" style="min-height:36px;padding:0 12px" data-act="doc" data-to="privacy">Privacy notice</button></p>
@@ -2413,6 +2424,8 @@ tr:last-child td { border-bottom: none; }
           <div class="field"><label for="byear">Birth year</label><select id="byear">${years.map((y) => `<option value="${y}" ${y === 2019 ? 'selected' : ''}>${y}</option>`).join('')}</select><span class="hint-text">Age sets reading level, session length and safety rules. It never limits what math they can reach.</span></div>
           <div class="field"><label for="sgrade">School grade this year</label><select id="sgrade">${gradeOptions('2')}</select><span class="hint-text">Sets where the placement walk starts and which grade's skills Pip suggests first. It never locks any skill, and you can change it any time. Tenbright covers number, operations, fractions and decimals for Grades 1 to 5 (Common Core).</span><span class="hint-text" id="sgrade-note"></span></div>
           <div class="field"><label for="now-math">What math is your child working on now?</label><select id="now-math"><option value="early">Counting and adding small numbers</option><option value="pv" selected>Tens and ones, 2-digit adding</option><option value="regroup">Carrying and borrowing</option><option value="times">Starting times tables</option></select></div>
+          ${consentCurrent() ? `<div class="field"><label for="feel-enjoy">Does your child enjoy math? (optional)</label><select id="feel-enjoy"><option value="">Skip</option><option value="yes">Yes</option><option value="sometimes">Sometimes</option><option value="notyet">Not yet</option></select></div>
+          <div class="field"><label for="feel-conf">How does your child feel about math? (optional)</label><select id="feel-conf"><option value="">Skip</option><option value="confident">Confident</option><option value="unsure">Unsure</option><option value="worried">Worried</option></select><span class="hint-text">If math feels hard right now, the first puzzles start easier. These answers stay on this device.</span></div>` : ''}
           <label class="check"><input type="checkbox" id="pic-lock" ${S.children.some((c) => !c.sample) ? 'checked' : ''}> Give this child secret pictures to open their profile</label>
           <span class="hint-text">Recommended when more than one child uses this device: each child taps 3 pictures to open their own profile, so their answers never land in a brother's or sister's progress.</span>
           <p class="error" id="child-error" hidden></p>
@@ -2457,11 +2470,23 @@ tr:last-child td { border-bottom: none; }
       </main>`;
     },
     intro() {
+      const ch = child(), back = !!(ch && ch.walk && !ch.walk.done);
+      const line = back ? ADV.back : ADV.intro;
       return `<main class="stage"><div class="end">
         ${pipSvg(200, 'wave', { react: reactNow() })}
-        <p class="speech">Hi, I'm Pip! I'm a helper made by the Tenbright team using a computer, and my voice is made by a computer too. I collect light-beads. Ten beads make a lantern. Will you help me light the Kingdom?</p>
-        <div class="row" style="justify-content:center"><button class="kbtn" data-act="say" data-text="Hi, I'm Pip! I'm a helper made by the Tenbright team using a computer, and my voice is made by a computer too. I collect light beads. Ten beads make a lantern. Will you help me light the Kingdom?">${icoSpeaker} Hear Pip</button>
+        <p class="speech">${esc(line)}</p>
+        <div class="row" style="justify-content:center"><button class="kbtn" data-act="say" data-text="${esc(line)}">${icoSpeaker} Hear Pip</button>
         <button class="kbtn big" data-act="startPlacement" data-autofocus>Let's explore!</button></div>
+      </div></main>`;
+    },
+    // a rest stop in the Discovery Adventure: keep going, or take a break with the place saved
+    rest() {
+      const part = E.placementStage(session.ps) - 1;
+      return `<main class="stage"><div class="end">
+        ${pipSvg(170, 'cheer', { react: reactNow() })}
+        <h1>You finished part ${part} of the adventure!</h1>
+        <p class="speech">${esc(ADV.rest)}</p>
+        <div class="row" style="justify-content:center"><button class="kbtn" data-act="restBreak">Take a break</button><button class="kbtn big" data-act="restGo" data-autofocus>Keep going</button></div>
       </div></main>`;
     },
     map() {
@@ -2546,7 +2571,7 @@ tr:last-child td { border-bottom: none; }
       }
       const mnote = mistake && session.mnote ? `<div class="feedback ${session.mnote.ok ? 'ok' : 'clue'} pop">${session.mnote.ok ? icoCheck : icoClue}<div>${esc(session.mnote.text)}</div></div>` : '';
       if (fb && !fb.ok) fbHtml = `<div class="feedback clue pop">${icoClue}<div>${escM(fb.text)}${fb.showSteps ? `<ol class="steps" style="margin-top:8px">${it.steps.map((s) => `<li>${escM(s)}</li>`).join('')}</ol>` : ''}</div></div>`;
-      const modeLabel = { placement: 'Exploring the map', learn: 'Guided practice', practice: 'Practice', check: 'Relighting a lantern', remediate: 'Looking closer', review: 'Mixed review' }[session.mode];
+      const modeLabel = { placement: 'Number adventure', learn: 'Guided practice', practice: 'Practice', check: 'Relighting a lantern', remediate: 'Looking closer', review: 'Mixed review' }[session.mode];
       const done = session.count, cap = session.cap;
       const actionBtn = mistake && session.mstage === 'why' ? ''
         : fb && (fb.ok || fb.final)
@@ -2582,7 +2607,7 @@ tr:last-child td { border-bottom: none; }
       return `<main class="stage"><div class="bleed bleed-celebrate" aria-hidden="true" data-3d><img src="art/celebrate.webp" srcset="art/celebrate-2560.webp 2560w, art/celebrate-1600.webp 1600w, art/celebrate.webp 960w" sizes="100vw" width="960" height="540" alt="" decoding="async" data-depth="art/celebrate-depth.webp" data-pos="50 28" data-amp="0.026 0.016" data-focus="0.5"></div><div class="end">
         ${pipSvg(150, r.placement ? 'cheer' : 'dance', { react: reactNow() })}
         <h1>${r.placement ? 'Thanks for exploring!' : 'Great work today!'}</h1>
-        <p class="speech">${r.placement ? `I found ${r.lit} lanterns you can already light. Now the map knows where to start.` : `You answered ${r.correct} of ${r.count}${r.newLit ? ` and lit ${r.newLit} new lantern${r.newLit > 1 ? 's' : ''}` : ''}. ${r.praise}`}</p>
+        <p class="speech">${r.placement ? `I found ${r.lit} lanterns you can already light. ${ADV.found}` : `You answered ${r.correct} of ${r.count}${r.newLit ? ` and lit ${r.newLit} new lantern${r.newLit > 1 ? 's' : ''}` : ''}. ${r.praise}`}</p>
         <div class="lanterns-lit${r.newLit ? ' lit-new' : ''}"><span class="lantern-ico"></span> <span class="num">${litCount(ch)}</span> lanterns lit</div>
         ${badgeNews(r.badges)}
         ${(() => { const monthAgo = now() - 30 * E.DAY; const then = E.SKILL_ORDER.filter((id) => ch.skills[id].masteredAt && ch.skills[id].masteredAt <= monthAgo && ['mastered', 'certified', 'placed'].includes(ch.skills[id].status)).length; const gained = litCount(ch) - then; return !r.placement && gained > 0 && ch.created < monthAgo ? `<p class="speech">A month ago you had ${then} lanterns. Now you have ${litCount(ch)}. Look how you've grown!</p>` : ''; })()}
@@ -2697,6 +2722,22 @@ tr:last-child td { border-bottom: none; }
           <span class="eyebrow">This week</span>
           <div class="stat-row"><div class="stat"><b class="num">${weekSessions.length}</b><span>sessions</span></div><div class="stat"><b class="num">${minutes} min</b><span>learning</span></div><div class="stat"><b class="num">${masteredWeek}</b><span>skills mastered</span></div><div class="stat"><b class="num">${strong.length} of ${E.SKILL_ORDER.length}</b><span>lanterns lit</span></div></div>
         </section>
+        ${S.parent && S.parent.notice && !S.parent.sampleOnly && !consentCurrent() ? `<section class="card"><span class="eyebrow">Privacy notice updated</span><p>The privacy notice changed on November 26, 2026. Tenbright can now keep two optional answers about how your child feels about math. Nothing else changed, and nothing leaves this device.</p><div class="row"><button class="btn" data-act="doc" data-to="privacy">Read the privacy notice</button><button class="btn primary" data-act="reconsent">I agree</button></div></section>` : ''}
+        ${(() => {
+          const d = ch.discovery; if (!d) return '';
+          const nm = (id) => esc(E.SKILLS[id].name);
+          const line = (n) => n.kind === 'pattern' ? `<li><b>${nm(n.skill)}</b>: <span>An answer matched a common pattern.</span> <span>${esc(E.MISCONCEPTIONS[n.misconception].parent)}</span></li>`
+            : n.kind === 'reading' ? `<li><b>${nm(n.skill)}</b>: <span>The math was right when the numbers came without a story. Reading and picturing word problems is the part to practice.</span></li>`
+            : n.kind === 'newStep' ? `<li><b>${nm(n.skill)}</b>: <span>The skill underneath it is already in place, so this new step is what comes next.</span></li>`
+            : n.kind === 'foundation' ? `<li><b>${nm(n.skill)}</b>: <span>Tenbright will first build the skill underneath it:</span> <b>${nm(n.probeSkill)}</b></li>`
+            : n.kind === 'slip' ? `<li><b>${nm(n.skill)}</b>: <span>Only small slips, like one digit off. The idea is in place.</span></li>` : '';
+          return `<section class="card"><span class="eyebrow">What the Discovery Adventure found</span>
+            ${d.strong.length ? `<p><span>Already strong:</span> <span>${esc(listNames(d.strong))}.</span></p>` : ''}
+            ${d.building.length ? `<p><span>Building next:</span> <span>${esc(listNames(d.building))}.</span></p>` : ''}
+            ${d.notes.length ? `<ul class="steps" style="font-size:16px;font-weight:400">${d.notes.map(line).join('')}</ul>` : ''}
+            <p class="hint-text">This is a starting point, not a grade. Tenbright keeps checking as ${esc(ch.nickname)} practices.</p>
+          </section>`;
+        })()}
         <section class="card"><span class="eyebrow">Progress by grade level</span>
           ${ch.grade ? `<p>${esc(ch.nickname)} is in <b>${GRADE_LABEL[ch.grade]}</b>. Practice focus: <b>${focusOf(ch) === 'all' ? 'all levels' : 'Grade ' + focusOf(ch) + ' first'}</b>.</p>` : `<p><b>Add ${esc(ch.nickname)}'s school grade</b> in Settings below so Pip can suggest the right grade's skills first.</p>`}
           ${gp.map((x) => `<div class="gbar"><span class="glabel">Grade ${x.grade}</span><span class="gtrack" role="img" aria-label="Grade ${x.grade}: ${x.lit} of ${x.total} skills lit"><span style="width:${Math.round(100 * x.lit / x.total)}%"></span></span><span class="num gnum">${x.lit} of ${x.total}</span></div>`).join('')}
@@ -2717,8 +2758,8 @@ tr:last-child td { border-bottom: none; }
         <section class="card home-activity"><span class="eyebrow">Next home activity · about 10 minutes</span><p style="font-size:17px;font-weight:700">${esc(C[focus].home)}</p></section>
         <section class="card"><span class="eyebrow">How we'll know</span><p>A skill counts as mastered after at least 10 answers without big hints, 9 of the last 10 right, in two kinds of question, and a mastery estimate of 95%. It is certified only after it is still right 7 and 30 days later, and checked again at 90 days.</p><p class="hint-text">Next on the map: ${esc(E.SKILLS[na.skill].name)}. ${esc(na.reason)}</p></section>
         <section class="card"><span class="eyebrow">Every skill and its evidence</span>
-          <div class="table-wrap" tabindex="0" role="region" aria-label="Every skill and its evidence"><table><thead><tr><th>Skill</th><th>Status</th><th class="num">Estimate</th><th class="num">Last 10</th><th>Next check</th></tr></thead><tbody>
-          ${E.SKILL_ORDER.map((id) => { const st = ch.skills[id]; const ind = st.attempts.filter((a) => a.hint <= 1).slice(-10); const acc = ind.length ? Math.round(100 * ind.filter((a) => a.correct).length / ind.length) + '%' : '–'; const nc = (st.checks || []).find((c) => !c.done); return `<tr><td>${esc(E.SKILLS[id].name)}<br><span class="hint-text">Grade ${E.gradeOf(id)} · ${E.SKILLS[id].ccss}${E.SKILLS[id].strategy ? ' · Mental Math Strategy' : ''}</span></td><td><span class="chip ${st.status} ${st.activeMis ? 'clue' : ''}"><span class="dot"></span>${STATUS_LABEL[st.status]}${st.activeMis ? ' · clue' : ''}</span></td><td class="num">${st.status === 'locked' ? '–' : Math.round(st.p * 100) + '%'}</td><td class="num">${acc}${ind.length ? ` <span class="hint-text">(${ind.length})</span>` : ''}</td><td>${nc ? (nc.due <= t ? 'Due now' : fmtDate(nc.due)) : st.status === 'certified' ? 'Certified' : '–'}</td></tr>`; }).join('')}
+          <div class="table-wrap" tabindex="0" role="region" aria-label="Every skill and its evidence"><table><thead><tr><th>Skill</th><th>Status</th><th>Understanding</th><th class="num">Estimate</th><th class="num">Last 10</th><th>Next check</th></tr></thead><tbody>
+          ${E.SKILL_ORDER.map((id) => { const st = ch.skills[id]; const ind = st.attempts.filter((a) => a.hint <= 1).slice(-10); const acc = ind.length ? Math.round(100 * ind.filter((a) => a.correct).length / ind.length) + '%' : '–'; const nc = (st.checks || []).find((c) => !c.done); return `<tr><td>${esc(E.SKILLS[id].name)}<br><span class="hint-text">Grade ${E.gradeOf(id)} · ${E.SKILLS[id].ccss}${E.SKILLS[id].strategy ? ' · Mental Math Strategy' : ''}</span></td><td><span class="chip ${st.status} ${st.activeMis ? 'clue' : ''}"><span class="dot"></span>${STATUS_LABEL[st.status]}${st.activeMis ? ' · clue' : ''}</span></td><td>${UNDER_LABEL[E.understanding(st)]}</td><td class="num">${st.status === 'locked' ? '–' : Math.round(st.p * 100) + '%'}</td><td class="num">${acc}${ind.length ? ` <span class="hint-text">(${ind.length})</span>` : ''}</td><td>${nc ? (nc.due <= t ? 'Due now' : fmtDate(nc.due)) : st.status === 'certified' ? 'Certified' : '–'}</td></tr>`; }).join('')}
           </tbody></table></div>
         </section>
         <section class="card"><span class="eyebrow">Settings for ${esc(ch.nickname)}</span>
@@ -2769,7 +2810,7 @@ tr:last-child td { border-bottom: none; }
   // ---------- sessions ----------
   function startSession(mode, skill) {
     const ch = child();
-    session = { mode, skill, ps: mode === 'placement' ? E.newPlacement() : null, count: 0, correct: 0, cap: mode === 'placement' ? E.PLACEMENT_MAX_ITEMS : 8, start: Date.now(), litBefore: litCount(ch), entry: '', hint: 0, feedback: null, tries: 0, placementResults: {}, soroban: [0, 0, 0], praiseSkill: skill };
+    session = { mode, skill, ps: mode === 'placement' ? (ch.walk && !ch.walk.done ? ch.walk : E.newPlacement(ch.grade, { gentle: gentleStart(ch) })) : null, count: 0, correct: 0, cap: mode === 'placement' ? E.PLACEMENT_MAX_ITEMS : 8, start: Date.now(), litBefore: litCount(ch), entry: '', hint: 0, feedback: null, tries: 0, placementResults: {}, soroban: [0, 0, 0], praiseSkill: skill };
     if (mode === 'learn') {
       session.demo = E.generate(skill, rng);
       if (session.demo.format === 'build') session.demo = E.generate(skill, rng);
@@ -2785,7 +2826,7 @@ tr:last-child td { border-bottom: none; }
 
   function pickSkillForItem() {
     const ch = child();
-    if (session.mode === 'placement') return session.ps.current;
+    if (session.mode === 'placement') { const nx = E.placementNext(session.ps); session.probe = nx ? nx.probe : null; return nx ? nx.skill : session.ps.current; }
     if (session.mode === 'check') {
       const due = E.SKILL_ORDER.find((id) => E.dueCheck(ch.skills[id], now()));
       return due || session.skill;
@@ -2809,6 +2850,10 @@ tr:last-child td { border-bottom: none; }
     const elapsedMin = (Date.now() - session.start) / 60000;
     if (session.count >= session.cap || (session.mode !== 'placement' && elapsedMin >= S.settings.sessionMin)) return finishSession();
     if (session.mode === 'placement' && session.ps.done) return finishSession();
+    if (session.mode === 'placement' && E.placementRestDue(session.ps)) {
+      E.placementRested(session.ps); ch.walk = session.ps; save();
+      view = { name: 'rest' }; react('cheer'); render(); speak(ADV.rest); return;
+    }
     if (session.mode === 'check' && !E.SKILL_ORDER.some((id) => E.dueCheck(ch.skills[id], now()))) return finishSession();
     const sk = pickSkillForItem();
     session.itemSkill = sk;
@@ -2816,6 +2861,11 @@ tr:last-child td { border-bottom: none; }
     // about one question in five, once the child has met the skill, is "Fix Pip's mistake"
     if ((session.mode === 'practice' || session.mode === 'learn' || session.mode === 'review') && session.count >= 2 && ch.skills[sk] && ch.skills[sk].learned && rng.next() < 0.2) session.item = E.makeMistake(sk, rng);
     if (!session.item) session.item = E.generate(sk, rng);
+    // the walk asks each check in two kinds of question when the skill has them (typed and chosen answers)
+    if (session.mode === 'placement' && !session.probe) {
+      const seen = ((session.ps.ev || {})[sk] || { formats: [] }).formats;
+      for (let k = 0; k < 8 && seen.length === 1 && seen[0] === session.item.format; k++) session.item = E.generate(sk, rng);
+    }
     session.mstage = session.item.format === 'mistake' ? 'why' : null; session.mnote = null; session.why = null;
     session.entry = ''; session.feedback = null; session.tries = 0; session.soroban = [0, 0, 0];
     session.hint = session.mode === 'remediate' ? 2 : 0;
@@ -2847,7 +2897,9 @@ tr:last-child td { border-bottom: none; }
     const res = E.check(it, response);
     const t = now();
     if (session.mode === 'placement') {
-      E.placementRecord(session.ps, res.correct);
+      if (session.probe) E.placementProbeRecord(session.ps, res.correct);
+      else E.placementRecord(session.ps, res.correct, { format: it.format, response, answer: it.answer, misconception: res.misconception, op: it.op });
+      ch.walk = session.ps; save();
       session.feedback = { ok: true, right: res.correct, text: res.correct ? 'Got it!' : 'Thanks! Let\'s keep exploring.' };
       if (res.correct) { react('capo'); sfx('correct'); setTimeout(() => sfx('berimbau'), 260); }
       if (res.correct) session.correct++;
@@ -2892,6 +2944,8 @@ tr:last-child td { border-bottom: none; }
   function finishSession() {
     const ch = child();
     if (session.mode === 'placement') {
+      ch.discovery = Object.assign(E.discoverySummary(session.ps), { at: now() });
+      delete ch.walk;
       E.applyPlacement(ch, session.ps.passed, now());
     }
     const lit = litCount(ch);
@@ -2999,6 +3053,9 @@ tr:last-child td { border-bottom: none; }
       case 'addChildGuard': if (!S.parent || S.parent.sampleOnly) { view = { name: 'consent' }; } else { view = { name: 'addChild' }; } render(); break;
       case 'copyData': { const ta = document.getElementById('data-json'); const st = document.getElementById('copy-status'); try { navigator.clipboard.writeText(ta.value).then(() => { st.textContent = T('Copied.'); }, () => { ta.select(); st.textContent = T('Select all and copy.'); }); } catch (err) { ta.select(); st.textContent = T('Select all and copy.'); } break; }
       case 'startPlacement': startSession('placement', 'PV04'); break;
+      case 'restGo': nextItem(); break;
+      case 'restBreak': view = { name: 'who' }; render(); break;
+      case 'reconsent': if (S.parent) { S.parent.consentHistory = (S.parent.consentHistory || []).concat([{ notice: S.parent.notice || null, at: S.parent.consentAt || null }]); S.parent.notice = NOTICE_VERSION; S.parent.consentAt = Date.now(); save(); } render(); break;
       case 'focus': { const v = b.dataset.g; ch.focus = v === 'all' ? 'all' : +v; save(); render(); break; }
       case 'pipIdea': { const na = E.nextActivity(ch.skills, now(), focusOf(ch)); if (na.kind === 'learn') startSession('learn', na.skill); else startSession(na.kind, na.skill); break; }
       case 'region': {
@@ -3063,6 +3120,7 @@ tr:last-child td { border-bottom: none; }
       }
       case 'why': {
         const w = session.why; w.picked = +b.dataset.i;
+        E.recordWhy(ch.skills, session.item.skill, w.picked === w.answer); save();
         if (w.picked === w.answer) { ch.stats = ch.stats || {}; ch.stats.whyRight = (ch.stats.whyRight || 0) + 1; save(); react('proud'); sfx('correct'); } else react('think');
         render(); speak((w.picked === w.answer ? 'Yes! ' : 'Here is why: ') + w.options[w.answer]); break;
       }
@@ -3132,6 +3190,8 @@ tr:last-child td { border-bottom: none; }
       const err = document.getElementById('child-error');
       if (!nick) { err.textContent = T('Add a nickname so your child can find their profile.'); err.hidden = false; return; }
       const L = E.newLearner(nick.slice(0, 16), +document.getElementById('byear').value, document.getElementById('now-math').value, document.getElementById('sgrade').value);
+      const fe = document.getElementById('feel-enjoy'), fc = document.getElementById('feel-conf');
+      if (consentCurrent() && ((fe && fe.value) || (fc && fc.value))) L.feel = { enjoy: (fe && fe.value) || null, confidence: (fc && fc.value) || null };
       S.children.push(L); S.activeChild = L.id; save();
       const pl = document.getElementById('pic-lock');
       view = pl && pl.checked ? { name: 'picSet', childId: L.id, entry: [], first: null, from: 'add' } : { name: 'who' }; render();
@@ -3272,6 +3332,7 @@ tr:last-child td { border-bottom: none; }
       const fixed = new Set(), dyn = new Set();
       const F = (t) => { if (t) fixed.add(String(t)); }, D = (t) => { if (t) dyn.add(String(t)); };
       F("Hi, I'm Pip! I'm a helper made by the Tenbright team using a computer, and my voice is made by a computer too. I collect light beads. Ten beads make a lantern. Will you help me light the Kingdom?");
+      F(ADV.intro); F(ADV.back); F(ADV.rest); D('I found 12 lanterns you can already light. ' + ADV.found); D('I found 1 lanterns you can already light. ' + ADV.found);
       F('Watch my capoeira moves!'); F('Let me play you a song!'); F('Hi, friend! I am so glad you are here.');
       F('Got it!'); F("Thanks! Let's keep exploring."); F('That’s how it works! Now it’s your turn.');
       Object.values(PRAISE).forEach((x) => { F(x); F(x + ' You fixed it.'); });

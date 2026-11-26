@@ -74,8 +74,9 @@ with sync_playwright() as p:
         # answers land only in the active child's record
         before = {n: json.dumps(kid(pg, n)['skills'], sort_keys=True) for n in ['Zed', 'Lou']}
         pg.locator('[data-act="startPlacement"]').click()
-        for i in range(30):
+        for i in range(40):
             if pg.locator('[data-act="go"][data-to="map"]').count(): break
+            if pg.locator('[data-act="restGo"]').count(): pg.locator('[data-act="restGo"]').click(); continue
             ans = pg.evaluate('() => window.__tbSession().item.answer')
             if pg.locator('.choices button[data-v]').count(): pg.locator('.choices button[data-v="%s"]' % ans).first.click()
             else:

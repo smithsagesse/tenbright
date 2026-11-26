@@ -47,7 +47,9 @@ with sync_playwright() as p:
     page.get_by_text("Let's explore!").click()
     # adaptive placement: runs until the walk finishes (at most 25 items)
     n = 0
-    while not page.get_by_text('Thanks for exploring!').count() and n < 30:
+    while not page.get_by_text('Thanks for exploring!').count() and n < 40:
+        if page.locator('[data-act="restGo"]').count():  # Discovery Adventure rest stop
+            page.locator('[data-act="restGo"]').click(); n += 1; continue
         answer_current(page)
         page.locator('.checkbtn').click()  # Next
         n += 1

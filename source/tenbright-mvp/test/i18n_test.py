@@ -84,7 +84,9 @@ with sync_playwright() as p:
         page.screenshot(path=str(OUT / ('%s-intro.png' % L)))
         page.locator('[data-act="startPlacement"]').click()
         n = 0
-        while not page.locator('[data-act="go"][data-to="map"]').count() and n < 30:
+        while not page.locator('[data-act="go"][data-to="map"]').count() and n < 40:
+            if page.locator('[data-act="restGo"]').count():  # Discovery Adventure rest stop
+                look('rest-stop'); page.locator('[data-act="restGo"]').click(); n += 1; continue
             look('placement'); answer(page)
             if page.locator('.checkbtn').count(): page.locator('.checkbtn').click()
             n += 1

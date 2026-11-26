@@ -25,8 +25,14 @@ https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
 
 - A **deterministic math engine**: all problems, answers and worked steps come from code, never from an LLM.
   It covers 103 skills across Grades 1–5, with a misconception library (wrong-answer patterns mapped to "clue" feedback).
-- **Adaptive placement** checks 8 anchor skills in at most 25 items. **Spaced-repetition mastery** rechecks each skill
-  at 7, 30 and 90 days.
+- **Discovery Adventure** (Tenbright 2.0 Phase 2, Nov 26, 2026): the adaptive starting walk, framed for the child as a
+  number adventure. It starts near the child's school grade (gently, with an easier check, if the parent said math feels
+  hard), checks key skills including one or two story problems, asks each in two kinds of question, and stops at 25 questions.
+  A miss can bring one follow-up question: a story missed → the same kind of math without a story ("reading");
+  a check failed → one question from the skill underneath ("foundation" or "new step"). Follow-ups never change pass or fail.
+  Rest stops every 3 checks; the walk is saved on the device and resumes. The child never sees a grade, level or score.
+  Parents see "What the Discovery Adventure found" and an Understanding state per skill (understands, partly, with help,
+  can do it but explaining why is next, not yet, still checking, not started). **Spaced-repetition mastery** rechecks each skill
 - **Lessons:** illustrated step-by-step walkthroughs with Pip and "Work it with Pip" guided practice. Models include
   base-ten blocks, place-value charts, number lines, ten-frames, bar models, arrays and an interactive soroban.
 - **Lantern Line**, a number-line warm-up game, plus a child journal and a parent dashboard.
@@ -97,7 +103,7 @@ with identical sw.js, manifest, icons, art and audio. It contains:
 - `build.js`: run `node build.js` to produce `dist/index.html` (and `dist/test.html` with test hooks).
 - Tests: `node test/engine.test.js` (math engine, millions of generated checks); Playwright suites
   `test/e2e.py`, `test/features_test.py`, `test/audio_test.py`, `test/living_test.py`,
-  `test/separation_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
+  `test/separation_test.py`, `test/discovery_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
 - `docs/animation-system.md` and `README.md`.
 
 Make changes in `source/tenbright-mvp/src/`, rebuild and run every suite.
@@ -144,4 +150,17 @@ test suite passes, merge it into `main` yourself (fast-forward; rebase first if 
 was merged. He does not need to approve each merge. This covers development work only: anything that publishes to
 families (the live link, a website, the app stores) still needs his approval.
 Current focus (Nov 25, 2026): developing the app. Do not raise launch items or plans unless he asks.
+
+**Tenbright 2.0 program (owner approved Nov 26, 2026):** the owner's master prompt and its Phase 1 audit are in the doc
+"Tenbright 2.0: Phase 1 Audit" (https://claude.ai/artifact/Cnw1YufTXrKQPPHx4ULdCx). He accepted every recommendation:
+- **Pip's adaptive tutoring runs on the device.** No AI at run time and no child data off the device. Explanation variants
+  are written ahead of time (AI may help draft them offline), verified against the engine, reviewed and recorded.
+- **Coins only as math objects** (a Money Market world), never a reward currency.
+- **Parent intake:** only two optional questions (enjoys math? how confident?), kept under privacy notice v1.3.
+  Any new kind of stored data needs a notice version bump and re-agreement (the parent page shows the update card).
+- **Build order:** 2 Discovery Adventure (done Nov 26) · 3 foundation lessons (micro-step rewrite, Grades 1–2 first,
+  keep math words with plain explanations, translations in the same pass) · 4 adaptive Pip + independence and mastery
+  evidence · 5 games · 6 strategy library (verify the cited research first) · 7 geometry, measurement, time, money ·
+  8 parent dashboard v2 · 9 pilot and effectiveness study.
+- Fix in Phase 3: "Carrying and borrowing", "Your brain grows", "a strong predictor of later math success", unused glowmoth labels.
 Do not claim legal sign-off, hiring or payments. Those are his.

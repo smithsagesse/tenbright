@@ -1389,19 +1389,45 @@
   const ANCHORS_G1 = ['C107', 'C111'];
   const ANCHORS_G4 = ['F404', 'F406', 'F413'];
   const ANCHORS_G5 = ['F508', 'F511', 'F506'];
+  // story anchors (Tenbright 2.0 Discovery Adventure): every walk also checks one or two word problems
+  const STORY_ANCHORS = ['C114', 'WP02', 'WP04', 'F411', 'WP05'];
   function placementPlan(schoolGrade) {
     const g = parseInt(schoolGrade, 10);
-    if (g === 1) return { queue: ANCHORS_G1.concat(['PV04', 'PV10', 'AS05', 'AS07']), fallback: [] };
-    if (g === 4) return { queue: ['AS12', 'MU12'].concat(ANCHORS_G4, ['F418'], ANCHORS_G5.slice(0, 1)), fallback: ['PV04', 'PV10', 'AS05', 'AS07', 'MU03'] };
-    if (g === 5) return { queue: ['AS15', 'MU12', 'F406', 'F413', 'F418'].concat(ANCHORS_G5), fallback: ['PV04', 'AS05', 'AS07', 'AS12', 'MU03'] };
-    return { queue: PLACEMENT_ANCHORS.concat(ANCHORS_G4, ANCHORS_G5), fallback: ANCHORS_G1 };
+    if (g === 1) return { queue: ANCHORS_G1.concat(['C114', 'PV04', 'PV10', 'AS05', 'AS07']), fallback: [] };
+    if (g === 4) return { queue: ['AS12', 'MU12'].concat(ANCHORS_G4.slice(0, 2), ['F411'], ANCHORS_G4.slice(2), ['F418'], ANCHORS_G5.slice(0, 1)), fallback: ['PV04', 'PV10', 'AS05', 'AS07', 'MU03'] };
+    if (g === 5) return { queue: ['AS15', 'MU12', 'WP05', 'F406', 'F413', 'F418'].concat(ANCHORS_G5), fallback: ['PV04', 'AS05', 'AS07', 'AS12', 'MU03'] };
+    return { queue: ['PV04', 'PV10', 'AS05', 'WP02', 'AS07', 'AS12', 'AS15', 'MU03', 'MU12', 'WP04'].concat(ANCHORS_G4, ANCHORS_G5), fallback: ANCHORS_G1 };
   }
-  function newPlacement(schoolGrade) {
+  // gentle: the parent said the child does not enjoy math yet or feels worried, so the walk opens with an easier check
+  function newPlacement(schoolGrade, opts) {
     const plan = placementPlan(schoolGrade);
-    return { queue: plan.queue.slice(), fallback: plan.fallback.slice(), current: plan.queue[0], answers: [], passed: [], failed: [], items: 0, done: false };
+    const queue = plan.queue.slice(), fallback = plan.fallback.slice();
+    if (opts && opts.gentle && fallback.length) queue.unshift(fallback.shift());
+    return { queue, fallback, current: queue[0], answers: [], passed: [], failed: [], items: 0, done: false, ev: {}, probe: null, probes: [], decided: 0, restedAt: 0, grade: schoolGrade || null };
   }
+  // A follow-up question after a miss, to tell what kind of difficulty it is (Discovery Adventure):
+  //  reading: a story was missed, so the same kind of math is asked without a story;
+  //  foundation: a check was not passed, so one question from the skill underneath shows where to start.
+  const READING_PROBE = { C114: 'C102', WP02: 'AS05', WP04: 'MU16', WP05: 'AS05', F411: 'MU16' };
+  // a near miss: one away, ten away, a hundred away, or two digits swapped
+  function isSlip(answer, response) {
+    const a = Number(answer), r = Number(response);
+    if (!Number.isFinite(a) || !Number.isFinite(r) || a === r) return false;
+    const d = Math.abs(a - r);
+    if (d === 1 || d === 10 || d === 100) return true;
+    const sa = String(answer), sr = String(response);
+    return sa.length === sr.length && sa.length > 1 && sa.split('').sort().join('') === sr.split('').sort().join('');
+  }
+  function evFor(ps, id) { ps.ev = ps.ev || {}; return (ps.ev[id] = ps.ev[id] || { n: 0, right: 0, formats: [], slips: 0, patterns: {}, probe: null }); }
   // rule: 3 of 3 passes; 0 or 1 of 3 fails; 2 of 3 gets one more item that decides; 0 of 2 stops early
-  function placementRecord(ps, correct) {
+  // info (optional): { format, response, answer, misconception, op } from the item just answered
+  function placementRecord(ps, correct, info) {
+    info = info || {};
+    const anchor = ps.current, ev = evFor(ps, anchor);
+    ev.n++; if (correct) ev.right++;
+    if (info.format && !ev.formats.includes(info.format)) ev.formats.push(info.format);
+    if (!correct && info.misconception) ev.patterns[info.misconception] = (ev.patterns[info.misconception] || 0) + 1;
+    if (!correct && !info.misconception && isSlip(info.answer, info.response)) ev.slips++;
     ps.answers.push(!!correct); ps.items++;
     const n = ps.answers.length, right = ps.answers.filter(Boolean).length;
     let verdict = null;
@@ -1421,9 +1447,90 @@
       if (verdict === 'fail') ps.queue = ps.queue.filter((a) => !ancestors(a).has(ps.current));
       ps.current = ps.queue[0] || null;
       ps.answers = [];
+      ps.decided = (ps.decided || 0) + 1;
+    }
+    // follow-up question (counts toward the 25-question limit, never toward pass or fail)
+    if (ps.ev && !ps.probe && ps.items < PLACEMENT_MAX_ITEMS - 1) {
+      const nothingKnown = !Object.keys(ev.patterns).length;
+      if (!correct && STORY_ANCHORS.includes(anchor) && !ev.probe && nothingKnown) {
+        const skill = anchor === 'C114' && info.op === '−' ? 'C103' : READING_PROBE[anchor];
+        if (skill) { ev.probe = { kind: 'reading', skill, correct: null }; ps.probe = { anchor, kind: 'reading', skill }; }
+      } else if (verdict === 'fail' && !ev.probe && nothingKnown && ev.slips < ev.n - ev.right) {
+        const known = new Set(ps.passed.concat(ps.failed, ps.queue, ps.fallback || []));
+        const skill = SKILLS[anchor].prereqs.find((p) => !known.has(p));
+        if (skill) { ev.probe = { kind: 'foundation', skill, correct: null }; ps.probe = { anchor, kind: 'foundation', skill }; }
+      }
     }
     if (!ps.current || ps.items >= PLACEMENT_MAX_ITEMS) ps.done = true;
+    if (ps.done) ps.probe = null;
     return verdict;
+  }
+  // what the walk asks next: a pending follow-up first, then the current check
+  function placementNext(ps) {
+    if (ps.done) return null;
+    if (ps.probe) return { skill: ps.probe.skill, probe: ps.probe.kind };
+    return { skill: ps.current, probe: null };
+  }
+  function placementProbeRecord(ps, correct) {
+    const p = ps.probe; if (!p) return;
+    ps.items++;
+    const ev = evFor(ps, p.anchor);
+    ev.probe = { kind: p.kind, skill: p.skill, correct: !!correct };
+    ps.probes = (ps.probes || []).concat([{ anchor: p.anchor, kind: p.kind, skill: p.skill, correct: !!correct }]);
+    ps.probe = null;
+    if (ps.items >= PLACEMENT_MAX_ITEMS) ps.done = true;
+  }
+  // a rest stop after every 3 decided checks; the child can keep going or take a break and come back
+  const REST_EVERY = 3;
+  function placementRestDue(ps) {
+    return !ps.done && !ps.probe && ps.decided > 0 && ps.decided % REST_EVERY === 0 && ps.restedAt !== ps.decided;
+  }
+  function placementRested(ps) { ps.restedAt = ps.decided; }
+  function placementStage(ps) { return Math.floor((ps.decided || 0) / REST_EVERY) + 1; }
+  // what the walk found, for the parent report: facts only, no levels or labels
+  function discoverySummary(ps) {
+    const ev = ps.ev || {};
+    const notes = [];
+    Object.keys(ev).forEach((id) => {
+      const e = ev[id], passed = ps.passed.includes(id);
+      const pat = Object.keys(e.patterns).sort((a, b) => e.patterns[b] - e.patterns[a])[0];
+      if (pat) notes.push({ skill: id, kind: 'pattern', misconception: pat });
+      else if (e.probe && e.probe.kind === 'reading' && e.probe.correct === true) notes.push({ skill: id, kind: 'reading', probeSkill: e.probe.skill });
+      else if (e.probe && e.probe.kind === 'foundation') notes.push({ skill: id, kind: e.probe.correct ? 'newStep' : 'foundation', probeSkill: e.probe.skill });
+      else if (passed && e.slips) notes.push({ skill: id, kind: 'slip' });
+    });
+    return { strong: ps.passed.slice(), building: ps.failed.slice(), notes, items: ps.items, grade: ps.grade || null };
+  }
+
+  // ---------- understanding states (Tenbright 2.0) ----------
+  // One state per skill, from all the evidence so far. Shown to parents in plain words, never to the child.
+  //  understands · partly · withHelp (right mostly with big hints or Work it with Pip) · cantExplainYet (right, but
+  //  "Why did that work?" mostly missed) · notYet · needsCheck (too little evidence) · notStarted
+  const UNDERSTANDING = ['understands', 'partly', 'withHelp', 'cantExplainYet', 'notYet', 'needsCheck', 'notStarted'];
+  function understanding(st) {
+    const a = st.attempts || [];
+    if (!a.length) {
+      if (['placed', 'mastered', 'certified'].includes(st.status)) return 'understands';
+      return st.status === 'locked' ? 'notStarted' : 'needsCheck';
+    }
+    const indep = a.filter((x) => x.hint <= 1).slice(-10), helped = a.filter((x) => x.hint >= 2).slice(-10);
+    const acc = (xs) => (xs.length ? xs.filter((x) => x.correct).length / xs.length : null);
+    const ia = acc(indep), ha = acc(helped);
+    const why = st.why;
+    if (indep.length >= 3 && ia >= 0.9) return why && why.total >= 2 && why.right / why.total < 0.5 ? 'cantExplainYet' : 'understands';
+    if (indep.length < 3) {
+      if (['placed', 'mastered', 'certified'].includes(st.status)) return 'understands';
+      if (helped.length >= 3 && ha >= 0.7) return 'withHelp';
+      return 'needsCheck';
+    }
+    if (ia >= 0.5) return 'partly';
+    if (helped.length >= 3 && ha >= 0.7) return 'withHelp';
+    return 'notYet';
+  }
+  function recordWhy(skills, id, right) {
+    const st = skills[id]; if (!st) return;
+    st.why = st.why || { right: 0, total: 0 };
+    st.why.total++; if (right) st.why.right++;
   }
   function applyPlacement(learner, passedAnchors, now) {
     passedAnchors.forEach((id) => {
@@ -1453,7 +1560,7 @@
     return L;
   }
 
-  const api = { makeRng, digits, MISCONCEPTIONS, SKILLS, SKILL_ORDER, generate, check, bktUpdate, BKT, masteryMet, recordAttempt, recordCheckItem, dueCheck, nextActivity, newLearner, refreshUnlocks, PLACEMENT_ANCHORS, PLACEMENT_MAX_ITEMS, placementPlan, newPlacement, placementRecord, applyPlacement, migrateLearner, ancestors, numberName, DAY, CHECK_DAYS, GRADE_LEVELS, SCHOOL_GRADES, gradeOf, defaultFocus, gradeProgress, makeMistake, PIP_DID, lineItem, linePAE };
+  const api = { makeRng, digits, MISCONCEPTIONS, SKILLS, SKILL_ORDER, generate, check, bktUpdate, BKT, masteryMet, recordAttempt, recordCheckItem, dueCheck, nextActivity, newLearner, refreshUnlocks, PLACEMENT_ANCHORS, PLACEMENT_MAX_ITEMS, placementPlan, newPlacement, placementRecord, applyPlacement, STORY_ANCHORS, READING_PROBE, isSlip, placementNext, placementProbeRecord, placementRestDue, placementRested, placementStage, discoverySummary, UNDERSTANDING, understanding, recordWhy, migrateLearner, ancestors, numberName, DAY, CHECK_DAYS, GRADE_LEVELS, SCHOOL_GRADES, gradeOf, defaultFocus, gradeProgress, makeMistake, PIP_DID, lineItem, linePAE };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.TBEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);

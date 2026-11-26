@@ -169,7 +169,63 @@ ok(g5strong.passed[0] === 'AS15' && g5strong.passed.includes('F511') && g5strong
 const g5weak = runPlacement('5', (a) => (E.gradeOf(a) <= 2 ? 1 : 0));
 ok(g5weak.failed[0] === 'AS15' && g5weak.passed.includes('PV04'), 'grade 5 child who misses the first anchor drops down: ' + g5weak.passed.join());
 const g1 = runPlacement('1', () => 0);
-ok(g1.queue.length === 0 && g1.passed.length === 0 && g1.items <= 6, 'grade 1 child who misses both Grade 1 anchors stops early');
+ok(g1.passed.length === 0 && g1.items <= 12, 'grade 1 child who misses the Grade 1 anchors stops early: ' + g1.items + ' items');
+
+// ---------- Discovery Adventure (Tenbright 2.0, Phase 2) ----------
+const walk = (grade, answer, opts) => {
+  const q = E.newPlacement(grade, opts); let g = 0; const rests = []; const asked = [];
+  while (!q.done && g++ < 80) {
+    const nx = E.placementNext(q); const right = !!answer(nx.skill, nx.probe); asked.push((nx.probe ? '?' : '') + nx.skill);
+    if (nx.probe) E.placementProbeRecord(q, right); else E.placementRecord(q, right, { format: g % 2 ? 'number' : 'choice', response: right ? '7' : '99', answer: '7' });
+    if (E.placementRestDue(q)) { rests.push(q.decided); E.placementRested(q); }
+  }
+  return { q, rests, asked };
+};
+// every walk checks a story problem
+ok(['1', '2', '3', '4', '5', 'other'].every((g) => E.placementPlan(g).queue.some((a) => E.STORY_ANCHORS.includes(a))), 'every walk includes a story check');
+// slips: one away, ten away, a hundred away, swapped digits; not exact, not far off
+ok(E.isSlip('78', '79') && E.isSlip('78', '88') && E.isSlip('178', '78') && E.isSlip('78', '87') && !E.isSlip('78', '78') && !E.isSlip('78', '35') && !E.isSlip('3/4', '4/3'), 'slip detection');
+// a child who misses only stories: a reading follow-up, then a "reading" finding
+const reader = walk('2', (s) => !E.STORY_ANCHORS.includes(s));
+ok(reader.asked.includes('?AS05') && reader.q.failed.includes('WP02'), 'story miss gets a no-story follow-up: ' + reader.asked.join(' '));
+ok(E.discoverySummary(reader.q).notes.some((n) => n.skill === 'WP02' && n.kind === 'reading'), 'reading finding');
+// regrouping is the new step: AS07 missed, the skill underneath (AS06) right
+const regroup = walk('2', (s) => E.gradeOf(s) <= 2 && s !== 'AS07');
+const rn = E.discoverySummary(regroup.q).notes.find((n) => n.skill === 'AS07');
+ok(rn && rn.kind === 'newStep' && rn.probeSkill === 'AS06', 'new step finding: ' + JSON.stringify(rn));
+// a missed foundation: the skill underneath also missed
+const found = walk('2', () => false);
+ok(E.discoverySummary(found.q).notes.some((n) => n.kind === 'foundation'), 'foundation finding');
+// a known mistake pattern explains the miss, so no follow-up is asked for it
+const pq = E.newPlacement('2');
+E.placementRecord(pq, false, { misconception: 'M07', response: '8', answer: '800' }); E.placementRecord(pq, false, { misconception: 'M07', response: '8', answer: '800' });
+ok(!pq.probe && E.discoverySummary(pq).notes[0].kind === 'pattern' && E.discoverySummary(pq).notes[0].misconception === 'M07', 'pattern finding, no follow-up');
+// follow-ups never change pass or fail, count toward the limit, and come before the next check
+ok([reader, regroup, found].every((w) => w.q.items <= E.PLACEMENT_MAX_ITEMS), 'follow-ups stay within 25 questions');
+ok(regroup.q.passed.join() === walk('2', (s, p) => (p ? true : E.gradeOf(s) <= 2 && s !== 'AS07')).q.passed.join(), 'follow-up answers do not change the result');
+// rest stops every 3 decided checks, never after the walk is done
+ok(reader.rests.length >= 1 && reader.rests.every((d) => d % 3 === 0), 'rest stops: ' + reader.rests.join());
+const rq = E.newPlacement('2'); [1, 1, 1, 1, 1, 1, 1, 1, 1].forEach((x) => E.placementRecord(rq, x));
+ok(E.placementRestDue(rq) && E.placementStage(rq) === 2, 'rest due after 3 checks'); E.placementRested(rq); ok(!E.placementRestDue(rq), 'rest shown once');
+// the walk is plain data, so it can be saved and resumed
+const saved = JSON.parse(JSON.stringify(rq)); E.placementRecord(saved, true); ok(saved.current === rq.current && saved.items === rq.items + 1, 'walk resumes from saved data');
+// gentle start: the parent said math feels hard, so the first check is an easier one
+ok(E.newPlacement('3', { gentle: true }).current === 'C107' && E.newPlacement('3').current === 'PV04' && E.newPlacement('1', { gentle: true }).current === 'C107', 'gentle start');
+// the old two-argument call still works
+const old2 = E.newPlacement(); E.placementRecord(old2, true); ok(old2.items === 1, 'two-argument record');
+
+// understanding states from the evidence
+const stOf = (attempts, extra) => Object.assign(E.newLearner('U').skills.AS07, { status: 'practiced', attempts }, extra || {});
+const at = (n, right, hint) => Array.from({ length: n }, (_, i) => ({ correct: i < right, hint: hint || 0, format: 'number' }));
+ok(E.understanding(stOf([])) === 'needsCheck' && E.understanding(Object.assign(E.newLearner('U').skills.F515)) === 'notStarted', 'no evidence');
+ok(E.understanding(stOf(at(10, 10))) === 'understands', 'understands');
+ok(E.understanding(stOf(at(10, 7))) === 'partly', 'partly');
+ok(E.understanding(stOf(at(10, 2))) === 'notYet', 'not yet');
+ok(E.understanding(stOf(at(2, 0).concat(at(5, 5, 3)))) === 'withHelp', 'with help');
+ok(E.understanding(stOf(at(10, 10), { why: { right: 0, total: 3 } })) === 'cantExplainYet', 'right but not explained yet');
+ok(E.understanding(stOf([], { status: 'placed' })) === 'understands', 'shown in the walk');
+const W = E.newLearner('W'); E.recordWhy(W.skills, 'AS07', true); E.recordWhy(W.skills, 'AS07', false); ok(W.skills.AS07.why.right === 1 && W.skills.AS07.why.total === 2, 'why tally');
+ok(E.UNDERSTANDING.length === 7, 'seven states');
 const Lg5 = E.newLearner('P', 2015, 'times', '5'); E.applyPlacement(Lg5, g5strong.passed, now);
 ok(Lg5.skills.C101.status === 'placed' && Lg5.skills.F404.status === 'placed', 'placement credits every grade underneath');
 // decimals: answers with or without trailing zeros, leading zeros or commas
