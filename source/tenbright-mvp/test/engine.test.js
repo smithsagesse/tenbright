@@ -369,7 +369,7 @@ const pq = E.newPlacement('2');
 E.placementRecord(pq, false, { misconception: 'M07', response: '8', answer: '800' }); E.placementRecord(pq, false, { misconception: 'M07', response: '8', answer: '800' });
 ok(!pq.probe && E.discoverySummary(pq).notes[0].kind === 'pattern' && E.discoverySummary(pq).notes[0].misconception === 'M07', 'pattern finding, no follow-up');
 // follow-ups never change pass or fail, count toward the limit, and come before the next check
-ok([reader, regroup, found].every((w) => w.q.items <= E.PLACEMENT_MAX_ITEMS), 'follow-ups stay within 25 questions');
+ok([reader, regroup, found].every((w) => w.q.items <= E.PLACEMENT_MAX_ITEMS), 'follow-ups stay within the question limit');
 ok(regroup.q.passed.join() === walk('2', (s, p) => (p ? true : E.gradeOf(s) <= 2 && s !== 'AS07')).q.passed.join(), 'follow-up answers do not change the result');
 // rest stops every 3 decided checks, never after the walk is done
 ok(reader.rests.length >= 1 && reader.rests.every((d) => d % 3 === 0), 'rest stops: ' + reader.rests.join());
@@ -379,7 +379,7 @@ ok(E.placementRestDue(rq) && E.placementStage(rq) === 2, 'rest due after 3 check
 const saved = JSON.parse(JSON.stringify(rq)); E.placementRecord(saved, true); ok(saved.current === rq.current && saved.items === rq.items + 1, 'walk resumes from saved data');
 // gentle start: the parent said math feels hard, so the first check is an easier one
 ok(E.newPlacement('3', { gentle: true }).current === 'C107' && E.newPlacement('3').current === 'PV04' && E.newPlacement('1', { gentle: true }).current === 'C107', 'gentle start');
-// Phase 7 strands in the walk: two grade-matched checks (money or time, measuring or shapes), asked within 25 questions
+// Phase 7 strands in the walk: two grade-matched checks (money or time, measuring or shapes), asked within the question limit
 ['1', '2', '3', '4', '5', 'other'].forEach((g) => {
   const sa = E.strandAnchors(g);
   ok(sa.length === 2 && sa.every((id) => ['market', 'clock', 'workshop', 'shapes'].includes(E.SKILLS[id].region)), g + ': two strand checks');
@@ -394,6 +394,14 @@ ok(E.newPlacement('3', { gentle: true }).current === 'C107' && E.newPlacement('3
     ok(sa.every((id) => decided.includes(id)) && q.items <= E.PLACEMENT_MAX_ITEMS, g + ': both strands decided: ' + decided.join());
   }
 });
+// the 29-question limit leaves room for both strands without dropping a core check: these were the checks pushed out at 25
+{ const full = (g, f) => { const q = E.newPlacement(g); let i = 0; while (!q.done && i++ < 90) { const nx = E.placementNext(q); if (nx.probe) E.placementProbeRecord(q, true); else E.placementRecord(q, f(q.answers.length)); } return q.passed.concat(q.failed); };
+  ok(E.PLACEMENT_MAX_ITEMS === 29, 'walk limit 29');
+  [['2', 'MU03', 'AS12'], ['3', 'MU03', 'AS12'], ['4', 'F508', 'F413'], ['5', 'F511', 'F418']].forEach(([g, strongLast, midLast]) => {
+    const st = full(g, () => true), md = full(g, (k) => k !== 1);
+    ok(st.includes(strongLast) && E.strandAnchors(g).every((x) => st.includes(x)), g + ': strong walk keeps ' + strongLast + ' and both strands: ' + st.join());
+    ok(md.includes(midLast) && E.strandAnchors(g).every((x) => md.includes(x)), g + ': middling walk keeps ' + midLast + ' and both strands: ' + md.join());
+  }); }
 // strands are held back: the core number checks come first
 const sw = walk('2', () => true);
 ok(sw.asked.indexOf('MY02') > sw.asked.indexOf('AS12') && sw.asked.indexOf('MS01') > sw.asked.indexOf('AS12'), 'core checks first: ' + sw.asked.join(' '));

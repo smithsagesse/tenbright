@@ -146,7 +146,7 @@ with sync_playwright() as p:
             assert asked.count('TM03') == 2 and asked.count('MS04') == 2, 'strand spot checks: %s' % asked
             assert asked.index('TM03') > asked.index('AS12'), 'core number checks come first: %s' % asked
             assert pics.get('TM03') and pics.get('MS04'), 'strand questions show their pictures: %s' % pics
-            assert len(asked) <= 25
+            assert len(asked) <= pg.evaluate('() => window.TBEngine.PLACEMENT_MAX_ITEMS') == 29
             st = pg.evaluate("() => { const c = window.__tbChild(); return ['TM01', 'TM02', 'TM03', 'MS01', 'MS03', 'MS04', 'MY01'].map((id) => c.skills[id].status); }")
             assert st[:6] == ['placed'] * 6 and st[6] != 'placed', 'strand credit: %s' % st
             pg.evaluate("() => window.__tbView('dashboard')"); pg.locator('[data-act="dashChild"]', has_text='Cy').click()

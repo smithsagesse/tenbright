@@ -1718,7 +1718,7 @@
 
   // ---------- placement (Phase 2, section 5) ----------
   const PLACEMENT_ANCHORS = ['PV04', 'PV10', 'AS05', 'AS07', 'AS12', 'AS15', 'MU03', 'MU12'];
-  const PLACEMENT_MAX_ITEMS = 25;
+  const PLACEMENT_MAX_ITEMS = 29;
   function ancestors(id, acc) {
     acc = acc || new Set();
     SKILLS[id].prereqs.forEach((p) => { if (!acc.has(p)) { acc.add(p); ancestors(p, acc); } });
@@ -1812,7 +1812,7 @@
       ps.decided = (ps.decided || 0) + 1;
       strandsForward(ps);
     }
-    // follow-up question (counts toward the 25-question limit, never toward pass or fail)
+    // follow-up question (counts toward the 29-question limit, never toward pass or fail)
     if (ps.ev && !ps.probe && ps.items < PLACEMENT_MAX_ITEMS - 1 && !isStrandAnchor(anchor)) {
       const nothingKnown = !Object.keys(ev.patterns).length;
       if (!correct && STORY_ANCHORS.includes(anchor) && !ev.probe && nothingKnown) {

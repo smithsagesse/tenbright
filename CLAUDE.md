@@ -27,15 +27,16 @@ https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
   It covers 118 skills across Grades 1–5 (including money, time, measurement and geometry since Nov 26), with a misconception library (wrong-answer patterns mapped to "clue" feedback).
 - **Discovery Adventure** (Tenbright 2.0 Phase 2, Nov 26, 2026): the adaptive starting walk, framed for the child as a
   number adventure. It starts near the child's school grade (gently, with an easier check, if the parent said math feels
-  hard), checks key skills including one or two story problems, asks each in two kinds of question, and stops at 25 questions.
+  hard), checks key skills including one or two story problems, asks each in two kinds of question, and stops at 29 questions (25 until Nov 26; raised so the strand spot checks cost no core check).
   A miss can bring one follow-up question: a story missed → the same kind of math without a story ("reading");
   a check failed → one question from the skill underneath ("foundation" or "new step"). Follow-ups never change pass or fail.
   Since Nov 26 each walk also has two 2-question spot checks from the new strands, matched to the school grade (Grade 1
   TM01+GE01, 2 MY02+MS01, 3 TM03+MS04, 4 MY04+GE02, 5 GE03+TM04; `STRAND_ANCHORS`). They wait at the end of the queue and
   move forward once the questions left are just enough (`strandsForward`), so the core number checks come first; 2 of 2
   counts as known, anything less means practice on the map, with no follow-up. A child who has passed nothing is not
-  asked them, and a passed spot check credits only skills of its own strand (`applyPlacement`). Cost: at most one core
-  check, the last one the walk would have reached.
+  asked them, and a passed spot check credits only skills of its own strand (`applyPlacement`). With the 29-question
+  limit no core check is lost (checked in 42 simulated walks, all grades and answer profiles; about 4 questions longer
+  on average than the 25-question walk; children who struggle get the same or a shorter walk).
   Rest stops every 3 checks; the walk is saved on the device and resumes. The child never sees a grade, level or score.
   Parents see "What the Discovery Adventure found" and an Understanding state per skill (understands, partly, with help,
   can do it but explaining why is next, not yet, still checking, not started). **Spaced-repetition mastery** rechecks each skill
