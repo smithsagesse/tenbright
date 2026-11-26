@@ -1206,7 +1206,18 @@ tr:last-child td { border-bottom: none; }
     growth: '<svg width="96" height="80" viewBox="0 0 96 80" aria-hidden="true"><rect x="10" y="44" width="16" height="28" fill="#6BA368"></rect><rect x="32" y="34" width="16" height="38" fill="#4E8F4B"></rect><rect x="54" y="22" width="16" height="50" fill="#2F6E30"></rect><path d="M10 36 Q40 30 76 8" fill="none" stroke="#1E2A3B" stroke-width="3"></path><path d="M70 6 L78 8 L74 15" fill="none" stroke="#1E2A3B" stroke-width="3"></path></svg>'
   };
   const ADV_ART = { lemonade: '<svg width="96" height="80" viewBox="0 0 96 80" aria-hidden="true"><rect x="8" y="40" width="80" height="34" rx="4" fill="#F4C542" stroke="#8A5A12" stroke-width="3"></rect><path d="M4 40 L48 14 L92 40 Z" fill="#E0623C" stroke="#8A3A1E" stroke-width="3"></path><rect x="22" y="48" width="14" height="20" rx="3" fill="#FFFDF6" stroke="#8A5A12" stroke-width="2"></rect><rect x="60" y="48" width="14" height="20" rx="3" fill="#FFFDF6" stroke="#8A5A12" stroke-width="2"></rect></svg>' };
-  Object.assign(ADV_ART, ADV_ART_MORE);
+  Object.assign(ADV_ART, ADV_ART_MORE, {
+    pricetest: ADV_ART_MORE.stall.replace('#2D6FD1', '#F4C542').replace('#1C4FA8', '#8A5A12'),
+    rainy: '<svg width="96" height="80" viewBox="0 0 96 80" aria-hidden="true"><ellipse cx="50" cy="28" rx="30" ry="16" fill="#9AA6B2"></ellipse><ellipse cx="32" cy="32" rx="18" ry="12" fill="#B7C1CB"></ellipse><path d="M30 50 l-4 10 M46 52 l-4 10 M62 50 l-4 10 M38 64 l-4 10 M54 64 l-4 10" stroke="#2D6FD1" stroke-width="4" stroke-linecap="round"></path></svg>',
+    shopping: '<svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true"><rect x="16" y="8" width="48" height="64" rx="6" fill="#FFFDF6" stroke="#5E7A90" stroke-width="3"></rect><path d="M26 26 h28 M26 38 h28 M26 50 h20" stroke="#5E7A90" stroke-width="4" stroke-linecap="round"></path></svg>',
+    cents: coinArt('#D8DDE4', '#7C8490', '$.25'),
+    better: '<svg width="96" height="80" viewBox="0 0 96 80" aria-hidden="true"><rect x="8" y="24" width="28" height="44" rx="4" fill="#E0623C" stroke="#8A3A1E" stroke-width="3"></rect><rect x="44" y="12" width="44" height="56" rx="4" fill="#2D6FD1" stroke="#1C4FA8" stroke-width="3"></rect><path d="M54 24 v34 M62 24 v34 M70 24 v34 M78 24 v34 M16 34 v24 M26 34 v24" stroke="#FFD27A" stroke-width="3"></path></svg>',
+    split: ADV_ART_MORE.company.replace('#F4C542', '#E8B878').replace('#E0623C', '#F4C542'),
+    dividend: ADV_ART_MORE.company,
+    bulk: '<svg width="96" height="80" viewBox="0 0 96 80" aria-hidden="true"><rect x="10" y="30" width="76" height="40" rx="4" fill="#B07A3E" stroke="#7A4A1E" stroke-width="3"></rect><circle cx="28" cy="28" r="10" fill="#F4E04D"></circle><circle cx="48" cy="24" r="10" fill="#F4E04D"></circle><circle cx="68" cy="28" r="10" fill="#F4E04D"></circle></svg>',
+    early: ADV_ART_MORE.growth,
+    updown: '<svg width="96" height="80" viewBox="0 0 96 80" aria-hidden="true"><path d="M8 8 V72 H90" fill="none" stroke="#1E2A3B" stroke-width="3"></path><polyline points="16,52 36,30 56,44 80,18" fill="none" stroke="#2D6FD1" stroke-width="4"></polyline><circle cx="16" cy="52" r="4" fill="#2D6FD1"></circle><circle cx="36" cy="30" r="4" fill="#2D6FD1"></circle><circle cx="56" cy="44" r="4" fill="#2D6FD1"></circle><circle cx="80" cy="18" r="4" fill="#2D6FD1"></circle></svg>'
+  });
   // parent switches (section 3 of the plan): money adventures on, investing stories off, invitations after mastery on
   const advOn = () => !(S.settings && S.settings.adventures === false);
   const investOn = () => !!(S.settings && S.settings.investing);
@@ -1255,7 +1266,7 @@ tr:last-child td { border-bottom: none; }
     return '';
   }
   // a wrong answer that matches a known pattern gets that pattern's clue (math or money idea)
-  function advMis(rd, value) { return Object.keys(rd.predicted || {}).find((k) => rd.predicted[k] === String(value)) || null; }
+  function advMis(rd, value) { return rd.choices ? null : E.check({ answer: rd.answer, predicted: rd.predicted || {} }, String(value)).misconception; }
   function gameData(ch, g) { ch.games = ch.games || {}; return (ch.games[g] = ch.games[g] || { plays: [], done: {}, best: {} }); }
   function startGame(g, timed) {
     const ch = child(), level = E.gameLevel(ch.skills, g);
@@ -1267,7 +1278,7 @@ tr:last-child td { border-bottom: none; }
   function gameCheck(value) {
     const ch = child(), rd = session.rounds[session.i];
     if (session.fb && (session.fb.ok || session.fb.final)) return;
-    const right = String(value) === rd.answer;
+    const right = rd.game === 'adventure' && !rd.choices ? E.check({ answer: rd.answer, predicted: {} }, String(value)).correct : String(value) === rd.answer;
     if (rd.game === 'adventure' && session.tries === 0) {
       // the first answer to a math step counts as story evidence for its skill; the idea check is kept with the adventure
       if (rd.skill) E.recordAttempt(ch.skills, rd.skill, { format: 'number', kind: 'transfer' }, { correct: right, misconception: right ? null : advMis(rd, value) }, 0, now());
@@ -2177,13 +2188,23 @@ tr:last-child td { border-bottom: none; }
     for (let i = 0; i <= k && i < steps.length; i++) lines.push(`<li class="${i === k ? 'now' : ''}">${escM(steps[i])}</li>`);
     return `<div class="paper-sheet" aria-label="What to write on paper"><span class="paper-tag">On your paper</span><ol>${lines.join('')}</ol></div>`;
   }
-  const NEW_MODELS = new Set(['ruler', 'lengths', 'rect', 'shape', 'angle', 'grid', 'coins', 'clock', 'clock2', 'pairsum', 'compare2', 'fracbar', 'fracline', 'pvbig', 'pvbig2', 'area', 'divgroups', 'timesbar', 'decgrid', 'decgrid2', 'pvdec', 'pvdec2', 'deccol', 'paper', 'fracarea', 'volume']);
+  const NEW_MODELS = new Set(['priceline', 'ruler', 'lengths', 'rect', 'shape', 'angle', 'grid', 'coins', 'clock', 'clock2', 'pairsum', 'compare2', 'fracbar', 'fracline', 'pvbig', 'pvbig2', 'area', 'divgroups', 'timesbar', 'decgrid', 'decgrid2', 'pvdec', 'pvdec2', 'deccol', 'paper', 'fracarea', 'volume']);
   // the picture in the practice screen (k = -1: nothing solved yet)
   // ---------- Phase 7: measuring and shapes ----------
   // pictures use the app's ink colors; each description gives what the picture shows, in words (the grid says where
   // the star is, so a child using a screen reader can answer: owner's decision, Nov 26, 2026)
   const INK = '#1E2A3B', unitAb = (cm) => (cm ? 'cm' : 'in'); // the screen translator handles "{N} cm" and "{N} in"
   const svgT = (x, y, t, size, extra) => `<text x="${x}" y="${y}" text-anchor="middle" font-size="${size || 18}" font-weight="800" fill="${INK}" ${extra || ''}>${t}</text>`;
+  // a price line: one point per week, joined; the description reads each week's price
+  function priceLineHtml(m) {
+    const W = 420, H = 230, x0 = 60, y0 = 20, ph = 160, max = 14, X = (i) => x0 + 40 + i * ((W - x0 - 80) / (m.prices.length - 1)), Y = (v) => y0 + ph - (v / max) * ph;
+    let g = `<line x1="${x0}" y1="${y0}" x2="${x0}" y2="${y0 + ph}" stroke="${INK}" stroke-width="2"></line><line x1="${x0}" y1="${y0 + ph}" x2="${W - 10}" y2="${y0 + ph}" stroke="${INK}" stroke-width="2"></line>`;
+    for (let v = 0; v <= max; v += 2) g += `<line x1="${x0 - 5}" y1="${Y(v)}" x2="${W - 10}" y2="${Y(v)}" stroke="#C9CED6" stroke-width="1"></line>` + svgT(x0 - 22, Y(v) + 5, v, 13);
+    g += `<polyline points="${m.prices.map((v, i) => X(i) + ',' + Y(v)).join(' ')}" fill="none" stroke="#2D6FD1" stroke-width="4"></polyline>`;
+    m.prices.forEach((v, i) => { g += `<circle cx="${X(i)}" cy="${Y(v)}" r="7" fill="#2D6FD1" stroke="#FFFFFF" stroke-width="2"></circle>` + svgT(X(i), y0 + ph + 22, i + 1, 15) + svgT(X(i), Y(v) - 14, '$' + v, 14); });
+    const label = 'A price line. ' + m.prices.map((v, i) => 'Week ' + (i + 1) + ': ' + v + ' dollars.').join(' ');
+    return `<svg class="mpic" viewBox="0 0 ${W} ${H + 10}" role="img" aria-label="${esc(label)}">${g}</svg>`;
+  }
   function rulerHtml(m) {
     const u = 30, x0 = 24, W = m.max * u + 48, rib = m.cm ? '#C0392B' : '#1F5FBF';
     let g = `<rect x="${x0 + m.start * u}" y="14" width="${(m.end - m.start) * u}" height="26" rx="6" fill="${rib}"></rect>`;
@@ -2266,6 +2287,7 @@ tr:last-child td { border-bottom: none; }
   function newModel(item, hint, k) {
     const m = item.model, steps = item.steps || [], last = k >= steps.length - 1;
     switch (m.type) {
+      case 'priceline': return priceLineHtml(m);
       case 'ruler': return rulerHtml(m);
       case 'lengths': return lengthsHtml(m);
       case 'rect': return rectHtml(m);
@@ -3190,9 +3212,9 @@ tr:last-child td { border-bottom: none; }
         action = done ? '' : `<button class="checkbtn" data-act="gameCheck" ${session.slices.length ? '' : 'disabled'}>Serve</button>`;
       } else if (g === 'adventure') {
         const strip = `<div class="story-strip" role="group" aria-label="Story so far">${(rd.story || []).map(([k, v]) => `<div class="story-cell"><span>${esc(k)}</span><b class="num">${esc(String(v))}</b></div>`).join('')}</div>`;
-        play = (session.i === 0 ? `<p class="hint-text">${esc(session.intro)}</p>` : '') + strip + (rd.coins ? coinsHtml(rd.coins) : '') + (done ? '' : rd.choices
+        play = (session.i === 0 ? `<p class="hint-text">${esc(session.intro)}</p>` : '') + strip + (rd.coins ? coinsHtml(rd.coins) : '') + (rd.model && rd.model.type === 'priceline' ? priceLineHtml(rd.model) : '') + (done ? '' : rd.choices
           ? `<div class="choices text" role="group" aria-label="Choices">${rd.choices.map((ch) => `<button data-act="achoose" data-v="${esc(ch)}" aria-pressed="${session.picked === ch}">${esc(ch)}</button>`).join('')}</div>`
-          : `<div class="entry num" aria-label="Your answer">${session.entry ? esc(session.entry) : '?'}</div><div class="pad">${['1','2','3','4','5','6','7','8','9'].map((d) => `<button data-act="gdigit" data-d="${d}" aria-label="${d}">${d}</button>`).join('')}<button data-act="gdel" aria-label="Delete">⌫</button><button data-act="gdigit" data-d="0" aria-label="0">0</button><button data-act="gclear" aria-label="Clear">C</button></div>`);
+          : `<div class="entry num" aria-label="Your answer">${session.entry ? esc(session.entry) : '?'}</div><div class="pad">${['1','2','3','4','5','6','7','8','9'].map((d) => `<button data-act="gdigit" data-d="${d}" aria-label="${d}">${d}</button>`).join('')}<button data-act="gdel" aria-label="Delete">⌫</button><button data-act="gdigit" data-d="0" aria-label="0">0</button>${rd.decimal ? '<button data-act="gdigit" data-d="." aria-label="Decimal point">.</button>' : '<button data-act="gclear" aria-label="Clear">C</button>'}</div>`);
         action = done ? '' : `<button class="checkbtn" data-act="gameCheck" ${(rd.choices ? session.picked : session.entry) ? '' : 'disabled'}>Check</button>`;
       } else if (g === 'trial') {
         play = trialVisual(rd, done) + (done ? '' : `<div class="entry num" aria-label="Your answer">${session.entry ? esc(session.entry) : '?'}</div><div class="pad">${['1','2','3','4','5','6','7','8','9'].map((d) => `<button data-act="gdigit" data-d="${d}" aria-label="${d}">${d}</button>`).join('')}<button data-act="gdel" aria-label="Delete">⌫</button><button data-act="gdigit" data-d="0" aria-label="0">0</button><button data-act="gclear" aria-label="Clear">C</button></div>`);

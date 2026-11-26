@@ -92,14 +92,17 @@ with sync_playwright() as p:
             t = pg.evaluate("(v) => window.__tbView(v)", v).lower()
             assert not re.search(r'\bwallet\b|\bbalance\b|\bearn coins\b|\byour money\b|\bshop for\b', t), v
         # 6. step 2: investing stories wait for the parent switch; every adventure plays to the end
-        pg.evaluate("() => { const c = window.__tbChild(); ['C102','C103','MY01','AS01','AS10','MY02','MY04','FN04','FN01','FN02','FN05','FN07'].forEach((id) => c.skills[id].status = 'mastered'); c.adventures = {}; c.badges = {}; window.__tbView('adventures'); }")
-        assert pg.locator('[data-act="advStart"]').count() == 8 and pg.get_by_text('A grown-up can turn on investing stories.').count() == 2, 'investing stories off by default'
+        pg.evaluate("() => { const c = window.__tbChild(), E = window.TBEngine; Object.keys(E.ADVENTURES).forEach((id) => E.ADVENTURES[id].needs.forEach((s) => { c.skills[s].status = 'mastered'; })); c.adventures = {}; c.badges = {}; window.__tbView('adventures'); }")
+        ids = pg.evaluate("() => Object.keys(window.TBEngine.ADVENTURES)")
+        inv = pg.evaluate("() => Object.keys(window.TBEngine.ADVENTURES).filter((id) => window.TBEngine.ADVENTURES[id].investing).length")
+        assert len(ids) == 20 and inv == 5
+        assert pg.locator('[data-act="advStart"]').count() == 20 - inv and pg.get_by_text('A grown-up can turn on investing stories.').count() == inv, 'investing stories off by default'
         pg.evaluate("() => window.__tbView('dashboard')"); pg.check('#invest-on')
         assert pg.evaluate('() => JSON.parse(localStorage.getItem("tenbright-mvp-v1")).settings.investing') is True
         pg.evaluate("() => window.__tbView('adventures')")
-        assert pg.locator('[data-act="advStart"]').count() == 10
+        assert pg.locator('[data-act="advStart"]').count() == 20
         axe(pg, 'all adventures ' + scheme)
-        for aid in ['piggy', 'shelf', 'kite', 'jar', 'change', 'twenty', 'stall', 'lemonade', 'company', 'growth']:
+        for aid in ids:
             pg.evaluate("() => window.__tbView('adventures')")
             pg.locator('[data-act="advStart"][data-id="%s"]' % aid).click()
             if aid in ('lemonade', 'company', 'growth') and pg.evaluate("() => window.__tbSession().mode") != 'explain':
@@ -113,9 +116,14 @@ with sync_playwright() as p:
                     axe(pg, aid + ' explainer ' + scheme)
                     pg.locator('[data-act="xpDone"]').click()
             if aid == 'jar': assert pg.locator('.coins-row').count() == 1, 'the jar shows its coins'
+            if aid == 'updown': assert pg.locator('svg.mpic[aria-label^="A price line."]').count() == 1, 'the price line'
+            if aid == 'cents': assert pg.locator('[data-act="gdigit"][data-d="."]').count() == 1, 'a decimal key for money with cents'
             n = pg.evaluate("() => window.__tbSession().rounds.length")
             for i in range(n):
-                rd = step(pg); answer(pg, rd, rd['answer'])
+                rd = step(pg)
+                v = rd['answer'] + ('0' if '.' in rd['answer'] and len(rd['answer'].split('.')[1]) == 1 else '')  # a child types 0.30
+                answer(pg, rd, v)
+                assert 'Right' in pg.locator('.feedback').inner_text(), (aid, i, v)
                 pg.locator('[data-act="gameNext"]').click()
             t = pg.locator('main').inner_text()
             assert 'Adventure complete!' in t and 'undefined' not in t and 'NaN' not in t, (aid, t[:200])

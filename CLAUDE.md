@@ -24,7 +24,7 @@ The working MVP is a single-page HTML/JS app plus assets. The live private link 
 https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
 
 - A **deterministic math engine**: all problems, answers and worked steps come from code, never from an LLM.
-  It covers 123 skills across Grades 1–5 (including money, time, measurement, geometry and the math of money since Nov 26), with a misconception library (wrong-answer patterns mapped to "clue" feedback).
+  It covers 126 skills across Grades 1–5 (including money, time, measurement, geometry and the math of money since Nov 26), with a misconception library (wrong-answer patterns mapped to "clue" feedback).
 - **Discovery Adventure** (Tenbright 2.0 Phase 2, Nov 26, 2026): the adaptive starting walk, framed for the child as a
   number adventure. It starts near the child's school grade (gently, with an easier check, if the parent said math feels
   hard), checks key skills including one or two story problems, asks each in two kinds of question, and stops at 29 questions (25 until Nov 26; raised so the strand spot checks cost no core check).
@@ -251,6 +251,10 @@ Explainers (`adventureExplainer`: lemonade, growth, company; 5 frames of a pictu
 engine, bars grow unless animation is Still) play before the first try, skippable, and on demand after. The invitation
 after mastery appears once on the practice end screen when the session's skill was just lit and powers an open
 adventure (`session.wasLit`), with Later. Parent card "Math in real life" with switches `S.settings.adventures` (on),
-`investing` (off), `invites` (on). Badge "Market maker" (3 adventures) gives Pip a sun cap. Remaining from the plan:
-adventures 9-14, 16, 17, 19, 20 and skills FN03, FN06, FN08 after the pilot.
+`investing` (off), `invites` (on). Badge "Market maker" (3 adventures) gives Pip a sun cap. Step 3 (done Nov 26, at the owner's request before the pilot): skills FN03 dollars and cents (decimal answers; the
+adventure keypad gets a decimal key and answers are compared with `E.check`, so 0.30 = 0.3), FN06 unit price, FN08 read
+a price line (picture `priceline`); clues MW6 price not the change, MW7 price not the week; ten more adventures
+(pricetest, rainy, shopping, cents, better, split, dividend, bulk, early, updown; dividend, early and updown are
+investing stories). All 20 adventures of the plan are built. Story names must come from `NAMES` in i18n.js so they
+translate (a name outside it stays English).
 Do not claim legal sign-off, hiring or payments. Those are his.

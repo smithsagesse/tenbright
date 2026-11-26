@@ -1,6 +1,6 @@
 /* Tenbright offline support: the page and Pip's audio are cached on the device so lessons work without internet.
    Nothing is sent anywhere; this only stores the app's own files. */
-const CACHE = 'tenbright-v4b2ad64e1d';
+const CACHE = 'tenbright-v56aa3e65ca';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './art/welcome.webp', './art/welcome-1600.webp', './art/celebrate.webp', './art/celebrate-1600.webp', './art/journal.webp', './art/journal-1600.webp', './art/welcome-depth.webp', './art/celebrate-depth.webp', './art/journal-depth.webp', './art/pip-hero.webp'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });

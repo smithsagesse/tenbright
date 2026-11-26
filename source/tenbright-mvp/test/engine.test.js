@@ -215,7 +215,7 @@ ok(!L2.skills.PV01.activeMis, 'three correct clears it');
 // graph integrity: every prerequisite exists and appears earlier in the order or in another strand without cycles
 E.SKILL_ORDER.forEach((id) => E.SKILLS[id].prereqs.forEach((p) => ok(E.SKILLS[p], id + ' has unknown prereq ' + p)));
 E.SKILL_ORDER.forEach((id) => ok(!E.ancestors(id).has(id), 'cycle at ' + id));
-ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 122, '122 core skills (102 + 8 money and time + 7 measurement and geometry + 5 money math)');
+ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 125, '125 core skills (102 + 8 money and time + 7 measurement and geometry + 8 money math)');
 // every clue code is defined once: a repeated key in an object literal silently replaces the earlier one
 {
   const src = require('fs').readFileSync(require('path').join(__dirname, '../src/engine.js'), 'utf8');
@@ -232,7 +232,8 @@ ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 122, '122 cor
 {
   const RF = E.makeRng(909);
   // a + b − c = d style sentences, left to right (× and ÷ only appear alone)
-  const trueSentences = (text, tag) => { const re = /(\d+)((?: [+−×÷] \d+)+) = (\d+)/g; let m; while ((m = re.exec(text))) { const t = (m[1] + m[2]).split(' '); let v = +t[0]; for (let i = 1; i < t.length; i += 2) { const x = +t[i + 1]; v = t[i] === '+' ? v + x : t[i] === '−' ? v - x : t[i] === '×' ? v * x : v / x; } ok(v === +m[3], tag + ': false sentence ' + m[0]); } };
+  // a + b − c = d style sentences, whole numbers or decimals; × binds tighter than + and −
+  const trueSentences = (text, tag) => { const re = /(?<![\d.])(\d+(?:\.\d+)?)((?: [+−×÷] \d+(?:\.\d+)?)+) = (\d+(?:\.\d+)?)(?![\d.]*\d)/g; let m; while ((m = re.exec(text))) { const t = (m[1] + m[2]).split(' '); const terms = [+t[0]], ops = []; for (let i = 1; i < t.length; i += 2) { const x = +t[i + 1]; if (t[i] === '×') terms[terms.length - 1] *= x; else if (t[i] === '÷') terms[terms.length - 1] /= x; else { ops.push(t[i]); terms.push(x); } } let v = terms[0]; ops.forEach((o, i) => { v = o === '+' ? v + terms[i + 1] : v - terms[i + 1]; }); ok(Math.abs(v - +m[3]) < 1e-9, tag + ': false sentence ' + m[0]); } };
   ['FN01', 'FN02', 'FN04', 'FN05', 'FN07'].forEach((id) => ok(E.SKILLS[id].region === 'market', id + ' in the Money Market'));
   for (let i = 0; i < 4000; i++) {
     for (const id of ['FN01', 'FN02', 'FN04', 'FN05', 'FN07']) {
@@ -252,7 +253,7 @@ ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 122, '122 cor
   }
   // all ten adventures: each step an engine question with a true worked sentence ending in its answer; the idea check last
   const ids = Object.keys(E.ADVENTURES);
-  ok(ids.length === 10, 'ten adventures');
+  ok(ids.length === 20, 'twenty adventures');
   ids.forEach((id) => {
     const A = E.ADVENTURES[id];
     A.needs.concat(A.skills).forEach((s) => ok(E.SKILLS[s], id + ': unknown skill ' + s));
@@ -266,10 +267,13 @@ ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 122, '122 cor
         ok(!/undefined|NaN/.test(st.prompt + st.how), id + ': text');
         trueSentences(st.how, id);
         if (st.idea) return;
-        ok(a.skills ? true : true, '');
         ok(E.SKILLS[st.skill] && A.skills.includes(st.skill), id + ': step skill listed: ' + st.skill);
-        ok(/^\d+$/.test(st.answer) && +st.answer > 0, id + ': positive whole answer ' + st.answer);
-        ok(new RegExp('= ' + st.answer + '$').test(st.how), id + ': worked step ends with the answer: ' + st.how);
+        if (st.choices) { ok(st.choices.includes(st.answer), id + ': choice step answer is a choice'); return; }
+        ok(/^\d+(\.\d+)?$/.test(st.answer) && +st.answer > 0, id + ': positive answer ' + st.answer);
+        // the worked step ends with the answer (a number sentence, or the rounded number, or the week)
+        const nums = (st.how.match(/\d+(?:\.\d+)?/g) || []).map(Number);
+        ok(nums.length && Math.abs(nums[nums.length - 1] - +st.answer) < 1e-9, id + ': worked step ends with the answer: ' + st.how);
+        if (/\./.test(st.answer)) ok(st.decimal, id + ': decimal steps get the decimal key');
         Object.values(st.predicted).forEach((w) => ok(w !== st.answer, id + ': clue differs from the answer'));
         if (st.coins) ok(st.coins.reduce((x, y) => x + y, 0) === +st.answer || id === 'jar', id + ': coins');
       });
@@ -380,7 +384,7 @@ ok(E.numberName(406) === 'four hundred six' && E.numberName(570) === 'five hundr
 // grade levels: every skill has grade 2 or 3; a grade focus picks on-grade work first, never locks anything
 const per = [1, 2, 3, 4, 5].map((g) => E.SKILL_ORDER.filter((id) => E.gradeOf(id) === g).length);
 ok(E.SKILL_ORDER.every((id) => [1, 2, 3, 4, 5].includes(E.gradeOf(id))), 'every skill has a grade 1-5');
-ok(per.join() === '15,38,30,23,17', 'grade split (with money, time, measurement, geometry and money math) ' + per.join());
+ok(per.join() === '15,38,30,24,19', 'grade split (with money, time, measurement, geometry and money math) ' + per.join());
 ok(E.defaultFocus('1') === 1 && E.defaultFocus('2') === 2 && E.defaultFocus('3') === 3 && E.defaultFocus('5') === 5 && E.defaultFocus('other') === 'all', 'default focus');
 const LG = E.newLearner('G', 2017, 'pv', '3');
 ok(LG.grade === '3' && LG.focus === 3, 'grade stored with default focus');

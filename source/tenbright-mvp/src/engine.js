@@ -94,6 +94,8 @@
     MW2: { name: 'Forgot a cost', parent: 'Takes away one cost but not another one in the story.', clue: 'A clue! Look again. Is there another cost?' },
     MW3: { name: 'Added the costs', parent: 'Adds the costs to the money that came in instead of taking them away.', clue: 'A clue! Costs are money going out. Take them away.' },
     MW4: { name: 'Growth added once', parent: 'Adds the first year\u2019s growth again instead of growing the new, bigger amount.', clue: 'A clue! This year the tenth is of the new amount.' },
+    MW6: { name: 'Price, not the change', parent: 'Gives a price from the line when the question asks how much it changed.', clue: 'A clue! The question asks how much it changed. Take one price from the other.' },
+    MW7: { name: 'Price, not the week', parent: 'Gives the highest price when the question asks which week.', clue: 'A clue! The question asks which week. Look below the highest point.' },
     MW5: { name: 'Whole instead of part', parent: 'Gives the whole company\u2019s profit to one owner instead of the owner\u2019s share of it.', clue: 'A clue! You own only some of the shares. Find your part.' },
     MO1: { name: 'Left to right only', parent: 'Works from left to right and ignores parentheses or the order of operations.', clue: 'A clue! Parentheses first, then times, then plus and minus.' }
   };
@@ -241,8 +243,11 @@
     FN01: S('Price times quantity', 'market', ['MU06', 'MY03'], '3.OA.A.3'),
     FN02: S('Revenue, cost and profit', 'market', ['FN01', 'WP05'], '3.OA.D.8'),
     FN04: S('Saving plan: weeks to a goal', 'market', ['FN01', 'F408'], '4.OA.A.3'),
+    FN03: S('Dollars and cents', 'market', ['F418', 'MY04'], '4.MD.A.2'),
     FN05: S('Share of a company', 'market', ['F417'], '4.NF.B.4'),
-    FN07: S('Growth year by year', 'market', ['F513', 'F404'], '5.NF.B.4')
+    FN06: S('Unit price', 'market', ['FN03', 'F510'], '5.NBT.B.7'),
+    FN07: S('Growth year by year', 'market', ['F513', 'F404'], '5.NF.B.4'),
+    FN08: S('Read a price line', 'market', ['GE03', 'F508'], '5.G.A.2')
   };
   const SKILLS = Object.assign({}, SKILLS_G1, SKILLS_CORE, SKILLS_G3F, SKILLS_G4, SKILLS_G5, SKILLS_P7);
   const SKILL_ORDER = Object.keys(SKILLS);
@@ -661,6 +666,14 @@
     }
   });
 
+  // money written with two decimal places (cents), from a whole number of cents
+  const money = (cents) => Math.floor(cents / 100) + '.' + String(cents % 100).padStart(2, '0');
+  // four weekly prices in whole dollars, with at least one rise and one fall, all different
+  function priceWeeks(r) {
+    let p;
+    do { p = Array.from({ length: 4 }, () => r.int(3, 12)); } while (new Set(p).size < 4 || ![0, 1, 2].some((i) => p[i + 1] > p[i]) || ![0, 1, 2].some((i) => p[i + 1] < p[i]));
+    return p;
+  }
   const SHAPES = [{ n: 3, name: 'triangle' }, { n: 4, name: 'quadrilateral' }, { n: 5, name: 'pentagon' }, { n: 6, name: 'hexagon' }];
   const COINS = [{ v: 1, one: 'penny', many: 'pennies' }, { v: 5, one: 'nickel', many: 'nickels' }, { v: 10, one: 'dime', many: 'dimes' }, { v: 25, one: 'quarter', many: 'quarters' }];
   // read a clock: the short hand gives the hour it has passed, the long hand the minutes (5 for each number)
@@ -1238,6 +1251,36 @@
       if (r.next() < 0.35) return num('FN07', intro + ' How many dollars does the jar grow in year 2?', b, { MW4: a }, steps.concat(['Growth in year 2: ' + A2 + ' − ' + A1 + ' = ' + b]), { type: 'paper' });
       return num('FN07', intro + ' How many dollars are in the jar after 2 years?', A2, { MW4: A + 2 * a }, steps, { type: 'paper' });
     },
+    FN03(r) {
+      // dollars and cents: written with a decimal point, two places for the cents
+      const a = r.int(105, 899), b = r.int(105, 899), add = r.next() < 0.5, name = r.pick(NAMES);
+      if (add) {
+        if (a + b > 999) return GEN.FN03(r);
+        return num('FN03', 'A pen costs $' + money(a) + ' and a pad costs $' + money(b) + '. How many dollars for both?', dec(a + b, 2), {}, ['Line up the decimal points: dollars with dollars, cents with cents.', money(a) + ' + ' + money(b) + ' = ' + money(a + b)], { type: 'paper' }, { decimal: true });
+      }
+      const pay = (Math.floor(a / 100) + 1 + r.int(0, 3)) * 100;
+      return num('FN03', name + ' pays $' + money(pay) + ' for a book that costs $' + money(a) + '. How many dollars of change?', dec(pay - a, 2), {}, ['Line up the decimal points: dollars with dollars, cents with cents.', money(pay) + ' − ' + money(a) + ' = ' + money(pay - a)], { type: 'paper' }, { decimal: true });
+    },
+    FN06(r) {
+      // unit price: the price of one, from a pack price
+      const n = r.pick([2, 3, 4, 5, 6, 8, 10]), u = r.int(2, 19) * 5, P = n * u, thing = r.pick(['pencils', 'stickers', 'erasers']);
+      if (r.next() < 0.3) {
+        let n2, u2; do { n2 = r.pick([2, 3, 4, 5, 6, 8, 10]); u2 = r.int(2, 19) * 5; } while (n2 === n || u2 === u);
+        const P2 = n2 * u2, cheaper = u < u2 ? 'Pack A' : 'Pack B';
+        return textChoice('FN06', 'Pack A has ' + n + ' ' + thing + ' for $' + money(P) + '. Pack B has ' + n2 + ' ' + thing + ' for $' + money(P2) + '. Which pack costs less for one?', cheaper, [cheaper === 'Pack A' ? 'Pack B' : 'Pack A'], ['Pack A: ' + money(P) + ' ÷ ' + n + ' = ' + money(u), 'Pack B: ' + money(P2) + ' ÷ ' + n2 + ' = ' + money(u2), 'The smaller price for one is the better buy.'], { type: 'paper' }, r);
+      }
+      return num('FN06', n + ' ' + thing + ' cost $' + money(P) + '. How many dollars is one?', dec(u, 2), {}, ['One costs the pack price divided by how many.', money(P) + ' ÷ ' + n + ' = ' + money(u)], { type: 'paper' }, { decimal: true });
+    },
+    FN08(r) {
+      // read a price line: prices on a grid, week by week; going up is never guaranteed
+      const prices = priceWeeks(r), w = (k) => prices[k - 1];
+      const ups = [1, 2, 3].filter((k) => w(k + 1) > w(k)), downs = [1, 2, 3].filter((k) => w(k + 1) < w(k));
+      const model = { type: 'priceline', prices };
+      if (ups.length && r.next() < 0.5) { const k = r.pick(ups); return num('FN08', 'How many dollars did the price go up from week ' + k + ' to week ' + (k + 1) + '?', w(k + 1) - w(k), { MW6: w(k + 1) }, ['Week ' + k + ': ' + w(k) + '. Week ' + (k + 1) + ': ' + w(k + 1) + '.', w(k + 1) + ' − ' + w(k) + ' = ' + (w(k + 1) - w(k))], model); }
+      if (downs.length && r.next() < 0.6) { const k = r.pick(downs); return num('FN08', 'How many dollars did the price go down from week ' + k + ' to week ' + (k + 1) + '?', w(k) - w(k + 1), { MW6: w(k + 1) }, ['Week ' + k + ': ' + w(k) + '. Week ' + (k + 1) + ': ' + w(k + 1) + '.', w(k) + ' − ' + w(k + 1) + ' = ' + (w(k) - w(k + 1))], model); }
+      const hi = Math.max(...prices), wk = prices.indexOf(hi) + 1;
+      return num('FN08', 'In which week was the price highest?', wk, { MW7: hi }, ['The highest point is ' + hi + ' dollars.', 'That point is above week ' + wk + '. So the week is ' + wk + '.'], model);
+    },
     // ===== Phase 7: measurement and geometry =====
     MS01(r) {
       const cm = r.next() < 0.5, max = cm ? 15 : 12, len = r.int(2, max - 2), start = r.next() < 0.5 ? 0 : r.int(1, max - len), end = start + len;
@@ -1336,6 +1379,8 @@
     MW3: 'Pip added the costs instead of taking them away.',
     MW4: 'Pip added the first year\u2019s growth again.',
     MW5: 'Pip gave the whole profit to one owner.',
+    MW6: 'Pip gave a price instead of how much it changed.',
+    MW7: 'Pip gave the price instead of the week.',
     MM1: 'Pip read the number at the end instead of counting from the start.',
     MM2: 'Pip added only two sides of the rectangle.',
     MM3: 'Pip mixed up area and perimeter.',
@@ -1392,7 +1437,7 @@
     MO1: 'Pip worked left to right and ignored the order rules.'
   };
   const MIS_FAMILIES = [
-    ['MW1', 'MW2', 'MW3', 'M14', 'MN6'], ['MW4', 'MW5', 'M15', 'MN6'],
+    ['MW1', 'MW2', 'MW3', 'M14', 'MN6'], ['MW4', 'MW5', 'M15', 'MN6'], ['MW6', 'MW7', 'MW1', 'MN6'],
     ['MM1', 'MM2', 'MM3', 'M12', 'M15'], ['MG1', 'MG2', 'MT4', 'M14'],
     ['MY1', 'MY2', 'M12', 'M13'], ['MT4', 'M01', 'M02', 'M13'],
     ['M01', 'M02', 'M04', 'M05', 'M06', 'M12', 'M13', 'M1T', 'MP1', 'ME1', 'MC1', 'M14', 'MN6'],
@@ -1551,6 +1596,16 @@
     stall: { name: 'Market Stall Prices', needs: ['FN01'], skills: ['FN01', 'AS05', 'AS07'], idea: 'Price times quantity', real: 'Shops multiply the price by how many to find a total.', home: 'At the market, pick one item and work out the cost of several.' },
     lemonade: { name: 'Build a Lemonade Stand', needs: ['FN02'], skills: ['FN01', 'FN02'], idea: 'Revenue, cost and profit', real: 'Shops and businesses take their costs away from the money that comes in to know if they made money.', home: 'Ask: if the lemonade cost more to make, what would happen to the profit?', explainer: true },
     company: { name: 'Become a Company Owner', needs: ['FN05'], skills: ['F408', 'FN05'], idea: 'A share is part ownership', real: 'People who own shares own part of a company and get part of its profit.', home: 'Ask: if a company makes less profit next year, what happens to each owner’s part?', investing: true, explainer: true },
+    pricetest: { name: 'Lemonade Price Test', needs: ['FN02'], skills: ['FN01', 'FN02'], idea: 'Pricing and demand', real: 'Shops try different prices: a higher price can mean fewer sales.', home: 'Ask: if a toy cost twice as much, would as many people buy it?' },
+    rainy: { name: 'A Rainy Day', needs: ['FN02'], skills: ['FN01', 'FN02'], idea: 'A loss', real: 'When costs are bigger than sales, a business has a loss that day.', home: 'Talk about a time plans changed because of the weather, and what it cost.' },
+    shopping: { name: 'Shopping List', needs: ['PV13', 'AS08'], skills: ['PV13', 'AS08', 'AS12'], idea: 'Budgeting with an estimate', real: 'Shoppers round prices to check quickly whether a list fits their money.', home: 'Before checkout, round each item on a short list and estimate the total together.' },
+    cents: { name: 'Dollars and Cents', needs: ['FN03'], skills: ['FN03'], idea: 'Money as decimals', real: 'Prices use a decimal point: dollars on the left, cents on the right.', home: 'Read prices on a receipt together and say the dollars and the cents.' },
+    better: { name: 'The Better Buy', needs: ['FN06'], skills: ['FN06'], idea: 'Unit price', real: 'Shelf labels often show the price for one, so shoppers can compare packs.', home: 'At the store, find two pack sizes of the same thing and work out the price for one.' },
+    split: { name: 'Split the Bill', needs: ['F408'], skills: ['F408', 'AS05'], idea: 'Sharing a cost fairly', real: 'Friends who share a meal often divide the bill so each pays the same.', home: 'Share a pretend bill for a family meal and work out each person\u2019s part.' },
+    dividend: { name: 'Dividend Day', needs: ['FN05'], skills: ['F408', 'FN05'], idea: 'Dividends', real: 'Some companies pay part of their profit to the people who own shares.', home: 'Ask: if a company makes more profit, what happens to each owner\u2019s part? And if it makes less?', investing: true },
+    bulk: { name: 'Lemons in Bulk', needs: ['FN06'], skills: ['FN06', 'MU06'], idea: 'Unit cost for a business', real: 'Businesses compare the cost of one item in small and big packs.', home: 'Compare the price for one in a small and a big pack of something you buy often.' },
+    early: { name: 'Start a Year Early', needs: ['FN07'], skills: ['FN07'], idea: 'Time helps growth', real: 'Money saved earlier has more years to grow.', home: 'Look at how a savings jar would grow if you started this year or next year.', investing: true },
+    updown: { name: 'Up and Down Prices', needs: ['FN08'], skills: ['FN08'], idea: 'Prices change; gains are not guaranteed', real: 'The price of a share goes up and down; going up last week does not mean it will next week.', home: 'Track the price of one thing, like bananas, for four weeks and draw it as a line.', investing: true },
     growth: { name: 'The Money-Growing Mystery', needs: ['FN07'], skills: ['FN07'], idea: 'Interest and compound growth', real: 'Banks add interest to savings, and the interest can grow on itself.', home: 'Look at a bank savings rate together and talk about how it can change.', investing: true, explainer: true }
   };
   const litStatus = (st) => ['mastered', 'certified', 'placed'].includes(st.status);
@@ -1698,6 +1753,109 @@
     }
     return null;
   }
+  Object.assign(ADV_BUILD, {
+    pricetest(r) {
+      const sA = r.int(5, 8) * 5, sB = r.int(2, sA / 5 - 2) * 5, rA = 2 * sA, rB = 3 * sB, pA = rA - sA, pB = rB - sB;
+      if (pA === pB) return ADV_BUILD.pricetest(r);
+      const best = pA > pB ? '$2' : '$3';
+      return { intro: 'Each cup costs $1 to make. Let\u2019s test two prices. The money is pretend.', steps: [
+        advStep('FN01', 'At $2 a cup, ' + sA + ' cups sold. How many dollars came in?', rA, sA + ' × 2 = ' + rA, [['Price', D(2)], ['Cups', sA]], { M15: sA + 2 }),
+        advStep('FN02', 'The cups cost $1 each. What is the profit at $2?', pA, rA + ' − ' + sA + ' = ' + pA, [['Sales', D(rA)], ['Costs', D(sA)]], { MW1: rA, MW3: rA + sA }),
+        advStep('FN01', 'At $3 a cup, only ' + sB + ' cups sold. How many dollars came in?', rB, sB + ' × 3 = ' + rB, [['Price', D(3)], ['Cups', sB]], { M15: sB + 3 }),
+        advStep('FN02', 'What is the profit at $3?', pB, rB + ' − ' + sB + ' = ' + pB, [['Sales', D(rB)], ['Costs', D(sB)]], { MW1: rB, MW3: rB + sB }),
+        idea('Which price made more profit this time?', best, ['$2', '$3'], 'At $2 the profit is ' + pA + '. At $3 the profit is ' + pB + '.', [['Profit at $2', D(pA)], ['Profit at $3', D(pB)]])
+      ] };
+    },
+    rainy(r) {
+      const m = r.int(10, 20), s2 = r.int(2, Math.floor((m - 1) / 3)), R = 3 * s2, L2 = m - R;
+      return { intro: 'It rained on the day of the lemonade stand. The money is pretend.', steps: [
+        advStep('FN01', 'You made ' + m + ' cups. Each cup cost $1 to make. How many dollars did they cost?', m, m + ' × 1 = ' + m, [['Cups made', m]], {}),
+        advStep('FN01', 'Only ' + s2 + ' cups sold, at $3 each. How many dollars came in?', R, s2 + ' × 3 = ' + R, [['Costs', D(m)], ['Cups sold', s2]], { M15: s2 + 3 }),
+        advStep('FN02', 'How many dollars bigger are the costs than the sales?', L2, m + ' − ' + R + ' = ' + L2, [['Sales', D(R)], ['Costs', D(m)]], { M14: m + R }),
+        idea('What is it called when costs are bigger than sales?', 'A loss', ['A loss', 'A profit'], 'The costs were ' + L2 + ' dollars more than the sales, so the stand had a loss.', [['Loss', D(L2)]])
+      ] };
+    },
+    shopping(r) {
+      const pick = () => { let x; do { x = r.int(11, 39); } while (x % 10 === 0 || x % 10 === 5); return x; };
+      let p1, p2, p3; do { p1 = pick(); p2 = pick(); p3 = pick(); } while (p1 + p2 + p3 > 95); // the list fits in $100
+      const rd = (x) => Math.round(x / 10) * 10, r1 = rd(p1), est = rd(p1) + rd(p2) + rd(p3), tot = p1 + p2 + p3;
+      return { intro: 'You have $100 of pretend money for a shopping list.', steps: [
+        advStep('PV13', 'Shoes cost ' + D(p1) + '. What is ' + p1 + ' rounded to the nearest ten?', r1, p1 + ' is between ' + Math.floor(p1 / 10) * 10 + ' and ' + (Math.floor(p1 / 10) * 10 + 10) + '. It is closer to ' + r1 + '.', [['Shoes', D(p1)]], {}),
+        advStep('AS08', 'A hat costs ' + D(p2) + ' and a ball costs ' + D(p3) + '. Round all three prices and add them. What is the estimate?', est, rd(p1) + ' + ' + rd(p2) + ' + ' + rd(p3) + ' = ' + est, [['Shoes', D(p1)], ['Hat', D(p2)], ['Ball', D(p3)]], {}),
+        advStep('AS08', 'Now add the real prices. How many dollars in all?', tot, p1 + ' + ' + p2 + ' + ' + p3 + ' = ' + tot, [['Estimate', D(est)]], {}),
+        advStep('AS12', 'How many dollars are left from $100?', 100 - tot, '100 − ' + tot + ' = ' + (100 - tot), [['Have', D(100)], ['Total', D(tot)]], { M14: 100 + tot }),
+        idea('Why round the prices first?', 'To check quickly if it fits', ['To check quickly if it fits', 'To pay less'], 'Rounding gives a quick estimate. The real total is close to it.', [['Total', D(tot)]])
+      ] };
+    },
+    cents(r) {
+      let a, b; do { a = r.int(105, 495); b = r.int(105, 495); } while (a % 5 || b % 5);
+      const t = a + b, pay = Math.ceil((t + 1) / 100) * 100, ch = pay - t;
+      return { intro: 'Prices with dollars and cents. The money is pretend.', decimal: true, steps: [
+        advStep('FN03', 'A pen costs $' + money(a) + ' and a pad costs $' + money(b) + '. How many dollars for both?', dec(t, 2), money(a) + ' + ' + money(b) + ' = ' + money(t), [['Pen', '$' + money(a)], ['Pad', '$' + money(b)]], {}, { decimal: true }),
+        advStep('FN03', 'You pay $' + money(pay) + '. How many dollars of change?', dec(ch, 2), money(pay) + ' − ' + money(t) + ' = ' + money(ch), [['Total', '$' + money(t)], ['Paid', '$' + money(pay)]], {}, { decimal: true }),
+        advStep('FN03', 'A dollar is 100 cents. How many cents is $' + money(t) + '?', t, money(t) + ' dollars is ' + Math.floor(t / 100) + ' dollars and ' + (t % 100) + ' cents. ' + Math.floor(t / 100) + ' × 100 + ' + (t % 100) + ' = ' + t, [['Total', '$' + money(t)]], { MY1: Math.floor(t / 100) + (t % 100) }),
+        idea('In $' + money(t) + ', what does the ' + Math.floor((t % 100) / 10) + ' after the point stand for?', Math.floor((t % 100) / 10) + ' dimes', [Math.floor((t % 100) / 10) + ' dimes', Math.floor((t % 100) / 10) + ' dollars'], 'The first place after the point is tenths of a dollar: dimes.', [['Total', '$' + money(t)]])
+      ] };
+    },
+    better(r) {
+      let nA, uA, nB, uB; do { nA = r.pick([2, 3, 4, 5]); nB = r.pick([6, 8, 10]); uA = r.int(6, 19) * 5; uB = r.int(4, 18) * 5; } while (uA === uB);
+      const PA = nA * uA, PB = nB * uB, best = uA < uB ? 'The small pack' : 'The big pack';
+      return { intro: 'Two packs of pencils. Which is the better buy? The money is pretend.', decimal: true, steps: [
+        advStep('FN06', 'The small pack has ' + nA + ' pencils for $' + money(PA) + '. How many dollars is one pencil?', dec(uA, 2), money(PA) + ' ÷ ' + nA + ' = ' + money(uA), [['Small pack', '$' + money(PA)], ['Pencils', nA]], {}, { decimal: true }),
+        advStep('FN06', 'The big pack has ' + nB + ' pencils for $' + money(PB) + '. How many dollars is one pencil?', dec(uB, 2), money(PB) + ' ÷ ' + nB + ' = ' + money(uB), [['Big pack', '$' + money(PB)], ['Pencils', nB]], {}, { decimal: true }),
+        advStep('FN06', 'Which pack costs less for one pencil?', best, 'One pencil costs ' + money(uA) + ' in the small pack and ' + money(uB) + ' in the big pack.', [['Small pack', '$' + money(uA)], ['Big pack', '$' + money(uB)]], {}, { choices: ['The small pack', 'The big pack'] }),
+        idea('Is the bigger pack always the better buy?', 'No, check the price for one', ['No, check the price for one', 'Yes, always'], 'Sometimes the big pack costs more for each one. Check the price for one.', [['Better buy', best === 'The small pack' ? 'Small pack' : 'Big pack']])
+      ] };
+    },
+    split(r) {
+      const n = r.int(3, 6), each = r.int(4, 12), bill = n * each, extra = n * r.int(1, 3), n2 = n + 1, tot2 = bill + extra;
+      if (tot2 % n2) return ADV_BUILD.split(r);
+      return { intro: 'Friends share a pizza dinner and split the bill. The money is pretend.', steps: [
+        advStep('F408', 'The bill is ' + D(bill) + ' for ' + n + ' friends. How many dollars does each pay?', each, bill + ' ÷ ' + n + ' = ' + each, [['Bill', D(bill)], ['Friends', n]], { MN4: bill - n }),
+        advStep('AS05', 'They add a dessert for ' + D(extra) + '. How many dollars is the bill now?', tot2, bill + ' + ' + extra + ' = ' + tot2, [['Bill', D(bill)], ['Dessert', D(extra)]], {}),
+        advStep('F408', 'One more friend joins and shares it all. How many dollars does each of the ' + n2 + ' pay?', tot2 / n2, tot2 + ' ÷ ' + n2 + ' = ' + tot2 / n2, [['Bill', D(tot2)], ['Friends', n2]], { MN4: tot2 - n2 }),
+        idea('What makes a split fair here?', 'Everyone pays the same part', ['Everyone pays the same part', 'The first one pays it all'], 'Dividing the bill into equal parts means everyone pays the same.', [['Each pays', D(tot2 / n2)]])
+      ] };
+    },
+    dividend(r) {
+      const T = r.pick([10, 20]), k = r.int(2, 5), m = r.int(2, 6), P = T * m, m2 = m + r.int(1, 4), P2 = T * m2;
+      return { intro: 'You own ' + k + ' of the ' + T + ' shares in a lemonade company. The money is pretend.', steps: [
+        advStep('F408', 'The company pays out ' + D(P) + ' of its profit to its owners. How many dollars does each share get?', m, P + ' ÷ ' + T + ' = ' + m, [['Shares', T], ['Paid out', D(P)]], {}),
+        advStep('FN05', 'You own ' + k + ' shares. How many dollars is your dividend?', k * m, k + ' × ' + m + ' = ' + k * m, [['You own', k], ['Each share', D(m)]], { MW5: P, M15: k + m }),
+        advStep('FN05', 'Next year it pays out ' + D(P2) + '. How many dollars is your dividend now?', k * m2, P2 + ' ÷ ' + T + ' = ' + m2 + ', and ' + k + ' × ' + m2 + ' = ' + k * m2, [['You own', k], ['Paid out', D(P2)]], { MW5: P2 }),
+        idea('Where does a dividend come from?', 'The company\u2019s profit', ['The company\u2019s profit', 'A promise from a bank'], 'A dividend is part of the profit. If the profit is smaller, the dividend can be smaller or nothing.', [['Your dividend', D(k * m2)]])
+      ] };
+    },
+    bulk(r) {
+      let u1, u2; do { u1 = r.int(5, 12) * 5; u2 = r.int(4, 11) * 5; } while (u2 >= u1);
+      const n1 = 12, n2 = 20, P1 = n1 * u1, P2 = n2 * u2, packs = r.int(2, 5), cost = packs * P2;
+      return { intro: 'The lemonade stand needs lemons. Which pack is cheaper for one lemon? The money is pretend.', decimal: true, steps: [
+        advStep('FN06', 'A bag of ' + n1 + ' lemons costs $' + money(P1) + '. How many dollars is one lemon?', dec(u1, 2), money(P1) + ' ÷ ' + n1 + ' = ' + money(u1), [['Small bag', '$' + money(P1)], ['Lemons', n1]], {}, { decimal: true }),
+        advStep('FN06', 'A box of ' + n2 + ' lemons costs $' + money(P2) + '. How many dollars is one lemon?', dec(u2, 2), money(P2) + ' ÷ ' + n2 + ' = ' + money(u2), [['Big box', '$' + money(P2)], ['Lemons', n2]], {}, { decimal: true }),
+        advStep('MU06', 'You buy ' + packs + ' boxes. Each box costs $' + money(P2) + '. How many dollars in all?', dec(cost, 2), packs + ' × ' + money(P2) + ' = ' + money(cost), [['Boxes', packs], ['Each box', '$' + money(P2)]], {}, { decimal: true }),
+        idea('Why can a big box be a better buy?', 'Each lemon costs less', ['Each lemon costs less', 'The box is bigger'], 'One lemon costs ' + money(u2) + ' in the box and ' + money(u1) + ' in the bag.', [['Box, one lemon', '$' + money(u2)]])
+      ] };
+    },
+    early(r) {
+      const A = r.int(1, 9) * 100, a = A / 10, A1 = A + a, b = A1 / 10, A2 = A1 + b, diff = A2 - A1;
+      return { intro: 'Maya and Kai each put ' + D(A) + ' in a savings jar that grows by one tenth each year. Maya starts a year earlier. The money is pretend.', steps: [
+        advStep('FN07', 'How many dollars does Maya have after 1 year?', A1, 'One tenth of ' + A + ' is ' + a + '. ' + A + ' + ' + a + ' = ' + A1, [['Maya', D(A)]], {}),
+        advStep('FN07', 'How many dollars does Maya have after 2 years?', A2, 'One tenth of ' + A1 + ' is ' + b + '. ' + A1 + ' + ' + b + ' = ' + A2, [['Maya', D(A1)]], { MW4: A1 + a }),
+        advStep('FN07', 'Kai started a year later, so Kai has had 1 year. How many dollars does Kai have?', A1, A + ' + ' + a + ' = ' + A1, [['Kai', D(A)]], {}),
+        advStep('FN07', 'How many more dollars does Maya have than Kai?', diff, A2 + ' − ' + A1 + ' = ' + diff, [['Maya', D(A2)], ['Kai', D(A1)]], {}),
+        idea('Why does starting early help?', 'There is more time to grow', ['There is more time to grow', 'The jar is bigger'], 'Both jars grow the same way. Maya\u2019s jar had one more year.', [['Maya', D(A2)], ['Kai', D(A1)]])
+      ] };
+    },
+    updown(r) {
+      const p = priceWeeks(r), ups = [0, 1, 2].filter((i) => p[i + 1] > p[i]), downs = [0, 1, 2].filter((i) => p[i + 1] < p[i]), u = r.pick(ups), d = r.pick(downs), model = { type: 'priceline', prices: p };
+      return { intro: 'A pretend company\u2019s share price, week by week.', steps: [
+        advStep('FN08', 'How many dollars did the price go up from week ' + (u + 1) + ' to week ' + (u + 2) + '?', p[u + 1] - p[u], p[u + 1] + ' − ' + p[u] + ' = ' + (p[u + 1] - p[u]), [['Week ' + (u + 1), D(p[u])], ['Week ' + (u + 2), D(p[u + 1])]], { MW6: p[u + 1] }, { model }),
+        advStep('FN08', 'How many dollars did the price go down from week ' + (d + 1) + ' to week ' + (d + 2) + '?', p[d] - p[d + 1], p[d] + ' − ' + p[d + 1] + ' = ' + (p[d] - p[d + 1]), [['Week ' + (d + 1), D(p[d])], ['Week ' + (d + 2), D(p[d + 1])]], { MW6: p[d + 1] }, { model }),
+        advStep('FN08', 'In which week was the price highest?', p.indexOf(Math.max(...p)) + 1, 'The highest point is ' + Math.max(...p) + ' dollars. It is above week ' + (p.indexOf(Math.max(...p)) + 1) + '.', [['Highest', D(Math.max(...p))]], { MW7: Math.max(...p) }, { model }),
+        idea('If the price went up last week, will it surely go up next week?', 'No', ['No', 'Yes'], 'Prices go up and down. Going up before does not mean it will go up again.', [['Week 4', D(p[3])]])
+      ] };
+    }
+  });
   function adventure(id, r) {
     const b = ADV_BUILD[id];
     if (!b) return null;
