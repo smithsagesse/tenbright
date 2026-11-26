@@ -19,7 +19,8 @@
   --font-display: ui-rounded, "SF Pro Rounded", "Nunito", "Cairo", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-num: ui-rounded, "SF Pro Rounded", "Atkinson Hyperlegible", "Nunito", "Cairo", system-ui, sans-serif;
   --r-sm: 12px; --r-md: 18px; --r-lg: 28px;
-  --t-child: 60px; --t-primary: 76px;
+  /* hard rule 8: child touch targets at least 64 px, primary actions at least 88 px */
+  --t-child: 64px; --t-primary: 88px;
   --ease-out: cubic-bezier(.22, 1, .36, 1);
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
@@ -299,7 +300,7 @@ td.num, th.num { text-align: right; }
 @keyframes bob { 50% { transform: translateY(-6px); } }
 @media (max-width: 520px) { .bubble { padding: 12px 14px; } .pv { font-size: 32px; } .pv td, .pv th { padding: 2px 9px; } }
 .grade-pick { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-.gchip { min-height: 52px; padding: 0 20px; border-radius: 26px; border: 2px solid var(--dusk-line); background: var(--dusk-2); color: var(--on-dusk); font-weight: 800; font-size: 18px; display: inline-flex; align-items: center; gap: 8px; }
+.gchip { min-height: var(--t-child); padding: 0 20px; border-radius: 26px; border: 2px solid var(--dusk-line); background: var(--dusk-2); color: var(--on-dusk); font-weight: 800; font-size: 18px; display: inline-flex; align-items: center; gap: 8px; }
 .gchip[aria-pressed="true"] { background: var(--lantern); border-color: var(--lantern); color: #1E2A3B; }
 .gcount { font-size: 14px; opacity: .85; }
 .gbar { display: grid; grid-template-columns: 70px minmax(0, 1fr) 70px; gap: 10px; align-items: center; }
@@ -354,6 +355,24 @@ td.num, th.num { text-align: right; }
 .paper-sheet li { min-height: 34px; line-height: 34px; font-family: var(--font-num); font-size: 19px; font-weight: 700; }
 .paper-sheet li.ptitle { font-size: 22px; }
 .paper-sheet li.now { color: #14603F; }
+.games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; width: min(980px, 100%); }
+.game-card { background: var(--surface); color: var(--ink); border: 2px solid var(--hairline); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.game-card h2 { margin: 0; font-size: 22px; }
+.game-card .gc-pic { height: 90px; display: flex; align-items: center; justify-content: center; }
+.game-card.locked { opacity: 0.85; }
+.game-stage { display: flex; flex-direction: column; align-items: center; gap: 14px; width: min(980px, 100%); }
+.game-svg { width: min(640px, 100%); height: auto; }
+.plank-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.plank-row button { min-width: 120px; min-height: 88px; font-size: 30px; font-family: var(--font-num); font-weight: 800; border-radius: 14px; border: 3px solid #7A4A1E; background: #E8B878; color: #1E2A3B; }
+.plank-row button[aria-pressed="true"] { outline: 4px solid var(--river); }
+.pizza-svg { width: min(320px, 86vw); height: auto; }
+.pizza-svg .slice { cursor: pointer; outline: none; }
+.pizza-svg .slice:focus-visible path { stroke: #1E2A3B; stroke-width: 5; }
+.game-panel .pad, .game-panel .entry { width: min(340px, 100%); }
+.game-panel .pad button { min-width: 64px; }
+.clue-card { background: #FFFDF6; color: #1E2A3B; border-radius: 14px; padding: 14px 20px; border: 3px solid #1E2A3B; font-family: var(--font-num); font-size: 32px; font-weight: 800; letter-spacing: 1px; text-align: center; }
+.clue-card .hole { display: inline-block; min-width: 1.6em; border-bottom: 4px solid #1E2A3B; }
+.game-time { font-family: var(--font-num); font-weight: 800; }
 .paper-sheet .blank { display: inline-block; min-width: 2.4em; padding: 0 6px; border: 2px dashed #1E2A3B; border-radius: 8px; text-align: center; line-height: 1.25; margin: 0 2px; }
 .evid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
 .evid span { font-size: 13px; font-weight: 700; border: 1px solid var(--hairline); border-radius: 999px; padding: 1px 8px; }
@@ -372,7 +391,7 @@ html.motion-full .kbtn.mic.on svg { animation: bob 1s ease-in-out infinite; }
 .why { background: var(--surface); border: 2px solid var(--meadow); border-radius: 18px; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
 .why-q { font-weight: 800; font-size: 19px; }
 .why-a { font-weight: 700; font-size: 17px; }
-.why .choices.text button { min-height: 56px; font-size: 17px; }
+.why .choices.text button { min-height: var(--t-child); font-size: 17px; }
 .pip-paper li.pip-wrong { color: #A23B2A; text-decoration: underline wavy #F0A3A3; text-underline-offset: 6px; }
 .line-panel { gap: 18px; }
 .line-svg { cursor: crosshair; touch-action: none; }
@@ -799,7 +818,7 @@ tr:last-child td { border-bottom: none; }
 .region .sub { font-size: 15px; font-weight: 600; opacity: .95; }
 .region.village { background-color: var(--dusk-2); border: 1px solid var(--glass-line); }
 .region.locked { background: transparent; border: 1.5px dashed rgba(255,255,255,.22); box-shadow: none; }
-.gchip { min-height: 48px; padding: 0 18px; border-radius: 24px; border: 1px solid var(--glass-line); background: var(--glass); font-size: 17px; font-weight: 600; -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+.gchip { min-height: var(--t-child); padding: 0 18px; border-radius: 32px; border: 1px solid var(--glass-line); background: var(--glass); font-size: 17px; font-weight: 600; -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
 .gchip[aria-pressed="true"] { background: linear-gradient(180deg, #FFCD57, #F4A425); color: #1C1C1E; border-color: transparent; box-shadow: 0 6px 18px rgba(244,164,37,.3); }
 .kids { grid-template-columns: repeat(auto-fit, minmax(180px, 230px)); justify-content: center; gap: 18px; }
 .kid { min-height: 190px; border-radius: 28px; border: 1px solid var(--glass-line); background: var(--glass); font-size: 24px; font-weight: 700; letter-spacing: -.02em;
@@ -821,7 +840,7 @@ tr:last-child td { border-bottom: none; }
 .choices button { min-height: 78px; border-radius: 20px; border: 2px solid transparent; background: var(--fill-solid); font-weight: 600; }
 .choices button[aria-pressed="true"] { border-color: var(--river); background: color-mix(in srgb, var(--river) 10%, var(--raised)); box-shadow: none; }
 .choices.text button { font-size: 19px; font-weight: 600; line-height: 1.3; }
-.checkbtn { height: 72px; border-radius: 36px; font-size: 24px; font-weight: 700; letter-spacing: -.015em; color: #FFFFFF; background: linear-gradient(180deg, #2E86FF 0%, #0062D6 100%); box-shadow: 0 10px 26px rgba(0,98,214,.32), inset 0 1px 0 rgba(255,255,255,.3); }
+.checkbtn { height: var(--t-primary); border-radius: 44px; font-size: 24px; font-weight: 700; letter-spacing: -.015em; color: #FFFFFF; background: linear-gradient(180deg, #2E86FF 0%, #0062D6 100%); box-shadow: 0 10px 26px rgba(0,98,214,.32), inset 0 1px 0 rgba(255,255,255,.3); }
 .feedback { border-radius: 20px; padding: 14px 18px; font-size: 19px; font-weight: 600; line-height: 1.35; }
 .steps { font-size: 17px; font-weight: 600; }
 .bubble { border: none; border-radius: 24px; background: var(--fill-solid); font-weight: 600; letter-spacing: -.012em; }
@@ -846,13 +865,13 @@ tr:last-child td { border-bottom: none; }
 @media (max-width: 600px) {
   .stage { gap: 14px; padding-block: 10px 22px; }
   .panel { padding: 16px; border-radius: 24px; }
-  .kbtn { min-height: 52px; padding: 0 18px; font-size: 17px; }
-  .kbtn.big { min-height: 64px; font-size: 20px; padding: 0 26px; }
+  .kbtn { min-height: var(--t-child); padding: 0 18px; font-size: 17px; }
+  .kbtn.big { min-height: var(--t-primary); font-size: 20px; padding: 0 26px; }
   .speech { font-size: 18px; padding: 12px 16px; }
   .pad { gap: 8px; }
-  .pad button { height: 56px; font-size: 26px; border-radius: 16px; }
+  .pad button { height: 64px; font-size: 26px; border-radius: 16px; }
   .entry { height: 64px; font-size: 38px; }
-  .checkbtn { height: 62px; font-size: 22px; }
+  .checkbtn { height: var(--t-primary); font-size: 22px; }
   .buddy { margin: 0; }
   .buddy .pip { width: 72px; height: 72px; }
   /* Pip sits beside the answer box, so the keypad and Check stay on screen */
@@ -882,7 +901,8 @@ tr:last-child td { border-bottom: none; }
 }
 /* phones held sideways and short windows: keep the keypad and Check in view */
 @media (max-height: 560px) and (min-width: 600px) {
-  .pad button { height: 48px; } .entry { height: 56px; font-size: 34px; } .checkbtn { height: 56px; } .buddy { display: none; }
+  /* child touch targets stay at least 64 px (hard rule 8) */
+  .pad button { height: var(--t-child); } .entry { height: 56px; font-size: 34px; } .checkbtn { height: var(--t-primary); } .buddy { display: none; }
 }
 
 /* ---------- accessibility preferences ---------- */
@@ -997,6 +1017,79 @@ tr:last-child td { border-bottom: none; }
     { id: 'docks', name: 'Decimal Docks', what: 'Decimals' }
   ];
   // understanding states for parents (Tenbright 2.0): plain words, never shown to the child
+  // ---------- Tenbright 2.0 Phase 5: games ----------
+  const GAME_ART = {
+    bridge: '<svg width="140" height="80" viewBox="0 0 140 80" aria-hidden="true"><rect x="0" y="50" width="140" height="30" fill="#4A8FCF"></rect><rect x="0" y="40" width="30" height="40" fill="#6BA368"></rect><rect x="110" y="40" width="30" height="40" fill="#6BA368"></rect><rect x="30" y="36" width="50" height="8" fill="#B07A3E"></rect><rect x="88" y="36" width="22" height="8" fill="#E8B878" stroke="#7A4A1E" stroke-dasharray="3 3"></rect></svg>',
+    pizza: '<svg width="90" height="90" viewBox="-45 -45 90 90" aria-hidden="true"><circle r="42" fill="#E8B878" stroke="#B07A3E" stroke-width="4"></circle><circle r="34" fill="#E0623C"></circle><path d="M0 0 L0 -34 A34 34 0 0 1 34 0 Z" fill="#F4C542"></path><circle cx="-14" cy="10" r="5" fill="#7A2E1E"></circle><circle cx="10" cy="18" r="5" fill="#7A2E1E"></circle></svg>',
+    detective: '<svg width="90" height="90" viewBox="0 0 90 90" aria-hidden="true"><circle cx="38" cy="38" r="24" fill="#FFFDF6" stroke="#1E2A3B" stroke-width="6"></circle><path d="M56 56 L80 80" stroke="#1E2A3B" stroke-width="10" stroke-linecap="round"></path><text x="38" y="48" text-anchor="middle" font-size="28" font-weight="800" fill="#1E2A3B">?</text></svg>'
+  };
+  const GAME_PURPOSE = { bridge: 'Find the missing part to finish the bridge.', pizza: 'Serve fractions of a pizza.', detective: 'Find the hidden number in patterns and number sentences.' };
+  const GAME_DONE = { bridge: 'The bridge is built!', pizza: 'Every order is served!', detective: 'Case closed!' };
+  const GAME_CLUE = { bridge: 'A clue! The gap is the whole take away the part. Try again.', pizza: 'A clue! Count the slices again. Look at the bottom number of the order. Try again.', detective: 'A clue! Look at how each number changes, or what the hidden number must make. Try again.' };
+  function gameData(ch, g) { ch.games = ch.games || {}; return (ch.games[g] = ch.games[g] || { plays: [], done: {}, best: {} }); }
+  function startGame(g, timed) {
+    const ch = child(), level = E.gameLevel(ch.skills, g);
+    if (!level) return;
+    const rounds = Array.from({ length: E.GAME_ROUNDS }, () => E.gameRound(g, level, rng));
+    session = { mode: 'game', game: g, level, timed: !!timed && !!gameData(ch, g).done[level], rounds, i: 0, first: 0, tries: 0, picked: null, slices: [], entry: '', fb: null, start: Date.now() };
+    view = { name: 'game' }; react('hello'); sfx('start'); render(); speak(rounds[0].prompt);
+  }
+  function gameCheck(value) {
+    const ch = child(), rd = session.rounds[session.i];
+    if (session.fb && (session.fb.ok || session.fb.final)) return;
+    const right = String(value) === rd.answer;
+    if (right) {
+      if (session.tries === 0) session.first++;
+      session.fb = { ok: true, text: session.tries === 0 ? 'Right!' : 'Right! You used the clue.' };
+      react('capo'); sfx('correct'); setTimeout(() => sfx('berimbau'), 260);
+    } else {
+      session.tries++;
+      react('tilt'); sfx('clue');
+      session.fb = session.tries >= 2 ? { ok: false, final: true, text: 'Here is how. ' + rd.how } : { ok: false, text: GAME_CLUE[rd.game] };
+    }
+    speak(session.fb.text); render();
+  }
+  function gameNext() {
+    session.i++; session.tries = 0; session.picked = null; session.slices = []; session.entry = ''; session.fb = null;
+    if (session.i < session.rounds.length) { render(); speak(session.rounds[session.i].prompt); return; }
+    const ch = child(), d = gameData(ch, session.game), ms = Date.now() - session.start;
+    d.plays = d.plays.concat([{ at: now(), level: session.level, first: session.first, rounds: session.rounds.length, timed: session.timed, ms: session.timed ? ms : null }]).slice(-30);
+    let newBest = false;
+    if (session.timed && (!d.best[session.level] || ms < d.best[session.level])) { d.best[session.level] = ms; newBest = true; }
+    d.done[session.level] = true;
+    ch.sessions.push({ start: now() - ms, end: now(), mode: 'game', items: session.rounds.length, correct: session.first });
+    if (ch.sessions.length > 200) ch.sessions.shift();
+    save();
+    session.result = { ms, newBest, best: d.best[session.level] || null };
+    view = { name: 'gameEnd' }; react('dance'); render(); celebrate({ small: true, badges: [] });
+    speak(GAME_DONE[session.game]);
+  }
+  const secs = (ms) => Math.max(1, Math.round(ms / 1000));
+  function bridgeSvg(rd, fb) {
+    const W = 640, x0 = 70, x1 = 570, span = x1 - x0, built = Math.round(span * rd.have / rd.total), done = fb && (fb.ok || fb.final);
+    return `<svg class="game-svg" viewBox="0 0 ${W} 220" role="img" aria-label="${esc('A bridge that must reach ' + rd.total + '. The planks reach ' + rd.have + '.')}">
+      <rect x="0" y="130" width="${W}" height="90" fill="#4A8FCF"></rect>
+      <rect x="0" y="100" width="${x0}" height="120" fill="#6BA368"></rect><rect x="${x1}" y="100" width="${W - x1}" height="120" fill="#6BA368"></rect>
+      <rect x="${x0}" y="92" width="${built}" height="16" fill="#B07A3E" stroke="#7A4A1E" stroke-width="2"></rect>
+      <rect x="${x0 + built}" y="92" width="${span - built}" height="16" fill="${done ? '#E8B878' : 'none'}" stroke="#1E2A3B" stroke-width="2" stroke-dasharray="${done ? '0' : '8 6'}"></rect>
+      <text x="${x0 + built / 2}" y="80" text-anchor="middle" font-size="24" font-weight="800" fill="var(--ink)">${rd.have}</text>
+      <text x="${x0 + built + (span - built) / 2}" y="80" text-anchor="middle" font-size="24" font-weight="800" fill="var(--ink)">${done ? rd.answer : '?'}</text>
+      <line x1="${x0}" y1="40" x2="${x1}" y2="40" stroke="var(--ink)" stroke-width="2"></line><line x1="${x0}" y1="32" x2="${x0}" y2="48" stroke="var(--ink)" stroke-width="2"></line><line x1="${x1}" y1="32" x2="${x1}" y2="48" stroke="var(--ink)" stroke-width="2"></line>
+      <text x="${W / 2}" y="28" text-anchor="middle" font-size="22" font-weight="800" fill="var(--ink)">${rd.total}</text>
+    </svg>`;
+  }
+  function pizzaSvg(rd) {
+    const n = rd.slices, R = 140, sel = new Set(session.slices);
+    let g = '';
+    for (let k = 0; k < n; k++) {
+      const a0 = (k / n) * 2 * Math.PI - Math.PI / 2, a1 = ((k + 1) / n) * 2 * Math.PI - Math.PI / 2;
+      const p = `M0 0 L${(R * Math.cos(a0)).toFixed(1)} ${(R * Math.sin(a0)).toFixed(1)} A${R} ${R} 0 0 1 ${(R * Math.cos(a1)).toFixed(1)} ${(R * Math.sin(a1)).toFixed(1)} Z`;
+      const on = sel.has(k);
+      g += `<g class="slice" role="button" tabindex="0" data-act="slice" data-k="${k}" aria-pressed="${on}" aria-label="Slice ${k + 1}"><path d="${p}" fill="${on ? '#F4C542' : '#E0623C'}" stroke="#7A2E1E" stroke-width="3"></path></g>`;
+    }
+    return `<svg class="pizza-svg" viewBox="-160 -160 320 320"><circle r="152" fill="#E8B878" stroke="#B07A3E" stroke-width="6" aria-hidden="true"></circle>${g}</svg>`;
+  }
+  const GAME_HOOKS = {};
   // Tenbright 2.0 Phase 4: the separate kinds of evidence behind mastery, and the explanation that helps most
   const EV_LABEL = { independent: 'On their own', transfer: 'In a story', stepfill: 'Missing step', reason: 'Explained why' };
   const HELP_LABEL = { steps: 'Steps help most.', picture: 'Pictures help most.', idea: 'The big idea helps most.' };
@@ -2528,7 +2621,7 @@ tr:last-child td { border-bottom: none; }
           <button class="kbtn icon" data-act="pin" data-target="dashboard" aria-label="Grown-ups: enter PIN">${icoLock}</button>
         </div>
         <div class="pip-row"><button class="pip-poke" data-act="pipPoke" aria-label="Say hi to Pip">${pipSvg(96, FX.poke || 'idle', { react: reactNow(), hidden: true })}</button><button class="kbtn big" data-act="pipIdea" data-autofocus>Pip's idea: ${idea}<span class="sr-only">, ${esc(E.SKILLS[na.skill].name)}</span></button></div>
-        <div class="row" style="justify-content:center"><button class="kbtn" data-act="lineStart"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M2 14h20M4 11v6M20 11v6M14 9l-2 5-2-5z"></path></svg> Warm-up: Lantern Line</button><button class="kbtn" data-act="go" data-to="journal"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"></path><path d="M5 17a3 3 0 0 1 3-3h11"></path></svg> My journal</button></div>
+        <div class="row" style="justify-content:center"><button class="kbtn" data-act="lineStart"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M2 14h20M4 11v6M20 11v6M14 9l-2 5-2-5z"></path></svg> Warm-up: Lantern Line</button><button class="kbtn" data-act="go" data-to="games"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="12" rx="4"></rect><path d="M7 11v4M5 13h4M15 12h.01M18 14h.01"></path></svg> Math games</button><button class="kbtn" data-act="go" data-to="journal"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"></path><path d="M5 17a3 3 0 0 1 3-3h11"></path></svg> My journal</button></div>
         <div class="grade-pick" role="group" aria-label="Grade level">${[['all', 'All levels'], [1, 'Grade 1'], [2, 'Grade 2'], [3, 'Grade 3'], [4, 'Grade 4'], [5, 'Grade 5']].map(([v, l]) => `<button class="gchip" data-act="focus" data-g="${v}" aria-pressed="${fg === v}">${l}${v !== 'all' ? ` <span class="gcount num">${E.gradeProgress(ch.skills).find((x) => x.grade === v).lit}/${E.gradeProgress(ch.skills).find((x) => x.grade === v).total}</span>` : ''}</button>`).join('')}</div>
         <div class="map">${REGIONS.map((r) => {
           const ids = E.SKILL_ORDER.filter((id) => regionOf(id) === r.id && (fg === 'all' || E.gradeOf(id) === fg));
@@ -2668,6 +2761,49 @@ tr:last-child td { border-bottom: none; }
         </div>
       </main>`;
     },
+    games() {
+      const ch = child();
+      return `<main class="stage"><div class="game-stage">
+        <div class="topbar" style="width:100%"><button class="kbtn" data-act="go" data-to="map">${icoBack} Map</button><h1 style="margin:0;font-size:26px">Math games</h1><span style="width:64px"></span></div>
+        <div class="games-grid">${Object.keys(E.GAMES).map((g) => {
+          const lv = E.gameLevel(ch.skills, g), d = gameData(ch, g), canTime = lv && d.done[lv];
+          return `<div class="game-card ${lv ? '' : 'locked'}"><div class="gc-pic">${GAME_ART[g]}</div><h2>${E.GAMES[g].name}</h2><p>${GAME_PURPOSE[g]}</p>${lv ? `<button class="kbtn big" data-act="gameStart" data-g="${g}">Play</button>${canTime ? `<button class="kbtn" data-act="gameStart" data-g="${g}" data-timed="1">Race the clock (optional)</button>${d.best[lv] ? `<p class="hint-text">Your best time: ${secs(d.best[lv])} seconds</p>` : ''}` : ''}` : '<p class="hint-text">Light more lanterns to open it.</p>'}</div>`;
+        }).join('')}</div>
+      </div></main>`;
+    },
+    game() {
+      const rd = session.rounds[session.i], fb = session.fb, done = fb && (fb.ok || fb.final), g = session.game;
+      let play = '', action = '';
+      if (g === 'bridge') {
+        play = bridgeSvg(rd, fb) + `<div class="plank-row" role="group" aria-label="Planks">${rd.choices.map((c) => `<button data-act="plank" data-v="${c}" aria-pressed="${session.picked === c}" ${done ? 'disabled' : ''}>${c}</button>`).join('')}</div>`;
+        action = done ? '' : `<button class="checkbtn" data-act="gameCheck" ${session.picked ? '' : 'disabled'}>Lay the plank</button>`;
+      } else if (g === 'pizza') {
+        play = `${pizzaSvg(rd)}<p class="hint-text" aria-live="polite">${session.slices.length} ${session.slices.length === 1 ? 'slice' : 'slices'} chosen</p>`;
+        action = done ? '' : `<button class="checkbtn" data-act="gameCheck" ${session.slices.length ? '' : 'disabled'}>Serve</button>`;
+      } else {
+        const card = rd.seq ? rd.seq.map((x) => (x === '?' ? '<span class="hole">?</span>' : x)).join(', ') : esc(rd.clue).replace('?', '<span class="hole">?</span>');
+        play = `<div class="clue-card" role="img" aria-label="${esc(rd.seq ? rd.seq.join(', ') : rd.clue)}">${card}</div>` + (done ? '' : `<div class="entry num" aria-label="Your answer">${session.entry ? esc(session.entry) : '?'}</div><div class="pad">${['1','2','3','4','5','6','7','8','9'].map((d) => `<button data-act="gdigit" data-d="${d}" aria-label="${d}">${d}</button>`).join('')}<button data-act="gdel" aria-label="Delete">⌫</button><button data-act="gdigit" data-d="0" aria-label="0">0</button><button data-act="gclear" aria-label="Clear">C</button></div>`);
+        action = done ? '' : `<button class="checkbtn" data-act="gameCheck" ${session.entry ? '' : 'disabled'}>Check</button>`;
+      }
+      const fbHtml = fb ? `<div class="feedback ${fb.ok ? 'ok' : 'clue'} pop">${fb.ok ? icoCheck : icoClue}<div>${escM(fb.text)}</div></div>` : '';
+      const next = done ? `<button class="checkbtn" data-act="gameNext" data-autofocus>${session.i + 1 >= session.rounds.length ? 'Finish' : 'Next'}</button>` : '';
+      return `<main class="stage"><div class="game-stage">
+        <div class="topbar" style="width:100%"><button class="kbtn" data-act="go" data-to="games">${icoBack} Games</button><div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="font-weight:800">${E.GAMES[g].name}</span><span class="progress" aria-label="${session.i} of ${session.rounds.length} done">${session.rounds.map((_, k) => `<i class="${k < session.i ? 'done' : ''}"></i>`).join('')}</span>${session.timed ? `<span class="game-time" id="game-time">${secs(Date.now() - session.start)} s</span>` : ''}</div><button class="kbtn" data-act="say" data-text="${esc(rd.prompt)}">${icoSpeaker} Listen</button></div>
+        <div class="panel game-panel" style="width:100%;align-items:center">
+        <div class="pip-say"><div class="pip-fig pose-${fb && fb.ok ? 'cheer' : 'point'}">${pipPose(100, fb && fb.ok ? 'cheer' : fb ? 'encourage' : 'point', { react: reactNow() })}</div><div class="bubble"><p>${escM(rd.prompt)}</p></div></div>
+        ${play}${fbHtml}${action}${next}
+        </div>
+      </div></main>`;
+    },
+    gameEnd() {
+      const r = session.result;
+      return `<main class="stage"><div class="end">
+        <h1>${GAME_DONE[session.game]}</h1>
+        ${pipPose(150, 'dance', { react: reactNow() })}
+        <p class="speech">You got ${session.first} of ${session.rounds.length} on the first try.${session.timed ? ' Your time: ' + secs(r.ms) + ' seconds.' + (r.newBest ? ' That is your best time so far!' : ' Your best time is ' + secs(r.best) + ' seconds.') : ''}</p>
+        <div class="row" style="justify-content:center"><button class="kbtn big" data-act="gameStart" data-g="${session.game}" data-autofocus>Play again</button><button class="kbtn" data-act="go" data-to="games">All games</button><button class="kbtn" data-act="go" data-to="map">Back to the map</button></div>
+      </div></main>`;
+    },
     lineEnd() {
       const L = session.line, ch = child();
       const avg = Math.round(100 * L.scores.reduce((a, b) => a + b, 0) / L.scores.length);
@@ -2777,6 +2913,10 @@ tr:last-child td { border-bottom: none; }
           return `<div class="grid2"><section class="card"><span class="eyebrow">Number sense (Lantern Line)</span>${ln.length ? `<p>Recent estimates land <b>${recent}%</b> of the line away from the true spot${ln.length > 5 ? ` (first warm-ups: ${first}%)` : ''}. Lower is better; under 10% is strong for this age.</p>` : '<p>No warm-ups yet. The 1-minute Lantern Line on the map practices how big numbers are.</p>'}</section>
           <section class="card"><span class="eyebrow">Thinking skills</span><p>Found what went wrong in Pip's work <b>${st.mistakesSpotted || 0}</b> times and fixed it <b>${st.mistakesFixed || 0}</b> times. Chose the right "why" <b>${st.whyRight || 0}</b> times.</p><p class="hint-text">Spotting errors and explaining why a method works build deeper understanding than answers alone.</p></section></div>`;
         })()}
+        <section class="card"><span class="eyebrow">Math games</span>${(() => {
+          const rows = Object.keys(E.GAMES).map((g) => { const pl = ((ch.games || {})[g] || { plays: [] }).plays; if (!pl.length) return ''; const f = pl.reduce((a, x) => a + x.first, 0), n = pl.reduce((a, x) => a + x.rounds, 0); return `<p>${E.GAMES[g].name}: played ${pl.length} ${pl.length === 1 ? 'time' : 'times'}, ${f} of ${n} right on the first try.</p>`; }).join('');
+          return rows || '<p>No games yet. Each game opens once its skills are lit, and uses only math the child has already learned.</p>';
+        })()}<p class="hint-text">Games never count toward mastery. A timed run is offered only after a game has been finished once, and it compares only with the child's own best time.</p></section>
         <div class="grid2">
           <section class="card"><span class="eyebrow understands">Understands</span><p>${strong.length ? esc(listNames(strong.slice(-4))) + '.' : 'Nothing certified yet. The placement walk sets the starting point.'}</p></section>
           <section class="card"><span class="eyebrow" style="color:var(--clue)">Working on</span><p>${working.length ? esc(listNames(working.slice(0, 3))) + '.' : 'Everything open is mastered. New skills unlock on the map.'}</p></section>
@@ -3081,6 +3221,12 @@ tr:last-child td { border-bottom: none; }
   // ---------- events ----------
   // iOS Safari only shows :active press feedback when a touch listener exists; this one does nothing else
   try { document.addEventListener('touchstart', () => {}, { passive: true }); } catch (e) {}
+  app.addEventListener('keydown', (e) => {
+    const g = e.target && e.target.closest && e.target.closest('[role="button"][data-act]');
+    if (g && g.tagName !== 'BUTTON' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); g.dispatchEvent(new MouseEvent('click', { bubbles: true })); }
+  });
+  // the optional timed run shows a clock that counts up (never down); it updates in place, without re-rendering
+  setInterval(() => { const el = document.getElementById('game-time'); if (el && session && session.mode === 'game' && session.timed) el.textContent = Math.max(1, Math.round((Date.now() - session.start) / 1000)) + ' s'; }, 1000);
   app.addEventListener('click', (e) => {
     const b = e.target.closest('[data-act]');
     if (!b || b.disabled) return;
@@ -3188,6 +3334,14 @@ tr:last-child td { border-bottom: none; }
       case 'xNext': case 'xPrev': { const n = Math.max(1, (xDemo(session.item).steps || []).length); session.xi = Math.max(0, Math.min(n - 1, (session.xi || 0) + (act === 'xNext' ? 1 : -1))); render(); speak(plainSteps(session.item)[session.xi] || ''); const nb = app.querySelector(`[data-act="${act}"]:not([disabled])`) || app.querySelector('[data-act="xPrev"],[data-act="xNext"]'); if (nb) nb.focus(); break; }
       case 'check': doCheck(); break;
       case 'next': session.count++; nextItem(); break;
+      case 'gameStart': startGame(b.dataset.g, b.dataset.timed === '1'); break;
+      case 'plank': if (session.fb && (session.fb.ok || session.fb.final)) break; session.picked = b.dataset.v; session.fb = null; render(); { const nb = app.querySelector(`[data-act="plank"][data-v="${b.dataset.v}"]`); if (nb) nb.focus(); } break;
+      case 'slice': { if (session.fb && (session.fb.ok || session.fb.final)) break; const k = +b.dataset.k, set = new Set(session.slices); if (set.has(k)) set.delete(k); else set.add(k); session.slices = [...set]; session.fb = null; sfx('hint'); render(); const nb = app.querySelector(`[data-act="slice"][data-k="${k}"]`); if (nb) nb.focus(); break; }
+      case 'gdigit': if (session.fb && (session.fb.ok || session.fb.final)) break; if (session.entry.length < 7) session.entry += b.dataset.d; session.fb = null; render(); break;
+      case 'gdel': session.entry = session.entry.slice(0, -1); render(); break;
+      case 'gclear': session.entry = ''; render(); break;
+      case 'gameCheck': { const g = session.game; gameCheck(g === 'bridge' ? session.picked : g === 'pizza' ? session.slices.length : session.entry); break; }
+      case 'gameNext': gameNext(); break;
       case 'lineStart': {
         const g = Number(ch.grade) || (focusOf(ch) === 'all' ? 2 : focusOf(ch));
         session = { mode: 'line', line: { items: Array.from({ length: 5 }, () => E.lineItem(g, rng)), i: 0, placed: null, checked: false, scores: [] }, start: Date.now() };
@@ -3458,6 +3612,9 @@ tr:last-child td { border-bottom: none; }
       ['Bullseye!', 'So close!', 'Here is where it lives.'].forEach(F);
       // Phase 4: new kinds of questions and explanation variants
       F('One step is missing. What number goes in the box?');
+      // Phase 5: games
+      Object.values(GAME_DONE).forEach(F); Object.values(GAME_CLUE).forEach(F); F('Right!'); F('Right! You used the clue.');
+      Object.keys(E.GAMES).forEach((g) => E.GAMES[g].levels.forEach((_, i) => { for (let k = 0; k < 60; k++) { const rd = E.gameRound(g, i + 1, rng); D(rd.prompt); D('Here is how. ' + rd.how); } }));
       Object.values(X_LABEL).forEach((l) => { F(l); F('Let’s try it a new way. ' + l); });
       E.SKILL_ORDER.forEach((id) => {
         F(X_LABEL.idea + ' ' + C[id].teach.join(' ')); F('Let’s try it a new way. ' + X_LABEL.idea + ' ' + C[id].teach.join(' '));
@@ -3482,6 +3639,13 @@ tr:last-child td { border-bottom: none; }
       for (let k = 0; k < 20 && kind === 'plain' && session.item.format !== 'number'; k++) session.item = E.generate(id, rng);
       if (!session.item) return false;
       view = { name: 'item' }; render(); return true;
+    };
+    // open a game at a level for a test (unlocking the skill that opens it)
+    window.__tbGame = (g, level, timed) => {
+      const ch = child(); const ids = E.GAMES[g].levels.slice(0, level).map((x) => x[0]);
+      ids.forEach((id) => { ch.skills[id].status = 'mastered'; ch.skills[id].learned = true; });
+      if (timed) gameData(ch, g).done[level] = true;
+      startGame(g, !!timed); return session;
     };
     window.__tbSpeechMisses = () => AUDIO.misses.slice();
     window.__tbSpeakPlan = (t) => (AUDIO.map ? TBSpeech.plan(t, hasClip) : null);

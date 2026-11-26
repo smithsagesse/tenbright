@@ -180,6 +180,38 @@ ok(!L2.skills.PV01.activeMis, 'three correct clears it');
   ok(Y.skills.C102.explain.tried.picture[1] === 1, 'the next answer after an explanation records whether it helped');
 }
 
+// ---------- Phase 5: games ----------
+{
+  const R5 = E.makeRng(505);
+  ok(E.GAME_ROUNDS === 5 && Object.keys(E.GAMES).join() === 'bridge,pizza,detective', 'three games');
+  const fresh = E.newLearner('G');
+  Object.keys(E.GAMES).forEach((g) => ok(E.gameLevel(fresh.skills, g) === 0, g + ' is closed for a new child'));
+  Object.keys(E.GAMES).forEach((g) => {
+    E.GAMES[g].levels.forEach((ids, i) => {
+      ids.forEach((id) => ok(E.SKILLS[id], g + ': unknown skill ' + id));
+      const L = E.newLearner('G'); L.skills[ids[0]].status = 'mastered';
+      ok(E.gameLevel(L.skills, g) === i + 1, g + ': lighting ' + ids[0] + ' opens level ' + (i + 1));
+      L.skills[ids[0]].status = 'practiced';
+      ok(E.gameLevel(L.skills, g) === 0, g + ': a skill that is not lit opens nothing');
+      for (let k = 0; k < 3000; k++) {
+        const rd = E.gameRound(g, i + 1, R5);
+        ok(rd.game === g && rd.level === i + 1 && /^\d+$/.test(rd.answer), g + ': round shape');
+        ok(!/undefined|NaN|null/.test(rd.prompt + rd.how), g + ': bad text ' + rd.prompt);
+        // every number sentence in the "how" line is true
+        const m = /(\d+) ([+−×]) (\d+) = (\d+)/.exec(rd.how);
+        if (m) ok({ '+': +m[1] + +m[3], '−': m[1] - m[3], '×': m[1] * m[3] }[m[2]] === +m[4], g + ': false sentence ' + rd.how);
+        if (g === 'bridge') ok(rd.total - rd.have === +rd.answer && rd.choices.includes(rd.answer) && new Set(rd.choices).size === rd.choices.length && rd.choices.length === 3 && rd.choices.every((c) => +c > 0), 'bridge round: ' + JSON.stringify(rd));
+        if (g === 'pizza') { const want = rd.order.reduce((a, [n, d]) => a + n * rd.slices / d, 0); ok(want === +rd.answer && +rd.answer >= 1 && +rd.answer < rd.slices && rd.slices <= 12, 'pizza round: ' + JSON.stringify(rd)); }
+        if (g === 'detective') {
+          if (rd.seq) { const s2 = rd.seq.map((x) => (x === '?' ? +rd.answer : +x)); ok(rd.seq.filter((x) => x === '?').length === 1 && rd.seq[0] !== '?', 'one hidden number, never the first'); ok(rd.kind === 'add' ? s2.every((x, j) => !j || x - s2[j - 1] === s2[1] - s2[0]) : s2.every((x, j) => !j || x / s2[j - 1] === s2[1] / s2[0]), 'pattern rule: ' + rd.seq.join(',')); }
+          else { const c = rd.clue.replace('?', rd.answer).split(' '); ok(c[1] === '+' ? +c[0] + +c[2] === +c[4] : +c[0] * +c[2] === +c[4], 'detective sentence: ' + rd.clue + ' = ' + rd.answer); }
+          if (i === 0) ok(rd.kind === 'add', 'level 1 detective uses adding patterns only');
+        }
+      }
+    });
+  });
+}
+
 // graph integrity: every prerequisite exists and appears earlier in the order or in another strand without cycles
 E.SKILL_ORDER.forEach((id) => E.SKILLS[id].prereqs.forEach((p) => ok(E.SKILLS[p], id + ' has unknown prereq ' + p)));
 E.SKILL_ORDER.forEach((id) => ok(!E.ancestors(id).has(id), 'cycle at ' + id));

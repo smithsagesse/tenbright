@@ -1306,6 +1306,75 @@
     return ok[0] || null;
   }
 
+  // ---------- Tenbright 2.0 Phase 5: games ----------
+  // Three short games on skills the child has already lit, each with a real math purpose. Every number comes from here.
+  // A game opens when its first skill is lit; harder levels open with later skills. No timers unless the child chooses
+  // the optional timed run, which is offered only after a game level has been finished once.
+  const GAMES = {
+    bridge: { name: 'Build the Bridge', levels: [['C107', 'C103'], ['AS10', 'AS07'], ['AS13', 'AS15']] },
+    pizza: { name: 'Pizza Shop', levels: [['F301'], ['F413'], ['F415']] },
+    detective: { name: 'Number Detective', levels: [['PV07', 'C107'], ['F412', 'MU13']] }
+  };
+  const GAME_ROUNDS = 5;
+  const lit = (st) => !!st && ['mastered', 'certified', 'placed'].includes(st.status);
+  // the highest level open for this child, or 0 while the game is still closed
+  function gameLevel(skills, game) {
+    const lv = GAMES[game].levels;
+    let n = 0;
+    lv.forEach((ids, i) => { if (ids.some((id) => lit(skills[id]))) n = i + 1; });
+    return n;
+  }
+  // Build the Bridge: the bridge must reach the far bank; the planks laid so far reach part of the way.
+  // Which plank fills the gap? (missing part = whole − part)
+  function bridgeRound(level, r) {
+    const max = [20, 100, 1000][level - 1];
+    let total, have;
+    if (level === 1) { total = r.int(11, 20); have = r.int(3, total - 2); }
+    else if (level === 2) { total = r.int(4, 10) * 10 + r.int(0, 9); have = r.int(12, total - 8); }
+    else { total = r.int(3, 9) * 100 + r.int(0, 99); have = r.int(120, total - 40); }
+    const gap = total - have;
+    const wrong = new Set();
+    [total + have, gap + 1, gap - 1, level > 1 ? gap + 10 : gap + 2, level > 1 ? gap - 10 : gap - 2].forEach((w) => { if (w > 0 && w !== gap && w <= max * 2) wrong.add(w); });
+    const choices = [gap].concat([...wrong].slice(0, 2));
+    for (let i = choices.length - 1; i > 0; i--) { const j = Math.floor(r.next() * (i + 1)); [choices[i], choices[j]] = [choices[j], choices[i]]; }
+    return { game: 'bridge', level, total, have, answer: String(gap), choices: choices.map(String),
+      prompt: 'The bridge must reach ' + total + '. The planks reach ' + have + '. Which plank fills the gap?',
+      how: 'The gap is the whole take away the part. ' + total + ' − ' + have + ' = ' + gap + '.' };
+  }
+  // Pizza Shop: serve the order by tapping slices. Level 2 cuts the pizza into smaller slices (equivalent fractions);
+  // level 3 serves two orders on one pizza (adding fractions with the same bottom number).
+  function pizzaRound(level, r) {
+    const d = r.pick([2, 3, 4, 6, 8]);
+    if (level === 1) { const n = r.int(1, d - 1); return { game: 'pizza', level, slices: d, order: [[n, d]], answer: String(n), prompt: 'A customer wants ' + n + '/' + d + ' of a pizza. Tap the slices to serve it.', how: 'The pizza is cut into ' + d + ' equal slices. ' + n + '/' + d + ' means ' + n + ' of them.' }; }
+    if (level === 2) {
+      const dd = r.pick([2, 3, 4]), k = r.pick([2, 3, 4].filter((x) => dd * x <= 12)), n = r.int(1, dd - 1), slices = dd * k;
+      return { game: 'pizza', level, slices, order: [[n, dd]], answer: String(n * k), prompt: 'A customer wants ' + n + '/' + dd + ' of a pizza. This pizza is cut into ' + slices + ' slices. Tap the slices to serve it.', how: 'Each ' + (dd === 2 ? 'half' : dd === 3 ? 'third' : 'quarter') + ' is ' + k + ' slices. ' + n + ' × ' + k + ' = ' + n * k + '.' };
+    }
+    const a = r.int(1, d - 2 > 0 ? d - 2 : 1), b = r.int(1, Math.max(1, d - 1 - a));
+    if (a + b >= d) return pizzaRound(level, r);
+    return { game: 'pizza', level, slices: d, order: [[a, d], [b, d]], answer: String(a + b), prompt: 'Two friends share one pizza. One wants ' + a + '/' + d + ' and one wants ' + b + '/' + d + '. Tap all the slices they get.', how: 'The slices are the same size, so count them. ' + a + ' + ' + b + ' = ' + (a + b) + '.' };
+  }
+  // Number Detective: find the hidden number. Level 1: patterns that add. Level 2: patterns that multiply, and number
+  // sentences with a hidden number.
+  function detectiveRound(level, r) {
+    const kind = level === 1 ? 'add' : r.pick(['add', 'times', 'missing']);
+    if (kind === 'missing') {
+      const op = r.pick(['+', '×']);
+      if (op === '+') { const a = r.int(5, 60), b = r.int(5, 39), first = r.next() < 0.5; return { game: 'detective', level, kind, answer: String(first ? a : b), clue: (first ? '?' : a) + ' + ' + (first ? b : '?') + ' = ' + (a + b), prompt: 'Find the hidden number.', how: 'Take away the part you know. ' + (a + b) + ' − ' + (first ? b : a) + ' = ' + (first ? a : b) + '.' }; }
+      const a = r.int(2, 9), b = r.int(2, 9);
+      return { game: 'detective', level, kind, answer: String(b), clue: a + ' × ? = ' + a * b, prompt: 'Find the hidden number.', how: 'How many groups of ' + a + ' make ' + a * b + '? ' + a + ' × ' + b + ' = ' + a * b + '.' };
+    }
+    let seq, rule, step;
+    if (kind === 'add') { step = level === 1 ? r.pick([1, 2, 5, 10]) : r.int(3, 12); const s0 = r.int(1, level === 1 ? 20 : 40); seq = [0, 1, 2, 3, 4].map((i) => s0 + i * step); rule = 'add ' + step; }
+    else { step = r.pick([2, 3]); const s0 = r.int(1, 4); seq = [0, 1, 2, 3, 4].map((i) => s0 * Math.pow(step, i)); rule = 'multiply by ' + step; }
+    const hide = r.int(1, 4), ans = seq[hide];
+    const shown = seq.map((x, i) => (i === hide ? '?' : String(x)));
+    const prev = seq[hide - 1];
+    return { game: 'detective', level, kind, answer: String(ans), seq: shown, rule, prompt: 'Find the hidden number in the pattern.',
+      how: 'The rule is ' + rule + '. ' + prev + (kind === 'add' ? ' + ' : ' × ') + step + ' = ' + ans + '.' };
+  }
+  function gameRound(game, level, r) { return game === 'bridge' ? bridgeRound(level, r) : game === 'pizza' ? pizzaRound(level, r) : detectiveRound(level, r); }
+
   // ---------- Lantern Line: number-line estimation warm-up ----------
   // Placing numbers on an empty number line trains the sense of how big numbers are, which strongly predicts later math.
   // The score is the percent absolute error (PAE): how far the tap was from the true spot, as a share of the whole line.
@@ -1668,7 +1737,7 @@
     return L;
   }
 
-  const api = { makeRng, digits, MISCONCEPTIONS, SKILLS, SKILL_ORDER, generate, check, bktUpdate, BKT, masteryMet, recordAttempt, recordCheckItem, dueCheck, nextActivity, newLearner, refreshUnlocks, PLACEMENT_ANCHORS, PLACEMENT_MAX_ITEMS, placementPlan, newPlacement, placementRecord, applyPlacement, STORY_ANCHORS, READING_PROBE, isSlip, placementNext, placementProbeRecord, placementRestDue, placementRested, placementStage, discoverySummary, UNDERSTANDING, understanding, recordWhy, migrateLearner, makeTransfer, makeStepFill, canOffer, evidence, evidenceMissing, EXPLAIN_KINDS, explainPick, explainShown, explainOutcome, explainBest, stepResult, ancestors, numberName, DAY, CHECK_DAYS, GRADE_LEVELS, SCHOOL_GRADES, gradeOf, defaultFocus, gradeProgress, makeMistake, PIP_DID, lineItem, linePAE };
+  const api = { makeRng, digits, MISCONCEPTIONS, SKILLS, SKILL_ORDER, generate, check, bktUpdate, BKT, masteryMet, recordAttempt, recordCheckItem, dueCheck, nextActivity, newLearner, refreshUnlocks, PLACEMENT_ANCHORS, PLACEMENT_MAX_ITEMS, placementPlan, newPlacement, placementRecord, applyPlacement, STORY_ANCHORS, READING_PROBE, isSlip, placementNext, placementProbeRecord, placementRestDue, placementRested, placementStage, discoverySummary, UNDERSTANDING, understanding, recordWhy, migrateLearner, GAMES, GAME_ROUNDS, gameLevel, gameRound, makeTransfer, makeStepFill, canOffer, evidence, evidenceMissing, EXPLAIN_KINDS, explainPick, explainShown, explainOutcome, explainBest, stepResult, ancestors, numberName, DAY, CHECK_DAYS, GRADE_LEVELS, SCHOOL_GRADES, gradeOf, defaultFocus, gradeProgress, makeMistake, PIP_DID, lineItem, linePAE };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.TBEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);
