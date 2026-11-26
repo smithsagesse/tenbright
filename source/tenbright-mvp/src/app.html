@@ -354,6 +354,12 @@ td.num, th.num { text-align: right; }
 .paper-sheet li { min-height: 34px; line-height: 34px; font-family: var(--font-num); font-size: 19px; font-weight: 700; }
 .paper-sheet li.ptitle { font-size: 22px; }
 .paper-sheet li.now { color: #14603F; }
+.paper-sheet .blank { display: inline-block; min-width: 2.4em; padding: 0 6px; border: 2px dashed #1E2A3B; border-radius: 8px; text-align: center; line-height: 1.25; margin: 0 2px; }
+.evid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.evid span { font-size: 13px; font-weight: 700; border: 1px solid var(--hairline); border-radius: 999px; padding: 1px 8px; }
+.xway { margin-top: 8px; }
+.xway .xlabel { font-weight: 800; margin: 0 0 4px; }
+.xway .walk-nav { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 .paper-tag { position: absolute; top: -10px; right: 12px; background: var(--lantern); color: #1E2A3B; font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 8px; }
 .guide { display: flex; flex-direction: column; gap: 12px; }
 .guide .bubble { font-size: clamp(18px, 2.4vw, 22px); }
@@ -917,7 +923,7 @@ tr:last-child td { border-bottom: none; }
   // the child-facing worked steps: plain words with the engine's numbers when written (explain.js), else the engine's own steps
   // several steps read as one: each ends with a stop, joined by spaces (no doubled stops)
   const joinSteps = (arr) => arr.map((x) => (/[.?!]$/.test(String(x).trim()) ? String(x).trim() : String(x).trim() + '.')).join(' ');
-  const plainSteps = (item) => { const x = X && X.explain(item); return x ? x.say : (item.steps || []); };
+  const plainSteps = (item) => { const src = item && item.format === 'stepfill' && item.base ? item.base : item; const x = X && X.explain(src); return x ? x.say : (src.steps || []); };
   const KEY = 'tenbright-mvp-v1';
   const NOTICE_VERSION = 'Privacy notice v1.3, November 26, 2026';
   // Discovery Adventure (Tenbright 2.0): Pip's words for the starting walk
@@ -991,6 +997,15 @@ tr:last-child td { border-bottom: none; }
     { id: 'docks', name: 'Decimal Docks', what: 'Decimals' }
   ];
   // understanding states for parents (Tenbright 2.0): plain words, never shown to the child
+  // Tenbright 2.0 Phase 4: the separate kinds of evidence behind mastery, and the explanation that helps most
+  const EV_LABEL = { independent: 'On their own', transfer: 'In a story', stepfill: 'Missing step', reason: 'Explained why' };
+  const HELP_LABEL = { steps: 'Steps help most.', picture: 'Pictures help most.', idea: 'The big idea helps most.' };
+  function evidHtml(id, st) {
+    if (st.status === 'locked' || !(st.attempts || []).length) return '';
+    const ev = E.evidence(st), can = E.canOffer(id), best = E.explainBest(st);
+    const kinds = ['independent', 'transfer', 'stepfill', 'reason'].filter((k) => k === 'independent' ? ev.independent >= 3 : can[k] && ev[k]);
+    return (kinds.length ? `<div class="evid">${kinds.map((k) => `<span>${EV_LABEL[k]}</span>`).join('')}</div>` : '') + (best ? `<div class="hint-text">${HELP_LABEL[best]}</div>` : '');
+  }
   const UNDER_LABEL = { understands: 'Understands', partly: 'Partly understands', withHelp: 'Understands with help', cantExplainYet: 'Can do it, and explaining why comes next', notYet: 'Not yet', needsCheck: 'Still checking', notStarted: 'Not started' };
   const STATUS_LABEL = { locked: 'Not yet open', learning: 'Learning', practiced: 'Practicing', mastered: 'Mastered', certified: 'Certified', placed: 'Already strong' };
 
@@ -1269,7 +1284,7 @@ tr:last-child td { border-bottom: none; }
       render(); return;
     }
     if (fb && (fb.ok || fb.final || session.mode === 'placement')) { if (r.kind === 'command' && (r.value === 'next' || r.value === 'check')) { const b = app.querySelector('[data-act="next"]'); if (b) b.click(); return; } if (r.kind === 'command' && r.value === 'repeat') { speak(fb.text); } render(); return; }
-    if (r.kind === 'number' && (it.format === 'number' || (it.format === 'mistake' && session.mstage === 'fix'))) { session.entry = r.value; session.feedback = null; render(); setTimeout(() => { if (session && session.item === it && session.entry === r.value) doCheck(); }, 700); return; }
+    if (r.kind === 'number' && (it.format === 'number' || it.format === 'stepfill' || (it.format === 'mistake' && session.mstage === 'fix'))) { session.entry = r.value; session.feedback = null; render(); setTimeout(() => { if (session && session.item === it && session.entry === r.value) doCheck(); }, 700); return; }
     if (r.kind === 'choice' && it.format === 'choice') { session.entry = r.value; session.feedback = null; render(); setTimeout(() => { if (session && session.item === it && session.entry === r.value) doCheck(); }, 700); return; }
     if (r.kind === 'command') {
       if (r.value === 'repeat') speak(it.prompt);
@@ -2557,7 +2572,7 @@ tr:last-child td { border-bottom: none; }
     item() {
       const it = session.item, ch = child();
       const c = C[it.skill];
-      const mistake = it.format === 'mistake';
+      const mistake = it.format === 'mistake', fill = it.format === 'stepfill';
       const words = it.textChoices || /^WP/.test(it.skill) || /[a-z]{3,}/i.test(it.prompt.replace(/[0-9 +−×=?]/g, '')) && it.format !== 'choice' || it.skill === 'PV10' || it.format === 'build' || it.skill === 'MU03' || it.skill === 'PV04' || it.skill === 'PV12';
       const total = session.target;
       let prompt = mistake ? 'Fix Pip’s mistake!' : escM(it.prompt);
@@ -2574,7 +2589,7 @@ tr:last-child td { border-bottom: none; }
             <div class="pad">${['1','2','3','4','5','6','7','8','9'].map((d) => `<button data-act="digit" data-d="${d}" aria-label="${d}">${d}</button>`).join('')}<button data-act="del" aria-label="Delete">⌫</button><button data-act="digit" data-d="0" aria-label="0">0</button>${/\./.test(it.answer) || it.decimal ? '<button data-act="digit" data-d="." aria-label="Decimal point">.</button>' : '<button data-act="clear" aria-label="Clear">C</button>'}</div>`;
       const fb = session.feedback;
       const hintLines = [null, c.nudge, c.strategy, plainSteps(it)[0]];
-      const hintBox = session.hint > 0 && !fb ? `<div class="feedback clue">${icoClue}<div>${session.hint >= 4 ? `<ol class="steps">${plainSteps(it).map((s) => `<li>${escM(s)}</li>`).join('')}</ol>` : escM(hintLines[session.hint] || '')}</div></div>` : '';
+      const hintBox = session.hint > 0 && !fb ? `<div class="feedback clue">${icoClue}<div>${session.hint >= 4 ? explainHtml(it) : escM(hintLines[session.hint] || '')}</div></div>` : '';
       let fbHtml = '';
       if (fb && fb.ok) fbHtml = `<div class="feedback ok pop">${icoCheck}<div>${escM(fb.text)}</div></div>`;
       if (fb && fb.ok && session.why) {
@@ -2582,7 +2597,7 @@ tr:last-child td { border-bottom: none; }
         fbHtml += `<div class="why pop"><p class="why-q">Why did that work?</p>${w.picked === undefined ? `<div class="choices text" role="group" aria-label="Why did that work">${w.options.map((o, i) => `<button data-act="why" data-i="${i}">${esc(o)}</button>`).join('')}</div>` : `<p class="why-a">${w.picked === w.answer ? 'Yes! ' : 'Here is why: '}${esc(w.options[w.answer])}</p>`}</div>`;
       }
       const mnote = mistake && session.mnote ? `<div class="feedback ${session.mnote.ok ? 'ok' : 'clue'} pop">${session.mnote.ok ? icoCheck : icoClue}<div>${esc(session.mnote.text)}</div></div>` : '';
-      if (fb && !fb.ok) fbHtml = `<div class="feedback clue pop">${icoClue}<div>${escM(fb.text)}${fb.showSteps ? `<ol class="steps" style="margin-top:8px">${plainSteps(it).map((s) => `<li>${escM(s)}</li>`).join('')}</ol>` : ''}</div></div>`;
+      if (fb && !fb.ok) fbHtml = `<div class="feedback clue pop">${icoClue}<div>${escM(fb.text)}${fb.showSteps ? explainHtml(it) : ''}</div></div>`;
       const modeLabel = { placement: 'Number adventure', learn: 'Guided practice', practice: 'Practice', check: 'Relighting a lantern', remediate: 'Looking closer', review: 'Mixed review' }[session.mode];
       const done = session.count, cap = session.cap;
       const actionBtn = mistake && session.mstage === 'why' ? ''
@@ -2597,7 +2612,7 @@ tr:last-child td { border-bottom: none; }
             <div class="pad">${['1','2','3','4','5','6','7','8','9'].map((d) => `<button data-act="digit" data-d="${d}" aria-label="${d}">${d}</button>`).join('')}<button data-act="del" aria-label="Delete">⌫</button><button data-act="digit" data-d="0" aria-label="0">0</button><button data-act="digit" data-d="." aria-label="Decimal point">.</button></div>
             <button class="checkbtn" data-act="guideCheck" ${session.entry ? '' : 'disabled'}>Check step</button>`
           : `<p class="speech" style="color:var(--ink);background:var(--surface);border-color:var(--hairline)">Write it on your paper, then tap <b>${g.i < 0 ? 'I wrote it' : 'Next'}</b>${voiceOn() ? ' or say "next"' : ''}.</p>`)
-        : `${input}${actionBtn}${!fb && session.mode !== 'placement' && !g && !mistake ? '<button class="kbtn guide-btn" data-act="startGuide"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path><path d="M13.5 6.5l4 4"></path></svg> Work it with Pip</button>' : ''}${!fb ? micBtn('Say your answer') : ''}${heardLine()}`;
+        : `${input}${actionBtn}${!fb && session.mode !== 'placement' && !g && !mistake && !fill ? '<button class="kbtn guide-btn" data-act="startGuide"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path><path d="M13.5 6.5l4 4"></path></svg> Work it with Pip</button>' : ''}${!fb ? micBtn('Say your answer') : ''}${heardLine()}`;
       return `<main class="stage">
         <div class="topbar">
           <button class="kbtn" data-act="exitSession">${icoBack} Map</button>
@@ -2607,7 +2622,7 @@ tr:last-child td { border-bottom: none; }
         <div class="work">
           <div class="panel">
             <div class="row" style="justify-content:space-between;flex-wrap:nowrap"><p class="prompt ${words ? 'words' : ''}">${prompt}</p><button class="kbtn icon" style="background:var(--lantern);border-color:var(--lantern);color:#1E2A3B" data-act="say" data-text="${esc(it.prompt)}" aria-label="Hear the question">${icoSpeaker}</button></div>
-            ${mistake ? `<div class="pip-say"><div class="pip-fig pose-${fb && fb.ok ? 'cheer' : 'think'}">${pipPose(110, fb && fb.ok ? 'cheer' : session.mnote && !session.mnote.ok ? 'encourage' : session.mnote ? 'proud' : 'think', { react: reactNow() })}</div><div class="bubble"><p>${fb && fb.ok ? 'Thank you for fixing my mistake!' : session.mstage === 'why' ? 'I worked this out, but I made a mistake. Can you find it?' : 'Now show me the right answer.'}</p></div></div><div class="paper-sheet pip-paper"><span class="paper-tag">Pip's paper</span><ol>${(it.lines || [it.prompt]).map((l, i, arr) => `<li class="${i === arr.length - 1 ? 'ptitle pip-wrong' : 'ptitle'}">${escM(l)}</li>`).join('')}</ol></div>${mnote}${session.mstage === 'fix' ? `<div class="model">${modelHtml(it, session.hint)}</div>` : ''}${fbHtml}` : guiding ? guideHtml() : g ? `<div class="model">${modelHtml(it, session.hint)}</div>${paperHtml(Object.assign({}, it, { steps: g.steps.map((x) => x.full) }), g.steps.length - 1)}` : `<div class="model">${modelHtml(it, session.hint)}</div>${hintBox}`}${mistake ? '' : fbHtml}
+            ${mistake ? `<div class="pip-say"><div class="pip-fig pose-${fb && fb.ok ? 'cheer' : 'think'}">${pipPose(110, fb && fb.ok ? 'cheer' : session.mnote && !session.mnote.ok ? 'encourage' : session.mnote ? 'proud' : 'think', { react: reactNow() })}</div><div class="bubble"><p>${fb && fb.ok ? 'Thank you for fixing my mistake!' : session.mstage === 'why' ? 'I worked this out, but I made a mistake. Can you find it?' : 'Now show me the right answer.'}</p></div></div><div class="paper-sheet pip-paper"><span class="paper-tag">Pip's paper</span><ol>${(it.lines || [it.prompt]).map((l, i, arr) => `<li class="${i === arr.length - 1 ? 'ptitle pip-wrong' : 'ptitle'}">${escM(l)}</li>`).join('')}</ol></div>${mnote}${session.mstage === 'fix' ? `<div class="model">${modelHtml(it, session.hint)}</div>` : ''}${fbHtml}` : guiding ? guideHtml() : g ? `<div class="model">${modelHtml(it, session.hint)}</div>${paperHtml(Object.assign({}, it, { steps: g.steps.map((x) => x.full) }), g.steps.length - 1)}` : fill ? `<p class="hint-text" style="font-size:16px;color:var(--ink)">One step is missing. What number goes in the box?</p>${stepFillHtml(it)}${hintBox}` : `<div class="model">${modelHtml(it, session.hint)}</div>${hintBox}`}${mistake ? '' : fbHtml}
           </div>
           <div class="panel">${mistake ? '' : `<div class="buddy">${pipChar(124, buddyMood(), { react: reactNow(), hidden: true })}</div>`}${rightPanel}</div>
         </div>
@@ -2771,7 +2786,7 @@ tr:last-child td { border-bottom: none; }
         <section class="card"><span class="eyebrow">How we'll know</span><p>A skill counts as mastered after at least 10 answers without big hints, 9 of the last 10 right, in two kinds of question, and a mastery estimate of 95%. It is certified only after it is still right 7 and 30 days later, and checked again at 90 days.</p><p class="hint-text">Next on the map: ${esc(E.SKILLS[na.skill].name)}. ${esc(na.reason)}</p></section>
         <section class="card"><span class="eyebrow">Every skill and its evidence</span>
           <div class="table-wrap" tabindex="0" role="region" aria-label="Every skill and its evidence"><table><thead><tr><th>Skill</th><th>Status</th><th>Understanding</th><th class="num">Estimate</th><th class="num">Last 10</th><th>Next check</th></tr></thead><tbody>
-          ${E.SKILL_ORDER.map((id) => { const st = ch.skills[id]; const ind = st.attempts.filter((a) => a.hint <= 1).slice(-10); const acc = ind.length ? Math.round(100 * ind.filter((a) => a.correct).length / ind.length) + '%' : '–'; const nc = (st.checks || []).find((c) => !c.done); return `<tr><td>${esc(E.SKILLS[id].name)}<br><span class="hint-text">Grade ${E.gradeOf(id)} · ${E.SKILLS[id].ccss}${E.SKILLS[id].strategy ? ' · Mental Math Strategy' : ''}</span></td><td><span class="chip ${st.status} ${st.activeMis ? 'clue' : ''}"><span class="dot"></span>${STATUS_LABEL[st.status]}${st.activeMis ? ' · clue' : ''}</span></td><td>${UNDER_LABEL[E.understanding(st)]}</td><td class="num">${st.status === 'locked' ? '–' : Math.round(st.p * 100) + '%'}</td><td class="num">${acc}${ind.length ? ` <span class="hint-text">(${ind.length})</span>` : ''}</td><td>${nc ? (nc.due <= t ? 'Due now' : fmtDate(nc.due)) : st.status === 'certified' ? 'Certified' : '–'}</td></tr>`; }).join('')}
+          ${E.SKILL_ORDER.map((id) => { const st = ch.skills[id]; const ind = st.attempts.filter((a) => a.hint <= 1).slice(-10); const acc = ind.length ? Math.round(100 * ind.filter((a) => a.correct).length / ind.length) + '%' : '–'; const nc = (st.checks || []).find((c) => !c.done); return `<tr><td>${esc(E.SKILLS[id].name)}<br><span class="hint-text">Grade ${E.gradeOf(id)} · ${E.SKILLS[id].ccss}${E.SKILLS[id].strategy ? ' · Mental Math Strategy' : ''}</span></td><td><span class="chip ${st.status} ${st.activeMis ? 'clue' : ''}"><span class="dot"></span>${STATUS_LABEL[st.status]}${st.activeMis ? ' · clue' : ''}</span></td><td>${UNDER_LABEL[E.understanding(st)]}${evidHtml(id, st)}</td><td class="num">${st.status === 'locked' ? '–' : Math.round(st.p * 100) + '%'}</td><td class="num">${acc}${ind.length ? ` <span class="hint-text">(${ind.length})</span>` : ''}</td><td>${nc ? (nc.due <= t ? 'Due now' : fmtDate(nc.due)) : st.status === 'certified' ? 'Certified' : '–'}</td></tr>`; }).join('')}
           </tbody></table></div>
         </section>
         <section class="card"><span class="eyebrow">Settings for ${esc(ch.nickname)}</span>
@@ -2870,8 +2885,20 @@ tr:last-child td { border-bottom: none; }
     const sk = pickSkillForItem();
     session.itemSkill = sk;
     session.item = null;
-    // about one question in five, once the child has met the skill, is "Fix Pip's mistake"
-    if ((session.mode === 'practice' || session.mode === 'learn' || session.mode === 'review') && session.count >= 2 && ch.skills[sk] && ch.skills[sk].learned && rng.next() < 0.2) session.item = E.makeMistake(sk, rng);
+    // once the child has met the skill, some questions ask for other kinds of evidence (Tenbright 2.0 Phase 4):
+    // Fix Pip's mistake, the same math in a new story, or a missing step in Pip's work. When a skill is close to
+    // mastery and still needs one of these, it is asked more often.
+    if ((session.mode === 'practice' || session.mode === 'learn' || session.mode === 'review') && session.count >= 2 && ch.skills[sk] && ch.skills[sk].learned) {
+      const st = ch.skills[sk], want = E.evidenceMissing(st, sk).filter((k) => k !== 'reason'), r = rng.next();
+      let kind = null;
+      if (want.length && E.evidence(st).independent >= 6 && r < 0.5) kind = rng.pick(want);
+      else if (r < 0.2) kind = 'mistake';
+      else if (r < 0.32) kind = 'transfer';
+      else if (r < 0.44) kind = 'stepfill';
+      if (kind === 'mistake') session.item = E.makeMistake(sk, rng);
+      else if (kind === 'transfer') session.item = E.makeTransfer(sk, rng);
+      else if (kind === 'stepfill') session.item = E.makeStepFill(sk, rng);
+    }
     if (!session.item) session.item = E.generate(sk, rng);
     // the walk asks each check in two kinds of question when the skill has them (typed and chosen answers)
     if (session.mode === 'placement' && !session.probe) {
@@ -2881,7 +2908,7 @@ tr:last-child td { border-bottom: none; }
     session.mstage = session.item.format === 'mistake' ? 'why' : null; session.mnote = null; session.why = null;
     session.entry = ''; session.feedback = null; session.tries = 0; session.soroban = [0, 0, 0];
     session.hint = session.mode === 'remediate' ? 2 : 0;
-    session.guide = null; VOICE.heard = '';
+    session.guide = null; session.xkind = null; session.xi = 0; session.xnew = false; VOICE.heard = '';
     view = { name: 'item' };
     render();
   }
@@ -2901,6 +2928,56 @@ tr:last-child td { border-bottom: none; }
     AS04: 'Ones with ones, tens with tens!', AS05: 'You made a ten!', AS06: 'Ones from ones, tens from tens!', AS07: 'You broke a ten!', AS11: 'You regrouped like a pro!', AS12: 'You broke a ten when you needed to!',
     MU03: 'Equal groups, counted right!', MU06: 'Nice skip-counting!', T3: 'All from 9, the last from 10!'
   };
+
+  // an explanation for this item, in the way most likely to help: the steps, pictures or the big idea.
+  // After a miss that followed one explanation, the next is a different kind (Tenbright 2.0 Phase 4).
+  function showExplanation(it) {
+    const st = child().skills[it.skill];
+    if (!st) return 'steps';
+    let kind = E.explainPick(st);
+    // a question with no picture model is explained another way
+    const can = (k) => k !== 'picture' || !!xDemo(it).model;
+    if (!can(kind)) kind = E.EXPLAIN_KINDS.find((k) => can(k) && k !== (st.explain && st.explain.avoid)) || 'steps';
+    session.xnew = !!(st.explain && st.explain.avoid);
+    E.explainShown(st, kind); save();
+    session.xkind = kind; session.xi = 0;
+    return kind;
+  }
+  const X_LABEL = { steps: 'Here are the steps.', picture: 'Here it is in pictures.', idea: 'Here is the big idea.' };
+  function xDemo(it) {
+    const d = Object.assign({}, it.base || it);
+    if (d.model && d.model.type === 'soroban') d.model = { type: 'blocks', h: Math.floor(d.target / 100), t: Math.floor(d.target / 10) % 10, o: d.target % 10 };
+    return d;
+  }
+  function explainHtml(it) {
+    const kind = session.xkind || 'steps', steps = plainSteps(it), c = C[it.skill];
+    const head = `<p class="xlabel">${session.xnew ? 'Let’s try it a new way. ' : ''}${X_LABEL[kind]}</p>`;
+    if (kind === 'picture' && xDemo(it).model) {
+      const d = xDemo(it), n = Math.max(1, (d.steps || []).length), i = Math.min(session.xi || 0, n - 1);
+      return `<div class="xway">${head}<p class="eyebrow">Picture ${i + 1} of ${n}</p><div class="model step-visual">${stepVisual(d, i)}</div><p>${escM(steps[i] || '')}</p><div class="walk-nav"><button class="kbtn" data-act="xPrev" ${i === 0 ? 'disabled' : ''}>${icoBack} Back</button><button class="kbtn" data-act="xNext" ${i >= n - 1 ? 'disabled' : ''}>Next picture</button></div></div>`;
+    }
+    if (kind === 'idea') {
+      const base = it.base || it, last = (base.steps || [])[(base.steps || []).length - 1] || '';
+      return `<div class="xway">${head}<ol class="steps">${c.teach.map((x) => `<li>${escM(x)}</li>`).join('')}</ol><p>${escM(c.strategy)}</p>${last ? `<p><b>For this problem:</b> ${escM(last)}</p>` : ''}</div>`;
+    }
+    return `<div class="xway">${head}<ol class="steps">${steps.map((x) => `<li>${escM(x)}</li>`).join('')}</ol></div>`;
+  }
+  function explainSpeech(it) {
+    const kind = session.xkind || 'steps', c = C[it.skill];
+    const lead = (session.xnew ? 'Let’s try it a new way. ' : '') + X_LABEL[kind] + ' ';
+    if (kind === 'picture') return lead + (plainSteps(it)[session.xi || 0] || '');
+    if (kind === 'idea') return lead + c.teach.join(' ');
+    return lead + joinSteps(plainSteps(it));
+  }
+  // Pip's worked steps with one result left out, shown as a box
+  function stepFillHtml(it) {
+    const SENT = '7070707';
+    return `<div class="paper-sheet"><span class="paper-tag">Pip's steps</span><ol>${it.steps.map((st, k) => {
+      if (k !== it.blank.step) return `<li>${escM(st)}</li>`;
+      const txt = st.slice(0, it.blank.at) + SENT + st.slice(it.blank.at + it.blank.len);
+      return `<li class="now">${escM(txt).replace(SENT, '<span class="blank" role="img" aria-label="missing number">?</span>')}</li>`;
+    }).join('')}</ol></div>`;
+  }
 
   function doCheck() {
     const ch = child(), it = session.item;
@@ -2932,10 +3009,12 @@ tr:last-child td { border-bottom: none; }
       if (it.format === 'mistake') { ch.stats = ch.stats || {}; ch.stats.mistakesFixed = (ch.stats.mistakesFixed || 0) + 1; save(); }
       session.feedback = { ok: true, text: it.format === 'mistake' ? 'You fixed Pip’s mistake! The answer is ' + it.answer + '.' : (PRAISE[it.skill] || 'Nice thinking! ' + C[it.skill].strategy) + (first ? '' : ' You fixed it.') };
       // once a session, after a first-try answer, ask why it worked (self-explanation)
-      if (first && !session.whyDone && it.format !== 'mistake' && ['learn', 'practice'].includes(session.mode)) {
-        const same = E.SKILL_ORDER.filter((id) => id !== it.skill && regionOf(id) === regionOf(it.skill) && C[id].strategy !== C[it.skill].strategy);
-        const others = []; while (others.length < 2 && same.length) { const k = rng.pick(same); if (!others.includes(C[k].strategy)) others.push(C[k].strategy); }
-        if (others.length === 2) { const opts = [C[it.skill].strategy].concat(others); for (let i = 2; i > 0; i--) { const j = Math.floor(rng.next() * (i + 1)); [opts[i], opts[j]] = [opts[j], opts[i]]; } session.why = { options: opts, answer: opts.indexOf(C[it.skill].strategy) }; session.whyDone = true; }
+      const needWhy = E.evidenceMissing(ch.skills[it.skill], it.skill).includes('reason');
+      if (first && (!session.whyDone || (needWhy && (session.whyCount || 0) < 2)) && it.format !== 'mistake' && ['learn', 'practice', 'review'].includes(session.mode)) {
+        let same = E.SKILL_ORDER.filter((id) => id !== it.skill && regionOf(id) === regionOf(it.skill) && C[id].strategy !== C[it.skill].strategy);
+        if (new Set(same.map((id) => C[id].strategy)).size < 2) same = E.SKILL_ORDER.filter((id) => id !== it.skill && C[id].strategy !== C[it.skill].strategy);
+        const others = []; for (let k = 0; others.length < 2 && k < 60; k++) { const id = rng.pick(same); if (!others.includes(C[id].strategy)) others.push(C[id].strategy); }
+        if (others.length === 2) { session.whyCount = (session.whyCount || 0) + 1; const opts = [C[it.skill].strategy].concat(others); for (let i = 2; i > 0; i--) { const j = Math.floor(rng.next() * (i + 1)); [opts[i], opts[j]] = [opts[j], opts[i]]; } session.why = { options: opts, answer: opts.indexOf(C[it.skill].strategy) }; session.whyDone = true; }
       }
       if (!first && it.format !== 'mistake') { ch.stats = ch.stats || {}; ch.stats.fixedAfterClue = (ch.stats.fixedAfterClue || 0) + 1; save(); }
       react('capo'); sfx('correct'); setTimeout(() => sfx('berimbau'), 260); FX.burst = '.buddy, .pip-say .pip-fig';
@@ -2946,7 +3025,7 @@ tr:last-child td { border-bottom: none; }
       session.tries++;
       react('tilt'); sfx('clue');
       const clue = res.misconception ? E.MISCONCEPTIONS[res.misconception].clue : 'A clue! ' + C[it.skill].nudge;
-      if (session.tries >= 2) session.feedback = { ok: false, final: true, showSteps: true, text: 'Let\'s look at how it works together. The answer is ' + it.answer + '.' };
+      if (session.tries >= 2) { showExplanation(it); session.feedback = { ok: false, final: true, showSteps: true, text: 'Let\'s look at how it works together. The answer is ' + it.answer + '.' }; }
       else session.feedback = { ok: false, text: clue + ' Try again.' };
       speak(session.feedback.text);
     }
@@ -2982,6 +3061,10 @@ tr:last-child td { border-bottom: none; }
     let clock = t0;
     const master = (id, misses) => {
       L.skills[id].learned = true;
+      E.recordWhy(L.skills, id, true);
+      const can = E.canOffer(id);
+      if (can.transfer) { clock += 600000; E.recordAttempt(L.skills, id, { format: 'number', kind: 'transfer' }, { correct: true, misconception: null }, 0, clock); }
+      if (can.stepfill) { clock += 600000; E.recordAttempt(L.skills, id, { format: 'stepfill', kind: 'stepfill' }, { correct: true, misconception: null }, 0, clock); }
       for (let i = 0; i < 13; i++) { const it = E.generate(id, r); clock += 600000; E.recordAttempt(L.skills, id, { format: i % 3 ? 'number' : 'choice' }, { correct: !(misses || []).includes(i), misconception: null }, 0, clock); }
     };
     master('PV05'); master('AS03'); clock += E.DAY; master('PV09', [4]); master('AS06'); clock += E.DAY;
@@ -3101,7 +3184,8 @@ tr:last-child td { border-bottom: none; }
       case 'choose': if (session.feedback && (session.feedback.ok || session.feedback.final)) break; session.entry = b.dataset.v; session.feedback = null; render(); break;
       case 'heaven': { const r = +b.dataset.rod, v = session.soroban[r]; session.soroban[r] = v >= 5 ? v - 5 : v + 5; session.feedback = null; render(); break; }
       case 'earth': { const r = +b.dataset.rod, k = +b.dataset.k, v = session.soroban[r]; const e5 = v % 5, h = v - e5; const ne = k <= e5 ? k - 1 : k; session.soroban[r] = h + ne; session.feedback = null; render(); break; }
-      case 'hint': session.hint = Math.min(4, session.hint + 1); react('think'); sfx('hint'); speak(session.hint >= 4 ? joinSteps(plainSteps(session.item)) : [null, C[session.item.skill].nudge, C[session.item.skill].strategy, plainSteps(session.item)[0]][session.hint]); render(); break;
+      case 'hint': { const was = session.hint; session.hint = Math.min(4, session.hint + 1); if (session.hint >= 4 && was < 4) showExplanation(session.item); react('think'); sfx('hint'); speak(session.hint >= 4 ? explainSpeech(session.item) : [null, C[session.item.skill].nudge, C[session.item.skill].strategy, plainSteps(session.item)[0]][session.hint]); render(); break; }
+      case 'xNext': case 'xPrev': { const n = Math.max(1, (xDemo(session.item).steps || []).length); session.xi = Math.max(0, Math.min(n - 1, (session.xi || 0) + (act === 'xNext' ? 1 : -1))); render(); speak(plainSteps(session.item)[session.xi] || ''); const nb = app.querySelector(`[data-act="${act}"]:not([disabled])`) || app.querySelector('[data-act="xPrev"],[data-act="xNext"]'); if (nb) nb.focus(); break; }
       case 'check': doCheck(); break;
       case 'next': session.count++; nextItem(); break;
       case 'lineStart': {
@@ -3127,7 +3211,7 @@ tr:last-child td { border-bottom: none; }
       case 'mwhy': {
         const it2 = session.item, k = b.dataset.k, okk = k === it2.mis;
         session.mnote = { ok: okk, text: (okk ? 'Yes! ' : 'Not quite. ') + E.PIP_DID[it2.mis] };
-        ch.stats = ch.stats || {}; if (okk) ch.stats.mistakesSpotted = (ch.stats.mistakesSpotted || 0) + 1; save();
+        ch.stats = ch.stats || {}; if (okk) ch.stats.mistakesSpotted = (ch.stats.mistakesSpotted || 0) + 1; E.recordWhy(ch.skills, it2.skill, okk); save();
         session.mstage = 'fix'; react(okk ? 'capo' : 'tilt'); sfx(okk ? 'correct' : 'clue'); render(); speak(session.mnote.text + ' What should the answer be?'); break;
       }
       case 'why': {
@@ -3230,8 +3314,8 @@ tr:last-child td { border-bottom: none; }
     }
     if (view.name !== 'item' || !session || !session.item) return;
     if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT')) return;
-    if ((/^[0-9]$/.test(e.key) || ((e.key === '.' || (e.key === ',' && lang() === 'fr')) && (/\./.test(session.item.answer) || session.item.decimal) && !session.entry.includes('.'))) && (session.item.format === 'number' || (session.item.format === 'mistake' && session.mstage === 'fix'))) { if (!(session.feedback && (session.feedback.ok || session.feedback.final))) { if (session.entry.length < 9) session.entry += (e.key === ',' ? '.' : e.key); session.feedback = null; render(); } }
-    else if (e.key === 'Backspace' && session.item.format === 'number') { session.entry = session.entry.slice(0, -1); render(); }
+    if ((/^[0-9]$/.test(e.key) || ((e.key === '.' || (e.key === ',' && lang() === 'fr')) && (/\./.test(session.item.answer) || session.item.decimal) && !session.entry.includes('.'))) && (session.item.format === 'number' || session.item.format === 'stepfill' || (session.item.format === 'mistake' && session.mstage === 'fix'))) { if (!(session.feedback && (session.feedback.ok || session.feedback.final))) { if (session.entry.length < 9) session.entry += (e.key === ',' ? '.' : e.key); session.feedback = null; render(); } }
+    else if (e.key === 'Backspace' && (session.item.format === 'number' || session.item.format === 'stepfill')) { session.entry = session.entry.slice(0, -1); render(); }
     else if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') { const btn = app.querySelector('.checkbtn:not([disabled])'); if (btn) btn.click(); }
   });
 
@@ -3372,10 +3456,32 @@ tr:last-child td { border-bottom: none; }
       Object.values(E.PIP_DID).forEach((t) => { F('Yes! ' + t + ' What should the answer be?'); F('Not quite. ' + t + ' What should the answer be?'); });
       E.SKILL_ORDER.forEach((id) => { F('Yes! ' + C[id].strategy); F('Here is why: ' + C[id].strategy); });
       ['Bullseye!', 'So close!', 'Here is where it lives.'].forEach(F);
+      // Phase 4: new kinds of questions and explanation variants
+      F('One step is missing. What number goes in the box?');
+      Object.values(X_LABEL).forEach((l) => { F(l); F('Let’s try it a new way. ' + l); });
+      E.SKILL_ORDER.forEach((id) => {
+        F(X_LABEL.idea + ' ' + C[id].teach.join(' ')); F('Let’s try it a new way. ' + X_LABEL.idea + ' ' + C[id].teach.join(' '));
+        for (let i = 0; i < Math.max(4, per >> 1); i++) {
+          const t = E.makeTransfer(id, rng); if (t) D(t.prompt);
+          const f = E.makeStepFill(id, rng); if (f) D(f.prompt);
+          const it = E.generate(id, rng), last = (it.steps || [])[(it.steps || []).length - 1];
+          const ps = plainSteps(it); if (ps.length) { D(X_LABEL.picture + ' ' + ps[0]); D('Let’s try it a new way. ' + X_LABEL.picture + ' ' + ps[0]); D(X_LABEL.steps + ' ' + joinSteps(ps)); D('Let’s try it a new way. ' + X_LABEL.steps + ' ' + joinSteps(ps)); }
+        }
+      });
       for (const g of [1, 2, 3, 4, 5]) for (let i = 0; i < 300; i++) { const li = E.lineItem(g, rng); D('Where does ' + li.label + ' go on the line from ' + li.lo + ' to ' + li.hiLabel + '?'); D('Where does ' + li.label + ' go?'); }
       E.SKILL_ORDER.forEach((id) => { for (let i = 0; i < 40; i++) { const m = E.makeMistake(id, rng); if (!m) break; D(m.prompt); D('You fixed Pip’s mistake! The answer is ' + m.answer + '.'); } });
       session = null;
       return { fixed: [...fixed], dynamic: [...dyn] };
+    };
+    // a question of a given kind for a skill: 'transfer', 'stepfill' or 'mistake'
+    window.__tbShowKind = (id, kind) => {
+      if (!S.children.length) { const L = makeSample(); S.children.push(L); S.activeChild = L.id; }
+      S.activeChild = S.children[0].id;
+      session = { mode: 'practice', skill: id, count: 0, cap: 8, start: Date.now(), litBefore: 0, entry: '', feedback: null, tries: 0, soroban: [0, 0, 0], hint: 0, xkind: null, xi: 0 };
+      session.item = kind === 'transfer' ? E.makeTransfer(id, rng) : kind === 'stepfill' ? E.makeStepFill(id, rng) : E.generate(id, rng);
+      for (let k = 0; k < 20 && kind === 'plain' && session.item.format !== 'number'; k++) session.item = E.generate(id, rng);
+      if (!session.item) return false;
+      view = { name: 'item' }; render(); return true;
     };
     window.__tbSpeechMisses = () => AUDIO.misses.slice();
     window.__tbSpeakPlan = (t) => (AUDIO.map ? TBSpeech.plan(t, hasClip) : null);

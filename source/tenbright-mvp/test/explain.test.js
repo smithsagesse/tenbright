@@ -56,6 +56,17 @@ for (const id of E.SKILL_ORDER.filter((s) => E.gradeOf(s) <= 5)) for (let i = 0;
   const it = E.generate(id, R);
   [it.prompt].concat(it.steps).forEach((t) => ok(!BANNED.test(t), id + ': banned word in the engine text: ' + t));
 }
+// Phase 4: a story question keeps the question's numbers and steps, so its plain words must still match the engine
+let storyChecks = 0;
+for (const id of E.SKILL_ORDER) for (let i = 0; i < 200; i++) {
+  const t = E.makeTransfer(id, R); if (!t) break;
+  const x = X.explain(t); if (!x) continue;
+  storyChecks++;
+  ok(x.say.length === t.steps.length, id + ' story: one plain step per engine step');
+  x.say.forEach((sx, k) => ok(guideAnswer(sx) === guideAnswer(t.steps[k]), id + ' story step ' + (k + 1) + ': same result as the engine step'));
+  [].concat(x.meaning || [], x.say, x.check ? [x.check] : []).forEach((tx) => { ok(!/undefined|NaN|null|\[object/.test(tx), id + ' story: bad text: ' + tx); sentencesTrue(tx, id + ' story'); });
+}
+ok(storyChecks > 5000, 'story questions explained: ' + storyChecks);
 // Fix Pip's mistake questions and any odd item fall back to the engine's steps, never to broken words
 for (const id of covered) for (let i = 0; i < 300; i++) {
   const m = E.makeMistake(id, R); if (!m) break;

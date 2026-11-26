@@ -90,6 +90,10 @@ const now = Date.UTC(2026, 10, 3);
 for (let i = 0; i < 9; i++) E.recordAttempt(L.skills, 'PV01', { format: i % 2 ? 'number' : 'choice' }, { correct: true, misconception: null }, 0, now);
 ok(L.skills.PV01.status === 'practiced', 'not mastered before 10 items');
 for (let i = 0; i < 4; i++) E.recordAttempt(L.skills, 'PV01', { format: 'number' }, { correct: true, misconception: null }, 0, now);
+// Phase 4: right answers alone are not enough; PV01 has no story or missing-step questions, so one right reason is needed
+ok(L.skills.PV01.status === 'practiced' && E.evidenceMissing(L.skills.PV01, 'PV01').join() === 'reason', 'not mastered without a reason');
+E.recordWhy(L.skills, 'PV01', true);
+E.recordAttempt(L.skills, 'PV01', { format: 'number' }, { correct: true, misconception: null }, 0, now);
 ok(L.skills.PV01.status === 'mastered', 'mastered after gate met');
 ok(L.skills.PV02.status === 'learning', 'PV02 unlocked');
 ok(!E.dueCheck(L.skills.PV01, now + 6 * E.DAY), 'no check before day 7');
@@ -110,6 +114,71 @@ ok(L2.skills.PV01.activeMis === 'M09', 'two matches confirm');
 ok(E.nextActivity(L2.skills, now).kind === 'remediate', 'remediation comes first');
 for (let i = 0; i < 3; i++) E.recordAttempt(L2.skills, 'PV01', { format: 'number' }, { correct: true, misconception: null }, 0, now);
 ok(!L2.skills.PV01.activeMis, 'three correct clears it');
+
+// ---------- Phase 4: new kinds of evidence and explanation variants ----------
+{
+  const R4 = E.makeRng(404);
+  let stories = 0, fills = 0;
+  for (const id of E.SKILL_ORDER) {
+    const can = E.canOffer(id);
+    for (let i = 0; i < 400; i++) {
+      const t = E.makeTransfer(id, R4);
+      if (t) {
+        stories++;
+        ok(can.transfer, id + ': a story was made but the skill is not marked as having stories');
+        ok(t.kind === 'transfer' && t.format === 'number' && t.story, id + ': story item shape');
+        // the story asks the same math: the numbers in it and the answer agree
+        const n = (t.prompt.match(/\d+/g) || []).map(Number), c = Number(t.answer);
+        const okMath = (t.op === '+' && n[0] + n[1] === c) || (t.op === '−' && n[0] - n[1] === c) || (t.op === '×' && n[0] * n[1] === c) || (t.op === '÷' && n[0] === n[1] * c);
+        ok(okMath, id + ': story math does not match the answer: ' + t.prompt + ' = ' + t.answer);
+        ok(!/ 1 (bags|boxes|baskets|rows)\b/.test(t.prompt), id + ': one group in a story: ' + t.prompt);
+        ok(E.check(t, t.answer).correct, id + ': story answer checks');
+      }
+      const f = E.makeStepFill(id, R4);
+      if (f) {
+        fills++;
+        ok(can.stepfill, id + ': a missing step was made but the skill is not marked as having them');
+        const m = E.stepResult(f.steps[f.blank.step]);
+        ok(m && m[1].replace(/,/g, '') === f.answer && f.blank.step < f.steps.length - 1, id + ': the blank is the result of a middle step');
+        ok(f.answer !== f.base.answer, id + ': the missing step is not the final answer');
+        ok(f.steps[f.blank.step].slice(f.blank.at, f.blank.at + f.blank.len).replace(/,/g, '') === f.answer, id + ': blank position');
+        ok(E.check(f, f.answer).correct && !E.check(f, String(Number(f.answer) + 1)).correct, id + ': missing step checks');
+      }
+    }
+  }
+  ok(stories > 10000 && fills > 8000, 'stories and missing steps are made for many skills: ' + stories + ', ' + fills);
+  // a skill with stories and missing steps needs two kinds of evidence beyond right answers
+  const A = E.newLearner('A');
+  ok(E.canOffer('AS05').transfer && E.canOffer('AS05').stepfill, 'AS05 has stories and missing steps');
+  Object.assign(A.skills.AS05, { learned: true, status: 'learning' });
+  for (let i = 0; i < 12; i++) E.recordAttempt(A.skills, 'AS05', { format: i % 2 ? 'number' : 'choice' }, { correct: true, misconception: null }, 0, now);
+  ok(A.skills.AS05.status !== 'mastered' && E.evidenceMissing(A.skills.AS05, 'AS05').length === 3, 'no mastery on plain answers only');
+  E.recordAttempt(A.skills, 'AS05', { format: 'number', kind: 'transfer' }, { correct: true, misconception: null }, 2, now);
+  ok(!E.evidence(A.skills.AS05).transfer, 'a story answered with a big hint is not evidence');
+  E.recordAttempt(A.skills, 'AS05', { format: 'number', kind: 'transfer' }, { correct: true, misconception: null }, 0, now);
+  ok(A.skills.AS05.status !== 'mastered', 'one kind is not enough');
+  E.recordAttempt(A.skills, 'AS05', { format: 'stepfill', kind: 'stepfill' }, { correct: true, misconception: null }, 0, now);
+  ok(A.skills.AS05.status === 'mastered' && E.evidenceMissing(A.skills.AS05, 'AS05').length === 0, 'two kinds of evidence complete mastery');
+  ok(E.masteryMet(A.skills.AS05, 'AS05') && E.evidence(A.skills.AS05).independent >= 10, 'stories and missing steps do not count as plain answers');
+  // explanation variants: a miss after an explanation brings a different one; what works is kept
+  const X = { attempts: [] };
+  ok(E.explainPick(X) === 'steps', 'steps first');
+  E.explainShown(X, 'steps'); E.explainOutcome(X, false);
+  const second = E.explainPick(X);
+  ok(second !== 'steps', 'a miss after the steps brings a different explanation: ' + second);
+  E.explainShown(X, second); E.explainOutcome(X, false);
+  const third = E.explainPick(X);
+  ok(third !== second && third !== 'steps', 'then the third kind: ' + third);
+  E.explainShown(X, third); E.explainOutcome(X, true);
+  ok(E.explainPick(X) === third, 'the one that worked is used next');
+  E.explainShown(X, third); E.explainOutcome(X, true);
+  ok(E.explainBest(X) === third, 'and it is reported as what helps');
+  ok(!X.explain.pending, 'outcome clears the pending explanation');
+  const Y = E.newLearner('Y'); Y.skills.C102.learned = true;
+  E.explainShown(Y.skills.C102, 'picture');
+  E.recordAttempt(Y.skills, 'C102', { format: 'number' }, { correct: true, misconception: null }, 0, now);
+  ok(Y.skills.C102.explain.tried.picture[1] === 1, 'the next answer after an explanation records whether it helped');
+}
 
 // graph integrity: every prerequisite exists and appears earlier in the order or in another strand without cycles
 E.SKILL_ORDER.forEach((id) => E.SKILLS[id].prereqs.forEach((p) => ok(E.SKILLS[p], id + ' has unknown prereq ' + p)));

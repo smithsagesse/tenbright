@@ -103,7 +103,7 @@ with identical sw.js, manifest, icons, art and audio. It contains:
 - `build.js`: run `node build.js` to produce `dist/index.html` (and `dist/test.html` with test hooks).
 - Tests: `node test/engine.test.js` (math engine, millions of generated checks); `node test/explain.test.js` (plain-words lessons); Playwright suites
   `test/e2e.py`, `test/features_test.py`, `test/audio_test.py`, `test/living_test.py`,
-  `test/separation_test.py`, `test/discovery_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
+  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
 - `docs/animation-system.md` and `README.md`.
 
 Make changes in `source/tenbright-mvp/src/`, rebuild and run every suite.
@@ -160,7 +160,7 @@ Current focus (Nov 25, 2026): developing the app. Do not raise launch items or p
   Any new kind of stored data needs a notice version bump and re-agreement (the parent page shows the update card).
 - **Build order:** 2 Discovery Adventure (done Nov 26) · 3 foundation lessons (done Nov 26: all 103 skills, Grades 1–5) (micro-step rewrite, Grades 1–2 first,
   keep math words with plain explanations, translations in the same pass) · 4 adaptive Pip + independence and mastery
-  evidence · 5 games · 6 strategy library (verify the cited research first) · 7 geometry, measurement, time, money ·
+  evidence (done Nov 26) · 5 games · 6 strategy library (verify the cited research first) · 7 geometry, measurement, time, money ·
   8 parent dashboard v2 · 9 pilot and effectiveness study.
 - The four wording issues were fixed on Nov 26, 2026 ("Regrouping in adding and taking away", "You looked closely at every clue.
   That is how you learn.", the Lantern Line note without the outcome claim, glowmoth labels removed).
@@ -173,4 +173,15 @@ enforces: same result per step as the engine, every number sentence true, senten
 "borrow"/"carry"/fillers. Within a step that asks for a result, never say the result in words before its number
 sentence (Work it with Pip hides only the number). Add a builder per skill in `explain.js`; a skill without one keeps
 the engine's steps. Fix Pip's mistake questions always keep the engine's steps.
+**How Pip adapts (Phase 4):** all on the device, no AI at run time.
+- *Explanation variants* (`explainPick`/`explainShown`/`explainOutcome` in engine.js): steps (Phase 3 plain words),
+  pictures (the lesson's step pictures, for questions that have a picture model) and the big idea (the skill's teach lines,
+  then this problem's last step). They appear after the second miss and at the top hint. The next first try at that skill
+  records whether it helped; after a miss, the next explanation is a different kind. The parent page says what helps most.
+- *New question kinds*: the same math in a new story (`makeTransfer`, word-problem wording, the item's own numbers, steps and
+  answer) and fill in the missing step (`makeStepFill`, one middle result of the engine's steps as a box). "Why did that work?"
+  and choosing what went wrong in Fix Pip's mistake are the reason evidence.
+- *Mastery* (`masteryMet(st, id)`) keeps the old gate (10 independent plain answers, 90%, two formats, mastery estimate 0.95)
+  and also needs two of story, missing step and reason, or as many as the skill can offer (`canOffer`, `evidenceMissing`).
+  Skills already lit stay lit.
 Do not claim legal sign-off, hiring or payments. Those are his.

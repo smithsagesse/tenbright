@@ -1204,6 +1204,108 @@
     return null;
   }
 
+  // ---------- Tenbright 2.0 Phase 4: new kinds of evidence ----------
+  // Same math, new story: the item's own numbers told as a short story. The steps, the answer and the clues stay the
+  // engine's, so every number still comes from the engine. Story sentences reuse the word-problem wording.
+  const NO_TRANSFER = /^(WP|C114$|F411$|C108$)/;
+  function makeTransfer(skill, r) {
+    if (NO_TRANSFER.test(skill)) return null;
+    for (let tries = 0; tries < 30; tries++) {
+      const it = GEN[skill](r);
+      const { a, b, op } = it;
+      if (it.format !== 'number' || !op || typeof a !== 'number' || typeof b !== 'number' || !Number.isInteger(a) || !Number.isInteger(b)) continue;
+      if (!/^\d+$/.test(it.answer) || /\d\.\d|\//.test(it.prompt) || a < 1 || b < 1) continue;
+      const c = Number(it.answer);
+      const name = r.pick(NAMES), thing = r.pick(THINGS);
+      let prompt = null;
+      if (op === '+' && a + b === c) prompt = name + ' had ' + a + ' ' + thing + '. ' + name + ' found ' + b + ' more. How many ' + thing + ' now?';
+      else if (op === '−' && a - b === c) prompt = name + ' had ' + a + ' ' + thing + ' and gave away ' + b + '. How many are left?';
+      else if (op === '×' && a * b === c && Math.min(a, b) <= 99 && Math.min(a, b) >= 2) { const g = Math.min(a, b), e = Math.max(a, b); prompt = 'There are ' + g + ' ' + r.pick(['bags', 'boxes', 'baskets', 'rows']) + ' with ' + e + ' ' + thing + ' in each. How many ' + thing + ' in all?'; }
+      else if (op === '÷' && a === b * c && b >= 2) { let other = r.pick(NAMES); while (other === name) other = r.pick(NAMES); prompt = name + ' has ' + a + ' ' + thing + '. That is ' + b + ' times as many as ' + other + '. How many does ' + other + ' have?'; }
+      if (!prompt) continue;
+      return Object.assign({}, it, { prompt, kind: 'transfer', story: true, from: it.prompt });
+    }
+    return null;
+  }
+  // Fill in the missing step: Pip's worked steps with one result left out. The answer is that step's own number.
+  // a number with thousands commas or a plain number (a comma after it, as in "= 16, make a ten", is not part of it)
+  const STEP_RESULT = /= (\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)(?![\d,.]*\d)(?!\/| R)/g;
+  function stepResult(s) { let m, last = null; STEP_RESULT.lastIndex = 0; while ((m = STEP_RESULT.exec(s))) last = m; return last; }
+  function makeStepFill(skill, r) {
+    for (let tries = 0; tries < 30; tries++) {
+      const it = GEN[skill](r);
+      if (!it.steps || it.steps.length < 2 || it.format === 'build') continue;
+      const can = [];
+      it.steps.slice(0, -1).forEach((s, k) => {
+        const m = stepResult(s); if (!m) return;
+        const v = m[1].replace(/,/g, ''), before = (s.slice(0, m.index).match(/\d[\d,]*(?:\.\d+)?/g) || []).map((x) => Number(x.replace(/,/g, '')));
+        // a real result: not the final answer, written the way it is typed, and not just a number from the same step rewritten
+        if (v !== it.answer && normalize(v) === v && !before.includes(Number(v))) can.push(k);
+      });
+      if (!can.length) continue;
+      const k = r.pick(can), m = stepResult(it.steps[k]);
+      const answer = m[1].replace(/,/g, '');
+      return { skill, format: 'stepfill', kind: 'stepfill', prompt: it.prompt, base: it, steps: it.steps, blank: { step: k, at: m.index + 2, len: m[1].length }, answer, predicted: {}, model: it.model, decimal: /\./.test(answer) };
+    }
+    return null;
+  }
+  // which new kinds a skill can offer (sampled once, with a fixed seed, so the answer never changes)
+  const CAN = {};
+  function canOffer(skill) {
+    if (CAN[skill]) return CAN[skill];
+    const r = makeRng(skill.split('').reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7));
+    let transfer = false, stepfill = false;
+    for (let i = 0; i < 6 && !(transfer && stepfill); i++) { transfer = transfer || !!makeTransfer(skill, r); stepfill = stepfill || !!makeStepFill(skill, r); }
+    return (CAN[skill] = { transfer, stepfill, reason: true });
+  }
+  // the kinds of evidence a skill has so far: right on the first try, with at most a small nudge
+  function evidence(st) {
+    const a = st.attempts || [], ok = (x) => x.correct && x.hint <= 1;
+    return {
+      independent: a.filter((x) => (x.kind || 'plain') === 'plain' && ok(x)).length,
+      transfer: a.some((x) => x.kind === 'transfer' && ok(x)),
+      stepfill: a.some((x) => x.kind === 'stepfill' && ok(x)),
+      reason: !!(st.why && st.why.right > 0) || a.some((x) => x.kind === 'mistake' && ok(x))
+    };
+  }
+  // mastery needs separate kinds of evidence: at least two of story, missing step and reason, where the skill has them
+  function evidenceMissing(st, skill) {
+    const can = canOffer(skill), ev = evidence(st);
+    const kinds = ['transfer', 'stepfill', 'reason'].filter((k) => can[k]);
+    const have = kinds.filter((k) => ev[k]);
+    if (have.length >= Math.min(2, kinds.length)) return [];
+    return kinds.filter((k) => !ev[k]);
+  }
+
+  // ---------- explanation variants: a miss after one explanation brings a different one ----------
+  const EXPLAIN_KINDS = ['steps', 'picture', 'idea'];
+  function explainState(st) { return (st.explain = st.explain || { tried: {}, pending: null, avoid: null }); }
+  function explainPick(st) {
+    const x = explainState(st), rate = (k) => { const t = x.tried[k]; return t && t[0] ? t[1] / t[0] : null; };
+    let pool = EXPLAIN_KINDS.filter((k) => k !== x.avoid);
+    const untried = pool.filter((k) => !x.tried[k]);
+    if (x.avoid && untried.length) return untried[0];
+    // otherwise the one that has worked best so far; steps first when nothing is known
+    pool = pool.slice().sort((p, q) => (rate(q) ?? 0.5) - (rate(p) ?? 0.5) || EXPLAIN_KINDS.indexOf(p) - EXPLAIN_KINDS.indexOf(q));
+    return pool[0];
+  }
+  function explainShown(st, kind) { if (EXPLAIN_KINDS.includes(kind)) explainState(st).pending = kind; }
+  // the next first try at the skill tells whether the explanation helped
+  function explainOutcome(st, correct) {
+    const x = st.explain; if (!x || !x.pending) return;
+    const t = (x.tried[x.pending] = x.tried[x.pending] || [0, 0]);
+    t[0]++; if (correct) t[1]++;
+    x.avoid = correct ? null : x.pending;
+    x.pending = null;
+  }
+  // what has helped most, once there is enough to say (for the parent page)
+  function explainBest(st) {
+    const x = st.explain; if (!x) return null;
+    const ok = EXPLAIN_KINDS.filter((k) => x.tried[k] && x.tried[k][0] >= 2 && x.tried[k][1] / x.tried[k][0] >= 0.5);
+    ok.sort((p, q) => x.tried[q][1] / x.tried[q][0] - x.tried[p][1] / x.tried[p][0]);
+    return ok[0] || null;
+  }
+
   // ---------- Lantern Line: number-line estimation warm-up ----------
   // Placing numbers on an empty number line trains the sense of how big numbers are, which strongly predicts later math.
   // The score is the percent absolute error (PAE): how far the tap was from the true spot, as a share of the whole line.
@@ -1232,7 +1334,7 @@
   const linePAE = (item, placed) => Math.abs(placed - item.target) / (item.hi - item.lo);
 
   // ---------- Bayesian knowledge tracing ----------
-  const BKT = { L0: 0.10, T: 0.15, S: 0.10, G: { number: 0.05, build: 0.05, choice: 0.25, mistake: 0.05 } };
+  const BKT = { L0: 0.10, T: 0.15, S: 0.10, G: { number: 0.05, build: 0.05, choice: 0.25, mistake: 0.05, stepfill: 0.05 } };
   function bktUpdate(pKnown, correct, format, hintLevel) {
     const G = BKT.G[format] ?? 0.1;
     const S = BKT.S;
@@ -1252,8 +1354,10 @@
     return { status: 'locked', p: BKT.L0, attempts: [], learned: false, masteredAt: null, checks: [], misconceptions: {}, certifiedAt: null };
   }
 
-  function masteryMet(st) {
-    const indep = st.attempts.filter((a) => a.hint === 0 || a.hint === 1);
+  // skill: the skill id; with it, mastery also needs the separate kinds of evidence (Tenbright 2.0 Phase 4)
+  function masteryMet(st, skill) {
+    if (skill && evidenceMissing(st, skill).length) return false;
+    const indep = st.attempts.filter((a) => (a.hint === 0 || a.hint === 1) && (a.kind || 'plain') === 'plain');
     if (indep.length < 10) return false;
     const last = indep.slice(-10);
     const acc = last.filter((a) => a.correct).length / 10;
@@ -1273,7 +1377,9 @@
 
   function recordAttempt(skills, id, item, result, hintLevel, now) {
     const st = skills[id];
-    st.attempts.push({ correct: result.correct, format: item.format, hint: hintLevel, mis: result.misconception, at: now });
+    const kind = item.kind || (item.format === 'mistake' ? 'mistake' : 'plain');
+    st.attempts.push({ correct: result.correct, format: item.format, hint: hintLevel, mis: result.misconception, at: now, kind });
+    explainOutcome(st, result.correct);
     if (st.attempts.length > 60) st.attempts.shift();
     if (hintLevel <= 1) st.p = bktUpdate(st.p, result.correct, item.format, hintLevel);
     if (result.misconception) {
@@ -1290,7 +1396,7 @@
       if (recent >= 2) st.activeMis = result.misconception;
     }
     if (st.status === 'learning' && st.learned) st.status = 'practiced';
-    if ((st.status === 'practiced' || st.status === 'learning') && st.learned && masteryMet(st)) {
+    if ((st.status === 'practiced' || st.status === 'learning') && st.learned && masteryMet(st, id)) {
       st.status = 'mastered';
       st.masteredAt = now;
       st.checks = CHECK_DAYS.map((d) => ({ day: d, due: now + d * DAY, done: false, passed: null, items: [] }));
@@ -1562,7 +1668,7 @@
     return L;
   }
 
-  const api = { makeRng, digits, MISCONCEPTIONS, SKILLS, SKILL_ORDER, generate, check, bktUpdate, BKT, masteryMet, recordAttempt, recordCheckItem, dueCheck, nextActivity, newLearner, refreshUnlocks, PLACEMENT_ANCHORS, PLACEMENT_MAX_ITEMS, placementPlan, newPlacement, placementRecord, applyPlacement, STORY_ANCHORS, READING_PROBE, isSlip, placementNext, placementProbeRecord, placementRestDue, placementRested, placementStage, discoverySummary, UNDERSTANDING, understanding, recordWhy, migrateLearner, ancestors, numberName, DAY, CHECK_DAYS, GRADE_LEVELS, SCHOOL_GRADES, gradeOf, defaultFocus, gradeProgress, makeMistake, PIP_DID, lineItem, linePAE };
+  const api = { makeRng, digits, MISCONCEPTIONS, SKILLS, SKILL_ORDER, generate, check, bktUpdate, BKT, masteryMet, recordAttempt, recordCheckItem, dueCheck, nextActivity, newLearner, refreshUnlocks, PLACEMENT_ANCHORS, PLACEMENT_MAX_ITEMS, placementPlan, newPlacement, placementRecord, applyPlacement, STORY_ANCHORS, READING_PROBE, isSlip, placementNext, placementProbeRecord, placementRestDue, placementRested, placementStage, discoverySummary, UNDERSTANDING, understanding, recordWhy, migrateLearner, makeTransfer, makeStepFill, canOffer, evidence, evidenceMissing, EXPLAIN_KINDS, explainPick, explainShown, explainOutcome, explainBest, stepResult, ancestors, numberName, DAY, CHECK_DAYS, GRADE_LEVELS, SCHOOL_GRADES, gradeOf, defaultFocus, gradeProgress, makeMistake, PIP_DID, lineItem, linePAE };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.TBEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);
