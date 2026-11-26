@@ -688,6 +688,107 @@
     }
   });
 
+  // ---------- Grade 5 ----------
+  const lastEqAny = (s) => /= ([\d.]+)\.?$/.exec(s || '');
+  Object.assign(B, {
+    F501(it) {
+      if (it.steps.length !== 2) return null;
+      const m0 = /^(Parentheses first|Multiply before adding): (.+)$/.exec(it.steps[0]);
+      if (!m0) return null;
+      const paren = m0[1] === 'Parentheses first';
+      return { meaning: paren ? ['Parentheses show which part to do first.'] : ['With no parentheses, multiply before you add.'], say: [paren ? 'Work inside the parentheses first. ' + m0[2] : 'There are no parentheses here. Multiplying comes before adding. ' + m0[2], (paren ? 'Now finish the problem. ' : 'Now add. ') + it.steps[1]], check: null };
+    },
+    F502(it) {
+      const m = /^([×÷]) ([\d,]+): every digit moves (\d) places? to the (left|right)\.$/.exec(it.steps[0] || '');
+      if (!m || it.steps.length !== 2) return null;
+      const k = +m[3], times = m[1] === '×', moves = plural(k, 'place', 'places');
+      const s0 = (times ? 'Times ' + m[2] + ' makes each digit worth ' + m[2] + ' times as much.' : 'Dividing by ' + m[2] + ' makes each digit worth ' + { 10: 'one tenth', 100: 'one hundredth', '1,000': 'one thousandth' }[m[2]] + ' as much.') + ' So every digit moves ' + moves + ' to the ' + m[4] + '.';
+      const s1 = (times ? (/\./.test(it.prompt) ? 'Write the digits in their new places. ' : 'Fill the empty places with zeros. ') : 'Some digits move past the decimal point. ') + it.steps[1];
+      return { meaning: ['Each place is worth 10 times the place to its right.'], say: [s0, s1], check: null };
+    },
+    F503(it) {
+      if (it.steps.length !== 2) return null;
+      const meaning = ['The places after the decimal point are parts of one whole.'];
+      const d = /^Which digit is in the (\w+) place of ([\d.]+)\?/.exec(it.prompt);
+      if (d) return { meaning, say: ['Look after the decimal point. The first place is tenths. The next is hundredths. Then come thousandths.', 'In ' + d[2] + ', go to the ' + d[1] + ' place. ' + it.steps[1]], check: null };
+      const v = /^What is the value of the (\d) in ([\d.]+)\?/.exec(it.prompt);
+      if (!v) return null;
+      return { meaning, say: ['Find the ' + v[1] + ' in ' + v[2] + '. ' + it.steps[0], 'Write that as a decimal. ' + it.steps[1]], check: null };
+    },
+    F504(it) {
+      if (it.steps.length !== 2 || !/^Write both with three places: /.test(it.steps[0])) return null;
+      return { meaning: ['Decimals are easiest to compare with the same number of places.'], say: ['Give both numbers three digits after the point. A 0 at the end does not change the amount. ' + it.steps[0], 'Now compare them like whole numbers of thousandths. ' + it.steps[1]], check: null };
+    },
+    F505(it) {
+      const m = /^Round ([\d.]+) to the nearest (whole number|tenth|hundredth)\.$/.exec(it.prompt), n = /^The next digit is (\d), so it rounds to ([\d.]+)$/.exec(it.steps[1] || '');
+      if (!m || !n || it.steps.length !== 2) return null;
+      const place = { 'whole number': 'ones', tenth: 'tenths', hundredth: 'hundredths' }[m[2]], d = +n[1];
+      const after = m[1].split('.')[1] || '', cut = { ones: 0, tenths: 1, hundredths: 2 }[place], rest = after.slice(cut + 1);
+      const half = d === 5 && !/[1-9]/.test(rest);
+      return { meaning: ['Rounding a decimal works like rounding a whole number.'], say: ['Round to the nearest ' + m[2] + '. ' + it.steps[0] + ' Picture them on a number line.', 'Look at the digit just after the ' + place + ' place. It is ' + d + '. ' + (half ? m[1] + ' is exactly halfway, and halfway rounds up.' : 'That is ' + (d >= 5 ? '5 or more, so round up.' : 'less than 5, so round down.')) + ' So it rounds to ' + n[2] + '.'], check: null };
+    },
+    F506(it) {
+      const { a, b } = it, c = Number(it.answer), bo = b % 10, bt = b - bo;
+      if (it.steps.length !== 3 || !bo) return null;
+      return { meaning: ['Split ' + b + ' into ' + bt + ' and ' + bo + '.', 'Multiply ' + a + ' by each part, then add.'], say: ['Start with the ones. ' + it.steps[0], 'Now the tens. ' + bt + ' is ' + count(bt / 10, 'tens') + '. ' + it.steps[1], 'Add the two parts. ' + it.steps[2]], check: 'Check: ' + c + ' ÷ ' + b + ' = ' + a + '.' };
+    },
+    F507(it) { return B.F408(it); },
+    F508(it) {
+      const m = /^Line up the points: ([\d.]+) ([+−]) ([\d.]+)\.$/.exec(it.steps[0] || '');
+      if (!m || it.steps.length !== 2) return null;
+      const add = m[2] === '+';
+      return { meaning: ['To add or take away decimals, line up the decimal points.'], say: ['Line up the decimal points, so tenths sit over tenths. Give both numbers two places: ' + m[1] + ' and ' + m[3] + '.', 'Now ' + (add ? 'add' : 'take away') + ' like whole numbers. Keep the point in line. ' + it.steps[1]], check: null };
+    },
+    F509(it) {
+      const m = /^Multiply as whole numbers: (.+)$/.exec(it.steps[0] || '');
+      if (!m || it.steps.length !== 2) return null;
+      return { meaning: ['Multiply decimals like whole numbers. Then put the point back.'], say: ['Leave out the points for now. Multiply as whole numbers. ' + m[1], 'Now count the digits after the points in both numbers. ' + it.steps[1]], check: null };
+    },
+    F510(it) {
+      if (it.steps.length !== 2) return null;
+      const t = /^([\d.]+) is (\d+) tenths\. (.+)$/.exec(it.steps[0]);
+      if (t) return { meaning: ['Dividing a decimal is like sharing tenths.'], say: ['Think of ' + t[1] + ' as tenths. ' + it.steps[0], 'Write the tenths as a decimal. ' + it.steps[1]], check: null };
+      const f = /^How many ([\d.]+)s fit in 1\? (\d+)\.$/.exec(it.steps[0]), p = /^(\d+) ÷ ([\d.]+) = \?$/.exec(it.prompt);
+      if (!f || !p) return null;
+      return { meaning: [p[1] + ' ÷ ' + p[2] + ' asks: how many ' + p[2] + 's fit in ' + p[1] + '?'], say: [p[2] + ' is part of one whole. ' + it.steps[0], 'Each of the ' + p[1] + ' wholes holds ' + f[2] + ' of them. ' + it.steps[1]], check: null };
+    },
+    F511(it) {
+      if (it.steps.length !== 2 || !/^Use /.test(it.steps[0])) return null;
+      const add = it.op === '+';
+      return { meaning: ['To add or take away fractions, the pieces must be the same size.'], say: ['The pieces are different sizes, so make them match first. ' + it.steps[0], 'Now the pieces are the same size. ' + (add ? 'Add' : 'Take away') + ' the top numbers. ' + it.steps[1]], check: null };
+    },
+    F512(it) {
+      const fr = it.frac;
+      if (!fr || it.steps.length !== 2) return null;
+      const [a, b] = fr;
+      const meaning = ['A fraction can show sharing. ' + a + ' ÷ ' + b + ' means ' + a + ' shared by ' + b + '.'];
+      if (/^\d+ ÷ \d+ = /.test(it.prompt)) return { meaning, say: ['Share ' + plural(a, 'whole', 'wholes') + ' among ' + b + '. Cut each whole into ' + b + ' equal pieces.', 'Each share gets ' + plural(a, 'piece', 'pieces') + ' of size 1/' + b + '. ' + it.steps[1]], check: null };
+      return { meaning, say: ['Share fairly. ' + it.steps[0], 'Count the pieces one friend gets. ' + it.steps[1]], check: null };
+    },
+    F513(it) {
+      if (it.steps.length !== 2) return null;
+      const of = /^(\d+)\/(\d+) of (\d+) = \?$/.exec(it.prompt);
+      if (of) return { meaning: ['"Of" means times.', of[1] + '/' + of[2] + ' of ' + of[3] + ' means ' + of[1] + ' of ' + of[2] + ' equal parts of ' + of[3] + '.'], say: ['First find one part. ' + it.steps[0], 'We want ' + plural(+of[1], 'part', 'parts') + '. ' + it.steps[1]], check: null };
+      const pr = /^(\d+)\/(\d+) × (\d+)\/(\d+) = /.exec(it.prompt);
+      if (!pr) return null;
+      return { meaning: [pr[1] + '/' + pr[2] + ' × ' + pr[3] + '/' + pr[4] + ' means ' + pr[1] + '/' + pr[2] + ' of ' + pr[3] + '/' + pr[4] + '.', 'Taking a part of a part makes smaller pieces.'], say: ['The pieces get smaller. ' + it.steps[0], 'Then count the pieces we take. ' + it.steps[1]], check: null };
+    },
+    F514(it) {
+      if (it.steps.length !== 2) return null;
+      const a = /^(\d+) ÷ 1\/(\d+) = \?$/.exec(it.prompt);
+      if (a) return { meaning: [a[1] + ' ÷ 1/' + a[2] + ' asks: how many 1/' + a[2] + ' pieces fit in ' + a[1] + '?'], say: [it.steps[0], 'There ' + (a[1] === '1' ? 'is 1 whole' : 'are ' + a[1] + ' wholes') + ', and each holds ' + a[2] + ' pieces. ' + it.steps[1]], check: null };
+      const b = /^1\/(\d+) ÷ (\d+) = 1\/\?$/.exec(it.prompt);
+      if (!b) return null;
+      return { meaning: ['Dividing a fraction by a whole number shares it into smaller pieces.'], say: [it.steps[0], 'Now each of the ' + b[1] + ' pieces in the whole is split into ' + b[2] + '. ' + it.steps[1]], check: null };
+    },
+    F515(it) {
+      const m = /^A box is (\d+) cubes long, (\d+) cubes wide and (\d+) cubes tall\./.exec(it.prompt), v = Number(it.answer);
+      if (!m || it.steps.length !== 2) return null;
+      const [l, w, h] = [+m[1], +m[2], +m[3]];
+      return { meaning: ['Volume is how many cubes fill a box.'], say: ['Look at the bottom layer. It has ' + l + ' cubes in each of ' + w + ' rows. ' + it.steps[0], 'There are ' + h + ' layers like that, one on top of another. ' + it.steps[1]], check: 'Check: ' + l + ' × ' + w + ' × ' + h + ' = ' + v + '.' };
+    }
+  });
+
   function explain(item) {
     // Fix Pip's mistake questions show Pip's own wrong work, so they keep the engine's steps
     if (!item || !item.steps || item.format === 'mistake') return null;

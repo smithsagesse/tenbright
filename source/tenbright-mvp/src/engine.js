@@ -70,11 +70,11 @@
     // decimals
     MD1: { name: 'Hundredths as tenths', parent: 'Writes a number of hundredths below 10 as tenths (7/100 written as 0.7).', clue: 'A clue! Hundredths need two places after the point.' },
     MD2: { name: 'Longer decimal is bigger', parent: 'Thinks the decimal with more digits is bigger (0.38 > 0.4).', clue: 'A clue! Compare tenths first, like comparing hundreds first.' },
-    MD3: { name: 'Added zeros to a decimal', parent: 'Multiplies a decimal by 10, 100 or 1,000 by writing zeros at the end instead of moving the digits.', clue: 'A clue! Times 100 makes every digit worth 100 times more. Move the digits.' },
+    MD3: { name: 'Added zeros to a decimal', parent: 'Multiplies a decimal by 10, 100 or 1,000 by writing zeros at the end instead of moving the digits.', clue: 'A clue! Times 10, 100 or 1,000 moves every digit to the left. Move the digits, not just add zeros.' },
     MD4: { name: 'Tenths and hundredths swapped', parent: 'Mixes up the tenths and hundredths places.', clue: 'A clue! The first place after the point is tenths, the next is hundredths.' },
     MD5: { name: 'Lined up the last digits', parent: 'Lines up the last digits instead of the decimal points when adding or subtracting decimals.', clue: 'A clue! Line up the decimal points first.' },
     MD6: { name: 'Decimal point in the wrong place', parent: 'Multiplies or divides correctly but puts the decimal point in the wrong place.', clue: 'A clue! Count the decimal places. Does the size of the answer make sense?' },
-    MD7: { name: 'Dividing always makes smaller', parent: 'Thinks dividing always makes a number smaller, so multiplies when dividing by a fraction or decimal under 1.', clue: 'A clue! How many halves fit in one whole?' },
+    MD7: { name: 'Dividing always makes smaller', parent: 'Thinks dividing always makes a number smaller, so multiplies when dividing by a fraction or decimal under 1.', clue: 'A clue! How many of those small pieces fit in one whole?' },
     // grade 4 and 5 operations
     MX1: { name: 'Products written side by side', parent: 'Multiplies each digit but writes the products side by side instead of adding them with their place values.', clue: 'A clue! Each part has a place value. Add the parts together.' },
     MX2: { name: 'Only tens by tens and ones by ones', parent: 'Multiplies tens by tens and ones by ones but skips the two cross parts (23 × 45 = 815).', clue: 'A clue! The rectangle has four parts. Did you find all four?' },
@@ -1042,6 +1042,7 @@
       else { x = r.int(11, 99); xdp = 1; y = r.int(2, 9); ydp = 0; }
       const prod = x * y, dp = xdp + ydp, ans = dec(prod, dp);
       const xs = dec(x, xdp), ys = dec(y, ydp);
+      if (dpOf(xs) !== xdp || dpOf(ys) !== ydp) return GEN.F509(r); // 4.0 would show as 4
       return num('F509', xs + ' × ' + ys + ' = ?', ans, { MD6: dp > 0 ? dec(prod, dp === 1 ? 2 : 1) : null }, ['Multiply as whole numbers: ' + x + ' × ' + y + ' = ' + prod + '.', 'There ' + (dp === 1 ? 'is 1 decimal place' : 'are ' + dp + ' decimal places') + ' in all, so ' + xs + ' × ' + ys + ' = ' + ans], { type: 'paper' }, { decimal: true, decVal: [prod, dp], dmul: [x, xdp, y, ydp] });
     },
     F510(r) {
@@ -1067,6 +1068,7 @@
     F512(r) {
       const b = r.int(2, 8), a = r.int(1, b - 1), thing = r.pick(['pizzas', 'pies', 'loaves of bread', 'melons']);
       if (r.next() < 0.5) return num('F512', a + ' ÷ ' + b + ' = ?/' + b, a, { MF8: b }, ['Sharing ' + a + (a === 1 ? ' whole' : ' wholes') + ' among ' + b + ' gives each a fraction.', a + ' ÷ ' + b + ' = ' + a + '/' + b + ', so the top is ' + a], { type: 'fracbar', bars: Array.from({ length: a }, () => ({ n: 1, d: b })) }, { frac: [a, b] });
+      if (a === 1) return GEN.F512(r); // "1 loaves are shared": the story needs at least 2
       return num('F512', a + ' ' + thing + ' are shared equally by ' + b + ' friends. How much does each friend get? ?/' + b, a, { MF8: b }, ['Cut each of the ' + a + ' into ' + b + ' equal pieces. Each friend gets 1 piece from each.', 'That is ' + a + ' pieces of size 1/' + b + ', so ' + a + '/' + b + ' and the top is ' + a], { type: 'fracbar', bars: Array.from({ length: a }, () => ({ n: 1, d: b })) }, { frac: [a, b] });
     },
     F513(r) {

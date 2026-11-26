@@ -48,11 +48,11 @@ for (const id of covered) {
       t.split(/(?<=[.!?])\s+/).forEach((sen) => ok(words(sen) <= 16, tag + ': sentence too long (' + words(sen) + ' words): ' + sen));
     });
   }
-  // Grades 1–4 always get plain words; a later slice may leave rare cases to the engine steps
-  ok(made >= (E.gradeOf(id) <= 4 ? 2000 : 1900), id + ': plain words for ' + made + ' of 2000 questions');
+  // Every grade always gets plain words; a later slice may leave rare cases to the engine steps
+  ok(made >= (E.gradeOf(id) <= 5 ? 2000 : 1900), id + ': plain words for ' + made + ' of 2000 questions');
 }
-// the engine's own questions and steps for Grades 1–4 use the same math words ("make a ten", "regroup")
-for (const id of E.SKILL_ORDER.filter((s) => E.gradeOf(s) <= 4)) for (let i = 0; i < 300; i++) {
+// the engine's own questions and steps for every grade use the same math words ("make a ten", "regroup")
+for (const id of E.SKILL_ORDER.filter((s) => E.gradeOf(s) <= 5)) for (let i = 0; i < 300; i++) {
   const it = E.generate(id, R);
   [it.prompt].concat(it.steps).forEach((t) => ok(!BANNED.test(t), id + ': banned word in the engine text: ' + t));
 }
@@ -65,5 +65,5 @@ ok(X.explain({ skill: 'C101', steps: ['x', 'y'], format: 'number' }) === null, '
 // place-value phrases
 ok(X.placePhrase(46) === '4 tens and 6 ones' && X.placePhrase(40) === '4 tens' && X.placePhrase(7) === '7 ones' && X.placePhrase(305) === '3 hundreds and 5 ones' && X.placePhrase(589) === '5 hundreds, 8 tens and 9 ones' && X.placePhrase(11) === '1 ten and 1 one', 'place phrases');
 // a skill without a builder falls back to the engine steps
-ok(X.explain(E.generate('F515', R)) === null, 'no builder: engine steps are used');
+ok(X.explain({ skill: 'ZZ99', steps: ['a'], format: 'number' }) === null, 'no builder: engine steps are used');
 console.log('Explanation checks passed: ' + checks + ' across ' + covered.length + ' skills.');
