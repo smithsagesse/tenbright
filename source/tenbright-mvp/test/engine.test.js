@@ -330,7 +330,10 @@ const oldL = { skills: {} }; E.migrateLearner(oldL); ok(oldL.grade === null && o
 // grade-aware placement
 const runPlacement = (grade, answer) => { const q = E.newPlacement(grade); let g2 = 0; while (!q.done && g2++ < 60) E.placementRecord(q, answer(q.current, q.answers.length)); return q; };
 const g5strong = runPlacement('5', () => 1);
-ok(g5strong.passed[0] === 'AS15' && g5strong.passed.includes('F511') && g5strong.items <= E.PLACEMENT_MAX_ITEMS, 'grade 5 strong starts high: ' + g5strong.passed.join());
+ok(g5strong.passed[0] === 'AS15' && g5strong.passed.includes('F508') && g5strong.passed.includes('GE03') && g5strong.items <= E.PLACEMENT_MAX_ITEMS, 'grade 5 strong starts high and also checks the strands: ' + g5strong.passed.join());
+// a strand spot check: exactly 2 questions; 2 of 2 counts as known
+{ const sp = E.newPlacement('2'); sp.queue = ['MY02']; sp.current = 'MY02'; sp.passed = ['PV04']; E.placementRecord(sp, true); ok(E.placementRecord(sp, true) === 'pass' && sp.items === 2, 'strand spot check passes in 2');
+  const sq = E.newPlacement('2'); sq.queue = ['MS01']; sq.current = 'MS01'; sq.passed = ['PV04']; E.placementRecord(sq, true); ok(E.placementRecord(sq, false) === 'fail' && sq.items === 2 && !sq.probe, '1 of 2 means practice it, with no follow-up'); }
 const g5weak = runPlacement('5', (a) => (E.gradeOf(a) <= 2 ? 1 : 0));
 ok(g5weak.failed[0] === 'AS15' && g5weak.passed.includes('PV04'), 'grade 5 child who misses the first anchor drops down: ' + g5weak.passed.join());
 const g1 = runPlacement('1', () => 0);
@@ -376,6 +379,35 @@ ok(E.placementRestDue(rq) && E.placementStage(rq) === 2, 'rest due after 3 check
 const saved = JSON.parse(JSON.stringify(rq)); E.placementRecord(saved, true); ok(saved.current === rq.current && saved.items === rq.items + 1, 'walk resumes from saved data');
 // gentle start: the parent said math feels hard, so the first check is an easier one
 ok(E.newPlacement('3', { gentle: true }).current === 'C107' && E.newPlacement('3').current === 'PV04' && E.newPlacement('1', { gentle: true }).current === 'C107', 'gentle start');
+// Phase 7 strands in the walk: two grade-matched checks (money or time, measuring or shapes), asked within 25 questions
+['1', '2', '3', '4', '5', 'other'].forEach((g) => {
+  const sa = E.strandAnchors(g);
+  ok(sa.length === 2 && sa.every((id) => ['market', 'clock', 'workshop', 'shapes'].includes(E.SKILLS[id].region)), g + ': two strand checks');
+  ok(['market', 'clock'].includes(E.SKILLS[sa[0]].region) || ['market', 'clock'].includes(E.SKILLS[sa[1]].region), g + ': one money or time check');
+  ok(sa.some((id) => ['workshop', 'shapes'].includes(E.SKILLS[id].region)), g + ': one measuring or shapes check');
+  if (g !== 'other') ok(sa.every((id) => Math.abs(E.gradeOf(id) - Number(g)) <= 2), g + ': strand checks near the school grade: ' + sa.join());
+  // a strong child and a middling child both get both strand checks, inside the limit
+  for (const ans of [() => true, (k) => k !== 1]) {
+    const q = E.newPlacement(g); let i = 0;
+    while (!q.done && i++ < 80) { const nx = E.placementNext(q); if (nx.probe) E.placementProbeRecord(q, true); else E.placementRecord(q, ans(q.answers.length)); }
+    const decided = q.passed.concat(q.failed);
+    ok(sa.every((id) => decided.includes(id)) && q.items <= E.PLACEMENT_MAX_ITEMS, g + ': both strands decided: ' + decided.join());
+  }
+});
+// strands are held back: the core number checks come first
+const sw = walk('2', () => true);
+ok(sw.asked.indexOf('MY02') > sw.asked.indexOf('AS12') && sw.asked.indexOf('MS01') > sw.asked.indexOf('AS12'), 'core checks first: ' + sw.asked.join(' '));
+// a child who passes nothing is not asked the strands
+const none1 = walk('1', () => false);
+ok(!none1.asked.some((x) => ['TM01', 'GE01'].includes(x.replace('?', ''))) || none1.q.passed.length > 0, 'no strand checks after passing nothing: ' + none1.asked.join(' '));
+// a passed strand check credits only its own strand
+const LS = E.newLearner('S', 2017, 'pv', '4');
+E.applyPlacement(LS, ['MY04'], now);
+ok(['MY01', 'MY02', 'MY03', 'MY04'].every((id) => LS.skills[id].status === 'placed'), 'money strand placed');
+ok(LS.skills.AS10.status !== 'placed' && LS.skills.AS07.status !== 'placed' && LS.skills.PV07.status !== 'placed', 'coins do not vouch for subtraction or skip-counting');
+// a walk saved before this change (no strand checks in its queue) still resumes and finishes
+const oldWalk = JSON.parse(JSON.stringify(E.newPlacement('2'))); oldWalk.queue = oldWalk.queue.filter((a) => !E.strandAnchors('2').includes(a));
+let og = 0; while (!oldWalk.done && og++ < 60) E.placementRecord(oldWalk, true); ok(oldWalk.done && oldWalk.items <= E.PLACEMENT_MAX_ITEMS, 'old saved walk finishes');
 // the old two-argument call still works
 const old2 = E.newPlacement(); E.placementRecord(old2, true); ok(old2.items === 1, 'two-argument record');
 

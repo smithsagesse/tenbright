@@ -30,6 +30,12 @@ https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
   hard), checks key skills including one or two story problems, asks each in two kinds of question, and stops at 25 questions.
   A miss can bring one follow-up question: a story missed → the same kind of math without a story ("reading");
   a check failed → one question from the skill underneath ("foundation" or "new step"). Follow-ups never change pass or fail.
+  Since Nov 26 each walk also has two 2-question spot checks from the new strands, matched to the school grade (Grade 1
+  TM01+GE01, 2 MY02+MS01, 3 TM03+MS04, 4 MY04+GE02, 5 GE03+TM04; `STRAND_ANCHORS`). They wait at the end of the queue and
+  move forward once the questions left are just enough (`strandsForward`), so the core number checks come first; 2 of 2
+  counts as known, anything less means practice on the map, with no follow-up. A child who has passed nothing is not
+  asked them, and a passed spot check credits only skills of its own strand (`applyPlacement`). Cost: at most one core
+  check, the last one the walk would have reached.
   Rest stops every 3 checks; the walk is saved on the device and resumes. The child never sees a grade, level or score.
   Parents see "What the Discovery Adventure found" and an Understanding state per skill (understands, partly, with help,
   can do it but explaining why is next, not yet, still checking, not started). **Spaced-repetition mastery** rechecks each skill

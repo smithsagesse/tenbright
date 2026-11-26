@@ -128,7 +128,31 @@ with sync_playwright() as p:
         assert pg.evaluate('() => window.__tbChild().feel === undefined'), 'skipped questions should store nothing'
         pg.locator('.kid', has_text='Ben').click(); pg.get_by_text("Let's explore!").click()
         assert pg.evaluate('() => window.__tbSession().item.skill') == 'AS15', 'Grade 5 walk should start near Grade 5'
-        # 7. the privacy notice lists the new answers
+        # 7. money, time, measuring and shapes: a Grade 3 walk ends with a clock check and an area check, 2 questions each,
+        # each with its picture, and a passed spot check credits its own strand
+        if scheme == 'light':
+            pg.evaluate("() => window.__tbView('addChild')"); add_child(pg, 'Cy', '3')
+            pg.locator('.kid', has_text='Cy').click(); pg.get_by_text("Let's explore!").click()
+            asked, pics, n = [], {}, 0
+            while not pg.get_by_text('Thanks for exploring!').count() and n < 60:
+                n += 1
+                if pg.locator('[data-act="restGo"]').count(): pg.locator('[data-act="restGo"]').click(); continue
+                s = pg.evaluate('() => { const s = window.__tbSession(); return { sk: s.item.skill, probe: s.probe }; }')
+                if not s['probe']: asked.append(s['sk'])
+                if s['sk'] in ('TM03', 'MS04'): pics[s['sk']] = pics.get(s['sk'], 0) + pg.locator('svg.clock-svg, svg.mpic, .paper-sheet').count()
+                answer(pg, True)
+                pg.locator('.checkbtn').click()
+            assert pg.get_by_text('Thanks for exploring!').is_visible(), 'Grade 3 walk did not finish'
+            assert asked.count('TM03') == 2 and asked.count('MS04') == 2, 'strand spot checks: %s' % asked
+            assert asked.index('TM03') > asked.index('AS12'), 'core number checks come first: %s' % asked
+            assert pics.get('TM03') and pics.get('MS04'), 'strand questions show their pictures: %s' % pics
+            assert len(asked) <= 25
+            st = pg.evaluate("() => { const c = window.__tbChild(); return ['TM01', 'TM02', 'TM03', 'MS01', 'MS03', 'MS04', 'MY01'].map((id) => c.skills[id].status); }")
+            assert st[:6] == ['placed'] * 6 and st[6] != 'placed', 'strand credit: %s' % st
+            pg.evaluate("() => window.__tbView('dashboard')"); pg.locator('[data-act="dashChild"]', has_text='Cy').click()
+            found = pg.locator('section.card', has_text='What the Discovery Adventure found').inner_text()
+            assert 'time to the minute' in found and 'area of a rectangle' in found, found
+        # 8. the privacy notice lists the new answers
         pg.evaluate("() => window.__tbView('privacy')")
         assert 'two optional answers about how the child feels about math' in pg.locator('main').inner_text()
         ctx.close()

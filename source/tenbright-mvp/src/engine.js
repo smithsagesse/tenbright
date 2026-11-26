@@ -1737,10 +1737,32 @@
     if (g === 5) return { queue: ['AS15', 'MU12', 'WP05', 'F406', 'F413', 'F418'].concat(ANCHORS_G5), fallback: ['PV04', 'AS05', 'AS07', 'AS12', 'MU03'] };
     return { queue: ['PV04', 'PV10', 'AS05', 'WP02', 'AS07', 'AS12', 'AS15', 'MU03', 'MU12', 'WP04'].concat(ANCHORS_G4, ANCHORS_G5), fallback: ANCHORS_G1 };
   }
+  // Phase 7 strands in the walk: one money or time check and one measuring or shapes check, matched to the school grade.
+  // They wait at the end of the queue and move to the front once the questions left are just enough to ask them.
+  const STRAND_REGIONS = ['market', 'clock', 'workshop', 'shapes'];
+  const STRAND_ANCHORS = { 1: ['TM01', 'GE01'], 2: ['MY02', 'MS01'], 3: ['TM03', 'MS04'], 4: ['MY04', 'GE02'], 5: ['GE03', 'TM04'] };
+  const isStrandAnchor = (id) => STRAND_REGIONS.includes(SKILLS[id].region);
+  function strandAnchors(schoolGrade) { return (STRAND_ANCHORS[parseInt(schoolGrade, 10)] || STRAND_ANCHORS[2]).slice(); }
+  // a strand check is a 2-question spot check: 2 of 2 counts as known; anything less means the child practices that
+  // strand on the map, which is the safe side to err on. It costs exactly 2 questions and brings no follow-up.
+  const STRAND_COST = 2;
+  function strandsForward(ps) {
+    const left = ps.queue.filter(isStrandAnchor);
+    if (!left.length) return;
+    // a child who has not passed any check yet is not asked the strands: their skills open later on the map
+    if (!ps.passed.length && ps.current && isStrandAnchor(ps.current)) { ps.queue = ps.queue.filter((a) => !isStrandAnchor(a)); ps.current = ps.queue[0] || null; return; }
+    // this is looked at between checks, so leave room for the core check that would come next: up to 4 questions and
+    // a follow-up
+    if (PLACEMENT_MAX_ITEMS - ps.items - 5 < STRAND_COST * left.length && !isStrandAnchor(ps.queue[0])) {
+      ps.queue = left.concat(ps.queue.filter((a) => !isStrandAnchor(a)));
+      ps.current = ps.queue[0];
+      strandsForward(ps);
+    }
+  }
   // gentle: the parent said the child does not enjoy math yet or feels worried, so the walk opens with an easier check
   function newPlacement(schoolGrade, opts) {
     const plan = placementPlan(schoolGrade);
-    const queue = plan.queue.slice(), fallback = plan.fallback.slice();
+    const queue = plan.queue.slice().concat(strandAnchors(schoolGrade)), fallback = plan.fallback.slice();
     if (opts && opts.gentle && fallback.length) queue.unshift(fallback.shift());
     return { queue, fallback, current: queue[0], answers: [], passed: [], failed: [], items: 0, done: false, ev: {}, probe: null, probes: [], decided: 0, restedAt: 0, grade: schoolGrade || null };
   }
@@ -1770,7 +1792,8 @@
     ps.answers.push(!!correct); ps.items++;
     const n = ps.answers.length, right = ps.answers.filter(Boolean).length;
     let verdict = null;
-    if (n === 2 && right === 0) verdict = 'fail';
+    if (isStrandAnchor(anchor)) { if (n === 2) verdict = right === 2 ? 'pass' : 'fail'; }
+    else if (n === 2 && right === 0) verdict = 'fail';
     else if (n === 3 && right === 3) verdict = 'pass';
     else if (n === 3 && right <= 1) verdict = 'fail';
     else if (n === 4) verdict = ps.answers[3] ? 'pass' : 'fail';
@@ -1787,9 +1810,10 @@
       ps.current = ps.queue[0] || null;
       ps.answers = [];
       ps.decided = (ps.decided || 0) + 1;
+      strandsForward(ps);
     }
     // follow-up question (counts toward the 25-question limit, never toward pass or fail)
-    if (ps.ev && !ps.probe && ps.items < PLACEMENT_MAX_ITEMS - 1) {
+    if (ps.ev && !ps.probe && ps.items < PLACEMENT_MAX_ITEMS - 1 && !isStrandAnchor(anchor)) {
       const nothingKnown = !Object.keys(ev.patterns).length;
       if (!correct && STORY_ANCHORS.includes(anchor) && !ev.probe && nothingKnown) {
         const skill = anchor === 'C114' && info.op === '−' ? 'C103' : READING_PROBE[anchor];
@@ -1873,7 +1897,9 @@
   }
   function applyPlacement(learner, passedAnchors, now) {
     passedAnchors.forEach((id) => {
-      [id, ...ancestors(id)].forEach((s) => {
+      // a strand check (money, time, measuring, shapes) vouches only for the skills of its own strand
+      const under = [...ancestors(id)].filter((a) => !isStrandAnchor(id) || SKILLS[a].region === SKILLS[id].region);
+      [id, ...under].forEach((s) => {
         const st = learner.skills[s];
         st.status = 'placed';
         st.learned = true;
@@ -1899,7 +1925,7 @@
     return L;
   }
 
-  const api = { makeRng, digits, MISCONCEPTIONS, SKILLS, SKILL_ORDER, generate, check, bktUpdate, BKT, masteryMet, recordAttempt, recordCheckItem, dueCheck, nextActivity, newLearner, refreshUnlocks, PLACEMENT_ANCHORS, PLACEMENT_MAX_ITEMS, placementPlan, newPlacement, placementRecord, applyPlacement, STORY_ANCHORS, READING_PROBE, isSlip, placementNext, placementProbeRecord, placementRestDue, placementRested, placementStage, discoverySummary, UNDERSTANDING, understanding, recordWhy, migrateLearner, GAMES, GAME_ROUNDS, gameLevel, gameRound, makeTransfer, makeStepFill, canOffer, evidence, evidenceMissing, EXPLAIN_KINDS, explainPick, explainShown, explainOutcome, explainBest, stepResult, ancestors, numberName, DAY, CHECK_DAYS, GRADE_LEVELS, SCHOOL_GRADES, gradeOf, defaultFocus, gradeProgress, makeMistake, PIP_DID, lineItem, linePAE };
+  const api = { makeRng, digits, MISCONCEPTIONS, SKILLS, SKILL_ORDER, generate, check, bktUpdate, BKT, masteryMet, recordAttempt, recordCheckItem, dueCheck, nextActivity, newLearner, refreshUnlocks, PLACEMENT_ANCHORS, PLACEMENT_MAX_ITEMS, STRAND_ANCHORS, strandAnchors, placementPlan, newPlacement, placementRecord, applyPlacement, STORY_ANCHORS, READING_PROBE, isSlip, placementNext, placementProbeRecord, placementRestDue, placementRested, placementStage, discoverySummary, UNDERSTANDING, understanding, recordWhy, migrateLearner, GAMES, GAME_ROUNDS, gameLevel, gameRound, makeTransfer, makeStepFill, canOffer, evidence, evidenceMissing, EXPLAIN_KINDS, explainPick, explainShown, explainOutcome, explainBest, stepResult, ancestors, numberName, DAY, CHECK_DAYS, GRADE_LEVELS, SCHOOL_GRADES, gradeOf, defaultFocus, gradeProgress, makeMistake, PIP_DID, lineItem, linePAE };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.TBEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);
