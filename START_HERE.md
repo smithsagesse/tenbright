@@ -3,8 +3,8 @@
 This folder holds everything Claude Code needs to pick up where the claude.ai chat left off:
 
 - **`CLAUDE.md`** is the project's memory. Claude Code reads it automatically every session. It covers what Tenbright is,
-  the current state (v22), the rules that must not break (COPPA, no outside data, no AI-generated math) and the open items.
-- **`app/`** is the latest working app (v22, the superhero Pip version), downloaded from your live link.
+  the current state (Tenbright 2.0), the rules that must not break (COPPA, no outside data, no AI-generated math) and the open items.
+- **`app/`** is the latest working app (Tenbright 2.0, the same build as your live link), built from `source/tenbright-mvp/`.
   Open `app/index.html` in a browser to see it.
 - **`docs/`** holds all 8 planning and legal documents (as PDF and as text), plus:
   - `DECISIONS_AND_HISTORY.md`: what was decided in the 92-turn conversation, in order;

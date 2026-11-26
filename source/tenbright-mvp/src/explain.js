@@ -689,7 +689,6 @@
   });
 
   // ---------- Grade 5 ----------
-  const lastEqAny = (s) => /= ([\d.]+)\.?$/.exec(s || '');
   Object.assign(B, {
     F501(it) {
       if (it.steps.length !== 2) return null;

@@ -1,6 +1,6 @@
 # Tenbright MVP
 
-The GMIA Phase 4 MVP: all 52 grade 2–3 skills plus the T3 Mental Math Strategy. It runs fully in the browser and keeps all data on the device.
+GMIA's math app for Grades 1–5 (Tenbright 2.0): 126 skills, from counting to 120 through Grade 5 fractions and decimals, plus money, time, measurement, geometry and Money & Wealth Adventures. It runs fully in the browser and keeps all data on the device.
 
 ## What works
 

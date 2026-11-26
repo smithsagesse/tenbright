@@ -117,7 +117,11 @@ with sync_playwright() as p:
                     pg.locator('[data-act="xpDone"]').click()
             if aid == 'jar': assert pg.locator('.coins-row').count() == 1, 'the jar shows its coins'
             if aid == 'updown': assert pg.locator('svg.mpic[aria-label^="A price line."]').count() == 1, 'the price line'
-            if aid == 'cents': assert pg.locator('[data-act="gdigit"][data-d="."]').count() == 1, 'a decimal key for money with cents'
+            if aid == 'cents':
+                assert pg.locator('[data-act="gdigit"][data-d="."]').count() == 1, 'a decimal key for money with cents'
+                for d in ['1', '.', '.', '5']: pg.locator(f'[data-act="gdigit"][data-d="{d}"]').click()
+                assert pg.evaluate("() => window.__tbSession().entry") == '1.5', 'a second decimal point is ignored'
+                for d in range(3): pg.locator('[data-act="gdel"]').click()
             n = pg.evaluate("() => window.__tbSession().rounds.length")
             for i in range(n):
                 rd = step(pg)

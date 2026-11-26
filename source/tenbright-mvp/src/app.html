@@ -1025,7 +1025,13 @@ tr:last-child td { border-bottom: none; }
     S.children.forEach((c) => {
       c.sessions = (c.sessions || []).filter((x) => x.end > cutoff);
       Object.values(c.skills).forEach((st) => { st.attempts = st.attempts.filter((a) => !a.at || a.at > cutoff); });
+      // the same for answers given in adventures, trial methods, games and the Lantern Line
+      const keep = (list) => (list || []).filter((x) => !x.at || x.at > cutoff);
+      [c.adventures, c.trials].forEach((o) => { if (o) Object.keys(o).forEach((k) => { o[k] = keep(o[k]); if (!o[k].length) delete o[k]; }); });
+      if (c.games) Object.values(c.games).forEach((g) => { g.plays = keep(g.plays); });
+      if (c.line) c.line = keep(c.line);
     });
+    if (S.children.length) save(); // written back at once, so the old records are gone from storage too
   })();
   // the grown-ups PIN is stored as a salted hash, never as the digits
   function hashPin(pin, salt) {
@@ -1034,7 +1040,7 @@ tr:last-child td { border-bottom: none; }
     for (let r = 0; r < 2000; r++) for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i) + r; h = Math.imul(h, 16777619) >>> 0; }
     return h.toString(16);
   }
-  if (S.parent && S.parent.pin) { S.parent.salt = Math.random().toString(36).slice(2, 10); S.parent.pinHash = hashPin(S.parent.pin, S.parent.salt); delete S.parent.pin; }
+  if (S.parent && S.parent.pin) { S.parent.salt = Math.random().toString(36).slice(2, 10); S.parent.pinHash = hashPin(S.parent.pin, S.parent.salt); delete S.parent.pin; save(); }
   const pinMatches = (pin) => S.parent && S.parent.pinHash === hashPin(pin, S.parent.salt);
   function load() { try { const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; } }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* storage blocked: the app keeps working for this visit */ } }
@@ -1360,7 +1366,6 @@ tr:last-child td { border-bottom: none; }
     }
     return `<svg class="pizza-svg" viewBox="-160 -160 320 320"><circle r="152" fill="#E8B878" stroke="#B07A3E" stroke-width="6" aria-hidden="true"></circle>${g}</svg>`;
   }
-  const GAME_HOOKS = {};
   // Tenbright 2.0 Phase 4: the separate kinds of evidence behind mastery, and the explanation that helps most
   const EV_LABEL = { independent: 'On their own', transfer: 'In a story', stepfill: 'Missing step', reason: 'Explained why' };
   const HELP_LABEL = { steps: 'Steps help most.', picture: 'Pictures help most.', idea: 'The big idea helps most.' };
@@ -1401,7 +1406,6 @@ tr:last-child td { border-bottom: none; }
     }
   } catch (e) { /* audio unavailable */ }
   // Turns symbols into words a narrator would say, e.g. "38 + 27 = ?" -> "38 plus 27 equals what?"
-  const speakable = (t) => TBSpeech.speakable(t);
   // ---------- Pip's recorded voice ----------
   // Clips are pre-recorded (Kokoro, voice "Heart", Apache-2.0 model) into a few audio files that ship with the app.
   // Nothing is fetched from anywhere else; if a sentence has no clip, the device voice reads it instead.
@@ -3800,7 +3804,7 @@ tr:last-child td { border-bottom: none; }
       case 'trialTest': startTrialTest(b.dataset.id); break;
       case 'plank': if (session.fb && (session.fb.ok || session.fb.final)) break; session.picked = b.dataset.v; session.fb = null; render(); { const nb = app.querySelector(`[data-act="plank"][data-v="${b.dataset.v}"]`); if (nb) nb.focus(); } break;
       case 'slice': { if (session.fb && (session.fb.ok || session.fb.final)) break; const k = +b.dataset.k, set = new Set(session.slices); if (set.has(k)) set.delete(k); else set.add(k); session.slices = [...set]; session.fb = null; sfx('hint'); render(); const nb = app.querySelector(`[data-act="slice"][data-k="${k}"]`); if (nb) nb.focus(); break; }
-      case 'gdigit': if (session.fb && (session.fb.ok || session.fb.final)) break; if (session.entry.length < 7) session.entry += b.dataset.d; session.fb = null; render(); break;
+      case 'gdigit': if (session.fb && (session.fb.ok || session.fb.final)) break; if (session.entry.length < 7 && !(b.dataset.d === '.' && session.entry.includes('.'))) session.entry += b.dataset.d; session.fb = null; render(); break;
       case 'gdel': session.entry = session.entry.slice(0, -1); render(); break;
       case 'gclear': session.entry = ''; render(); break;
       case 'gameCheck': { const g = session.game, rd = session.rounds[session.i]; gameCheck(g === 'bridge' || (g === 'adventure' && rd.choices) ? session.picked : g === 'pizza' ? session.slices.length : session.entry); break; }

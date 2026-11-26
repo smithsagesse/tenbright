@@ -22,6 +22,8 @@ const release = full.replace(/\/\*SELFTEST-START\*\/[\s\S]*?\/\*SELFTEST-END\*\/
 if (/https?:\/\/(?!www\.w3\.org)/.test(release.replace(/<!--[\s\S]*?-->/g, ''))) {
   const m = release.match(/https?:\/\/(?!www\.w3\.org)[^\s"'<)]+/g); throw new Error('external URL in release build: ' + m.slice(0, 5).join(', '));
 }
+// test hooks must never ship to families (compliance finding F11)
+if (/__tb[A-Z]|SELFTEST/.test(release)) throw new Error('test hook in release build: ' + release.match(/__tb[A-Z]\w*|SELFTEST\w*/)[0]);
 fs.mkdirSync(path.join(__dirname, 'dist'), { recursive: true });
 fs.writeFileSync(path.join(__dirname, 'dist/index.html'), release);
 fs.writeFileSync(path.join(__dirname, 'dist/test.html'), full);
@@ -36,5 +38,8 @@ fs.readdirSync(path.join(__dirname, 'src/art')).filter((f) => /\.webp$/.test(f))
 if (audioMap !== 'null') {
   fs.mkdirSync(path.join(__dirname, 'dist/audio'), { recursive: true });
   JSON.parse(audioMap).sprites.forEach((rel) => fs.copyFileSync(path.join(audioDir, path.basename(rel)), path.join(__dirname, 'dist', rel)));
+  // remove voice files left over from an earlier build
+  const keep = new Set(JSON.parse(audioMap).sprites.map((rel) => path.basename(rel)));
+  fs.readdirSync(path.join(__dirname, 'dist/audio')).filter((f) => !keep.has(f)).forEach((f) => fs.unlinkSync(path.join(__dirname, 'dist/audio', f)));
 }
 console.log('Built dist/index.html (release)', release.length, 'bytes; dist/test.html (with self-test)');

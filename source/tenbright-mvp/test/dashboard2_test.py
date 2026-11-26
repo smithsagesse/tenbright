@@ -1,6 +1,7 @@
 """Parent dashboard v2 (Tenbright 2.0, Phase 8): 8-week trends (minutes, answers on their own, lanterns lit) from what is
 already on the device, the last 2 weeks against the 2 before, what the child is working on with why it matters, what it
-builds on and what it opens next, the empty state for a new child, light and dark accessibility, Arabic.
+builds on and what it opens next, the empty state for a new child, light and dark accessibility, Arabic, and the
+13-month deletion of every kind of answer record (hard rule 9).
 Run after build: python3 test/dashboard2_test.py"""
 import pathlib, re
 from playwright.sync_api import sync_playwright
@@ -77,6 +78,24 @@ with sync_playwright() as p:
     for en in ['Over the last 8 weeks', 'Minutes of practice', 'On their own', 'Builds on', 'Opens next', 'is working on']:
         assert en not in main, en
     axe(pg, 'dashboard v2 in Arabic')
+    ctx.close()
+    # 6. retention (hard rule 9): every kind of answer record older than 13 months is deleted when the app opens
+    ctx = b.new_context(viewport={'width': 1100, 'height': 900})
+    pg = ctx.new_page(); pg.on('pageerror', lambda e: errors.append(str(e)))
+    setup(pg)
+    pg.evaluate("""() => { const S = JSON.parse(localStorage.getItem('tenbright-mvp-v1')), c = S.children[0], D = 86400000, t = Date.now(), old = t - 400 * D, recent = t - 30 * D;
+      c.skills.C101.attempts.push({ correct: true, format: 'number', hint: 0, mis: null, at: old, kind: 'plain' }, { correct: true, format: 'number', hint: 0, mis: null, at: recent, kind: 'plain' });
+      c.sessions.push({ start: old, end: old + 60000, mode: 'practice', items: 3 }, { start: recent, end: recent + 60000, mode: 'practice', items: 3 });
+      c.adventures = { piggy: [{ at: old, first: 2, steps: ['FN01'], idea: true }], kite: [{ at: old, first: 1, steps: ['FN01'], idea: false }, { at: recent, first: 3, steps: ['FN01'], idea: true }] };
+      c.trials = { nikhilam: [{ at: old, right: 3, n: 4 }] };
+      c.games = { bridge: { plays: [{ at: old, level: 1, first: 5, rounds: 6 }, { at: recent, level: 1, first: 6, rounds: 6 }], done: { 1: true }, best: {} } };
+      c.line = [{ at: old, pae: 0.1, range: 10 }, { at: recent, pae: 0.05, range: 10 }];
+      localStorage.setItem('tenbright-mvp-v1', JSON.stringify(S)); }""")
+    pg.reload()
+    kept = pg.evaluate("""() => { const c = JSON.parse(localStorage.getItem('tenbright-mvp-v1')).children[0], cut = Date.now() - 395 * 86400000;
+      const all = [].concat(c.skills.C101.attempts, c.sessions.map((x) => ({ at: x.end })), ...Object.values(c.adventures || {}), ...Object.values(c.trials || {}), ...Object.values(c.games || {}).map((g) => g.plays), c.line || []);
+      return { old: all.filter((x) => x.at && x.at < cut).length, adv: Object.keys(c.adventures || {}).join(), trials: Object.keys(c.trials || {}).length, plays: c.games.bridge.plays.length, line: c.line.length, done: !!c.games.bridge.done[1] }; }""")
+    assert kept == {'old': 0, 'adv': 'kite', 'trials': 0, 'plays': 1, 'line': 1, 'done': True}, kept
     ctx.close()
     b.close()
 print('outside requests:', outside or 'none')

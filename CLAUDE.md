@@ -18,7 +18,7 @@ Full history: `docs/DECISIONS_AND_HISTORY.md`. Planning documents: `docs/`.
   Lantern Village (review hub), Bead Meadows (place value), Ferry River (add/subtract),
   Orchard of Rows (multiplication) and Story Bridge (word problems).
 
-## Current state (v22, Nov 10, 2026)
+## Current state (Tenbright 2.0, Nov 26, 2026; started from v22 of Nov 10)
 
 The working MVP is a single-page HTML/JS app plus assets. The live private link (updated Nov 26, 2026 to the Tenbright 2.0 build, artifact version 23, at the owner's request) is
 https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
@@ -92,7 +92,7 @@ START_HERE.md             ← owner's step-by-step setup guide
 app/                      ← the latest BUILT app, refreshed from source/tenbright-mvp/dist/ after every source change
   index.html              ← the whole app (about 1.7 MB: inline JS, CSS, embedded fonts and translations)
   sw.js, manifest.webmanifest, icon-*.png, art/, audio/
-source/tenbright-mvp/     ← the full v22 source (build.js, src/, test/, narration/); dist/ is build output, not committed
+source/tenbright-mvp/     ← the full source (v22 plus the Tenbright 2.0 work) (build.js, src/, test/, narration/); dist/ is build output, not committed
 docs/                     ← planning and legal documents (Phases 1–3, compliance, accounts plan, art brief, release plan)
 docs/DECISIONS_AND_HISTORY.md, docs/LINKS.md
 ```

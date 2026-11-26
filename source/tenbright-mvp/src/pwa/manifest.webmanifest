@@ -1,7 +1,7 @@
 {
   "name": "Tenbright: math with Pip",
   "short_name": "Tenbright",
-  "description": "Math for ages 6 to 11 with Pip the glowmoth. Works offline; learning records stay on this device.",
+  "description": "Math for ages 6 to 11 with Pip. Works offline; learning records stay on this device.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

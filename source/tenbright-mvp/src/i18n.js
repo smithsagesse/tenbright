@@ -345,7 +345,6 @@
         if (w === 'et') continue;
         if (w === 'cent' || w === 'cents') { cur = (cur || 1) * 100; seen = true; continue; }
         if (w === 'mille') { total += (cur || 1) * 1000; cur = 0; seen = true; continue; }
-        if (w === 'quatre' && false) continue;
         if (w in FR_W) {
           const v = FR_W[w];
           if (inFrac) { frac += String(v); seen = true; continue; }
