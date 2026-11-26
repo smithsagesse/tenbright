@@ -44,6 +44,7 @@ The GMIA Phase 4 MVP: all 52 grade 2–3 skills plus the T3 Mental Math Strategy
 
 - `src/engine.js` — the math engine (items, answers, worked steps, misconception predictions, BKT, mastery, scheduling, placement).
 - `src/content.js` — lesson text, hints and home activities.
+- `src/explain.js` — plain-words worked examples: what the numbers mean, each step in words with the engine's number sentence, and a check (Grade 1 and column adding and subtracting so far).
 - `src/app.html` — the app shell and UI.
 - `src/i18n.js` — translation engine: sentences become patterns with number, name and object slots, filled back in each language's style; also spoken-math wording and spoken-number parsing per language.
 - `src/i18n/es.js`, `fr.js`, `ht.js`, `zh.js`, `ar.js` — about 2,220 translated patterns per language.
@@ -54,6 +55,7 @@ The GMIA Phase 4 MVP: all 52 grade 2–3 skills plus the T3 Mental Math Strategy
 - `test/e2e.py` — headless-browser walkthrough of the whole flow, including the lesson walkthrough and an automatic check that every number sentence, block count, ten-frame and group shown in the lesson pictures is correct.
 - `test/separation_test.py` — secret pictures (set, mismatch, unlock, misses, grown-up help, change, turn off), answers landing only in the active child's record, hashed storage, unique ids, axe in light and dark, translations in all five languages.
 - `test/living_test.py` — Pip's moods, capoeira, flyover, galaxy dive and piano and one-shot reactions to each learning moment, sound channels and parent controls, confetti and its cleanup, badges and Pip's look, math pictures that animate changes, Still and reduced motion (no running animations), axe in light and dark, translations of every new word.
+- `test/explain.test.js` — the plain-words lessons (`src/explain.js`): for thousands of generated questions per skill, each plain step gives the same result as the engine step, every number sentence is true, sentences stay short, and no "borrow", "carry" or filler words appear.
 - `test/discovery_test.py` — the Discovery Adventure: gentle and grade-aware starts, two kinds of question, the no-story follow-up, rest stops with break and resume, no grade shown to the child, the parent report and understanding states, the notice update before new answers are kept, axe in light and dark.
 - `test/i18n_test.py` — walks the whole app in Spanish, French, Haitian Creole and Chinese at phone width, fails on any English left on screen, runs axe-core per language, and checks spoken output and voice parsing in each language.
 - `narration/` — Pip's chosen voice (`voice.json`) and `build-manifest.js`, which lists every clip Pip needs.
@@ -62,6 +64,7 @@ The GMIA Phase 4 MVP: all 52 grade 2–3 skills plus the T3 Mental Math Strategy
 
 ```
 node test/engine.test.js
+node test/explain.test.js
 node build.js
 python3 test/e2e.py
 python3 test/features_test.py

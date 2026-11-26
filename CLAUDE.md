@@ -101,7 +101,7 @@ On Nov 21, 2026 `node build.js` reproduced the live v22 page byte for byte (apar
 with identical sw.js, manifest, icons, art and audio. It contains:
 - `src/app.html`: the main source. Also `src/i18n/*.js` (es, fr, ht, zh, ar), `src/art/`, `narration/audio/map.json`.
 - `build.js`: run `node build.js` to produce `dist/index.html` (and `dist/test.html` with test hooks).
-- Tests: `node test/engine.test.js` (math engine, millions of generated checks); Playwright suites
+- Tests: `node test/engine.test.js` (math engine, millions of generated checks); `node test/explain.test.js` (plain-words lessons); Playwright suites
   `test/e2e.py`, `test/features_test.py`, `test/audio_test.py`, `test/living_test.py`,
   `test/separation_test.py`, `test/discovery_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
 - `docs/animation-system.md` and `README.md`.
@@ -158,9 +158,19 @@ Current focus (Nov 25, 2026): developing the app. Do not raise launch items or p
 - **Coins only as math objects** (a Money Market world), never a reward currency.
 - **Parent intake:** only two optional questions (enjoys math? how confident?), kept under privacy notice v1.3.
   Any new kind of stored data needs a notice version bump and re-agreement (the parent page shows the update card).
-- **Build order:** 2 Discovery Adventure (done Nov 26) · 3 foundation lessons (micro-step rewrite, Grades 1–2 first,
+- **Build order:** 2 Discovery Adventure (done Nov 26) · 3 foundation lessons (Grade 1 done Nov 26; Grade 2 next) (micro-step rewrite, Grades 1–2 first,
   keep math words with plain explanations, translations in the same pass) · 4 adaptive Pip + independence and mastery
   evidence · 5 games · 6 strategy library (verify the cited research first) · 7 geometry, measurement, time, money ·
   8 parent dashboard v2 · 9 pilot and effectiveness study.
-- Fix in Phase 3: "Carrying and borrowing", "Your brain grows", "a strong predictor of later math success", unused glowmoth labels.
+- The four wording issues were fixed on Nov 26, 2026 ("Regrouping in adding and taking away", "You looked closely at every clue.
+  That is how you learn.", the Lantern Line note without the outcome claim, glowmoth labels removed).
+
+**How lessons explain (Phase 3):** `src/explain.js` turns an engine question into plain words: a "what the numbers mean"
+frame, one plain step per engine step (same count and order, ending with the same number sentence, because lesson
+pictures, Work it with Pip and the checks key off the step index and the last "= result"), and a check frame.
+The engine's short steps stay as they are for the pictures and the "on your paper" view. `test/explain.test.js`
+enforces: same result per step as the engine, every number sentence true, sentences of 16 words or fewer, no
+"borrow"/"carry"/fillers. Within a step that asks for a result, never say the result in words before its number
+sentence (Work it with Pip hides only the number). Add a builder per skill in `explain.js`; a skill without one keeps
+the engine's steps. Fix Pip's mistake questions always keep the engine's steps.
 Do not claim legal sign-off, hiring or payments. Those are his.
