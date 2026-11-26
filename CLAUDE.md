@@ -103,7 +103,7 @@ with identical sw.js, manifest, icons, art and audio. It contains:
 - `build.js`: run `node build.js` to produce `dist/index.html` (and `dist/test.html` with test hooks).
 - Tests: `node test/engine.test.js` (math engine, millions of generated checks); `node test/explain.test.js` (plain-words lessons); `node test/strategies.test.js` (strategy library); Playwright suites
   `test/e2e.py`, `test/features_test.py`, `test/audio_test.py`, `test/living_test.py`,
-  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py`, `test/money_time_test.py`, `test/measure_shape_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
+  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py`, `test/money_time_test.py`, `test/measure_shape_test.py`, `test/dashboard2_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
 - `docs/animation-system.md` and `README.md`.
 
 Make changes in `source/tenbright-mvp/src/`, rebuild and run every suite.
@@ -161,7 +161,7 @@ Current focus (Nov 25, 2026): developing the app. Do not raise launch items or p
 - **Build order:** 2 Discovery Adventure (done Nov 26) · 3 foundation lessons (done Nov 26: all 103 skills, Grades 1–5) (micro-step rewrite, Grades 1–2 first,
   keep math words with plain explanations, translations in the same pass) · 4 adaptive Pip + independence and mastery
   evidence (done Nov 26) · 5 games (done Nov 26) · 6 strategy library (verify the cited research first; done Nov 26) · 7 geometry, measurement, time, money (done Nov 26) ·
-  8 parent dashboard v2 · 9 pilot and effectiveness study.
+  8 parent dashboard v2 (done Nov 26) · 9 pilot and effectiveness study (needs the owner: families, consent, study design).
 - The four wording issues were fixed on Nov 26, 2026 ("Regrouping in adding and taking away", "You looked closely at every clue.
   That is how you learn.", the Lantern Line note without the outcome claim, glowmoth labels removed).
 
@@ -214,4 +214,10 @@ width) and Shape Garden (GE01 name shapes by their sides; GE02 angles that make 
 up on a grid). Clues: MM1 read the end of the ruler, MM2 only two sides, MM3 area and perimeter mixed, MG1 right angle as
 100, MG2 up before across. The grid's description never says where the star is. Common Core codes with a one-letter
 domain (2.G.A.1) are a `{C}` slot in translation.
+**Parent dashboard v2 (Phase 8):** "Over the last 8 weeks" shows minutes of practice, the share of answers given on their
+own (hint level 0 or 1, plain questions) and lanterns lit, one column per week, plus the last 2 weeks against the 2
+before (only when both have 5 or more answers). Everything is computed from data already on the device (sessions,
+answers, `masteredAt`); no new kind of data is stored, so the privacy notice stays v1.3. "What {child} is working on,
+and why" lists up to 3 skills in progress with a plain line per region (`REGION_WHY`, no outcome claims), what each
+builds on (its prerequisites) and what it opens next (skills that list it as a prerequisite).
 Do not claim legal sign-off, hiring or payments. Those are his.

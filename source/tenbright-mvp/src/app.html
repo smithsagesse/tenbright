@@ -312,6 +312,16 @@ td.num, th.num { text-align: right; }
 .gchip { min-height: var(--t-child); padding: 0 20px; border-radius: 26px; border: 2px solid var(--dusk-line); background: var(--dusk-2); color: var(--on-dusk); font-weight: 800; font-size: 18px; display: inline-flex; align-items: center; gap: 8px; }
 .gchip[aria-pressed="true"] { background: var(--lantern); border-color: var(--lantern); color: #1E2A3B; }
 .gcount { font-size: 14px; opacity: .85; }
+.trend-cmp { font-weight: 700; }
+.trend { margin: 14px 0 4px; }
+.trend-h { font-weight: 800; margin: 0 0 6px; }
+.trend-bars { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; align-items: end; list-style: none; padding: 0; margin: 0; }
+.trend-col { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; }
+.trend-bar { width: 70%; max-width: 30px; background: var(--brand, #2E6BD8); border-radius: 4px 4px 0 0; }
+.trend-v { font-size: 14px; font-weight: 800; }
+.trend-d { font-size: 12px; color: var(--muted, #4A5568); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.why-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+.why-list li p { margin: 4px 0 0; }
 .gbar { display: grid; grid-template-columns: 70px minmax(0, 1fr) 70px; gap: 10px; align-items: center; }
 .glabel { font-weight: 800; font-size: 15px; }
 .gtrack { height: 12px; border-radius: 6px; background: var(--surface); border: 1px solid var(--hairline); overflow: hidden; display: block; }
@@ -1039,6 +1049,63 @@ tr:last-child td { border-bottom: none; }
     { id: 'workshop', name: 'Measuring Workshop', what: 'Length, perimeter and area' },
     { id: 'shapes', name: 'Shape Garden', what: 'Shapes, angles and grids' }
   ];
+  // ---------- Tenbright 2.0 Phase 8: parent dashboard v2 ----------
+  // what each part of the map is for, in plain words (no outcome claims)
+  const REGION_WHY = {
+    meadows: 'Place value is how our number system works. Written adding, subtracting and multiplying all lean on it.',
+    river: 'Adding and subtracting come up in almost every later topic, from money to fractions.',
+    orchard: 'Multiplying and dividing are the base for fractions, area and most of Grades 4 and 5.',
+    bridge: 'Word problems connect the math to real situations: choosing what to do, not only how to do it.',
+    village: 'Patterns, expressions and mixed review keep skills connected and fresh.',
+    falls: 'Fractions describe parts of a whole and lead to decimals and measurement.',
+    docks: 'Decimals extend place value past the ones place and are used for money and measuring.',
+    market: 'Counting money uses place value and adding in a setting children meet every day.',
+    clock: 'Reading clocks and finding time passed use counting by 5s and the 60 minutes in an hour.',
+    workshop: 'Measuring connects numbers to real lengths, and area is a picture of multiplying.',
+    shapes: 'Shapes, angles and grids are the start of geometry and of reading graphs and maps.'
+  };
+  const WEEKS = 8;
+  // per-week figures from what is already kept on this device: sessions, answers and when each lantern was lit
+  function weekRows(ch, t) {
+    const all = [];
+    E.SKILL_ORDER.forEach((id) => (ch.skills[id].attempts || []).forEach((a) => { if ((a.kind || 'plain') === 'plain' && typeof a.at === 'number') all.push(a); }));
+    return Array.from({ length: WEEKS }, (_, i) => {
+      const from = t - (WEEKS - i) * 7 * E.DAY, to = t - (WEEKS - 1 - i) * 7 * E.DAY;
+      const mins = Math.round(ch.sessions.filter((x) => x.start >= from && x.start < to).reduce((a, x) => a + (x.end - x.start), 0) / 60000);
+      const ans = all.filter((a) => a.at >= from && a.at < to);
+      const own = ans.length ? Math.round(100 * ans.filter((a) => a.hint <= 1).length / ans.length) : null;
+      const lit = E.SKILL_ORDER.filter((id) => ch.skills[id].masteredAt && ch.skills[id].masteredAt < to).length;
+      return { from, mins, n: ans.length, ownN: ans.filter((a) => a.hint <= 1).length, own, lit };
+    });
+  }
+  function trendsHtml(ch, t) {
+    const rows = weekRows(ch, t);
+    if (!rows.some((r) => r.n || r.mins)) return `<section class="card"><span class="eyebrow">Over the last 8 weeks</span><p>Trends show here after a few practice sessions.</p></section>`;
+    const day = (ms) => `<span data-notr>${new Date(ms).toLocaleDateString(I.HTML_LANG[lang()], { month: 'numeric', day: 'numeric' })}</span>`; // short, so 8 weeks fit on a phone
+    const chart = (title, vals, fmt) => {
+      const max = Math.max(1, ...vals.filter((v) => v != null));
+      return `<div class="trend"><p class="trend-h">${title}</p><ol class="trend-bars">${vals.map((v, i) => `<li class="trend-col"><span class="trend-bar" style="height:${v == null ? 0 : Math.max(3, Math.round(56 * v / max))}px" aria-hidden="true"></span><span class="trend-v num">${v == null ? '–' : fmt(v)}</span><span class="trend-d">${day(rows[i].from)}</span></li>`).join('')}</ol></div>`;
+    };
+    // on their own: the last 2 weeks against the 2 weeks before, only when both have enough answers to mean something
+    const pool = (rs) => rs.reduce((a, r) => ({ n: a.n + r.n, own: a.own + r.ownN }), { n: 0, own: 0 });
+    const late = pool(rows.slice(-2)), early = pool(rows.slice(-4, -2));
+    const cmp = late.n >= 5 && early.n >= 5 ? `<p class="trend-cmp">On their own: ${Math.round(100 * late.own / late.n)}% of answers in the last 2 weeks, ${Math.round(100 * early.own / early.n)}% in the 2 weeks before.</p>` : '';
+    return `<section class="card"><span class="eyebrow">Over the last 8 weeks</span>${cmp}
+      ${chart('Minutes of practice each week', rows.map((r) => r.mins), (v) => v)}
+      ${chart('Answers on their own each week', rows.map((r) => r.own), (v) => v + '%')}
+      ${chart('Lanterns lit, in all', rows.map((r) => r.lit), (v) => v)}
+      <p class="hint-text">Each column is one week, starting on the date shown. On their own means right or wrong without a hint beyond the first nudge. A dash means no answers that week.</p></section>`;
+  }
+  function workingOnHtml(ch, working) {
+    const ids = working.slice(0, 3);
+    if (!ids.length) return '';
+    const names = (arr) => arr.map((id) => `<span>${esc(E.SKILLS[id].name)}</span>`).join(', ');
+    const opens = (id) => E.SKILL_ORDER.filter((x) => (E.SKILLS[x].prereqs || []).includes(id));
+    return `<section class="card"><span class="eyebrow">What ${esc(ch.nickname)} is working on, and why</span><ul class="why-list">${ids.map((id) => {
+      const sk = E.SKILLS[id], pre = sk.prereqs || [], nx = opens(id).slice(0, 4);
+      return `<li><b>${esc(sk.name)}</b>${REGION_WHY[sk.region] ? `<p>${esc(REGION_WHY[sk.region])}</p>` : ''}${pre.length ? `<p class="hint-text"><span>Builds on:</span> ${names(pre)}</p>` : ''}${nx.length ? `<p class="hint-text"><span>Opens next:</span> ${names(nx)}</p>` : ''}</li>`;
+    }).join('')}</ul></section>`;
+  }
   // understanding states for parents (Tenbright 2.0): plain words, never shown to the child
   // ---------- Tenbright 2.0 Phase 6: strategy library ----------
   const STRAT_PARTS = [['concept', 'Mathematical idea'], ['skillsTxt', 'Skills'], ['readiness', 'Ready when'], ['childTxt', 'How Pip explains it'], ['visual', 'Picture'], ['examples', 'Worked examples'], ['procedureTxt', 'Step by step'], ['why', 'Why it works'], ['when', 'When to use it'], ['whenNot', 'When not to use it'], ['mistakesTxt', 'Common mistakes'], ['practice', 'Practice questions'], ['test', 'Independent mastery test'], ['originTxt', 'Where it comes from'], ['evidence', 'What the research says']];
@@ -3087,6 +3154,7 @@ tr:last-child td { border-bottom: none; }
           <span class="eyebrow">This week</span>
           <div class="stat-row"><div class="stat"><b class="num">${weekSessions.length}</b><span>sessions</span></div><div class="stat"><b class="num">${minutes} min</b><span>learning</span></div><div class="stat"><b class="num">${masteredWeek}</b><span>skills mastered</span></div><div class="stat"><b class="num">${strong.length} of ${E.SKILL_ORDER.length}</b><span>lanterns lit</span></div></div>
         </section>
+        ${trendsHtml(ch, t)}
         ${S.parent && S.parent.notice && !S.parent.sampleOnly && !consentCurrent() ? `<section class="card"><span class="eyebrow">Privacy notice updated</span><p>The privacy notice changed on November 26, 2026. Tenbright can now keep two optional answers about how your child feels about math. Nothing else changed, and nothing leaves this device.</p><div class="row"><button class="btn" data-act="doc" data-to="privacy">Read the privacy notice</button><button class="btn primary" data-act="reconsent">I agree</button></div></section>` : ''}
         ${(() => {
           const d = ch.discovery; if (!d) return '';
@@ -3124,6 +3192,7 @@ tr:last-child td { border-bottom: none; }
           <section class="card"><span class="eyebrow understands">Understands</span><p>${strong.length ? esc(listNames(strong.slice(-4))) + '.' : 'Nothing certified yet. The placement walk sets the starting point.'}</p></section>
           <section class="card"><span class="eyebrow" style="color:var(--clue)">Working on</span><p>${working.length ? esc(listNames(working.slice(0, 3))) + '.' : 'Everything open is mastered. New skills unlock on the map.'}</p></section>
         </div>
+        ${workingOnHtml(ch, working)}
         <section class="card"><span class="eyebrow">Why it may be hard</span><p>${why ? `${why.n > 1 ? `${why.n} times recently` : 'Recently'}, an answer matched a common pattern in <b>${esc(E.SKILLS[whySkill].name.toLowerCase())}</b>: ${esc(E.MISCONCEPTIONS[why.mis].parent)} This is a normal step on the way, and Tenbright is practicing it with the model.` : 'No repeated mistake patterns in the last 10 answers per skill.'}</p></section>
         <section class="card home-activity"><span class="eyebrow">Next home activity · about 10 minutes</span><p style="font-size:17px;font-weight:700">${esc(C[focus].home)}</p></section>
         <section class="card"><span class="eyebrow">How we'll know</span><p>A skill counts as mastered after at least 10 answers without big hints, 9 of the last 10 right, in two kinds of question, and a mastery estimate of 95%. It is certified only after it is still right 7 and 30 days later, and checked again at 90 days.</p><p class="hint-text">Next on the map: ${esc(E.SKILLS[na.skill].name)}. ${esc(na.reason)}</p></section>
