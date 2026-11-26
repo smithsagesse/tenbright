@@ -112,6 +112,11 @@ td.num, th.num { text-align: right; }
 .region.bridge { background: #A9561A; }
 .region.falls { background: #1C7C8C; }
 .region.docks { background: #5B5FB8; }
+.region.market { background: #8A5A12; }
+.region.clock { background: #7A3E8C; }
+.coins-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; }
+.clock-svg { width: min(240px, 70vw); height: auto; }
+.clock-pair { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; text-align: center; }
 .region.village { background: var(--dusk-2); border: 2px solid var(--dusk-line); color: var(--on-dusk); }
 .region.locked { background: transparent; border: 2px dashed var(--dusk-line); color: var(--on-dusk-muted); cursor: default; }
 .region h2 { font-size: 26px; font-weight: 800; }
@@ -1024,7 +1029,9 @@ tr:last-child td { border-bottom: none; }
     { id: 'bridge', name: 'Story Bridge', what: 'Word problems' },
     { id: 'village', name: 'Lantern Village', what: "Pip's puzzles and review" },
     { id: 'falls', name: 'Fraction Falls', what: 'Fractions' },
-    { id: 'docks', name: 'Decimal Docks', what: 'Decimals' }
+    { id: 'docks', name: 'Decimal Docks', what: 'Decimals' },
+    { id: 'market', name: 'Money Market', what: 'Coins and money' },
+    { id: 'clock', name: 'Clock Tower', what: 'Telling time' }
   ];
   // understanding states for parents (Tenbright 2.0): plain words, never shown to the child
   // ---------- Tenbright 2.0 Phase 6: strategy library ----------
@@ -1970,7 +1977,8 @@ tr:last-child td { border-bottom: none; }
   function paperProblem(item) {
     if (item.signs) return `${item.a}  ⬚  ${item.b}`;
     const words = item.prompt.replace(/\d+|[+−×÷=?().,\/]/g, ' ').trim().split(/\s+/).filter((w) => w.length > 2).length;
-    if (words > 6) { const ns = (item.prompt.match(/\d+(?:,\d{3})*(?:\.\d+)?/g) || []); return 'Story numbers: ' + ns.join(' · '); }
+    const ns = item.prompt.match(/\d{1,2}:\d{2}|\d+(?:,\d{3})*(?:\.\d+)?/g) || [];
+    if (words > 6 && ns.length) return 'Story numbers: ' + ns.join(' · ');
     return item.prompt.replace(/^(Type the number|Write|Round|What is the value of|Which digit is in|Which number is a factor of|Make the bottoms match):?\s*/i, (m0) => m0);
   }
   function paperHtml(item, k) {
@@ -1979,11 +1987,37 @@ tr:last-child td { border-bottom: none; }
     for (let i = 0; i <= k && i < steps.length; i++) lines.push(`<li class="${i === k ? 'now' : ''}">${escM(steps[i])}</li>`);
     return `<div class="paper-sheet" aria-label="What to write on paper"><span class="paper-tag">On your paper</span><ol>${lines.join('')}</ol></div>`;
   }
-  const NEW_MODELS = new Set(['pairsum', 'compare2', 'fracbar', 'fracline', 'pvbig', 'pvbig2', 'area', 'divgroups', 'timesbar', 'decgrid', 'decgrid2', 'pvdec', 'pvdec2', 'deccol', 'paper', 'fracarea', 'volume']);
+  const NEW_MODELS = new Set(['coins', 'clock', 'clock2', 'pairsum', 'compare2', 'fracbar', 'fracline', 'pvbig', 'pvbig2', 'area', 'divgroups', 'timesbar', 'decgrid', 'decgrid2', 'pvdec', 'pvdec2', 'deccol', 'paper', 'fracarea', 'volume']);
   // the picture in the practice screen (k = -1: nothing solved yet)
+  // ---------- Phase 7: coins and clocks ----------
+  const COIN_LOOK = { 1: { r: 30, fill: '#C8743A', ring: '#8A4A1E', name: ['penny', 'pennies'] }, 5: { r: 34, fill: '#C9CED6', ring: '#7C8490', name: ['nickel', 'nickels'] }, 10: { r: 27, fill: '#D8DDE4', ring: '#7C8490', name: ['dime', 'dimes'] }, 25: { r: 40, fill: '#D0D5DC', ring: '#6C7480', name: ['quarter', 'quarters'] } };
+  function coinsHtml(coins) {
+    const counts = {}; coins.forEach((v) => { counts[v] = (counts[v] || 0) + 1; });
+    // built from short pieces so each language translates them once
+    const parts = Object.keys(counts).sort((a, b) => b - a).map((v) => counts[v] + ' ' + COIN_LOOK[v].name[counts[v] === 1 ? 0 : 1]);
+    const label = lang() === 'en' ? 'Coins: ' + parts.join(', ') : T('Coins:') + ' ' + parts.map((x) => T(x)).join(lang() === 'zh' ? '、' : lang() === 'ar' ? '، ' : ', ');
+    return `<div class="coins-row" role="img" data-notr aria-label="${esc(label)}">${coins.map((v) => { const c = COIN_LOOK[v]; const d = c.r * 2 + 6; return `<svg width="${d}" height="${d}" viewBox="0 0 ${d} ${d}" aria-hidden="true"><circle cx="${d / 2}" cy="${d / 2}" r="${c.r}" fill="${c.fill}" stroke="${c.ring}" stroke-width="4"></circle><text x="${d / 2}" y="${d / 2 + 8}" text-anchor="middle" font-size="${v === 25 ? 24 : 20}" font-weight="800" fill="#1E2A3B">${v}¢</text></svg>`; }).join('')}</div>`;
+  }
+  // the description says where the hands are, never the time, so it gives the same clues the picture gives
+  function clockHtml(h, m) {
+    const R = 100, cx = 110, cy = 110, ang = (deg) => (deg - 90) * Math.PI / 180;
+    let g = `<circle cx="${cx}" cy="${cy}" r="${R}" fill="#FFFDF6" stroke="#1E2A3B" stroke-width="6"></circle>`;
+    for (let k = 0; k < 60; k++) { const a = ang(k * 6), r1 = k % 5 ? R - 8 : R - 14; g += `<line x1="${cx + r1 * Math.cos(a)}" y1="${cy + r1 * Math.sin(a)}" x2="${cx + (R - 3) * Math.cos(a)}" y2="${cy + (R - 3) * Math.sin(a)}" stroke="#1E2A3B" stroke-width="${k % 5 ? 1.5 : 3}"></line>`; }
+    for (let n = 1; n <= 12; n++) { const a = ang(n * 30); g += `<text x="${cx + (R - 30) * Math.cos(a)}" y="${cy + (R - 30) * Math.sin(a) + 8}" text-anchor="middle" font-size="22" font-weight="800" fill="#1E2A3B">${n}</text>`; }
+    const ha = ang(((h % 12) + m / 60) * 30), ma = ang(m * 6);
+    g += `<line x1="${cx}" y1="${cy}" x2="${cx + 52 * Math.cos(ha)}" y2="${cy + 52 * Math.sin(ha)}" stroke="#1E2A3B" stroke-width="9" stroke-linecap="round"></line>`;
+    g += `<line x1="${cx}" y1="${cy}" x2="${cx + 80 * Math.cos(ma)}" y2="${cy + 80 * Math.sin(ma)}" stroke="#2E86FF" stroke-width="5" stroke-linecap="round"></line><circle cx="${cx}" cy="${cy}" r="7" fill="#1E2A3B"></circle>`;
+    const next = h === 12 ? 1 : h + 1, num5 = Math.floor(m / 5), extra = m % 5;
+    const shortTxt = m === 0 ? 'Short hand at ' + h + '.' : 'Short hand between ' + h + ' and ' + next + '.';
+    const longTxt = extra === 0 ? 'Long hand pointing at ' + (num5 || 12) + '.' : 'Long hand ' + extra + (extra === 1 ? ' mark' : ' marks') + ' past ' + (num5 || 12) + '.';
+    return `<svg class="clock-svg" viewBox="0 0 220 220" role="img" aria-label="${esc('A clock. ' + shortTxt + ' ' + longTxt)}">${g}</svg>`;
+  }
   function newModel(item, hint, k) {
     const m = item.model, steps = item.steps || [], last = k >= steps.length - 1;
     switch (m.type) {
+      case 'coins': return coinsHtml(m.coins);
+      case 'clock': return clockHtml(m.h, m.m);
+      case 'clock2': return `<div class="clock-pair"><div><p class="eyebrow">Start</p>${clockHtml(m.h, m.m)}</div><div><p class="eyebrow">End</p>${clockHtml(m.eh, m.em)}</div></div>`;
       case 'pairsum': return pairSumHtml(m);
       case 'compare2': return pvTable([{ n: m.a, hl: k >= 0 }, { n: m.b, hl: k >= 0 }], 2, k >= 0 ? (Math.floor(m.a / 10) === Math.floor(m.b / 10) ? 1 : 0) : -1) + (last ? `<p class="prompt num">${m.a} ${m.a > m.b ? '>' : m.a < m.b ? '<' : '='} ${m.b}</p>` : '');
       case 'fracbar': return fracBarsHtml(m.bars, last, k >= 0);

@@ -215,7 +215,44 @@ ok(!L2.skills.PV01.activeMis, 'three correct clears it');
 // graph integrity: every prerequisite exists and appears earlier in the order or in another strand without cycles
 E.SKILL_ORDER.forEach((id) => E.SKILLS[id].prereqs.forEach((p) => ok(E.SKILLS[p], id + ' has unknown prereq ' + p)));
 E.SKILL_ORDER.forEach((id) => ok(!E.ancestors(id).has(id), 'cycle at ' + id));
-ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 102, '102 core skills');
+ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 110, '110 core skills (102 + 8 money and time)');
+// Phase 7: money and time
+{
+  const R7 = E.makeRng(707), clock = /^(\d{1,2}):(\d{2})$/;
+  ['MY01', 'MY02', 'MY03', 'MY04', 'TM01', 'TM02', 'TM03', 'TM04'].forEach((id) => ok(['market', 'clock'].includes(E.SKILLS[id].region), id + ' region'));
+  for (let i = 0; i < 4000; i++) {
+    for (const id of ['TM01', 'TM02', 'TM03']) {
+      const it = E.generate(id, R7), m = it.model;
+      ok(m.type === 'clock' && m.h >= 1 && m.h <= 12 && m.m >= 0 && m.m <= 59, id + ' clock model');
+      if (id === 'TM01') ok(m.m === 0 || m.m === 30, 'TM01 hour or half hour');
+      if (id === 'TM02') ok(m.m % 5 === 0, 'TM02 to 5 minutes');
+      if (/^What time/.test(it.prompt)) {
+        ok(clock.test(it.answer) && it.answer === m.h + ':' + String(m.m).padStart(2, '0'), id + ' answer matches the clock');
+        ok(it.choices.includes(it.answer) && new Set(it.choices).size === it.choices.length && it.choices.every((c) => clock.test(c)), id + ' choices');
+        Object.values(it.predicted).forEach((w) => ok(w !== it.answer && it.choices.includes(w), id + ' clue answer is a real wrong choice'));
+      } else ok(it.answer === String(m.m), id + ' minutes past the hour');
+    }
+    const c = E.generate('MY02', R7);
+    ok(c.model.coins.reduce((a, x) => a + x, 0) === Number(c.answer) && Number(c.answer) <= 99, 'MY02 coins add up');
+    const ch = E.generate('MY04', R7);
+    const price = Number(ch.prompt.match(/costs (\d+) cents/)[1]);
+    ok(Number(ch.answer) === 100 - price && price % 5 === 0, 'MY04 change from a dollar');
+    const tm = E.generate('TM04', R7), mm = tm.model;
+    ok((mm.eh * 60 + mm.em) - (mm.h * 60 + mm.m) === Number(tm.answer) && mm.eh <= 12, 'TM04 minutes between the times');
+    if (tm.predicted.MT4) ok(tm.predicted.MT4 !== tm.answer, 'TM04 hundreds clue differs');
+    ok(tm.steps[tm.steps.length - 1].endsWith('= ' + tm.answer) && !/ 0 more minutes/.test(tm.steps.join(' ')), 'TM04 steps reach the answer: ' + tm.steps.join(' | '));
+    tm.steps.forEach((st) => { const q = st.match(/(\d+) ([+−×]) (\d+) = (\d+)$/); if (q) { const x = +q[1], y = +q[3], v = q[2] === '+' ? x + y : q[2] === '−' ? x - y : x * y; ok(v === +q[4], 'TM04 true step: ' + st); } });
+  }
+  // a new child's money and time skills open with their prerequisites
+  const L7 = E.newLearner('T');
+  ok(L7.skills.TM01.status === 'locked', 'TM01 waits for counting');
+  L7.skills.C101.status = 'mastered'; E.refreshUnlocks(L7.skills);
+  ok(L7.skills.TM01.status === 'learning', 'TM01 opens after counting to 120');
+  // older saved children gain the new skills without losing anything
+  const old = E.newLearner('O'); delete old.skills.MY01; delete old.skills.TM04;
+  E.migrateLearner(old);
+  ok(old.skills.MY01 && old.skills.TM04, 'migration adds money and time skills');
+}
 
 // placement: strong child passes the early anchors, fails at AS07 and loses its dependants
 const ps = E.newPlacement();
@@ -238,7 +275,7 @@ ok(E.numberName(406) === 'four hundred six' && E.numberName(570) === 'five hundr
 // grade levels: every skill has grade 2 or 3; a grade focus picks on-grade work first, never locks anything
 const per = [1, 2, 3, 4, 5].map((g) => E.SKILL_ORDER.filter((id) => E.gradeOf(id) === g).length);
 ok(E.SKILL_ORDER.every((id) => [1, 2, 3, 4, 5].includes(E.gradeOf(id))), 'every skill has a grade 1-5');
-ok(per.join() === '14,31,24,19,15', 'grade split ' + per.join());
+ok(per.join() === '15,35,26,20,15', 'grade split (with money and time) ' + per.join());
 ok(E.defaultFocus('1') === 1 && E.defaultFocus('2') === 2 && E.defaultFocus('3') === 3 && E.defaultFocus('5') === 5 && E.defaultFocus('other') === 'all', 'default focus');
 const LG = E.newLearner('G', 2017, 'pv', '3');
 ok(LG.grade === '3' && LG.focus === 3, 'grade stored with default focus');
@@ -260,7 +297,7 @@ ok(nAll.skill, 'all still works');
 mid.skills.PV01.activeMis = 'M09';
 ok(E.nextActivity(mid.skills, now, 3).kind === 'remediate', 'remediation beats grade focus');
 const gp = E.gradeProgress(mid.skills);
-ok(gp.length === 5 && gp[1].grade === 2 && gp[1].total === 31 && gp[2].total === 24, 'grade progress');
+ok(gp.length === 5 && gp[1].grade === 2 && gp[1].total === 35 && gp[2].total === 26, 'grade progress (with money and time)');
 const oldL = { skills: {} }; E.migrateLearner(oldL); ok(oldL.grade === null && oldL.focus === 'all', 'migration adds grade fields');
 
 // grade-aware placement

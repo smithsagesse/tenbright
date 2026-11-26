@@ -24,7 +24,7 @@ The working MVP is a single-page HTML/JS app plus assets. The live private link 
 https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
 
 - A **deterministic math engine**: all problems, answers and worked steps come from code, never from an LLM.
-  It covers 103 skills across Grades 1–5, with a misconception library (wrong-answer patterns mapped to "clue" feedback).
+  It covers 111 skills across Grades 1–5 (including money and time since Nov 26), with a misconception library (wrong-answer patterns mapped to "clue" feedback).
 - **Discovery Adventure** (Tenbright 2.0 Phase 2, Nov 26, 2026): the adaptive starting walk, framed for the child as a
   number adventure. It starts near the child's school grade (gently, with an easier check, if the parent said math feels
   hard), checks key skills including one or two story problems, asks each in two kinds of question, and stops at 25 questions.
@@ -103,7 +103,7 @@ with identical sw.js, manifest, icons, art and audio. It contains:
 - `build.js`: run `node build.js` to produce `dist/index.html` (and `dist/test.html` with test hooks).
 - Tests: `node test/engine.test.js` (math engine, millions of generated checks); `node test/explain.test.js` (plain-words lessons); `node test/strategies.test.js` (strategy library); Playwright suites
   `test/e2e.py`, `test/features_test.py`, `test/audio_test.py`, `test/living_test.py`,
-  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
+  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py`, `test/money_time_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
 - `docs/animation-system.md` and `README.md`.
 
 Make changes in `source/tenbright-mvp/src/`, rebuild and run every suite.
@@ -160,7 +160,7 @@ Current focus (Nov 25, 2026): developing the app. Do not raise launch items or p
   Any new kind of stored data needs a notice version bump and re-agreement (the parent page shows the update card).
 - **Build order:** 2 Discovery Adventure (done Nov 26) · 3 foundation lessons (done Nov 26: all 103 skills, Grades 1–5) (micro-step rewrite, Grades 1–2 first,
   keep math words with plain explanations, translations in the same pass) · 4 adaptive Pip + independence and mastery
-  evidence (done Nov 26) · 5 games (done Nov 26) · 6 strategy library (verify the cited research first; done Nov 26) · 7 geometry, measurement, time, money ·
+  evidence (done Nov 26) · 5 games (done Nov 26) · 6 strategy library (verify the cited research first; done Nov 26) · 7 geometry, measurement, time, money (money and time done Nov 26) ·
   8 parent dashboard v2 · 9 pilot and effectiveness study.
 - The four wording issues were fixed on Nov 26, 2026 ("Regrouping in adding and taking away", "You looked closely at every clue.
   That is how you learn.", the Lantern Line note without the outcome claim, glowmoth labels removed).
@@ -202,4 +202,10 @@ one-year trial, first graders struggled); make ten/decomposition (correlational:
 and Shen 2015); comparing methods (Rittle-Johnson and Star 2007, grades 7 to 8); number lines and representations
 (WWC practice guide 2021); bar models (small studies only); Vedic methods (no rigorous study found; 1965 book, not in
 the Vedas per Dani and the book's own editor).
+**Money and time (Phase 7, first slice):** two new regions, Money Market (MY01 coin values, MY02 count coins, MY03 money
+stories, MY04 change from a dollar by counting up) and Clock Tower (TM01 hour and half hour, TM02 to 5 minutes, TM03 to
+the minute, TM04 elapsed time). Coins are drawn with their value printed on them and appear only as math objects, never as
+a reward or wallet. A clock's spoken description gives where the hands are, never the time. New clues: MY1 counted coins
+not value, MY2 change digit by digit, MT1 hands swapped, MT2 next hour, MT3 clock number as minutes, MT4 time as hundreds.
+In other languages the coin description is built from short translated pieces (`Coins:` plus `{N} dime` and so on).
 Do not claim legal sign-off, hiring or payments. Those are his.

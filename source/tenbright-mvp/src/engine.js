@@ -79,6 +79,12 @@
     MX1: { name: 'Products written side by side', parent: 'Multiplies each digit but writes the products side by side instead of adding them with their place values.', clue: 'A clue! Each part has a place value. Add the parts together.' },
     MX2: { name: 'Only tens by tens and ones by ones', parent: 'Multiplies tens by tens and ones by ones but skips the two cross parts (23 × 45 = 815).', clue: 'A clue! The rectangle has four parts. Did you find all four?' },
     MR1: { name: 'Remainder too big', parent: 'Leaves a remainder as big as the divisor, so one more group would still fit.', clue: 'A clue! Could one more group fit in what is left?' },
+    MY1: { name: 'Counted coins, not their value', parent: 'Counts how many coins there are instead of adding what each coin is worth.', clue: 'A clue! Each coin has its own value. Add the cents, not the coins.' },
+    MY2: { name: 'Change digit by digit', parent: 'Finds change from a dollar by taking each digit from 10 instead of counting up to 100 cents.', clue: 'A clue! A dollar is 100 cents. Count up from the price to 100.' },
+    MT1: { name: 'Clock hands swapped', parent: 'Reads the long hand as the hour and the short hand as the minutes.', clue: 'A clue! The short hand shows the hour. The long hand shows the minutes.' },
+    MT2: { name: 'Next hour', parent: 'Reads the hour as the number the short hand is moving toward, not the one it has passed.', clue: 'A clue! The hour is the number the short hand has just passed.' },
+    MT3: { name: 'Clock number as minutes', parent: 'Reads the number the long hand points to as the minutes, instead of counting by 5s.', clue: 'A clue! Each number on the clock is 5 more minutes. Count by 5s.' },
+    MT4: { name: 'Time as hundreds', parent: 'Subtracts times like whole numbers, as if an hour had 100 minutes.', clue: 'A clue! An hour has 60 minutes, not 100. Count on to the next hour first.' },
     MO1: { name: 'Left to right only', parent: 'Works from left to right and ignores parentheses or the order of operations.', clue: 'A clue! Parentheses first, then times, then plus and minus.' }
   };
 
@@ -203,7 +209,18 @@
   };
   // Grade 1 skills lead into the Grade 2 map
   [['PV01', 'C109'], ['AS01', 'C105'], ['AS01', 'C107'], ['PV10', 'C110'], ['PV12', 'C111'], ['AS04', 'C112'], ['AS06', 'C113'], ['WP01', 'C114']].forEach(([id, pre]) => SKILLS_CORE[id].prereqs.push(pre));
-  const SKILLS = Object.assign({}, SKILLS_G1, SKILLS_CORE, SKILLS_G3F, SKILLS_G4, SKILLS_G5);
+  // Tenbright 2.0 Phase 7: money (coins as math objects, never a reward) and time
+  const SKILLS_P7 = {
+    MY01: S('Coin values', 'market', ['C104'], '2.MD.C.8'),
+    MY02: S('Count coins', 'market', ['MY01', 'PV07'], '2.MD.C.8'),
+    MY03: S('Money stories', 'market', ['MY02', 'AS05'], '2.MD.C.8'),
+    MY04: S('Make change from a dollar', 'market', ['MY03', 'AS10'], '4.MD.A.2'),
+    TM01: S('Hour and half hour', 'clock', ['C101'], '1.MD.B.3'),
+    TM02: S('Time to 5 minutes', 'clock', ['TM01', 'PV07'], '2.MD.C.7'),
+    TM03: S('Time to the minute', 'clock', ['TM02'], '3.MD.A.1'),
+    TM04: S('How much time passed', 'clock', ['TM03', 'AS10'], '3.MD.A.1')
+  };
+  const SKILLS = Object.assign({}, SKILLS_G1, SKILLS_CORE, SKILLS_G3F, SKILLS_G4, SKILLS_G5, SKILLS_P7);
   const SKILL_ORDER = Object.keys(SKILLS);
 
   // ---------- item generators ----------
@@ -620,6 +637,36 @@
     }
   });
 
+  const COINS = [{ v: 1, one: 'penny', many: 'pennies' }, { v: 5, one: 'nickel', many: 'nickels' }, { v: 10, one: 'dime', many: 'dimes' }, { v: 25, one: 'quarter', many: 'quarters' }];
+  // read a clock: the short hand gives the hour it has passed, the long hand the minutes (5 for each number)
+  function clockItem(skill, h, m, r) {
+    const t = (hh, mm) => hh + ':' + String(mm).padStart(2, '0'), ans = t(h, m);
+    const num5 = Math.floor(m / 5), extra = m % 5;
+    const wrong = {};
+    const swapped = num5 === 0 ? null : t(num5, h === 12 ? 0 : h * 5); // MT1
+    const nextH = m >= 30 ? t(h === 12 ? 1 : h + 1, m) : null; // MT2
+    const asNum = m % 5 === 0 && num5 > 0 && num5 < 10 ? t(h, num5) : null; // MT3
+    if (swapped && swapped !== ans) wrong.MT1 = swapped;
+    if (nextH && nextH !== ans) wrong.MT2 = nextH;
+    if (asNum && asNum !== ans && !Object.values(wrong).includes(asNum)) wrong.MT3 = asNum;
+    const pool = Object.values(wrong);
+    for (let k = 0; pool.length < 3 && k < 20; k++) { const x = t(r.int(1, 12), skill === 'TM01' ? r.pick([0, 30]) : skill === 'TM02' ? r.int(0, 11) * 5 : r.int(0, 59)); if (x !== ans && !pool.includes(x)) pool.push(x); }
+    const choices = [ans].concat(pool.slice(0, 3));
+    for (let i = choices.length - 1; i > 0; i--) { const j = Math.floor(r.next() * (i + 1)); [choices[i], choices[j]] = [choices[j], choices[i]]; }
+    const steps = ['The short hand shows the hour. It has passed ' + h + ', so the hour is ' + h + '.'];
+    if (m === 0) steps.push('The long hand points straight up at 12. That means 0 minutes, o’clock.');
+    else if (m === 30) steps.push('The long hand points down at 6. That is half past, 30 minutes.');
+    else if (extra === 0) steps.push('The long hand points to ' + num5 + '. Count by 5s, once for each number. ' + num5 + ' × 5 = ' + m);
+    else steps.push('The long hand is ' + extra + (extra === 1 ? ' mark' : ' marks') + ' past ' + (num5 || 12) + '. Count by 5s to ' + (num5 || 12) + ', then by 1s. ' + 5 * num5 + ' + ' + extra + ' = ' + m);
+    // a typed answer too: how many minutes past the hour
+    if (m > 0 && r.next() < 0.4) {
+      steps.push('So it is ' + m + (m === 1 ? ' minute' : ' minutes') + ' past ' + h + '.');
+      const p = {}; if (m % 5 === 0 && num5 > 0 && num5 !== m) p.MT3 = String(num5);
+      return { skill, format: 'number', prompt: 'How many minutes past ' + h + ' is it?', answer: String(m), predicted: p, steps, model: { type: 'clock', h, m } };
+    }
+    steps.push('So the time is ' + ans + '.');
+    return { skill, format: 'choice', textChoices: true, prompt: 'What time does the clock show?', answer: ans, choices, predicted: wrong, steps, model: { type: 'clock', h, m } };
+  }
   function factItem(skill, f, x, r, any) {
     const [a, b] = any || r.next() < 0.5 ? [x, f] : [f, x];
     const predicted = { M15: String(a + b), M18: String(a * (b - 1)) };
@@ -1081,6 +1128,49 @@
       if (r.next() < 0.5) return num('F514', n + ' ÷ 1/' + k + ' = ?', n * k, { MD7: n % k === 0 ? n / k : null }, ['How many 1/' + k + ' pieces fit in 1 whole? ' + k + '.', n + ' × ' + k + ' = ' + n * k], { type: 'fracbar', bars: Array.from({ length: Math.min(n, 4) }, () => ({ n: k, d: k })) }, { a: n, b: k, op: '×' });
       return num('F514', '1/' + k + ' ÷ ' + n + ' = 1/?', k * n, { MF10: k % n === 0 ? k / n : null }, ['Split the 1/' + k + ' piece into ' + n + ' equal parts. The pieces get smaller.', k + ' × ' + n + ' = ' + k * n], { type: 'fracbar', bars: [{ n: 1, d: k }, { n: 1, d: k * n }] }, { a: k, b: n, op: '×' });
     },
+    // ===== Phase 7: money and time =====
+    MY01(r) {
+      const c = r.pick(COINS), k = r.int(1, 4), v = c.v * k;
+      return num('MY01', 'How many cents ' + (k === 1 ? 'is 1 ' + c.one : 'are ' + k + ' ' + c.many) + '?', v, { MY1: k === v ? null : k }, ['A ' + c.one + ' is worth ' + c.v + (c.v === 1 ? ' cent.' : ' cents.'), k === 1 ? '1 ' + c.one + ' is ' + v + (v === 1 ? ' cent.' : ' cents.') : 'Add ' + c.v + ' once for each coin. ' + Array(k).fill(c.v).join(' + ') + ' = ' + v], { type: 'coins', coins: Array(k).fill(c.v) });
+    },
+    MY02(r) {
+      let coins, total;
+      do { const n = r.int(2, 6); coins = Array.from({ length: n }, () => r.pick([25, 10, 10, 5, 5, 1, 1])).sort((x, y) => y - x); total = coins.reduce((a, x) => a + x, 0); } while (total > 99 || new Set(coins).size < 2);
+      const steps = ['Start with the coin worth the most: ' + coins[0] + '.'];
+      let run = coins[0];
+      coins.slice(1).forEach((x) => { steps.push(run + ' + ' + x + ' = ' + (run + x)); run += x; });
+      return num('MY02', 'How many cents are these coins worth?', total, { MY1: coins.length }, steps, { type: 'coins', coins });
+    },
+    MY03(r) {
+      const name = r.pick(NAMES), thing = r.pick(['pencil', 'sticker', 'ruler', 'marker']), price = r.int(2, 9) * 5;
+      if (r.next() < 0.5) { const have = r.int(price / 5 + 2, 19) * 5; return num('MY03', name + ' has ' + have + ' cents. A ' + thing + ' costs ' + price + ' cents. How many cents are left after ' + name + ' buys it?', have - price, { M14: have + price }, ['Buying it takes the price away.', have + ' − ' + price + ' = ' + (have - price)], { type: 'paper' }); }
+      const more = r.int(2, 9) * 5; return num('MY03', name + ' has ' + price + ' cents and finds ' + more + ' cents more. How many cents does ' + name + ' have now?', price + more, { M14: Math.abs(price - more) || null }, ['Finding more money means we add.', price + ' + ' + more + ' = ' + (price + more)], { type: 'paper' });
+    },
+    MY04(r) {
+      const name = r.pick(NAMES), thing = r.pick(['book', 'toy car', 'juice', 'kite']);
+      let price; do { price = r.int(3, 19) * 5; } while (price % 10 === 0 && r.next() < 0.5);
+      const toTen = (10 - price % 10) % 10, next = price + toTen, rest = 100 - next, change = 100 - price;
+      const digitWise = String((10 - Math.floor(price / 10)) * 10 + (10 - price % 10));
+      const steps = toTen ? ['Count up to the next ten. ' + price + ' + ' + toTen + ' = ' + next, 'Then count up by tens to 100. ' + next + ' + ' + rest + ' = 100', 'Add the two jumps. ' + toTen + ' + ' + rest + ' = ' + change] : ['The price is already a ten. Count up to 100. ' + price + ' + ' + rest + ' = 100', 'The change is the jump. 100 − ' + price + ' = ' + change];
+      return num('MY04', name + ' pays 1 dollar for a ' + thing + ' that costs ' + price + ' cents. A dollar is 100 cents. How many cents of change does ' + name + ' get?', change, { MY2: digitWise !== String(change) ? digitWise : null }, steps, { type: 'paper' });
+    },
+    TM01(r) { return clockItem('TM01', r.int(1, 12), r.pick([0, 30]), r); },
+    TM02(r) { let m; do { m = r.int(1, 11) * 5; } while (m === 30); return clockItem('TM02', r.int(1, 12), m, r); },
+    TM03(r) { let m; do { m = r.int(1, 59); } while (m % 5 === 0); return clockItem('TM03', r.int(1, 12), m, r); },
+    TM04(r) {
+      const h = r.int(1, 9), m = r.int(0, 11) * 5, d = r.int(3, 35) * 5, endT = h * 60 + m + d, eh = Math.floor(endT / 60), em = endT % 60;
+      if (eh > 12) return GEN.TM04(r);
+      const t = (hh, mm) => hh + ':' + String(mm).padStart(2, '0');
+      const what = r.pick(['A movie', 'A swim lesson', 'A school play', 'A bus ride']);
+      const H = Math.floor(d / 60), R = d % 60, mid = t(h + H, m);
+      const steps = H ? (R ? ['From ' + t(h, m) + ' to ' + mid + ' is ' + (H === 1 ? '1 hour, or 60 minutes.' : H + ' hours. ' + H + ' × 60 = ' + 60 * H), 'From ' + mid + ' to ' + t(eh, em) + ' is ' + R + ' more minutes.', 'Add them. ' + 60 * H + ' + ' + R + ' = ' + d]
+        : ['From ' + t(h, m) + ' to ' + t(eh, em) + ' is ' + (H === 1 ? '1 hour.' : H + ' hours.'), 'Each hour is 60 minutes. ' + H + ' × 60 = ' + d])
+        : eh === h ? ['Both times are in the same hour, so look at the minutes.', em + ' − ' + m + ' = ' + d]
+          : em === 0 ? ['It ends on the next hour. Count on from ' + t(h, m) + ' to ' + t(eh, 0) + '.', '60 − ' + m + ' = ' + d]
+            : ['Count on to the next hour first. From ' + t(h, m) + ' to ' + t(eh, 0) + ' is ' + (60 - m) + ' minutes.', 'From ' + t(eh, 0) + ' to ' + t(eh, em) + ' is ' + em + ' more minutes.', 'Add them. ' + (60 - m) + ' + ' + em + ' = ' + d];
+      const asHundreds = (eh * 100 + em) - (h * 100 + m);
+      return num('TM04', what + ' starts at ' + t(h, m) + ' and ends at ' + t(eh, em) + '. How many minutes long is it?', d, { MT4: asHundreds !== d ? asHundreds : null }, steps, { type: 'clock2', h, m, eh, em });
+    },
     F515(r) {
       const l = r.int(2, 6), w = r.int(2, 5), h = r.int(2, 5);
       return num('F515', 'A box is ' + l + ' cubes long, ' + w + ' cubes wide and ' + h + ' cubes tall. How many cubes fill it?', l * w * h, { M15: l + w + h }, ['One layer: ' + l + ' × ' + w + ' = ' + l * w + ' cubes.', h + ' layers: ' + l * w + ' × ' + h + ' = ' + l * w * h], { type: 'volume', l, w, h }, { a: l * w, b: h, op: '×' });
@@ -1126,6 +1216,9 @@
   // ---------- Fix Pip's mistake: an erroneous worked example built from a real misconception ----------
   // What Pip did wrong, in words a child can read
   const PIP_DID = {
+    MY1: 'Pip counted the coins instead of adding what they are worth.',
+    MY2: 'Pip took each digit from 10 instead of counting up to 100 cents.',
+    MT4: 'Pip subtracted the times as if an hour had 100 minutes.',
     M01: 'Pip took the smaller digit from the bigger one in each column.',
     M02: 'Pip broke a ten but forgot there was one ten fewer.',
     M04: 'Pip wrote the bottom digit when the top digit was zero.',
@@ -1174,6 +1267,7 @@
     MO1: 'Pip worked left to right and ignored the order rules.'
   };
   const MIS_FAMILIES = [
+    ['MY1', 'MY2', 'M12', 'M13'], ['MT4', 'M01', 'M02', 'M13'],
     ['M01', 'M02', 'M04', 'M05', 'M06', 'M12', 'M13', 'M1T', 'MP1', 'ME1', 'MC1', 'M14', 'MN6'],
     ['M07', 'M08', 'M09', 'M11', 'MN1', 'M1T'],
     ['M15', 'M16', 'M18', 'MN3', 'MN4', 'MN5', 'MX1', 'MX2', 'MR1', 'MO1'],

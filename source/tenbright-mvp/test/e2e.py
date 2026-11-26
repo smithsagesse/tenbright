@@ -56,12 +56,14 @@ with sync_playwright() as p:
     assert page.get_by_text('Thanks for exploring!').is_visible(), 'placement did not finish'
     print('placement items:', n)
     page.get_by_text('Back to the map').click()
-    assert page.locator('.region').count() == 7
+    assert page.locator('.region').count() == 9
     # grade chips: Grade 2 is the default focus for a Grade 2 child; switching shows only that grade's skills
     assert page.locator('.gchip[aria-pressed="true"]').inner_text().startswith('Grade 2'), 'default focus not Grade 2'
     page.locator('.gchip[data-g="3"]').click()
     assert page.locator('.gchip[data-g="3"]').get_attribute('aria-pressed') == 'true'
-    assert page.get_by_text('No Grade 3 skills here').count() == 2, 'village and docks should have no Grade 3 skills'
+    # regions without a Grade 3 skill say so (counted from the engine, so new regions keep this check true)
+    empty3 = page.evaluate("() => { const E = window.TBEngine; const has = new Set(E.SKILL_ORDER.filter((id) => parseInt(E.SKILLS[id].ccss, 10) === 3).map((id) => E.SKILLS[id].region)); return [...new Set(E.SKILL_ORDER.map((id) => E.SKILLS[id].region))].filter((r) => !has.has(r)).length; }")
+    assert empty3 >= 2 and page.get_by_text('No Grade 3 skills here').count() == empty3, ('regions with no Grade 3 skills', empty3)
     assert page.locator('.gchip').count() == 6, 'grade chips 1-5 plus all'
     page.screenshot(path=str(OUT / 'map-grade3.png'))
     page.locator('.gchip[data-g="all"]').click()
