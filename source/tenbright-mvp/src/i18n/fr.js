@@ -4122,4 +4122,5 @@ TBi18n.add("fr", {"Count to {N}":"Compter jusqu'à {N}",
 "Reading clocks and finding time passed use counting by {N}s and the {N} minutes in an hour.":"Lire l'heure et trouver le temps écoulé utilisent le comptage de {N1} en {N1} et les {N2} minutes d'une heure.",
 "Measuring connects numbers to real lengths, and area is a picture of multiplying.":"Mesurer relie les nombres à de vraies longueurs, et l'aire est une image de la multiplication.",
 "Shapes, angles and grids are the start of geometry and of reading graphs and maps.":"Les formes, les angles et les quadrillages sont le début de la géométrie et de la lecture de graphiques et de cartes.",
-"Every Grade {N} skill is lit, so Pip moves on.":"Toutes les compétences du niveau {N} sont allumées, alors Pip passe à la suite."});
+"Every Grade {N} skill is lit, so Pip moves on.":"Toutes les compétences du niveau {N} sont allumées, alors Pip passe à la suite.",
+"A grid numbered {N} to {N} across the bottom and up the side.":"Un quadrillage numéroté de {N} à {N} en bas et sur le côté."});

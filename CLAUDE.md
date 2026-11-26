@@ -219,7 +219,8 @@ In other languages the coin description is built from short translated pieces (`
 do not start at 0; MS02 compare lengths; MS03 perimeter and a missing side; MS04 area by rows of squares and by length ×
 width) and Shape Garden (GE01 name shapes by their sides; GE02 angles that make a right or straight angle; GE03 across and
 up on a grid). Clues: MM1 read the end of the ruler, MM2 only two sides, MM3 area and perimeter mixed, MG1 right angle as
-100, MG2 up before across. The grid's description never says where the star is. Common Core codes with a one-letter
+100, MG2 up before across. The grid's spoken description says where the star is (owner's decision, Nov 26, 2026), so a
+child using a screen reader can answer the grid questions. Common Core codes with a one-letter
 domain (2.G.A.1) are a `{C}` slot in translation.
 **Parent dashboard v2 (Phase 8):** "Over the last 8 weeks" shows minutes of practice, the share of answers given on their
 own (hint level 0 or 1, plain questions) and lanterns lit, one column per week, plus the last 2 weeks against the 2

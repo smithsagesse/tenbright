@@ -1,5 +1,5 @@
 """Measurement and geometry (Tenbright 2.0, Phase 7, second slice): the Measuring Workshop and Shape Garden regions,
-ruler, rectangle, shape, angle and grid pictures with descriptions, a clue on a known mistake, lessons that play through,
+ruler, rectangle, shape, angle and grid pictures with descriptions (the grid's says where the star is), a clue on a known mistake, lessons that play through,
 light and dark accessibility, Arabic layout. Run after build: python3 test/measure_shape_test.py"""
 import pathlib, re
 from playwright.sync_api import sync_playwright
@@ -43,7 +43,7 @@ with sync_playwright() as p:
                 if it['model']['type'] == 'paper': continue
                 lab = pg.locator(sel).first.get_attribute('aria-label')
                 assert lab and 'undefined' not in lab and 'NaN' not in lab, (sid, lab)
-                if sid == 'GE03': assert '%d across and %d up' % (it['model']['x'], it['model']['y']) not in lab and 'star is' not in lab, lab
+                if sid == 'GE03': assert lab.endswith('The star is %d across and %d up.' % (it['model']['x'], it['model']['y'])), lab
             axe(pg, sid + ' ' + scheme)
         while True:
             pg.evaluate("() => window.__tbShow('GE01', 0)")

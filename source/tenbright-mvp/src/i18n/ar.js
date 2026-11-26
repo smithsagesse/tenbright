@@ -4122,4 +4122,5 @@ TBi18n.add("ar", {"Count to {N}":"العدّ حتى {N}",
 "Reading clocks and finding time passed use counting by {N}s and the {N} minutes in an hour.":"قراءة الساعة وحساب الوقت المنقضي يستخدمان العدّ بالخمسات والدقائق الـ {N2} في الساعة.",
 "Measuring connects numbers to real lengths, and area is a picture of multiplying.":"القياس يربط الأعداد بأطوال حقيقية، والمساحة صورة للضرب.",
 "Shapes, angles and grids are the start of geometry and of reading graphs and maps.":"الأشكال والزوايا والشبكات بداية الهندسة وقراءة الرسوم البيانية والخرائط.",
-"Every Grade {N} skill is lit, so Pip moves on.":"كل مهارات الصف {N} مضاءة، لذا ينتقل بيب إلى ما بعدها."});
+"Every Grade {N} skill is lit, so Pip moves on.":"كل مهارات الصف {N} مضاءة، لذا ينتقل بيب إلى ما بعدها.",
+"A grid numbered {N} to {N} across the bottom and up the side.":"شبكة مرقمة من {N} إلى {N} في الأسفل وعلى الجانب."});

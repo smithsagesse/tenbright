@@ -4122,4 +4122,5 @@ TBi18n.add("zh", {"Count to {N}":"數到{N}",
 "Reading clocks and finding time passed use counting by {N}s and the {N} minutes in an hour.":"看時鐘和算經過的時間，要用到{N1}個{N1}個數，以及一小時有{N2}分鐘。",
 "Measuring connects numbers to real lengths, and area is a picture of multiplying.":"測量把數字和真實的長度連起來，面積則是乘法的圖像。",
 "Shapes, angles and grids are the start of geometry and of reading graphs and maps.":"圖形、角和方格是幾何的開始，也是讀圖表和地圖的開始。",
-"Every Grade {N} skill is lit, so Pip moves on.":"{N}年級的技能都點亮了，所以Pip繼續往前。"});
+"Every Grade {N} skill is lit, so Pip moves on.":"{N}年級的技能都點亮了，所以Pip繼續往前。",
+"A grid numbered {N} to {N} across the bottom and up the side.":"一個下面和旁邊標了{N}到{N}的方格。"});

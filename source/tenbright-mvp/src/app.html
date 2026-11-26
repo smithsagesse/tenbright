@@ -2063,7 +2063,8 @@ tr:last-child td { border-bottom: none; }
   const NEW_MODELS = new Set(['ruler', 'lengths', 'rect', 'shape', 'angle', 'grid', 'coins', 'clock', 'clock2', 'pairsum', 'compare2', 'fracbar', 'fracline', 'pvbig', 'pvbig2', 'area', 'divgroups', 'timesbar', 'decgrid', 'decgrid2', 'pvdec', 'pvdec2', 'deccol', 'paper', 'fracarea', 'volume']);
   // the picture in the practice screen (k = -1: nothing solved yet)
   // ---------- Phase 7: measuring and shapes ----------
-  // pictures use the app's ink colors; each description gives what the picture shows, in words
+  // pictures use the app's ink colors; each description gives what the picture shows, in words (the grid says where
+  // the star is, so a child using a screen reader can answer: owner's decision, Nov 26, 2026)
   const INK = '#1E2A3B', unitAb = (cm) => (cm ? 'cm' : 'in'); // the screen translator handles "{N} cm" and "{N} in"
   const svgT = (x, y, t, size, extra) => `<text x="${x}" y="${y}" text-anchor="middle" font-size="${size || 18}" font-weight="800" fill="${INK}" ${extra || ''}>${t}</text>`;
   function rulerHtml(m) {
@@ -2120,7 +2121,7 @@ tr:last-child td { border-bottom: none; }
     const sx = x0 + m.x * c, sy = top + H - m.y * c, star = [];
     for (let k = 0; k < 10; k++) { const r = k % 2 ? 5.5 : 13, a = (k * 36 - 90) * Math.PI / 180; star.push((sx + r * Math.cos(a)).toFixed(1) + ',' + (sy + r * Math.sin(a)).toFixed(1)); }
     g += `<polygon points="${star.join(' ')}" fill="#E0A100" stroke="${INK}" stroke-width="2"></polygon>`;
-    return `<svg class="mpic sq" viewBox="0 0 ${x0 + H + 16} ${top + H + 32}" role="img" aria-label="${esc('A grid numbered 0 to ' + m.max + ' across the bottom and up the side, with a star on it.')}">${g}</svg>`;
+    return `<svg class="mpic sq" viewBox="0 0 ${x0 + H + 16} ${top + H + 32}" role="img" aria-label="${esc('A grid numbered 0 to ' + m.max + ' across the bottom and up the side. The star is ' + m.x + ' across and ' + m.y + ' up.')}">${g}</svg>`;
   }
   // ---------- Phase 7: coins and clocks ----------
   const COIN_LOOK = { 1: { r: 30, fill: '#C8743A', ring: '#8A4A1E', name: ['penny', 'pennies'] }, 5: { r: 34, fill: '#C9CED6', ring: '#7C8490', name: ['nickel', 'nickels'] }, 10: { r: 27, fill: '#D8DDE4', ring: '#7C8490', name: ['dime', 'dimes'] }, 25: { r: 40, fill: '#D0D5DC', ring: '#6C7480', name: ['quarter', 'quarters'] } };

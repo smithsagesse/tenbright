@@ -4122,4 +4122,5 @@ TBi18n.add("ht", {"Count to {N}":"Konte jiska {N}",
 "Reading clocks and finding time passed use counting by {N}s and the {N} minutes in an hour.":"Li revèy ak jwenn tan ki pase sèvi ak konte {N1} pa {N1} ak {N2} minit ki nan yon èdtan.",
 "Measuring connects numbers to real lengths, and area is a picture of multiplying.":"Mezire konekte nimewo ak vrè longè, e sifas se yon imaj miltiplikasyon.",
 "Shapes, angles and grids are the start of geometry and of reading graphs and maps.":"Fòm, ang ak kadriyaj se kòmansman jewometri ak lekti graf ak kat.",
-"Every Grade {N} skill is lit, so Pip moves on.":"Tout konpetans Ane {N} yo limen, kidonk Pip ale pi lwen."});
+"Every Grade {N} skill is lit, so Pip moves on.":"Tout konpetans Ane {N} yo limen, kidonk Pip ale pi lwen.",
+"A grid numbered {N} to {N} across the bottom and up the side.":"Yon kadriyaj ki gen nimewo {N} rive {N} anba ak sou kote a."});
