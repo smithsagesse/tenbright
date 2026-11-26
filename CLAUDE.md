@@ -196,7 +196,8 @@ equivalent fractions, adding with the same bottom number) and Number Detective (
 sentences). Rounds come from `gameRound` in engine.js; a game opens only when its skills are lit (`gameLevel`). A miss
 brings a clue, a second miss shows how. No clock unless the child picks the optional timed run, offered only after the
 game was finished once; it counts up and compares only with the child's own best. Games never change mastery.
-Touch targets: `--t-child` 64 px and `--t-primary` 88 px (hard rule 8), on every screen size.
+Touch targets: `--t-child` 64 px and `--t-primary` 88 px (hard rule 8), on every screen size. Raised from 60/76 px in
+Phase 5; the owner confirmed on Nov 26, 2026 to keep 64/88 (do not revert).
 **Strategy library (Phase 6):** `src/strategies.js` (window.TBStrategies), 18 strategies taught today plus 4 trial
 additions (number bonds picture, mental abacus, numbers near 100 / Nikhilam, vertically and crosswise), each with the
 owner's 14 parts, an honest origin note and a research note (sources named in words: no outside URL in the build).
