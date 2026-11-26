@@ -61,7 +61,7 @@
     MF1: { name: 'Adds to top and bottom', parent: 'Adds the same number to the top and bottom of a fraction to make an equivalent one (2/3 = 11/12).', clue: 'A clue! The bottom was multiplied. Do the same to the top.' },
     MF2: { name: 'Bigger bottom, bigger fraction', parent: 'Thinks a fraction with a bigger denominator is bigger (1/8 > 1/4).', clue: 'A clue! More pieces in the whole means each piece is smaller.' },
     MF3: { name: 'Adds the bottoms too', parent: 'Adds the denominators when adding fractions (1/5 + 2/5 = 3/10).', clue: 'A clue! The pieces stay the same size. Only count them.' },
-    MF4: { name: 'Whole number added to the top', parent: 'Turns a mixed number into a fraction by adding the whole number to the top (2 1/4 = 3/4).', clue: 'A clue! Each whole is 4 quarters. How many quarters in 2 wholes?' },
+    MF4: { name: 'Whole number added to the top', parent: 'Turns a mixed number into a fraction by adding the whole number to the top (2 1/4 = 3/4).', clue: 'A clue! Each whole is cut into pieces. How many pieces are in all the wholes?' },
     MF6: { name: 'Mixed tenths and hundredths', parent: 'Adds tenths and hundredths without changing tenths into hundredths first.', clue: 'A clue! 1 tenth is 10 hundredths. Change the tenths first.' },
     MF7: { name: 'Added tops without a common bottom', parent: 'Adds the numerators of fractions with different denominators without renaming them first.', clue: 'A clue! The pieces are different sizes. Make them the same size first.' },
     MF8: { name: 'Divided the other way', parent: 'Divides the larger number by the smaller one in a sharing problem (3 shared by 4 written as 4/3).', clue: 'A clue! Each person gets less than one whole. What goes on top?' },
@@ -77,7 +77,7 @@
     MD7: { name: 'Dividing always makes smaller', parent: 'Thinks dividing always makes a number smaller, so multiplies when dividing by a fraction or decimal under 1.', clue: 'A clue! How many halves fit in one whole?' },
     // grade 4 and 5 operations
     MX1: { name: 'Products written side by side', parent: 'Multiplies each digit but writes the products side by side instead of adding them with their place values.', clue: 'A clue! Each part has a place value. Add the parts together.' },
-    MX2: { name: 'Only tens by tens and ones by ones', parent: 'Multiplies tens by tens and ones by ones but skips the two cross parts (23 × 45 = 815).', clue: 'A clue! The area model has four parts. Did you find all four?' },
+    MX2: { name: 'Only tens by tens and ones by ones', parent: 'Multiplies tens by tens and ones by ones but skips the two cross parts (23 × 45 = 815).', clue: 'A clue! The rectangle has four parts. Did you find all four?' },
     MR1: { name: 'Remainder too big', parent: 'Leaves a remainder as big as the divisor, so one more group would still fit.', clue: 'A clue! Could one more group fit in what is left?' },
     MO1: { name: 'Left to right only', parent: 'Works from left to right and ignores parentheses or the order of operations.', clue: 'A clue! Parentheses first, then times, then plus and minus.' }
   };

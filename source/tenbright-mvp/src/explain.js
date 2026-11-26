@@ -50,30 +50,35 @@
   function columnSub(it) {
     const { a, b } = it, places = it.model.places, da = digitsOf(a, places), db = digitsOf(b, places);
     const names = PLACES.slice(4 - places), say = [], lent = new Set();
-    let zeroChain = false;
+    const chain = new Set();
     for (let i = places - 1; i >= 0; i--) {
       const p = names[i], first = i === places - 1;
       let broke = false;
-      if (zeroChain && p === 'tens') {
-        // the engine shows the hundred it broke as its own step here: the tens were 0, got 10, and gave 1 to the ones
-        say.push('Now the tens. We broke 1 hundred into 10 tens. Then 1 of those tens went to the ones. So there are ' + count(da[i], p) + ' now.');
+      const inChain = chain.has(p);
+      if (inChain) {
+        // the engine shows each 0 place it passed through as its own step: the place got 10, then gave 1 down
+        say.push('Now the ' + p + '. We broke 1 ' + UNIT[names[i - 1]] + ' into 10 ' + p + '. Then 1 of those ' + p + ' went to the ' + names[i + 1] + '. So there are ' + count(da[i], p) + ' now.');
       }
       if (da[i] < db[i]) {
         const up = names[i - 1];
         if (!up) return null;
         if (da[i - 1] <= 0) {
-          // across a zero (Grade 3): no tens to break, so break a hundred first, then a ten
-          if (places !== 3 || p !== 'ones' || da[0] <= 0) return null;
-          const had = da[i];
-          da[0] -= 1; da[1] = 9; da[2] += 10; lent.add('hundreds'); zeroChain = true; broke = true;
-          say.push('Look at the ones. Can we take ' + db[i] + ' away from ' + had + '? No, there are not enough ones. We need to break a ten, but there are 0 tens. So first break 1 hundred into 10 tens. Then break 1 ten into 10 ones. Now there are ' + count(da[2], 'ones') + '. This is called regrouping.');
+          // across zeros: no ones to break above, so break the first place on the left that has something,
+          // then pass one down through each 0 place
+          let j = i - 1; while (j >= 0 && da[j] <= 0) j--;
+          if (j < 0) return null;
+          const had = da[i], zeros = names.slice(j + 1, i);
+          da[j] -= 1; for (let z = j + 1; z < i; z++) { da[z] = 9; chain.add(names[z]); }
+          da[i] += 10; lent.add(names[j]); broke = true;
+          const down = [names[j]].concat(zeros);
+          say.push('Look at the ' + p + '. Can we take ' + db[i] + ' away from ' + had + '? No, there are not enough ' + p + '. We need to break ' + 'a ' + UNIT[up] + ', but there are 0 ' + up + '.' + (zeros.length > 1 ? ' There are 0 ' + zeros.slice(0, -1).reverse().join(' and 0 ') + ' too.' : '') + ' So first break 1 ' + UNIT[names[j]] + ' into 10 ' + names[j + 1] + '. ' + down.slice(1).map((z, q) => 'Then break 1 ' + UNIT[z] + ' into 10 ' + (names[names.indexOf(z) + 1]) + '.').join(' ') + ' Now there are ' + count(da[i], p) + '. This is called regrouping.');
         } else {
           da[i - 1] -= 1; da[i] += 10; lent.add(up); broke = true;
           say.push('Look at the ' + p + '. Can we take ' + db[i] + ' away from ' + (da[i] - 10) + '? No, there are not enough ' + p + '. Break one ' + UNIT[up] + ' into 10 ' + p + '. Now there are ' + count(da[i - 1], up) + ' and ' + count(da[i], p) + '. This is called regrouping.');
         }
       }
       const sentence = da[i] + ' − ' + db[i] + ' = ' + (da[i] - db[i]);
-      if (broke || (zeroChain && p === 'tens')) say.push('Take away the ' + p + '. ' + sentence);
+      if (broke || inChain) say.push('Take away the ' + p + '. ' + sentence);
       else if (lent.has(p)) say.push('Now the ' + p + '. We used one ' + UNIT[p] + ', so there ' + (da[i] === 1 ? 'is ' : 'are ') + count(da[i], p) + ' now. ' + sentence);
       else if (first) say.push('Start with the ' + p + '. Take ' + p + ' from ' + p + '. ' + sentence);
       else say.push('Now the ' + p + '. ' + sentence);
@@ -505,6 +510,183 @@
     }
   });
   ['AS13', 'AS14', 'AS15'].forEach((id) => { B[id] = column; });
+  // ---------- Grade 4 ----------
+  const fmt = (n) => Number(n).toLocaleString('en-US');
+  const unfmt = (s) => Number(String(s).replace(/,/g, ''));
+  const PLACES6 = ['hundred thousands', 'ten thousands', 'thousands', 'hundreds', 'tens', 'ones'];
+  const SIZE_PLACE = { 10: 'tens', 100: 'hundreds', 1000: 'thousands', 10000: 'ten thousands', 100000: 'hundred thousands' };
+  const placeOfValue = (v) => { const z = String(v).length - 1; return ['ones', 'tens', 'hundreds', 'thousands', 'ten thousands', 'hundred thousands'][z]; };
+  const eqOf = (s) => /(\d+) × (\d+) = (\d+)\.?$/.exec(s || '');
+  Object.assign(B, {
+    F401(it) {
+      const m = /^What is the value of the (\d) in ([\d,]+)\?/.exec(it.prompt), place = (/is in the (.+) place/.exec(it.steps[0]) || [])[1];
+      if (!m || !place || it.steps.length !== 2) return null;
+      const d = +m[1], v = Number(it.answer), zeros = String(v).length - 1;
+      return { meaning: ['Each place is worth 10 times the place to its right.'], say: ['Find the ' + d + ' in ' + m[2] + '. It is in the ' + place + ' place.', 'Each one in the ' + place + ' place is worth ' + fmt(v / d) + '. So multiply. ' + it.steps[1]], check: zeros ? 'Check: ' + fmt(v) + ' is ' + d + ' followed by ' + plural(zeros, 'zero', 'zeros') + '.' : null };
+    },
+    F402(it) {
+      const last = it.steps[1] || '', m = /^([\d,]+) ([<>=]) ([\d,]+)$/.exec(last);
+      if (!m || it.steps.length !== 2) return null;
+      const A = unfmt(m[1]), Bn = unfmt(m[3]), sa = String(A), sb = String(Bn);
+      let s0;
+      if (sa.length !== sb.length) s0 = fmt(A) + ' has ' + sa.length + ' digits. ' + fmt(Bn) + ' has ' + sb.length + ' digits. More digits means a bigger number.';
+      else {
+        let k = 0; while (k < sa.length && sa[k] === sb[k]) k++;
+        s0 = 'Both numbers have ' + sa.length + ' digits. So compare from the left, one place at a time.';
+        if (k < sa.length) s0 += ' The first digits that are different are in the ' + PLACES6[6 - sa.length + k] + ' place: ' + sa[k] + ' and ' + sb[k] + '.';
+      }
+      const big = Math.max(A, Bn);
+      const s1 = A === Bn ? 'Every digit is the same, so the numbers are equal. ' + last : fmt(big) + ' has the bigger digit there, so ' + fmt(big) + ' is greater. ' + last;
+      return { meaning: ['We compare ' + fmt(A) + ' and ' + fmt(Bn) + '.', 'The open side of > or < faces the bigger number.'], say: [sa.length !== sb.length ? s0 : s0, s1], check: null };
+    },
+    F403(it) {
+      const m = /^Round ([\d,]+) to the nearest ([\d,]+)\./.exec(it.prompt);
+      if (!m || it.steps.length !== 2) return null;
+      const n = unfmt(m[1]), size = unfmt(m[2]), lo = Math.floor(n / size) * size, hi = lo + size, ans = Number(it.answer), place = SIZE_PLACE[size];
+      const next = Math.floor((n % size) / (size / 10)), half = n - lo === size / 2;
+      if (!place) return null;
+      const s1 = 'Look at the digit just after the ' + place + ' place. It is ' + next + '. ' + (half ? fmt(n) + ' is exactly halfway, and halfway rounds up.' : 'That is ' + (next >= 5 ? '5 or more, so round up.' : 'less than 5, so round down.')) + ' So ' + fmt(n) + ' rounds to ' + fmt(ans) + '.';
+      return { meaning: ['Rounding finds the nearest ' + fmt(size) + '.', 'A rounded number is easy to work with.'], say: [fmt(n) + ' is between ' + fmt(lo) + ' and ' + fmt(hi) + '. Picture them on a number line.', s1], check: 'Check: ' + fmt(n) + ' is ' + fmt(n - lo) + ' away from ' + fmt(lo) + ' and ' + fmt(hi - n) + ' away from ' + fmt(hi) + '.' };
+    },
+    F404: column,
+    F405(it) {
+      const n = it.a, k = it.b, c = Number(it.answer), parts = [];
+      for (let i = 0; i < it.steps.length; i++) {
+        const m = eqOf(it.steps[i]);
+        if (m && +m[2] === k && i < it.steps.length - (it.steps.length > 1 ? 1 : 0)) parts.push(+m[1]);
+      }
+      const single = it.steps.length === 1;
+      if (single ? parts.length !== 1 : parts.length !== it.steps.length - 1) return null;
+      const say = parts.map((p, i) => {
+        const d = String(p)[0], place = placeOfValue(p), eq = p + ' × ' + k + ' = ' + p * k;
+        if (place === 'ones') return 'Now the ones. ' + eq;
+        return (i === 0 ? 'Start with the ' : 'Now the ') + place + '. The ' + d + ' in the ' + place + ' place means ' + p + '. ' + eq;
+      });
+      if (!single) say.push('Add the parts together. ' + parts.map((p) => p * k).join(' + ') + ' = ' + c);
+      return { meaning: single ? [n + ' is ' + placePhrase(n) + '.', 'We multiply the ' + placeOfValue(n) + ' by ' + k + '.'] : ['We split ' + n + ' into its places: ' + parts.join(', ').replace(/, (\d+)$/, ' and $1') + '.', 'We multiply each part by ' + k + ', then add.'], say, check: 'Check: ' + c + ' ÷ ' + k + ' = ' + n + '.' };
+    },
+    F406(it) {
+      const { a, b } = it, c = Number(it.answer), at = a - (a % 10), ao = a % 10, bt = b - (b % 10), bo = b % 10;
+      if (it.steps.length !== 5 || !ao || !bo) return null;
+      const kind = (x) => (x >= 10 ? 'tens' : 'ones');
+      const pairs = [[at, bt], [at, bo], [ao, bt], [ao, bo]];
+      const say = pairs.map(([x, y]) => kind(x)[0].toUpperCase() + kind(x).slice(1) + ' times ' + kind(y) + '. ' + x + ' × ' + y + ' = ' + x * y);
+      say.push('Add all four parts. ' + pairs.map(([x, y]) => x * y).join(' + ') + ' = ' + c);
+      return { meaning: ['Split both numbers into tens and ones. ' + a + ' is ' + at + ' and ' + ao + '. ' + b + ' is ' + bt + ' and ' + bo + '.', 'Multiply each part by each part, then add.'], say, check: 'Check: ' + c + ' ÷ ' + b + ' = ' + a + '.' };
+    },
+    F407(it) {
+      const d = it.divrem, m = /One more group would be (\d+)/.exec(it.steps[0] || '');
+      if (!d || !m || it.steps.length !== 3) return null;
+      const [N, k, q, r] = d, askQ = /\? R/.test(it.prompt);
+      return { meaning: [N + ' ÷ ' + k + ' asks: how many groups of ' + k + ' fit in ' + N + '?', 'Some may be left over. That part is the remainder, R.'], say: ['Find how many groups of ' + k + ' fit. ' + k + ' × ' + q + ' = ' + k * q + '. One more group would make ' + m[1] + '. That is more than ' + N + ', so it is too many.', 'Take away what the groups use. ' + N + ' − ' + k * q + ' = ' + r + '. That is what is left over.', 'So ' + N + ' ÷ ' + k + ' = ' + q + ' R ' + r + '. ' + (askQ ? 'The number of groups is ' + q + '.' : 'The remainder is ' + r + '.')], check: 'Check: ' + k + ' × ' + q + ' + ' + r + ' = ' + N + '.' };
+    },
+    F408(it) {
+      const N = it.a, k = it.b, q = Number(it.answer), say = [], groups = [];
+      for (let i = 0; i < it.steps.length - 1; i++) {
+        const m = /^(\d+) × (\d+) = (\d+)\. (\d+) − (\d+) = (\d+)\.$/.exec(it.steps[i]);
+        if (!m) return null;
+        groups.push(+m[2]);
+        say.push((i === 0 ? 'How many groups of ' + k + ' fit in ' + N + '? Start big. Try ' + m[2] + ' groups.' : 'Now share the ' + m[4] + ' that is left. Try ' + m[2] + ' groups.') + ' ' + k + ' × ' + m[2] + ' = ' + m[3] + '. Take that away. ' + m[4] + ' − ' + m[5] + ' = ' + m[6] + '.');
+      }
+      say.push(groups.length > 1 ? 'Add up all the groups. ' + groups.join(' + ') + ' = ' + q + '. So ' + N + ' ÷ ' + k + ' = ' + q : 'That is all of it. So ' + N + ' ÷ ' + k + ' = ' + q);
+      return { meaning: [N + ' ÷ ' + k + ' asks: how many groups of ' + k + ' make ' + N + '?', 'Take away big groups first, then smaller ones.'], say, check: 'Check: ' + k + ' × ' + q + ' = ' + N + '.' };
+    },
+    F409(it) {
+      if (it.factorOf) {
+        const n = it.factorOf, f = Number(it.answer);
+        if (it.steps.length !== 2) return null;
+        return { meaning: ['Factors are numbers we multiply to make another number.'], say: ['A factor of ' + n + ' splits ' + n + ' into equal groups, with nothing left over.', 'Try each choice. ' + f + ' × ' + n / f + ' = ' + n + ', so ' + f + ' is a factor of ' + n + '.'], check: 'Check: ' + n + ' ÷ ' + f + ' = ' + n / f + ', with nothing left over.' };
+      }
+      const n = it.a, g = it.b, x = Number(it.answer);
+      if (it.steps.length !== 2) return null;
+      return { meaning: [n + ' = ' + g + ' × ? asks: how many groups of ' + g + ' make ' + n + '?'], say: ['Count by ' + g + 's until you reach ' + n + '. Or use a fact you know.', 'Count how many groups. ' + g + ' × ' + x + ' = ' + n + ', so ? = ' + x], check: 'Check: ' + n + ' ÷ ' + g + ' = ' + x + '.' };
+    },
+    F410(it) {
+      const pc = /^Is (\d+) prime or composite\?/.exec(it.prompt);
+      const meaning = ['A prime number has exactly two factors: 1 and itself.', 'A composite number has more factors.'];
+      if (pc && it.steps.length === 2) {
+        const n = +pc[1], m = eqOf(it.steps[0]);
+        if (m) return { meaning, say: ['Look for a factor other than 1 and ' + n + '. ' + it.steps[0].replace(/\.$/, '') + '.', 'So ' + n + ' has more factors than 1 and itself. That makes it composite.'], check: null };
+        return { meaning, say: ['Try 2, 3, 5 and 7. None of them split ' + n + ' into equal groups.', 'So ' + n + ' has only two factors, 1 and ' + n + '. That makes it prime.'], check: null };
+      }
+      const n = it.primeCheck, small = Number(it.answer);
+      if (!n || it.steps.length !== 2) return null;
+      const m = eqOf(it.steps[1].replace(/, so the smallest is \d+$/, ''));
+      return { meaning: ['A factor bigger than 1 splits ' + n + ' into equal groups, with nothing left over.'], say: ['Try the small numbers in order: 2, then 3, then 5, then 7.', m ? small + ' is the first one that works. ' + m[0] + '. So the smallest is ' + small : 'None of them work, so ' + n + ' is prime. Its only factors are 1 and ' + n + '. So the smallest is ' + n], check: null };
+    },
+    F411(it) {
+      if (it.steps.length !== 2) return null;
+      const c = Number(it.answer);
+      if (it.op === '×') {
+        const k = it.a, u = it.b;
+        return { meaning: ['"Times as many" compares two amounts.'], say: [k + ' times as many means the same amount ' + k + ' times. So ' + k + ' times as many as ' + u + ' is ' + k + ' groups of ' + u + '.', 'So multiply. ' + k + ' × ' + u + ' = ' + c], check: 'Check: ' + c + ' ÷ ' + k + ' = ' + u + '.' };
+      }
+      const N = it.a, k = it.b;
+      return { meaning: ['"Times as many" compares two amounts.'], say: [N + ' is ' + k + ' times as many as the other amount. So ' + N + ' is ' + k + ' equal groups.', 'One group is the other amount. Share ' + N + ' into ' + k + ' equal groups. ' + N + ' ÷ ' + k + ' = ' + c], check: 'Check: ' + k + ' × ' + c + ' = ' + N + '.' };
+    },
+    F412(it) {
+      const m = /^Rule: (add|multiply by) (\d+)\. ([\d, ]+), \?$/.exec(it.prompt), c = Number(it.answer);
+      if (!m || it.steps.length !== 2) return null;
+      const k = +m[2], seq = m[3].split(', ').map(Number), add = m[1] === 'add';
+      const word = add ? ' and ' + k + ' more is ' : ' times ' + k + ' is ';
+      return { meaning: ['A pattern follows a rule. The rule here is: ' + m[1] + ' ' + k + '.'], say: ['Check the rule. ' + seq[0] + word + seq[1] + '. ' + seq[1] + word + seq[2] + '. The rule works.', 'Use the rule on the last number. ' + seq[seq.length - 1] + (add ? ' + ' : ' × ') + k + ' = ' + c], check: null };
+    },
+    F413(it) {
+      const m = /^(\d+)\/(\d+) = \?\/(\d+)$/.exec(it.prompt), c = Number(it.answer);
+      if (!m || it.steps.length !== 2) return null;
+      const n = +m[1], d = +m[2], D = +m[3], k = D / d;
+      return { meaning: ['Equivalent fractions name the same amount.', 'Cut every piece into the same number of parts, and the amount stays the same.'], say: ['Look at the bottom numbers. ' + d + ' × ' + k + ' = ' + D + '. So each piece is cut into ' + k + ' smaller pieces.', 'Each old piece is now ' + k + ' pieces. So the top number grows ' + k + ' times too. ' + n + ' × ' + k + ' = ' + c], check: 'Check: ' + n + '/' + d + ' and ' + c + '/' + D + ' cover the same part of the bar.' };
+    },
+    F414(it) {
+      const mm = /^Make the bottoms match: (\d+)\/(\d+) = \?\/(\d+)$/.exec(it.prompt);
+      if (mm) return B.F413(Object.assign({}, it, { prompt: mm[1] + '/' + mm[2] + ' = ?/' + mm[3] }));
+      const s0 = /^Use the same bottom number: (\d+)\/(\d+) = (\d+)\/(\d+) and (\d+)\/(\d+) = (\d+)\/(\d+)\.$/.exec(it.steps[0] || '');
+      const s1 = /, so (.+)$/.exec(it.steps[1] || '');
+      if (!s0 || !s1 || it.steps.length !== 2) return null;
+      const A = +s0[3], Cc = +s0[7], L = s0[4];
+      const cmp = A === Cc ? A + ' pieces and ' + Cc + ' pieces are the same.' : Math.max(A, Cc) + ' pieces are more than ' + Math.min(A, Cc) + ' pieces.';
+      return { meaning: ['Fractions are easy to compare when the bottom numbers match.'], say: ['Make both bottom numbers ' + L + '. ' + it.steps[0].replace(/^Use the same bottom number: /, ''), 'Now the pieces are the same size. ' + cmp + ' So ' + s1[1] + '.'], check: null };
+    },
+    F415(it) {
+      if (it.steps.length !== 2) return null;
+      const fr = /^(\d+)\/(\d+) ([+−]) (\d+)\/(\d+) = /.exec(it.prompt);
+      if (!fr) return null;
+      const a = +fr[1], d = +fr[2], op = fr[3], b = +fr[4], c = op === '+' ? a + b : a - b;
+      const meaning = ['The bottom number tells the size of the pieces.', 'Here all the pieces are the same size.'];
+      if (/\/\?$/.test(it.prompt)) return { meaning, say: ['The pieces are the same size, so the bottom number stays ' + d + '.', 'Add only the top numbers. ' + a + ' + ' + b + ' = ' + c + '. The bottom number is still ' + d + '.'], check: null };
+      return { meaning, say: ['Both fractions have the same bottom number, ' + d + '. So the pieces are the same size. ' + (op === '+' ? 'Just count the pieces.' : 'Take away ' + b + ' of the pieces.'), (op === '+' ? 'Add the top numbers. ' : 'Take away the top numbers. ') + a + ' ' + op + ' ' + b + ' = ' + c], check: null };
+    },
+    F416(it) {
+      if (it.steps.length !== 2) return null;
+      const to = /^(\d+) (\d+)\/(\d+) = \?\/\d+$/.exec(it.prompt), back = /^(\d+)\/(\d+) = (\d+) \?\/\d+$/.exec(it.prompt), c = Number(it.answer);
+      const meaning = ['A mixed number has wholes and a fraction.'];
+      if (to) { const w = +to[1], n = +to[2], d = +to[3]; return { meaning, say: ['Each whole is cut into ' + d + ' pieces. ' + it.steps[0], 'Add the ' + n + ' extra ' + (n === 1 ? 'piece' : 'pieces') + '. ' + w * d + ' + ' + n + ' = ' + c], check: null }; }
+      if (back) { const N = +back[1], d = +back[2], w = +back[3]; return { meaning, say: ['Each whole is ' + d + ' pieces. ' + it.steps[0], 'The pieces that are left make the fraction part. ' + N + ' − ' + w * d + ' = ' + c], check: null }; }
+      return null;
+    },
+    F417(it) {
+      const m = /^(\d+) × (\d+)\/(\d+) = \?\/\d+$/.exec(it.prompt), c = Number(it.answer);
+      if (!m || it.steps.length !== 2) return null;
+      const k = +m[1], n = +m[2], d = +m[3];
+      return { meaning: [k + ' × ' + n + '/' + d + ' means ' + k + ' groups of ' + n + '/' + d + '.'], say: ['Each group has ' + n + ' ' + (n === 1 ? 'piece' : 'pieces') + '. ' + it.steps[0].replace(/^\d+ groups of [\d/]+\. /, ''), 'Count all the pieces in the ' + k + ' groups. ' + k + ' × ' + n + ' = ' + c], check: null };
+    },
+    F418(it) {
+      if (it.steps.length !== 2) return null;
+      const c = it.answer;
+      let m = /^Write (\d+)\/10 as hundredths/.exec(it.prompt);
+      if (m) { const t = +m[1]; return { meaning: ['Tenths and hundredths are pieces of one whole.'], say: ['Cut each tenth into 10 equal pieces. Each piece is a hundredth. So 1 tenth is 10 hundredths.', 'There ' + (t === 1 ? 'is 1 tenth' : 'are ' + t + ' tenths') + ', and each is 10 hundredths. ' + t + ' × 10 = ' + c], check: null }; }
+      m = /^(\d+)\/10 \+ (\d+)\/100 = /.exec(it.prompt);
+      if (m) return { meaning: ['To add, the pieces must be the same size.'], say: ['Change the tenths into hundredths first. ' + it.steps[0], 'Now the pieces are the same size. Add them. ' + it.steps[1]], check: null };
+      m = /^Write (\d+)\/100 as a decimal\./.exec(it.prompt);
+      if (m) { const n = +m[1]; return { meaning: ['Hundredths go two places after the decimal point.'], say: [n + ' hundredths has ' + (n < 10 ? 'no tenths and ' + n + ' hundredths.' : Math.floor(n / 10) + ' tenths and ' + (n % 10) + ' hundredths.'), (n < 10 ? 'The tenths place gets a 0. ' : 'Write the tenths, then the hundredths. ') + it.steps[1]], check: null }; }
+      return null;
+    },
+    F419(it) {
+      const m = /^Write both as hundredths: ([\d.]+) = ([\d.]+)\.$/.exec(it.steps[0] || '');
+      if (!m || it.steps.length !== 2) return null;
+      return { meaning: ['Decimals are easiest to compare with the same number of places.'], say: ['Give both numbers two digits after the point. A 0 at the end does not change the amount. ' + it.steps[0], 'Now compare them like whole numbers of hundredths. ' + it.steps[1]], check: null };
+    }
+  });
 
   function explain(item) {
     // Fix Pip's mistake questions show Pip's own wrong work, so they keep the engine's steps
