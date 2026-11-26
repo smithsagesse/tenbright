@@ -103,7 +103,7 @@ with identical sw.js, manifest, icons, art and audio. It contains:
 - `build.js`: run `node build.js` to produce `dist/index.html` (and `dist/test.html` with test hooks).
 - Tests: `node test/engine.test.js` (math engine, millions of generated checks); `node test/explain.test.js` (plain-words lessons); Playwright suites
   `test/e2e.py`, `test/features_test.py`, `test/audio_test.py`, `test/living_test.py`,
-  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
+  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
 - `docs/animation-system.md` and `README.md`.
 
 Make changes in `source/tenbright-mvp/src/`, rebuild and run every suite.
@@ -160,7 +160,7 @@ Current focus (Nov 25, 2026): developing the app. Do not raise launch items or p
   Any new kind of stored data needs a notice version bump and re-agreement (the parent page shows the update card).
 - **Build order:** 2 Discovery Adventure (done Nov 26) · 3 foundation lessons (done Nov 26: all 103 skills, Grades 1–5) (micro-step rewrite, Grades 1–2 first,
   keep math words with plain explanations, translations in the same pass) · 4 adaptive Pip + independence and mastery
-  evidence (done Nov 26) · 5 games · 6 strategy library (verify the cited research first) · 7 geometry, measurement, time, money ·
+  evidence (done Nov 26) · 5 games (done Nov 26) · 6 strategy library (verify the cited research first) · 7 geometry, measurement, time, money ·
   8 parent dashboard v2 · 9 pilot and effectiveness study.
 - The four wording issues were fixed on Nov 26, 2026 ("Regrouping in adding and taking away", "You looked closely at every clue.
   That is how you learn.", the Lantern Line note without the outcome claim, glowmoth labels removed).
@@ -184,4 +184,10 @@ the engine's steps. Fix Pip's mistake questions always keep the engine's steps.
 - *Mastery* (`masteryMet(st, id)`) keeps the old gate (10 independent plain answers, 90%, two formats, mastery estimate 0.95)
   and also needs two of story, missing step and reason, or as many as the skill can offer (`canOffer`, `evidenceMissing`).
   Skills already lit stay lit.
+**Games (Phase 5):** Build the Bridge (missing part on a bridge number line), Pizza Shop (tap slices: fractions,
+equivalent fractions, adding with the same bottom number) and Number Detective (hidden numbers in patterns and number
+sentences). Rounds come from `gameRound` in engine.js; a game opens only when its skills are lit (`gameLevel`). A miss
+brings a clue, a second miss shows how. No clock unless the child picks the optional timed run, offered only after the
+game was finished once; it counts up and compares only with the child's own best. Games never change mastery.
+Touch targets: `--t-child` 64 px and `--t-primary` 88 px (hard rule 8), on every screen size.
 Do not claim legal sign-off, hiring or payments. Those are his.
