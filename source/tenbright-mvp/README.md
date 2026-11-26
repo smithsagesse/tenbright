@@ -44,7 +44,7 @@ The GMIA Phase 4 MVP: all 52 grade 2–3 skills plus the T3 Mental Math Strategy
 
 - `src/engine.js` — the math engine (items, answers, worked steps, misconception predictions, BKT, mastery, scheduling, placement).
 - `src/content.js` — lesson text, hints and home activities.
-- `src/explain.js` — plain-words worked examples: what the numbers mean, each step in words with the engine's number sentence, and a check (Grade 1 and column adding and subtracting so far).
+- `src/explain.js` — plain-words worked examples: what the numbers mean, each step in words with the engine's number sentence, and a check (all of Grades 1–2 so far: 45 skills, C101–C114, PV01–PV12, AS01–AS12, AS17, MU01–MU02, WP01–WP03 and T3; other skills keep the engine's steps).
 - `src/app.html` — the app shell and UI.
 - `src/i18n.js` — translation engine: sentences become patterns with number, name and object slots, filled back in each language's style; also spoken-math wording and spoken-number parsing per language.
 - `src/i18n/es.js`, `fr.js`, `ht.js`, `zh.js`, `ar.js` — about 2,220 translated patterns per language.

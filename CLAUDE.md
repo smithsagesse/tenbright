@@ -158,7 +158,7 @@ Current focus (Nov 25, 2026): developing the app. Do not raise launch items or p
 - **Coins only as math objects** (a Money Market world), never a reward currency.
 - **Parent intake:** only two optional questions (enjoys math? how confident?), kept under privacy notice v1.3.
   Any new kind of stored data needs a notice version bump and re-agreement (the parent page shows the update card).
-- **Build order:** 2 Discovery Adventure (done Nov 26) · 3 foundation lessons (Grade 1 done Nov 26; Grade 2 next) (micro-step rewrite, Grades 1–2 first,
+- **Build order:** 2 Discovery Adventure (done Nov 26) · 3 foundation lessons (Grades 1–2 done Nov 26, 45 skills; Grades 3–5 next) (micro-step rewrite, Grades 1–2 first,
   keep math words with plain explanations, translations in the same pass) · 4 adaptive Pip + independence and mastery
   evidence · 5 games · 6 strategy library (verify the cited research first) · 7 geometry, measurement, time, money ·
   8 parent dashboard v2 · 9 pilot and effectiveness study.

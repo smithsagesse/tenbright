@@ -4,21 +4,21 @@
   const CONTENT = {
     PV03: {
       hook: 'Pip found some beads in the meadow. How many are there?',
-      teach: ['A flat square is 1 hundred.', 'A long rod is 1 ten.', 'A little cube is 1 one.', 'Count the hundreds, then the tens, then the ones.'],
+      teach: ['A flat square is 1 hundred.', 'A long rod is 1 ten.', 'A small cube is 1 one.', 'Count the hundreds, then the tens, then the ones.'],
       nudge: 'Start with the big squares. How many hundreds?',
       strategy: 'Each square is 100, each rod is 10, each cube is 1.',
       home: 'Build numbers with coins: $1 bills as hundreds, dimes as tens, pennies as ones. Ask your child to read the total.'
     },
     PV04: {
-      hook: 'Every digit lives in a house: hundreds, tens or ones.',
-      teach: ['In 372, the 3 is in the hundreds house, so it is worth 300.', 'The 7 is in the tens house, so it is worth 70.', 'The 2 is in the ones house, so it is worth 2.'],
-      nudge: 'Which house is that digit in?',
-      strategy: 'A digit in the tens house is worth that many tens.',
+      hook: 'Every digit sits in a place: hundreds, tens or ones.',
+      teach: ['Each digit sits in a place: hundreds, tens or ones.', 'The place tells how much the digit is worth.', 'A digit in the tens place is worth that many tens.'],
+      nudge: 'Which place is that digit in?',
+      strategy: 'A digit in the tens place is worth that many tens.',
       home: 'Write a 3-digit number and point at one digit. Ask: "How much is this one worth?" Then build it with coins to check.'
     },
     PV10: {
       hook: 'Two ferries are racing. Which one carries more?',
-      teach: ['Compare the hundreds first.', 'If the hundreds are the same, compare the tens.', 'If the tens are the same too, compare the ones.'],
+      teach: ['Compare the hundreds first.', 'If the hundreds are the same, compare the tens.', 'If the tens are the same too, compare the ones.', 'The open side of > or < faces the bigger number.'],
       nudge: 'Look at the hundreds first.',
       strategy: 'The number with more hundreds is bigger, no matter what the tens and ones say.',
       home: 'Pick two prices at the store and ask which costs more and how your child knows.'
@@ -39,21 +39,21 @@
     },
     AS05: {
       hook: 'Too many ones for one dock! Ten ones can ride together as one ten.',
-      teach: ['Add the ones. If you get 10 or more, make a ten.', 'Move the new ten to the tens place.', 'Add the tens, including the new one.'],
+      teach: ['Add the ones first.', 'If there are 10 or more ones, make a ten.', 'Move the new ten to the tens place.', 'Add the tens, and count the new ten too.'],
       nudge: 'Look at the ones. Is it more than 9?',
-      strategy: 'Ten ones make one ten. Carry it to the tens.',
+      strategy: 'Ten ones make one ten. Move it to the tens.',
       home: 'Use 10 pennies and trade them for a dime whenever you have ten. Try 38¢ + 27¢.'
     },
     AS06: {
       hook: 'Some beads hop off the ferry. How many stay?',
-      teach: ['Take the ones from the ones.', 'Take the tens from the tens.'],
+      teach: ['Take the ones away from the ones.', 'Take the tens away from the tens.'],
       nudge: 'Start with the ones.',
       strategy: 'Ones from ones, tens from tens.',
       home: 'Count dimes and pennies, then take some away and count what is left.'
     },
     AS07: {
       hook: 'Not enough ones to take away? Break a ten into ten ones.',
-      teach: ['Look at the ones. Can you take the bottom ones from the top ones?', 'If not, break one ten into ten ones.', 'Now there is one fewer ten. Subtract each place.'],
+      teach: ['Sometimes there are not enough ones to take away.', 'Then we break one ten into 10 ones.', 'Now we have more ones, and one less ten.', 'This is called regrouping.', 'Take away the ones. Then take away the tens.'],
       nudge: 'Can you take those ones away? If not, break a ten.',
       strategy: 'Break one ten into ten ones, then remember there is one less ten.',
       home: 'Make 43 with 4 dimes and 3 pennies. Ask your child to give you 17¢. When they can\'t take 7 from 3, trade a dime for 10 pennies.'
@@ -67,7 +67,7 @@
     },
     AS12: {
       hook: 'Break a ten, or break a hundred, when there are not enough.',
-      teach: ['Start with the ones. Break a ten if you need to.', 'Then the tens. Break a hundred if you need to.', 'Then the hundreds.'],
+      teach: ['Start with the ones. Break a ten if there are not enough ones.', 'Then the tens. Break a hundred if there are not enough tens.', 'Then the hundreds.'],
       nudge: 'Start with the ones. Is the top digit big enough?',
       strategy: 'Break one of the next place when a place is too small.',
       home: 'Use $1 bills, dimes and pennies to act out 352 − 178, trading when a place runs short.'
@@ -87,38 +87,38 @@
       home: 'Count nickels by 5s and dimes by 10s while saving up.'
     },
     T3: {
-      hook: 'Pip\'s puzzle: find 100 − 37 without breaking a ten!',
-      teach: ['Take every digit from 9, except the last one.', 'Take the last digit from 10.', '100 − 37: 9 − 3 = 6, 10 − 7 = 3, so the answer is 63.', 'It works because 100 is 99 + 1, and 99 never needs regrouping.'],
-      nudge: 'All from 9, and the last from 10.',
-      strategy: '100 is 99 + 1. Subtract from the 9s, then add the 1 to the last place.',
+      hook: 'Pip\'s trick: take away from 100 or 1,000 without breaking a ten!',
+      teach: ['Look at each digit of the number you take away.', 'Take each digit from 9.', 'For the very last digit, take it from 10 instead.', 'It works because 100 is 99 and 1 more.'],
+      nudge: 'Take each digit from 9, and the last one from 10.',
+      strategy: 'Take from the 9s, then add the 1 back on the last digit.',
       home: 'Play "change from a dollar": you spend 37¢, how much change? Use the all-from-9 trick.',
       history: 'This trick appears in the 1965 book Vedic Mathematics by Bharati Krishna Tirtha. Historians note it is not found in the ancient Vedas themselves. We teach it because the math is sound and it is useful.'
     }
   };
   const more = {
-    PV01: ['Pip has too many beads to count one by one!', ['Ten ones can click together into one ten.', 'Make as many tens as you can.', 'Then count tens and the ones left over.'], 'Can you make one more ten from the ones?', 'Every 10 ones is 1 ten.', 'Count out pennies, and trade every 10 pennies for a dime. Then count the dimes and pennies.'],
-    PV02: ['Ten lanterns stack into one tower!', ['Ten tens make one hundred.', 'Make as many hundreds as you can from the tens.', 'Then count hundreds and tens.'], 'Can you make a hundred from 10 of the tens?', 'Every 10 tens is 1 hundred.', 'Trade 10 dimes for a dollar. Ask: "How much is 3 dollars and 12 dimes?"'],
-    PV05: ['A number can be split into its places.', ['347 is 300 + 40 + 7.', 'Each part is one place: hundreds, tens, ones.', 'Put the parts back together to make the number.'], 'Which part is the hundreds?', 'Hundreds, tens and ones each get their own place.', 'Write a number in expanded form together, like 300 + 40 + 7, and read it both ways.'],
-    PV06: ['Pip hears a number name. Can you write it?', ['"Four hundred six" means 4 hundreds and 6 ones.', 'There are no tens, so the tens place holds a 0.'], 'How many hundreds? How many tens? How many ones?', 'Write one digit for each place, using 0 for an empty place.', 'Say a number name aloud and have your child write it. Include ones like "five hundred eight".'],
-    PV07: ['Pip hops along the number path.', ['Counting by 10s changes the tens digit.', 'Counting by 100s changes the hundreds digit.', 'Counting by 5s goes 0, 5, 0, 5 in the ones.'], 'How much does each jump add?', 'Add the same jump each time.', 'Count by 10s from a 3-digit number in the car, like 347, 357, 367.'],
-    PV08: ['Some houses are empty. Zero keeps their spot.', ['4 hundreds and 5 ones has no tens.', 'Write a 0 in the tens place: 405.', 'Without the 0, it would read 45.'], 'Is any place empty?', 'Zero holds a place so the other digits stay put.', 'Build 405 with coins: 4 dollars, no dimes, 5 pennies. Write it together.'],
-    PV09: ['A hundred is also ten tens.', ['342 has 3 hundreds, 4 tens, 2 ones.', 'Each hundred is 10 tens, so 3 hundreds is 30 tens.', '30 tens + 4 tens = 34 tens.'], 'How many tens are in the hundreds?', 'Count all the tens, including the ones inside the hundreds.', 'Ask how many dimes make $3.40. Count them out if needed.'],
-    PV11: ['Where does this number live on the line?', ['Find where the line starts.', 'Find how much each jump is.', 'Count the jumps to the arrow.'], 'How much is each jump?', 'Start number + jumps × jump size.', 'Draw a line from 300 to 400 with tick marks every 10 and point to a tick.'],
+    PV01: ['Pip has too many beads to count one by one!', ['10 ones can click together to make 1 ten.', 'Make as many tens as you can.', 'Then count the tens and the ones left over.'], 'Can you make one more ten from the ones?', 'Every 10 ones is 1 ten.', 'Count out pennies, and trade every 10 pennies for a dime. Then count the dimes and pennies.'],
+    PV02: ['Ten lanterns stack into one tower!', ['10 tens make 1 hundred.', 'Make as many hundreds as you can from the tens.', 'Then count the hundreds and the tens left over.'], 'Can you make a hundred from 10 of the tens?', 'Every 10 tens is 1 hundred.', 'Trade 10 dimes for a dollar. Ask: "How much is 3 dollars and 12 dimes?"'],
+    PV05: ['A number can be split into its places.', ['A number can be split into its places.', 'Each part is one place: hundreds, tens or ones.', 'Put the parts back together to make the number.'], 'Which part is the hundreds?', 'Hundreds, tens and ones each get their own place.', 'Write a number in expanded form together, like 300 + 40 + 7, and read it both ways.'],
+    PV06: ['Pip hears a number name. Can you write it?', ['A number name tells how many hundreds, tens and ones.', 'Write one digit for each place.', 'If a place is empty, write a 0 there.'], 'How many hundreds? How many tens? How many ones?', 'Write one digit for each place, using 0 for an empty place.', 'Say a number name aloud and have your child write it. Include ones like "five hundred eight".'],
+    PV07: ['Pip hops along the number path.', ['Skip-counting means counting by jumps of the same size.', 'Counting by 10s changes the tens digit.', 'Counting by 100s changes the hundreds digit.', 'Counting by 5s makes the ones go 0, 5, 0, 5.'], 'How much does each jump add?', 'Add the same jump each time.', 'Count by 10s from a 3-digit number in the car, like 347, 357, 367.'],
+    PV08: ['Some places are empty. Zero keeps their spot.', ['Sometimes a place has nothing in it.', 'We write a 0 to hold that place.', 'Without the 0, the number would mean something else.'], 'Is any place empty?', 'Zero holds a place so the other digits stay put.', 'Build 405 with coins: 4 dollars, no dimes, 5 pennies. Write it together.'],
+    PV09: ['A hundred is also ten tens.', ['A hundred is the same as 10 tens.', 'To count all the tens, count the tens inside the hundreds too.', 'Then add the other tens.'], 'How many tens are in the hundreds?', 'Count all the tens, including the ones inside the hundreds.', 'Ask how many dimes make $3.40. Count them out if needed.'],
+    PV11: ['Where does this number live on the line?', ['Find where the line starts.', 'Find how much each jump is.', 'Count the jumps to the arrow.'], 'How much is each jump?', 'Start at the first number and add the jumps.', 'Draw a line from 300 to 400 with tick marks every 10 and point to a tick.'],
     PV13: ['Which ten is closer?', ['Find the two tens the number sits between.', 'Look at the ones digit.', '5 or more goes up; 4 or less goes down.'], 'Which two tens is it between?', 'The ones digit decides: 5 or more rounds up.', 'Round prices to the nearest 10 cents at the store.'],
     PV14: ['Which hundred is closer?', ['Find the two hundreds the number sits between.', 'Look at the tens digit.', '5 or more goes up; 4 or less goes down.'], 'Which two hundreds is it between?', 'The tens digit decides when rounding to the nearest 100.', 'Round the number of pages in a book to the nearest hundred.'],
-    AS01: ['Quick adding and taking away.', ['To add, count on from the bigger number.', 'To subtract, count back, or think of the adding fact.'], 'Start from the bigger number and count on.', 'Start counting on the next number.', 'Play a quick "make 20" game with fingers or coins.'],
-    AS02: ['Make a ten to add faster!', ['8 + 5: give 2 from the 5 to the 8 to make 10.', '10 + 3 = 13.'], 'How many more does the first number need to make 10?', 'Fill the ten-frame first, then add what is left.', 'Use an egg carton cut to 10 cups. Fill it first, then count what is left.'],
-    AS03: ['Adding and subtracting are a family.', ['7 + 8 = 15, so 15 − 8 = 7 and 15 − 7 = 8.', 'If you know one fact, you know the family.'], 'What adding fact uses these numbers?', 'Taking away undoes adding.', 'Write one fact like 7 + 8 = 15 and ask your child for the other three in the family.'],
-    AS08: ['The ferry carries three or four groups at once!', ['Add all the ones first.', 'Make tens from the ones.', 'Add all the tens, including the new ones.'], 'Add the ones column first.', 'Ones first, make tens, then add the tens.', 'Add the ages of everyone at dinner, ones first.'],
-    AS09: ['Use a friendly number!', ['49 + 26: give 1 from 26 to 49.', 'Now it is 50 + 25 = 75.', 'Move a little from one number to the other. The total stays the same.'], 'Can you make one number a ten?', 'Move a little from one number to the other to make a ten.', 'At the store: $4.99 + $2.30 is $5.00 + $2.29.'],
-    AS10: ['How far is it from one number to the other?', ['Hop to the next ten.', 'Hop by tens.', 'Add up your hops.'], 'Hop to the next ten first.', 'Count up from the small number to find how far apart they are.', 'Ask: "We are at page 38. How many pages to page 72?" Count up together.'],
+    AS01: ['Quick adding and taking away.', ['To add, start with the bigger number and count on.', 'To take away, count back.', 'Or think of an adding fact you know.'], 'Start from the bigger number and count on.', 'Start with the bigger number and count on.', 'Play a quick "make 20" game with fingers or coins.'],
+    AS02: ['Make a ten to add faster!', ['Ten is an easy number to add to.', 'Take some from one number to fill the other up to 10.', 'Then add what is left to 10.'], 'How many more does the first number need to make 10?', 'Fill the ten-frame first, then add what is left.', 'Use an egg carton cut to 10 cups. Fill it first, then count what is left.'],
+    AS03: ['Adding and taking away are a family.', ['Adding and taking away are a family.', 'The same three numbers are in every fact of the family.', 'If you know one fact, you know the others.'], 'What adding fact uses these numbers?', 'Taking away undoes adding.', 'Write one fact like 7 + 8 = 15 and ask your child for the other three in the family.'],
+    AS08: ['The ferry carries three or four groups at once!', ['Add all the ones first.', 'Make tens from the ones if you can.', 'Then add all the tens, and the new tens too.'], 'Add the ones column first.', 'Ones first, make tens, then add the tens.', 'Add the ages of everyone at dinner, ones first.'],
+    AS09: ['Use a friendly number!', ['A friendly number ends in 0.', 'Move a little from one number to the other.', 'Now one number is friendly, and adding is easy.', 'The total stays the same.'], 'Can you make one number a ten?', 'Move a little from one number to the other to make a ten.', 'At the store: $4.99 + $2.30 is $5.00 + $2.29.'],
+    AS10: ['How far is it from one number to the other?', ['Start at the smaller number.', 'Hop to the next ten.', 'Then hop to the bigger number.', 'Add up your hops.'], 'Hop to the next ten first.', 'Count up from the small number to find how far apart they are.', 'Ask: "We are at page 38. How many pages to page 72?" Count up together.'],
     AS13: ['Not enough tens either? Break a hundred.', ['400 − 167: no ones, no tens.', 'Break a hundred into 10 tens, then a ten into 10 ones.', '400 becomes 3 hundreds, 9 tens, 10 ones.'], 'There are no tens to break. What can you break instead?', 'Break a hundred into tens, then a ten into ones.', 'Use $4 in dollar bills to pay $1.67. Trade a dollar for dimes, then a dime for pennies.'],
     AS14: ['The column method for adding.', ['Line up the places.', 'Add ones, then tens, then hundreds.', 'Carry when a place makes 10 or more.'], 'Start with the ones column.', 'Line up places, add right to left, carry tens.', 'Add two 3-digit numbers on paper together, saying each carry out loud.'],
     AS15: ['The column method for subtracting.', ['Line up the places.', 'Start with the ones.', 'Break a ten or a hundred when a place is too small.'], 'Is the top digit big enough?', 'Line up the places. Start with the ones. Break a ten when you need to.', 'Subtract two 3-digit numbers on paper together, checking by adding back.'],
     AS16: ['About how much? Round first.', ['Round each number to the nearest hundred.', 'Add the rounded numbers.', 'Use it to check if an exact answer makes sense.'], 'Round each number first.', 'Rounded numbers give a quick check.', 'Before paying, estimate the total of two prices to the nearest dollar.'],
-    AS17: ['Why does it work?', ['Ten ones are the same as one ten.', 'That is why we carry a ten, or break one.'], 'Think about what ten ones are worth.', 'Every carry and every break is a trade of 10 for 1.', 'Ask your child to explain one homework problem to you as if you were Pip.'],
-    MU01: ['Can everyone find a partner?', ['Put the dots in pairs.', 'If none is left over, the number is even.', 'If one is left over, it is odd.'], 'Make pairs. Is one left over?', 'Even numbers split into pairs with none left.', 'Pair up socks or shoes and ask if the number is odd or even.'],
-    MU02: ['Rows and rows of seeds.', ['An array has equal rows.', 'Add the same number for each row.', '3 rows of 4 is 4 + 4 + 4 = 12.'], 'How many in each row? How many rows?', 'Add the row amount once for each row.', 'Look for arrays at home: egg cartons, muffin trays, windows.'],
+    AS17: ['Why does it work?', ['Ten ones are worth the same as one ten.', 'That is why 10 ones can become 1 ten.', 'And why 1 ten can be broken into 10 ones.'], 'Think about what ten ones are worth.', 'Making a ten and breaking a ten are both a trade of 10 for 1.', 'Ask your child to explain one homework problem to you as if you were Pip.'],
+    MU01: ['Can everyone find a partner?', ['Put the dots in pairs.', 'If every dot has a partner, the number is even.', 'If one dot is left over, the number is odd.'], 'Make pairs. Is one left over?', 'Even numbers split into pairs with none left.', 'Pair up socks or shoes and ask if the number is odd or even.'],
+    MU02: ['Rows and rows of seeds.', ['An array has equal rows.', 'Each row has the same number of dots.', 'Add that number once for each row.'], 'How many in each row? How many rows?', 'Add the row amount once for each row.', 'Look for arrays at home: egg cartons, muffin trays, windows.'],
     MU04: ['Hop along by the same amount.', ['Skip-count by the number in each group.', 'Count how many hops.', 'Where you land is the product.'], 'How many hops? How big is each hop?', 'Skip-count once for each group.', 'Skip-count by 5s and 10s while climbing stairs.'],
     MU05: ['Turn it around!', ['3 × 6 is 3 rows of 6.', 'Turn the array on its side: 6 rows of 3.', 'Same dots, same answer.'], 'Does turning the array change the number of dots?', 'Swapping the numbers does not change the product.', 'Make an array of coins, then turn it and count again.'],
     MU07: ['Zero groups and one group.', ['Anything times 0 is 0: groups with nothing inside.', 'Anything times 1 is itself: one group.'], 'How many are in each group?', '× 0 makes 0. × 1 keeps the number.', 'Show 5 empty cups: how many marbles? Then 1 cup with 5.'],
@@ -132,8 +132,8 @@
     MU15: ['Patterns in the times table.', ['Times an even number is even.', 'The 9s digits add up to 9.', 'Patterns help you check answers.'], 'Look for a pattern you know.', 'Odd × odd is odd; anything × even is even.', 'Look at a times table together and find three patterns.'],
     MU16: ['All the facts, from memory.', ['Use your strategies to work out any fact.', 'Practice a few each day.', 'Soon they come quickly.'], 'Which strategy fits this fact?', 'Every fact can be built from one you know.', 'Five minutes of fact practice a day, a few facts at a time, beats one long session.'],
     WP01: ['Things join, or go away.', ['Draw the story as a bar.', 'Is the start, the change or the end missing?', 'Add or subtract to find it.'], 'Draw the story. What is missing?', 'Find what is missing in the story, then choose plus or minus.', 'Tell a story problem about toys and ask your child to draw it before solving.'],
-    WP02: ['Two parts make a whole.', ['Draw the whole bar.', 'Split it into the two parts.', 'If a part is missing, subtract. If the whole is missing, add.'], 'Is a part missing, or the whole?', 'Parts add to the whole.', 'Sort snacks into two kinds and ask part-whole questions.'],
-    WP03: ['Who has more, and how many more?', ['Draw two bars.', 'The difference is the extra piece.', 'Subtract to find it.'], 'Draw two bars. How long is the extra piece?', '"How many more" means find the difference.', 'Compare two family members\' heights or ages: "How many more?"'],
+    WP02: ['Two parts make a whole.', ['Two parts make a whole.', 'If the whole is missing, add the parts.', 'If a part is missing, take the other part away from the whole.'], 'Is a part missing, or the whole?', 'Parts add to the whole.', 'Sort snacks into two kinds and ask part-whole questions.'],
+    WP03: ['Who has more, and how many more?', ['Draw two bars.', 'The extra piece on the longer bar is the difference.', 'Take the smaller amount from the bigger one to find it.'], 'Draw two bars. How long is the extra piece?', '"How many more" means find the difference.', 'Compare two family members\' heights or ages: "How many more?"'],
     WP04: ['Equal groups in a story.', ['How many groups?', 'How many in each group?', 'Multiply.'], 'How many groups? How many in each?', 'Groups × in each group = total.', 'At snack time: "3 plates with 4 crackers each. How many crackers?"'],
     WP05: ['A story with two steps.', ['Find what happens first.', 'Then find what happens next.', 'Use the first answer in the second step.'], 'What happens first in the story?', 'Do step one, then use its answer for step two.', 'Tell a two-step story at dinner and ask for both steps.']
   };

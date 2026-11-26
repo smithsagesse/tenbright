@@ -49,7 +49,7 @@ for (const id of covered) {
     });
   }
   // Grade 1 and the column skills always get plain words; a later slice may leave rare cases to the engine steps
-  ok(made >= (E.gradeOf(id) === 1 ? 2000 : 1900), id + ': plain words for ' + made + ' of 2000 questions');
+  ok(made >= (E.gradeOf(id) <= 2 ? 2000 : 1900), id + ': plain words for ' + made + ' of 2000 questions');
 }
 // Fix Pip's mistake questions and any odd item fall back to the engine's steps, never to broken words
 for (const id of covered) for (let i = 0; i < 300; i++) {
