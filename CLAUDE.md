@@ -230,4 +230,9 @@ before (only when both have 5 or more answers). Everything is computed from data
 answers, `masteredAt`); no new kind of data is stored, so the privacy notice stays v1.3. "What {child} is working on,
 and why" lists up to 3 skills in progress with a plain line per region (`REGION_WHY`, no outcome claims), what each
 builds on (its prerequisites) and what it opens next (skills that list it as a prerequisite).
+**Money & Wealth Adventures (proposed Nov 26, 2026, not built):** the owner asked for a Financial Intelligence Academy
+inside the app. The integration plan with 12 deliverables and 7 decisions for the owner is the doc
+"Money & Wealth Adventures: Integration Plan" (https://claude.ai/artifact/PHhg5uFNNrJQwKjNVfFRFA). Recommended first release:
+10 adventures for Grades 1–5 on new skills FN01, FN02, FN04, FN05, FN07, entered from the Money Market and by an optional
+invitation after mastery; no AI at run time, no carry-over money, no new data kind. Build nothing until he answers the decisions.
 Do not claim legal sign-off, hiring or payments. Those are his.

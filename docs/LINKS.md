@@ -17,3 +17,4 @@
 
 The `docs/` folder holds a copy of each document taken on Nov 10, 2026. There is a PDF in `docs/pdf/` and a plain-text copy for Claude Code.
 The Phase 1 Strategic Foundation copy is in Markdown.
+- Money & Wealth Adventures: Integration Plan (Nov 26, 2026): https://claude.ai/artifact/PHhg5uFNNrJQwKjNVfFRFA
