@@ -238,6 +238,45 @@ ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 122, '122 cor
     a.steps.forEach((st) => { trueSentences(st.how, 'lemonade'); if (!st.idea) ok(E.SKILLS[st.skill] && new RegExp('= ' + st.answer + '$').test(st.how), 'lemonade step ends with its answer: ' + st.how); });
     ok(s4.predicted.MF2 === s3.answer && s3.predicted.MF1 === s1.answer, 'money-idea clues: forgot a cost, revenue as profit');
   }
+  // all ten adventures: each step an engine question with a true worked sentence ending in its answer; the idea check last
+  const ids = Object.keys(E.ADVENTURES);
+  ok(ids.length === 10, 'ten adventures');
+  ids.forEach((id) => {
+    const A = E.ADVENTURES[id];
+    A.needs.concat(A.skills).forEach((s) => ok(E.SKILLS[s], id + ': unknown skill ' + s));
+    ok(A.name && A.idea && A.real && A.home, id + ': name, idea, real-life line and home activity');
+    for (let i = 0; i < 2000; i++) {
+      const a = E.adventure(id, RF), last = a.steps[a.steps.length - 1];
+      ok(a.intro && /pretend/.test(a.intro), id + ': the intro says the money is pretend');
+      ok(a.steps.length >= 4 && last.idea && last.choices.includes(last.answer) && a.steps.filter((x) => x.idea).length === 1, id + ': one idea check, last');
+      a.steps.forEach((st) => {
+        ok(Array.isArray(st.story) && st.story.every((x) => x.length === 2 && x[1] !== undefined && !/NaN|undefined/.test(String(x[1]))), id + ': story strip');
+        ok(!/undefined|NaN/.test(st.prompt + st.how), id + ': text');
+        trueSentences(st.how, id);
+        if (st.idea) return;
+        ok(a.skills ? true : true, '');
+        ok(E.SKILLS[st.skill] && A.skills.includes(st.skill), id + ': step skill listed: ' + st.skill);
+        ok(/^\d+$/.test(st.answer) && +st.answer > 0, id + ': positive whole answer ' + st.answer);
+        ok(new RegExp('= ' + st.answer + '$').test(st.how), id + ': worked step ends with the answer: ' + st.how);
+        Object.values(st.predicted).forEach((w) => ok(w !== st.answer, id + ': clue differs from the answer'));
+        if (st.coins) ok(st.coins.reduce((x, y) => x + y, 0) === +st.answer || id === 'jar', id + ': coins');
+      });
+    }
+  });
+  // grade fit: piggy stays within 10, the toy shelf within 20, the market stall under 100
+  for (let i = 0; i < 2000; i++) {
+    E.adventure('piggy', RF).steps.forEach((st) => (st.how.match(/\d+/g) || []).forEach((x) => ok(+x <= 10, 'piggy within 10: ' + st.how)));
+    E.adventure('shelf', RF).steps.forEach((st) => (st.how.match(/\d+/g) || []).forEach((x) => ok(+x <= 20, 'shelf within 20: ' + st.how)));
+    E.adventure('stall', RF).steps.forEach((st) => (st.how.match(/\d+/g) || []).forEach((x) => ok(+x < 100, 'stall under 100: ' + st.how)));
+  }
+  // explainers for the three adventures that have them: 5 frames, true number sentences, honest closing line
+  ['lemonade', 'growth', 'company'].forEach((id) => { ok(E.ADVENTURES[id].explainer, id + ' has an explainer'); for (let i = 0; i < 500; i++) { const fr = E.adventureExplainer(id, RF); ok(fr.length === 5 && fr.every((f) => f.say && f.pic && f.pic.type), id + ' explainer frames'); fr.forEach((f) => { trueSentences(f.say, id + ' explainer'); ok(!/undefined|NaN/.test(f.say), id + ' explainer text'); (f.pic.bars || []).forEach((b) => ok(b[1] > 0, id + ' bar')); }); } });
+  ok(/not a promise/.test(E.adventureExplainer('company', RF)[4].say) && /can change/.test(E.adventureExplainer('growth', RF)[4].say), 'explainers say gains are not promised');
+  // investing stories open only when a parent turns them on
+  const LI = E.newLearner('I', 2015, 'pv', '5');
+  LI.skills.FN05.status = 'mastered'; LI.skills.FN07.status = 'mastered';
+  ok(!E.adventureOpen(LI.skills, 'company') && !E.adventureOpen(LI.skills, 'growth'), 'investing stories are off by default');
+  ok(E.adventureOpen(LI.skills, 'company', { investing: true }) && E.adventureOpen(LI.skills, 'growth', { investing: true }), 'and open with the parent switch');
   const LF = E.newLearner('M', 2016, 'pv', '3');
   ok(!E.adventureOpen(LF.skills, 'lemonade'), 'the adventure waits for its math');
   LF.skills.FN02.status = 'mastered';

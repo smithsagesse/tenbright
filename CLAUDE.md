@@ -243,6 +243,13 @@ FN07 growth year by year (Money Market region); clues MF1 revenue as profit, MF2
 MF4 growth added once, MF5 whole instead of part; `E.ADVENTURES`/`adventure(id, r)`/`adventureOpen`; the runner is the
 games shell with `game: 'adventure'` (story strip, idea-check choices, "What math did you use?" end screen), reached by a
 "Money adventures" map button shown only when an adventure is open; results in `ch.adventures` (at, first, steps, idea).
-First adventure: Build a Lemonade Stand (opens when FN02 is lit). Next: step 2 (9 more adventures, invitation after
-mastery, parent card and switches, badge, 3 animated explainers).
+Step 2 (done Nov 26): ten adventures in `ADV_BUILD` (piggy, shelf, kite, jar, change, twenty, stall, lemonade, company,
+growth; each names its math skills, a money idea, a real-life line and a home activity); company and growth are investing
+stories (`investing: true`), open only when the parent turns on "Investing stories". Story strip = `[label, value]` pairs.
+Explainers (`adventureExplainer`: lemonade, growth, company; 5 frames of a picture and one Pip line, numbers from the
+engine, bars grow unless animation is Still) play before the first try, skippable, and on demand after. The invitation
+after mastery appears once on the practice end screen when the session's skill was just lit and powers an open
+adventure (`session.wasLit`), with Later. Parent card "Math in real life" with switches `S.settings.adventures` (on),
+`investing` (off), `invites` (on). Badge "Market maker" (3 adventures) gives Pip a sun cap. Remaining from the plan:
+adventures 9-14, 16, 17, 19, 20 and skills FN03, FN06, FN08 after the pilot.
 Do not claim legal sign-off, hiring or payments. Those are his.

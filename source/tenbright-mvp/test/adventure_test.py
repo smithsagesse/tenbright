@@ -1,8 +1,10 @@
-"""Money & Wealth Adventures, step 1: the adventure runner. The map button appears only when an adventure's math is lit;
+"""Money & Wealth Adventures (steps 1 and 2): the adventure runner and the ten adventures. The map button appears only when an adventure's math is lit;
 a story of linked steps with a running "story so far"; money-idea clues on known mistakes; "here is how" after two
 misses; an idea check with two choices; the end screen names the math; first answers count as story evidence for
 their skills; nothing about spending is kept and no money carries over; light and dark accessibility, Arabic, phone
-width. Run after build: python3 test/adventure_test.py"""
+width. Step 2: all ten adventures play to the end; investing stories wait for the parent switch; explainers before the
+first play (skippable) and on demand; the invitation after mastery (once, with Later; never when switched off); the
+Market maker badge; the parent "Math in real life" card. Run after build: python3 test/adventure_test.py"""
 import pathlib, re
 from playwright.sync_api import sync_playwright
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -48,6 +50,9 @@ with sync_playwright() as p:
         axe(pg, 'adventures list ' + scheme)
         # 2. play: a story of linked steps with a running total
         pg.locator('[data-act="advStart"][data-id="lemonade"]').click()
+        # the first time, the explainer comes first; Skip goes straight to the story
+        assert pg.evaluate("() => window.__tbSession().mode") == 'explain' and pg.locator('[data-act="xpDone"]', has_text='Skip').count() == 1
+        pg.locator('[data-act="xpDone"]').click()
         assert pg.locator('.story-strip').count() == 1 and 'pretend money' in pg.locator('main').inner_text()
         axe(pg, 'adventure step ' + scheme)
         rd = step(pg); answer(pg, rd, rd['answer'])
@@ -86,8 +91,61 @@ with sync_playwright() as p:
         for v in ['map', 'adventures', 'journal', 'games']:
             t = pg.evaluate("(v) => window.__tbView(v)", v).lower()
             assert not re.search(r'\bwallet\b|\bbalance\b|\bearn coins\b|\byour money\b|\bshop for\b', t), v
+        # 6. step 2: investing stories wait for the parent switch; every adventure plays to the end
+        pg.evaluate("() => { const c = window.__tbChild(); ['C102','C103','MY01','AS01','AS10','MY02','MY04','FN04','FN01','FN02','FN05','FN07'].forEach((id) => c.skills[id].status = 'mastered'); c.adventures = {}; c.badges = {}; window.__tbView('adventures'); }")
+        assert pg.locator('[data-act="advStart"]').count() == 8 and pg.get_by_text('A grown-up can turn on investing stories.').count() == 2, 'investing stories off by default'
+        pg.evaluate("() => window.__tbView('dashboard')"); pg.check('#invest-on')
+        assert pg.evaluate('() => JSON.parse(localStorage.getItem("tenbright-mvp-v1")).settings.investing') is True
+        pg.evaluate("() => window.__tbView('adventures')")
+        assert pg.locator('[data-act="advStart"]').count() == 10
+        axe(pg, 'all adventures ' + scheme)
+        for aid in ['piggy', 'shelf', 'kite', 'jar', 'change', 'twenty', 'stall', 'lemonade', 'company', 'growth']:
+            pg.evaluate("() => window.__tbView('adventures')")
+            pg.locator('[data-act="advStart"][data-id="%s"]' % aid).click()
+            if aid in ('lemonade', 'company', 'growth') and pg.evaluate("() => window.__tbSession().mode") != 'explain':
+                assert aid == 'lemonade', aid + ': an adventure with an explainer starts with it the first time'
+            if pg.evaluate("() => window.__tbSession().mode") == 'explain':
+                assert pg.locator('.xp-pic').count() == 1 and 'watch how it works' in pg.locator('main').inner_text().lower()
+                if aid == 'growth':
+                    pg.locator('[data-act="xpDone"]').click()  # skip
+                else:
+                    for i in range(4): pg.locator('[data-act="xpNext"]').click()
+                    axe(pg, aid + ' explainer ' + scheme)
+                    pg.locator('[data-act="xpDone"]').click()
+            if aid == 'jar': assert pg.locator('.coins-row').count() == 1, 'the jar shows its coins'
+            n = pg.evaluate("() => window.__tbSession().rounds.length")
+            for i in range(n):
+                rd = step(pg); answer(pg, rd, rd['answer'])
+                pg.locator('[data-act="gameNext"]').click()
+            t = pg.locator('main').inner_text()
+            assert 'Adventure complete!' in t and 'undefined' not in t and 'NaN' not in t, (aid, t[:200])
+        # 7. the badge after 3 adventures, with its gift line
+        assert 'market' in pg.evaluate("() => Object.keys(window.__tbChild().badges)")
+        pg.evaluate("() => window.__tbView('adventures')")
+        assert pg.locator('[data-act="advWatch"]').count() == 3, 'explainers on demand after the first play'
+        pg.locator('[data-act="advWatch"][data-id="company"]').click()
+        assert pg.evaluate("() => window.__tbSession().frames.length") == 5
+        # 8. the invitation after mastery: once, on the end screen, with Later
+        pg.evaluate("() => { const c = window.__tbChild(); c.skills.MY02.status = 'learning'; window.__tbShow('MY02', 0); const s = window.__tbSession(); s.wasLit = false; s.correct = 8; s.count = 8; c.skills.MY02.status = 'mastered'; window.__tbFinish(); }")
+        inv = pg.locator('.invite-card')
+        assert inv.count() == 1 and 'You lit Count coins!' in inv.inner_text() and 'Count the Jar' in inv.inner_text()
+        axe(pg, 'invitation ' + scheme)
+        pg.locator('[data-act="invLater"]').click(); assert pg.locator('.invite-card').count() == 0
+        pg.evaluate("() => window.__tbView('dashboard')"); pg.uncheck('#invite-on')
+        pg.evaluate("() => { const c = window.__tbChild(); c.skills.MY02.status = 'learning'; window.__tbShow('MY02', 0); const s = window.__tbSession(); s.wasLit = false; s.correct = 8; s.count = 8; c.skills.MY02.status = 'mastered'; window.__tbFinish(); }")
+        assert pg.locator('.invite-card').count() == 0, 'no invitation when switched off'
+        # 9. the parent card
+        pg.evaluate("() => window.__tbView('dashboard')")
+        card = pg.locator('section.card', has_text='Math in real life')
+        ct = card.inner_text()
+        for t in ['Build a Lemonade Stand', 'Math used:', 'Talk about it at home:', 'not financial advice']:
+            assert t in ct, t
+        axe(pg, 'parent card ' + scheme)
+        # money adventures can be switched off: the map button goes away
+        pg.uncheck('#adv-on'); pg.evaluate("() => window.__tbView('map')")
+        assert pg.locator('[data-to="adventures"]').count() == 0
         ctx.close()
-    # 6. Arabic and a phone
+    # 10. Arabic and a phone
     # reduced motion, like the other contexts: axe must measure the settled screen, not a fade-in
     ctx = b.new_context(viewport={'width': 360, 'height': 780}, reduced_motion='reduce')
     pg = ctx.new_page(); pg.on('pageerror', lambda e: errors.append(str(e)))

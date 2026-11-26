@@ -45,9 +45,9 @@ with sync_playwright() as p:
     page.get_by_role('button', name='Add child').click()
     page.get_by_role('button', name='Ava').click()
     page.get_by_text("Let's explore!").click()
-    # adaptive placement: runs until the walk finishes (at most 25 items)
-    n = 0
-    while not page.get_by_text('Thanks for exploring!').count() and n < 40:
+    # adaptive placement: runs until the walk finishes (at most PLACEMENT_MAX_ITEMS questions, plus rest stops)
+    n = 0; cap = 2 * page.evaluate('() => window.TBEngine.PLACEMENT_MAX_ITEMS') + 12
+    while not page.get_by_text('Thanks for exploring!').count() and n < cap:
         if page.locator('[data-act="restGo"]').count():  # Discovery Adventure rest stop
             page.locator('[data-act="restGo"]').click(); n += 1; continue
         answer_current(page)

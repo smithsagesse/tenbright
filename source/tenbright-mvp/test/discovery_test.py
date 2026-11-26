@@ -63,7 +63,8 @@ with sync_playwright() as p:
         assert 'Number adventure' in pg.locator('main').inner_text()
         # 2. play: miss the story, get the rest of it right; take a break at the first rest stop, then resume
         rests = 0; probes = []; resumed = False; n = 0; child_text = []
-        while not pg.get_by_text('Thanks for exploring!').count() and n < 45:
+        cap = 2 * pg.evaluate('() => window.TBEngine.PLACEMENT_MAX_ITEMS') + 12  # every question, a clue retry each, rest stops
+        while not pg.get_by_text('Thanks for exploring!').count() and n < cap:
             n += 1
             if pg.locator('[data-act="restGo"]').count():
                 rests += 1

@@ -118,6 +118,19 @@ td.num, th.num { text-align: right; }
 .story-cell span { font-size: 14px; font-weight: 700; }
 .story-cell b { font-size: 22px; }
 .adv-recap { text-align: left; max-width: 560px; margin: 12px auto; }
+.xp-pic { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center; margin: 10px auto; max-width: 520px; width: 100%; }
+.xp-bars { flex-direction: column; align-items: stretch; gap: 10px; }
+.xp-row { display: grid; grid-template-columns: 96px minmax(0, 1fr) 64px; gap: 10px; align-items: center; }
+.xp-lab { font-weight: 800; color: var(--ink); }
+.xp-row b { color: var(--ink); text-align: end; font-size: 20px; }
+.xp-track { height: 26px; background: var(--fill-solid); border-radius: 8px; overflow: hidden; }
+.xp-bar { display: block; height: 100%; border-radius: 8px; }
+.xp-anim .xp-bar { animation: xpGrow .9s var(--ease-out) both; transform-origin: left center; }
+[dir="rtl"] .xp-anim .xp-bar { transform-origin: right center; }
+.xp-anim.xp-cups svg { animation: xpPop .4s var(--ease-out) both; }
+@keyframes xpGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes xpPop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.invite-card { max-width: 560px; margin: 12px auto; text-align: center; }
 .adv-recap h2 { margin: 0 0 6px; font-size: 20px; }
 .region.clock { background: #7A3E8C; }
 .region.workshop { background: #1F6E5A; }
@@ -1102,6 +1115,19 @@ tr:last-child td { border-bottom: none; }
       ${chart('Lanterns lit, in all', rows.map((r) => r.lit), (v) => v)}
       <p class="hint-text">Each column is one week, starting on the date shown. On their own means right or wrong without a hint beyond the first nudge. A dash means no answers that week.</p></section>`;
   }
+  function mathRealLifeHtml(ch) {
+    const done = Object.keys(E.ADVENTURES).filter((id) => ((ch.adventures || {})[id] || []).length);
+    const next = Object.keys(E.ADVENTURES).filter((id) => !done.includes(id) && !advOpen(ch, id) && !E.ADVENTURES[id].investing).slice(0, 2);
+    const names = (ids) => ids.map((s) => `<span>${esc(E.SKILLS[s].name)}</span>`).join(', ');
+    return `<section class="card"><span class="eyebrow">Math in real life</span>
+      ${done.length ? `<ul class="why-list">${done.map((id) => { const A = E.ADVENTURES[id], x = ch.adventures[id][ch.adventures[id].length - 1]; return `<li><b>${esc(A.name)}</b><p><span>${esc(A.idea)}</span> · <span>${x.first} of ${x.steps} steps right on the first try</span></p><p class="hint-text"><span>Math used:</span> ${names(A.skills)}</p><p class="hint-text"><span>Talk about it at home:</span> <span>${esc(A.home)}</span></p></li>`; }).join('')}</ul>` : '<p>No money adventures yet. They open on the map when the math they use is lit.</p>'}
+      ${next.length ? `<p class="hint-text">${next.map((id) => `<b>${esc(E.ADVENTURES[id].name)}</b>: <span>Opens when this is lit:</span> ${names(E.ADVENTURES[id].needs)}`).join('<br>')}</p>` : ''}
+      <label class="check"><input type="checkbox" id="adv-on" ${advOn() ? 'checked' : ''}> Money adventures (pretend money, built on math your child has learned)</label>
+      <label class="check"><input type="checkbox" id="invest-on" ${investOn() ? 'checked' : ''}> Investing stories: owning a share of a company and savings that grow</label>
+      <label class="check"><input type="checkbox" id="invite-on" ${invitesOn() ? 'checked' : ''}> Invitations after a skill is learned</label>
+      <p class="hint-text">Adventures use pretend money and invented companies. They teach the math of money; they are not financial advice, and the app never connects to real money or accounts.</p>
+    </section>`;
+  }
   function workingOnHtml(ch, working) {
     const ids = working.slice(0, 3);
     if (!ids.length) return '';
@@ -1167,15 +1193,66 @@ tr:last-child td { border-bottom: none; }
   const GAME_DONE = { adventure: 'Adventure complete!', trial: 'You tried a new way to solve!', bridge: 'The bridge is built!', pizza: 'Every order is served!', detective: 'Case closed!' };
   const GAME_CLUE = { adventure: 'A clue! Look at the story so far. Try again.', trial: 'A clue! Think of the steps in the lesson. Try again.', bridge: 'A clue! The gap is the whole take away the part. Try again.', pizza: 'A clue! Count the slices again. Look at the bottom number of the order. Try again.', detective: 'A clue! Look at how each number changes, or what the hidden number must make. Try again.' };
   // ---------- Money & Wealth Adventures (owner approved Nov 26, 2026): pretend money inside one story ----------
+  const coinArt = (fill, ring, t) => `<svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="32" fill="${fill}" stroke="${ring}" stroke-width="5"></circle><text x="40" y="49" text-anchor="middle" font-size="24" font-weight="800" fill="#1E2A3B">${t}</text></svg>`;
+  const ADV_ART_MORE = {
+    piggy: '<svg width="96" height="80" viewBox="0 0 96 80" aria-hidden="true"><ellipse cx="46" cy="44" rx="34" ry="24" fill="#F7A8C4" stroke="#B5547A" stroke-width="3"></ellipse><circle cx="80" cy="42" r="9" fill="#F7A8C4" stroke="#B5547A" stroke-width="3"></circle><rect x="36" y="18" width="18" height="5" rx="2" fill="#7A2E4E"></rect><rect x="22" y="62" width="8" height="12" fill="#B5547A"></rect><rect x="58" y="62" width="8" height="12" fill="#B5547A"></rect></svg>',
+    shelf: '<svg width="96" height="80" viewBox="0 0 96 80" aria-hidden="true"><rect x="6" y="30" width="84" height="6" fill="#8A5A12"></rect><rect x="6" y="66" width="84" height="6" fill="#8A5A12"></rect><rect x="14" y="12" width="18" height="18" rx="3" fill="#2D6FD1"></rect><circle cx="52" cy="21" r="9" fill="#E0623C"></circle><rect x="66" y="46" width="22" height="20" rx="4" fill="#1F8A5B"></rect><rect x="20" y="50" width="26" height="16" rx="3" fill="#F4C542"></rect></svg>',
+    kite: '<svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true"><path d="M40 4 L64 32 L40 60 L16 32 Z" fill="#E0623C" stroke="#8A3A1E" stroke-width="3"></path><path d="M40 4 L40 60 M16 32 L64 32" stroke="#8A3A1E" stroke-width="2"></path><path d="M40 60 Q34 68 42 72 Q50 76 44 80" fill="none" stroke="#1E2A3B" stroke-width="2"></path></svg>',
+    jar: '<svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true"><rect x="16" y="14" width="48" height="60" rx="10" fill="#E6F2FA" stroke="#5E7A90" stroke-width="3"></rect><rect x="22" y="6" width="36" height="10" rx="3" fill="#5E7A90"></rect><circle cx="32" cy="58" r="8" fill="#C8743A"></circle><circle cx="48" cy="60" r="9" fill="#C9CED6" stroke="#7C8490" stroke-width="2"></circle><circle cx="40" cy="46" r="7" fill="#D8DDE4" stroke="#7C8490" stroke-width="2"></circle></svg>',
+    change: coinArt('#D0D5DC', '#6C7480', '25\u00a2'),
+    twenty: '<svg width="96" height="80" viewBox="0 0 96 80" aria-hidden="true"><rect x="8" y="18" width="80" height="44" rx="6" fill="#CFE8D4" stroke="#1F6E5A" stroke-width="3"></rect><circle cx="48" cy="40" r="13" fill="none" stroke="#1F6E5A" stroke-width="3"></circle><text x="48" y="46" text-anchor="middle" font-size="16" font-weight="800" fill="#1F4E3D">20</text></svg>',
+    stall: '<svg width="96" height="80" viewBox="0 0 96 80" aria-hidden="true"><path d="M6 30 L16 10 L80 10 L90 30 Z" fill="#2D6FD1" stroke="#1C4FA8" stroke-width="3"></path><rect x="12" y="30" width="72" height="40" fill="#F3EFE6" stroke="#8A5A12" stroke-width="3"></rect><circle cx="30" cy="54" r="9" fill="#6BA368"></circle><circle cx="50" cy="56" r="8" fill="#F4C542"></circle><circle cx="68" cy="54" r="9" fill="#E0623C"></circle></svg>',
+    company: '<svg width="80" height="80" viewBox="-40 -40 80 80" aria-hidden="true"><circle r="34" fill="#F4C542" stroke="#8A5A12" stroke-width="3"></circle><path d="M0 0 L0 -34 A34 34 0 0 1 32.3 -10.5 Z" fill="#E0623C" stroke="#8A3A1E" stroke-width="2"></path><path d="M0 -34 L0 34 M-32.3 -10.5 L32.3 10.5 M-20 27.5 L20 -27.5" stroke="#8A5A12" stroke-width="2"></path></svg>',
+    growth: '<svg width="96" height="80" viewBox="0 0 96 80" aria-hidden="true"><rect x="10" y="44" width="16" height="28" fill="#6BA368"></rect><rect x="32" y="34" width="16" height="38" fill="#4E8F4B"></rect><rect x="54" y="22" width="16" height="50" fill="#2F6E30"></rect><path d="M10 36 Q40 30 76 8" fill="none" stroke="#1E2A3B" stroke-width="3"></path><path d="M70 6 L78 8 L74 15" fill="none" stroke="#1E2A3B" stroke-width="3"></path></svg>'
+  };
   const ADV_ART = { lemonade: '<svg width="96" height="80" viewBox="0 0 96 80" aria-hidden="true"><rect x="8" y="40" width="80" height="34" rx="4" fill="#F4C542" stroke="#8A5A12" stroke-width="3"></rect><path d="M4 40 L48 14 L92 40 Z" fill="#E0623C" stroke="#8A3A1E" stroke-width="3"></path><rect x="22" y="48" width="14" height="20" rx="3" fill="#FFFDF6" stroke="#8A5A12" stroke-width="2"></rect><rect x="60" y="48" width="14" height="20" rx="3" fill="#FFFDF6" stroke="#8A5A12" stroke-width="2"></rect></svg>' };
+  Object.assign(ADV_ART, ADV_ART_MORE);
+  // parent switches (section 3 of the plan): money adventures on, investing stories off, invitations after mastery on
   const advOn = () => !(S.settings && S.settings.adventures === false);
-  function openAdventures(ch) { return advOn() ? Object.keys(E.ADVENTURES).filter((id) => E.adventureOpen(ch.skills, id)) : []; }
+  const investOn = () => !!(S.settings && S.settings.investing);
+  const invitesOn = () => !(S.settings && S.settings.invites === false);
+  const advOpen = (ch, id) => advOn() && E.adventureOpen(ch.skills, id, { investing: investOn() });
+  function openAdventures(ch) { return Object.keys(E.ADVENTURES).filter((id) => advOpen(ch, id)); }
   function startAdventure(id) {
     const ch = child();
-    if (!E.adventureOpen(ch.skills, id)) return;
+    if (!advOpen(ch, id)) return;
+    // the first time, an adventure with an explainer starts with it (skippable)
+    if (E.ADVENTURES[id].explainer && !((ch.adventures || {})[id] || []).length && !(session && session.mode === 'explain' && session.adv === id)) { startExplainer(id, true); return; }
     const a = E.adventure(id, rng);
     session = { mode: 'game', game: 'adventure', adv: id, intro: a.intro, rounds: a.steps, i: 0, first: 0, tries: 0, picked: null, slices: [], entry: '', fb: null, start: Date.now(), ideaRight: null };
     view = { name: 'game' }; react('hello'); sfx('start'); render(); speak(a.intro + ' ' + a.steps[0].prompt);
+  }
+  function startAdventureNow(id) {
+    const ch = child(); if (!advOpen(ch, id)) return;
+    const a = E.adventure(id, rng);
+    session = { mode: 'game', game: 'adventure', adv: id, intro: a.intro, rounds: a.steps, i: 0, first: 0, tries: 0, picked: null, slices: [], entry: '', fb: null, start: Date.now(), ideaRight: null };
+    view = { name: 'game' }; react('hello'); sfx('start'); render(); speak(a.intro + ' ' + a.steps[0].prompt);
+  }
+  function startExplainer(id, thenPlay) {
+    const frames = E.adventureExplainer(id, rng);
+    if (!frames) { startAdventure(id); return; }
+    session = { mode: 'explain', adv: id, frames, i: 0, thenPlay: !!thenPlay };
+    view = { name: 'explain' }; react('hello'); render(); speak(frames[0].say);
+  }
+  // explainer pictures: drawn from the engine's numbers; bars grow unless animation is Still
+  function xpPic(pic) {
+    const anim = animLevel() !== 'still' ? ' xp-anim' : '';
+    if (pic.type === 'stand') return `<div class="xp-pic" aria-hidden="true">${ADV_ART.lemonade.replace('width="96" height="80"', 'width="192" height="160"')}</div>`;
+    if (pic.type === 'cups') {
+      const cup = '<svg width="26" height="32" viewBox="0 0 26 32" aria-hidden="true"><path d="M3 4 L23 4 L20 30 L6 30 Z" fill="#F4C542" stroke="#8A5A12" stroke-width="2"></path></svg>';
+      return `<div class="xp-pic xp-cups${anim}" role="img" aria-label="${esc(pic.n + ' cups of lemonade.')}">${cup.repeat(pic.n)}</div>`;
+    }
+    if (pic.type === 'bars') {
+      const max = Math.max(...pic.bars.map((b) => b[1])), COL = { Revenue: '#2D6FD1', Costs: '#D9534F', Profit: '#1F8A5B', 'Jar A': '#7A3E8C', 'Jar B': '#1F6E5A', 'Your part': '#C98A12' };
+      return `<div class="xp-pic xp-bars${anim}" role="img" aria-label="${esc(pic.bars.map((b) => b[0] + ': ' + b[1] + '.').join(' '))}">${pic.bars.map((b) => `<div class="xp-row"><span class="xp-lab">${esc(b[0])}</span><span class="xp-track"><span class="xp-bar" style="width:${Math.max(4, Math.round(100 * b[1] / max))}%;background:${COL[b[0]] || '#2D6FD1'}"></span></span><b class="num">$${b[1]}</b></div>`).join('')}</div>`;
+    }
+    if (pic.type === 'pie') {
+      const R = 70, sl = [];
+      for (let i = 0; i < pic.n; i++) { const a0 = (i / pic.n) * 2 * Math.PI - Math.PI / 2, a1 = ((i + 1) / pic.n) * 2 * Math.PI - Math.PI / 2; sl.push(`<path d="M0 0 L${(R * Math.cos(a0)).toFixed(1)} ${(R * Math.sin(a0)).toFixed(1)} A${R} ${R} 0 0 1 ${(R * Math.cos(a1)).toFixed(1)} ${(R * Math.sin(a1)).toFixed(1)} Z" fill="${i < pic.own ? '#E0623C' : '#F4C542'}" stroke="#8A5A12" stroke-width="2"></path>`); }
+      const lab = pic.own ? 'A company in ' + pic.n + ' equal shares. You own ' + pic.own + ' of them.' : 'A company in ' + pic.n + ' equal shares.';
+      return `<div class="xp-pic"><svg width="180" height="180" viewBox="-80 -80 160 160" role="img" aria-label="${esc(lab)}">${sl.join('')}</svg></div>`;
+    }
+    return '';
   }
   // a wrong answer that matches a known pattern gets that pattern's clue (math or money idea)
   function advMis(rd, value) { return Object.keys(rd.predicted || {}).find((k) => rd.predicted[k] === String(value)) || null; }
@@ -1220,8 +1297,8 @@ tr:last-child td { border-bottom: none; }
       ch.sessions.push({ start: now() - ms, end: now(), mode: 'adventure', items: session.rounds.length, correct: session.first });
       if (ch.sessions.length > 200) ch.sessions.shift();
       save();
-      session.result = { ms };
-      view = { name: 'gameEnd' }; react('dance'); render(); celebrate({ small: true, badges: [] }); speak(GAME_DONE.adventure);
+      session.result = { ms, badges: awardBadges(ch) };
+      view = { name: 'gameEnd' }; react('dance'); render(); celebrate({ small: true, badges: session.result.badges }); speak(GAME_DONE.adventure);
       return;
     }
     if (session.trial) {
@@ -1588,6 +1665,7 @@ tr:last-child td { border-bottom: none; }
   // where things sit on the hero, in the 210 x 200 viewBox (image: x 54.2, y 2, 101.5 x 196)
   const HERO = { lx: 111.8, ly: 45.4, rx: 135.3, ry: 53.8, neck: [110, 81] };
   const PIP_ACC = {
+    cap: '<g class="p-acc"><path d="M99 13 Q100 -9 118 -10 Q136 -9 137 13 Z" fill="#E0623C" stroke="#A33A36" stroke-width="1.6" stroke-linejoin="round"></path><path d="M134 11 Q150 10 156 16 L136 16 Z" fill="#A33A36"></path><circle cx="118" cy="-10" r="3.4" fill="#FFD27A"></circle></g>',
     hat: '<g class="p-acc"><path d="M101 15 L119 -22 L136 15 Z" fill="#2D6FD1" stroke="#1C4FA8" stroke-width="1.5" stroke-linejoin="round"></path><path d="M107 3 L131 3 M112 -9 L126 -9" stroke="#FFD27A" stroke-width="4" stroke-linecap="round"></path><circle cx="119" cy="-23" r="6" fill="#FFD27A"></circle></g>',
     bowtie: '<g class="p-acc"><path d="M97 76 L110 81 L97 87 Z M123 76 L110 81 L123 87 Z" fill="#D9534F" stroke="#A33A36" stroke-width="1.6" stroke-linejoin="round"></path><circle cx="110" cy="81" r="3.6" fill="#A33A36"></circle></g>',
     scarf: '<g class="p-acc"><path d="M94 74 Q112 86 131 76 L132 85 Q112 97 93 83 Z" fill="#1F8A5B"></path><path d="M99 84 L92 106 L101 108 L107 87 Z" fill="#1F8A5B"></path><path d="M95 99 l9 2 M97 92 l9 2" stroke="#A6DDBF" stroke-width="2"></path></g>',
@@ -1728,11 +1806,12 @@ tr:last-child td { border-bottom: none; }
     { id: 'warmup', name: 'Warm-up friend', how: 'Finish 3 Lantern Line warm-ups.', gift: { acc: 'flower' }, test: (ch) => ch.sessions.filter((x) => x.mode === 'line').length >= 3 },
     { id: 'lantern1', name: 'First lantern', how: 'Light a lantern by practicing.', gift: { acc: 'crown' }, test: (ch) => practicedLit(ch) >= 1 },
     { id: 'why', name: 'Why wizard', how: 'Explain why it worked 3 times.', gift: { face: 'wink' }, test: (ch) => ((ch.stats || {}).whyRight || 0) >= 3 },
-    { id: 'lantern10', name: 'Lantern keeper', how: 'Light 10 lanterns by practicing.', gift: { face: 'stars' }, test: (ch) => practicedLit(ch) >= 10 }
+    { id: 'lantern10', name: 'Lantern keeper', how: 'Light 10 lanterns by practicing.', gift: { face: 'stars' }, test: (ch) => practicedLit(ch) >= 10 },
+    { id: 'market', name: 'Market maker', how: 'Finish 3 money adventures.', gift: { acc: 'cap' }, test: (ch) => Object.values(ch.adventures || {}).reduce((a, x) => a + x.length, 0) >= 3 }
   ];
-  const GIFT_NAME = { hat: 'party hat', bowtie: 'bow tie', scarf: 'scarf', glasses: 'glasses', flower: 'flower', crown: 'star crown', wink: 'wink', stars: 'star eyes' };
-  const GIFT_LINE = { hat: 'Pip has a new party hat to wear. Try it in your journal.', bowtie: 'Pip has a new bow tie to wear. Try it in your journal.', scarf: 'Pip has a new scarf to wear. Try it in your journal.', glasses: 'Pip has new glasses to wear. Try them in your journal.', flower: 'Pip has a new flower to wear. Try it in your journal.', crown: 'Pip has a new star crown to wear. Try it in your journal.', wink: 'Pip learned a new happy face: a wink. Try it in your journal.', stars: 'Pip learned a new happy face: star eyes. Try it in your journal.' };
-  const BADGE_COLOR = { explorer: '#2D6FD1', first: '#D9534F', persist: '#1F8A5B', detective: '#6B4FB8', warmup: '#E07AA0', lantern1: '#F4A425', why: '#2A9BB8', lantern10: '#C98A12' };
+  const GIFT_NAME = { cap: 'sun cap', hat: 'party hat', bowtie: 'bow tie', scarf: 'scarf', glasses: 'glasses', flower: 'flower', crown: 'star crown', wink: 'wink', stars: 'star eyes' };
+  const GIFT_LINE = { cap: 'Pip has a new sun cap to wear. Try it in your journal.', hat: 'Pip has a new party hat to wear. Try it in your journal.', bowtie: 'Pip has a new bow tie to wear. Try it in your journal.', scarf: 'Pip has a new scarf to wear. Try it in your journal.', glasses: 'Pip has new glasses to wear. Try them in your journal.', flower: 'Pip has a new flower to wear. Try it in your journal.', crown: 'Pip has a new star crown to wear. Try it in your journal.', wink: 'Pip learned a new happy face: a wink. Try it in your journal.', stars: 'Pip learned a new happy face: star eyes. Try it in your journal.' };
+  const BADGE_COLOR = { explorer: '#2D6FD1', first: '#D9534F', persist: '#1F8A5B', detective: '#6B4FB8', warmup: '#E07AA0', lantern1: '#F4A425', why: '#2A9BB8', lantern10: '#C98A12', market: '#1F6E5A' };
   const practicedLit = (ch) => E.SKILL_ORDER.filter((id) => ['mastered', 'certified'].includes(ch.skills[id].status)).length;
   function awardBadges(ch) {
     if (!ch) return [];
@@ -3007,6 +3086,7 @@ tr:last-child td { border-bottom: none; }
         <p class="speech">${r.placement ? `I found ${r.lit} lanterns you can already light. ${ADV.found}` : `You answered ${r.correct} of ${r.count}${r.newLit ? ` and lit ${r.newLit} new lantern${r.newLit > 1 ? 's' : ''}` : ''}. ${r.praise}`}</p>
         <div class="lanterns-lit${r.newLit ? ' lit-new' : ''}"><span class="lantern-ico"></span> <span class="num">${litCount(ch)}</span> lanterns lit</div>
         ${badgeNews(r.badges)}
+        ${r.invite ? `<section class="panel invite-card"><p class="speech"><span>You lit ${esc(E.SKILLS[r.invite.skill].name)}!</span> <span>Want to use it in ${esc(E.ADVENTURES[r.invite.adv].name)}?</span></p><div class="row" style="justify-content:center"><button class="kbtn big" data-act="advStart" data-id="${r.invite.adv}">Let\u2019s go</button><button class="kbtn" data-act="invLater">Later</button></div></section>` : ''}
         ${(() => { const monthAgo = now() - 30 * E.DAY; const then = E.SKILL_ORDER.filter((id) => ch.skills[id].masteredAt && ch.skills[id].masteredAt <= monthAgo && ['mastered', 'certified', 'placed'].includes(ch.skills[id].status)).length; const gained = litCount(ch) - then; return !r.placement && gained > 0 && ch.created < monthAgo ? `<p class="speech">A month ago you had ${then} lanterns. Now you have ${litCount(ch)}. Look how you've grown!</p>` : ''; })()}
         <div class="row" style="justify-content:center"><button class="kbtn big" data-act="go" data-to="map" data-autofocus>Back to the map</button><button class="kbtn" data-act="go" data-to="journal">My journal</button><button class="kbtn" data-act="go" data-to="who">See you tomorrow</button></div>
       </div></main>`;
@@ -3065,14 +3145,27 @@ tr:last-child td { border-bottom: none; }
           <button class="kbtn big" data-act="trialTest" data-id="${sg.id}" data-autofocus>Try 4 on your own</button>
         </div></div></main>`;
     },
+    explain() {
+      const f = session.frames[session.i], last = session.i === session.frames.length - 1, A = E.ADVENTURES[session.adv];
+      return `<main class="stage"><div class="game-stage">
+        <div class="topbar" style="width:100%"><button class="kbtn" data-act="go" data-to="adventures">${icoBack} Adventures</button><div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="font-weight:800">${A.name}</span><span class="progress" aria-hidden="true">${session.frames.map((_, j) => `<i class="${j <= session.i ? 'done' : ''}"></i>`).join('')}</span></div><span style="width:64px"></span></div>
+        <div class="panel game-panel" style="width:100%;align-items:center">
+          <p class="eyebrow">Watch how it works · <span class="num">${session.i + 1}</span> / <span class="num">${session.frames.length}</span></p>
+          <div class="pip-say"><div class="pip-fig pose-point">${pipPose(100, 'point', { react: reactNow() })}</div><div class="bubble"><p>${escM(f.say)}</p></div></div>
+          ${xpPic(f.pic)}
+          <div class="row" style="justify-content:center">${session.i ? '<button class="kbtn" data-act="xpBack">Back</button>' : ''}${last ? `<button class="checkbtn" data-act="xpDone" data-autofocus>${session.thenPlay ? 'Your turn' : 'Done'}</button>` : '<button class="checkbtn" data-act="xpNext" data-autofocus>Next</button>'}${!last && session.thenPlay ? '<button class="kbtn" data-act="xpDone">Skip</button>' : ''}</div>
+        </div>
+      </div></main>`;
+    },
     adventures() {
       const ch = child();
       return `<main class="stage"><div class="game-stage">
         <div class="topbar" style="width:100%"><button class="kbtn" data-act="go" data-to="map">${icoBack} Map</button><h1 style="margin:0;font-size:26px">Money adventures</h1><span style="width:64px"></span></div>
         <p class="hint-text" style="text-align:center">Use your math in a money story. The money is pretend.</p>
         <div class="games-grid">${Object.keys(E.ADVENTURES).map((id) => {
-          const A = E.ADVENTURES[id], open = advOn() && E.adventureOpen(ch.skills, id), plays = (ch.adventures || {})[id] || [];
-          return `<div class="game-card ${open ? '' : 'locked'}"><div class="gc-pic">${ADV_ART[id] || ''}</div><h2>${A.name}</h2><p>${esc(A.idea)}</p>${open ? `<button class="kbtn big" data-act="advStart" data-id="${id}">Start</button>${plays.length ? `<p class="hint-text">Played ${plays.length} ${plays.length === 1 ? 'time' : 'times'}</p>` : ''}` : `<p class="hint-text">Opens when you can do ${esc(A.needs.map((s) => E.SKILLS[s].name.toLowerCase()).join(' and '))}.</p>`}</div>`;
+          const A = E.ADVENTURES[id], open = advOpen(ch, id), plays = (ch.adventures || {})[id] || [], mathLit = E.adventureOpen(ch.skills, id, { investing: true });
+          const why = A.investing && !investOn() && mathLit ? '<p class="hint-text">A grown-up can turn on investing stories.</p>' : `<p class="hint-text"><span>Opens when this is lit:</span> ${A.needs.map((s) => `<span>${esc(E.SKILLS[s].name)}</span>`).join(', ')}</p>`;
+          return `<div class="game-card ${open ? '' : 'locked'}"><div class="gc-pic">${ADV_ART[id] || ''}</div><h2>${A.name}</h2><p>${esc(A.idea)}</p>${open ? `<button class="kbtn big" data-act="advStart" data-id="${id}">Start</button>${A.explainer && plays.length ? `<button class="kbtn" data-act="advWatch" data-id="${id}">Watch how it works</button>` : ''}${plays.length ? `<p class="hint-text">Played ${plays.length} ${plays.length === 1 ? 'time' : 'times'}</p>` : ''}` : why}</div>`;
         }).join('')}</div>
       </div></main>`;
     },
@@ -3096,9 +3189,8 @@ tr:last-child td { border-bottom: none; }
         play = `${pizzaSvg(rd)}<p class="hint-text" aria-live="polite">${session.slices.length} ${session.slices.length === 1 ? 'slice' : 'slices'} chosen</p>`;
         action = done ? '' : `<button class="checkbtn" data-act="gameCheck" ${session.slices.length ? '' : 'disabled'}>Serve</button>`;
       } else if (g === 'adventure') {
-        const st = rd.story || {}, bits = [['Cups', st.cups], ['Price', st.price != null ? '$' + st.price : null], ['Sales', st.sales != null ? '$' + st.sales : null], ['Costs', st.costs != null ? '$' + st.costs : null], ['Profit', st.profit != null ? '$' + st.profit : null]].filter((x) => x[1] != null);
-        const strip = `<div class="story-strip" role="group" aria-label="Story so far">${bits.map(([k, v]) => `<div class="story-cell"><span>${k}</span><b class="num">${v}</b></div>`).join('')}</div>`;
-        play = (session.i === 0 ? `<p class="hint-text">${esc(session.intro)}</p>` : '') + strip + (done ? '' : rd.choices
+        const strip = `<div class="story-strip" role="group" aria-label="Story so far">${(rd.story || []).map(([k, v]) => `<div class="story-cell"><span>${esc(k)}</span><b class="num">${esc(String(v))}</b></div>`).join('')}</div>`;
+        play = (session.i === 0 ? `<p class="hint-text">${esc(session.intro)}</p>` : '') + strip + (rd.coins ? coinsHtml(rd.coins) : '') + (done ? '' : rd.choices
           ? `<div class="choices text" role="group" aria-label="Choices">${rd.choices.map((ch) => `<button data-act="achoose" data-v="${esc(ch)}" aria-pressed="${session.picked === ch}">${esc(ch)}</button>`).join('')}</div>`
           : `<div class="entry num" aria-label="Your answer">${session.entry ? esc(session.entry) : '?'}</div><div class="pad">${['1','2','3','4','5','6','7','8','9'].map((d) => `<button data-act="gdigit" data-d="${d}" aria-label="${d}">${d}</button>`).join('')}<button data-act="gdel" aria-label="Delete">⌫</button><button data-act="gdigit" data-d="0" aria-label="0">0</button><button data-act="gclear" aria-label="Clear">C</button></div>`);
         action = done ? '' : `<button class="checkbtn" data-act="gameCheck" ${(rd.choices ? session.picked : session.entry) ? '' : 'disabled'}>Check</button>`;
@@ -3126,7 +3218,8 @@ tr:last-child td { border-bottom: none; }
         const A = E.ADVENTURES[session.adv], maths = session.rounds.filter((x) => x.skill).length, first = session.first - (session.ideaRight ? 1 : 0);
         return `<main class="stage"><div class="end">
           <h1>${GAME_DONE.adventure}</h1>${pipPose(150, 'dance', { react: reactNow() })}
-          <p class="speech">You got ${first} of ${maths} calculations right on the first try.</p>
+          <p class="speech">You got ${first} of ${maths} calculations right on the first try.</p>${badgeNews(session.result.badges)}
+          <p class="hint-text">${esc(A.name)}</p>
           <section class="panel adv-recap"><h2>What math did you use?</h2><ul>${A.skills.map((id) => `<li>${esc(E.SKILLS[id].name)}</li>`).join('')}</ul><p><b>The money idea:</b> <span>${esc(A.idea)}</span></p><p>${esc(A.real)}</p><p class="hint-text">The money in this story is pretend.</p></section>
           <div class="row" style="justify-content:center"><button class="kbtn big" data-act="advStart" data-id="${session.adv}" data-autofocus>Play again</button><button class="kbtn" data-act="go" data-to="adventures">All adventures</button><button class="kbtn" data-act="go" data-to="map">Back to the map</button></div>
         </div></main>`;
@@ -3259,6 +3352,7 @@ tr:last-child td { border-bottom: none; }
           <section class="card"><span class="eyebrow" style="color:var(--clue)">Working on</span><p>${working.length ? esc(listNames(working.slice(0, 3))) + '.' : 'Everything open is mastered. New skills unlock on the map.'}</p></section>
         </div>
         ${workingOnHtml(ch, working)}
+        ${mathRealLifeHtml(ch)}
         <section class="card"><span class="eyebrow">Why it may be hard</span><p>${why ? `${why.n > 1 ? `${why.n} times recently` : 'Recently'}, an answer matched a common pattern in <b>${esc(E.SKILLS[whySkill].name.toLowerCase())}</b>: ${esc(E.MISCONCEPTIONS[why.mis].parent)} This is a normal step on the way, and Tenbright is practicing it with the model.` : 'No repeated mistake patterns in the last 10 answers per skill.'}</p></section>
         <section class="card home-activity"><span class="eyebrow">Next home activity · about 10 minutes</span><p style="font-size:17px;font-weight:700">${esc(C[focus].home)}</p></section>
         <section class="card"><span class="eyebrow">How we'll know</span><p>A skill counts as mastered after at least 10 answers without big hints, 9 of the last 10 right, in two kinds of question, and a mastery estimate of 95%. It is certified only after it is still right 7 and 30 days later, and checked again at 90 days.</p><p class="hint-text">Next on the map: ${esc(E.SKILLS[na.skill].name)}. ${esc(na.reason)}</p></section>
@@ -3316,7 +3410,7 @@ tr:last-child td { border-bottom: none; }
   // ---------- sessions ----------
   function startSession(mode, skill) {
     const ch = child();
-    session = { mode, skill, ps: mode === 'placement' ? (ch.walk && !ch.walk.done ? ch.walk : E.newPlacement(ch.grade, { gentle: gentleStart(ch) })) : null, count: 0, correct: 0, cap: mode === 'placement' ? E.PLACEMENT_MAX_ITEMS : 8, start: Date.now(), litBefore: litCount(ch), entry: '', hint: 0, feedback: null, tries: 0, placementResults: {}, soroban: [0, 0, 0], praiseSkill: skill };
+    session = { mode, skill, wasLit: !!(skill && ch.skills[skill] && ['mastered', 'certified', 'placed'].includes(ch.skills[skill].status)), ps: mode === 'placement' ? (ch.walk && !ch.walk.done ? ch.walk : E.newPlacement(ch.grade, { gentle: gentleStart(ch) })) : null, count: 0, correct: 0, cap: mode === 'placement' ? E.PLACEMENT_MAX_ITEMS : 8, start: Date.now(), litBefore: litCount(ch), entry: '', hint: 0, feedback: null, tries: 0, placementResults: {}, soroban: [0, 0, 0], praiseSkill: skill };
     if (mode === 'learn') {
       session.demo = E.generate(skill, rng);
       if (session.demo.format === 'build') session.demo = E.generate(skill, rng);
@@ -3523,6 +3617,12 @@ tr:last-child td { border-bottom: none; }
     if (ch.sessions.length > 200) ch.sessions.shift();
     save();
     session.result = { placement: session.mode === 'placement', lit, newLit: Math.max(0, lit - session.litBefore), correct: session.correct, count: session.count, praise: 'You looked closely at every clue. That is how you learn.' };
+    // the bridge: a skill lit in this session that powers an adventure brings one optional invitation (never during placement)
+    const sk = session.skill, nowLit = sk && ch.skills[sk] && ['mastered', 'certified', 'placed'].includes(ch.skills[sk].status);
+    if (!session.result.placement && invitesOn() && nowLit && session.wasLit === false) {
+      const advId = Object.keys(E.ADVENTURES).find((id) => E.ADVENTURES[id].needs.includes(sk) && advOpen(ch, id));
+      if (advId) session.result.invite = { adv: advId, skill: sk };
+    }
     session.result.badges = awardBadges(ch);
     view = { name: 'end' };
     react(session.result.placement ? 'cheer' : 'dance');
@@ -3684,6 +3784,11 @@ tr:last-child td { border-bottom: none; }
       case 'gameCheck': { const g = session.game, rd = session.rounds[session.i]; gameCheck(g === 'bridge' || (g === 'adventure' && rd.choices) ? session.picked : g === 'pizza' ? session.slices.length : session.entry); break; }
       case 'achoose': if (session.fb && (session.fb.ok || session.fb.final)) break; session.picked = b.dataset.v; session.fb = null; render(); break;
       case 'advStart': startAdventure(b.dataset.id); break;
+      case 'advWatch': startExplainer(b.dataset.id, false); break;
+      case 'xpNext': if (session.i < session.frames.length - 1) { session.i++; render(); speak(session.frames[session.i].say); } break;
+      case 'xpBack': if (session.i > 0) { session.i--; render(); speak(session.frames[session.i].say); } break;
+      case 'xpDone': { const id = session.adv, play = session.thenPlay; if (play) { session = { mode: 'explain', adv: id, frames: [], i: 0 }; startAdventureNow(id); } else { stopSpeaking(); view = { name: 'adventures' }; session = null; render(); } break; }
+      case 'invLater': if (session && session.result) { session.result.invite = null; render(); } break;
       case 'gameNext': gameNext(); break;
       case 'lineStart': {
         const g = Number(ch.grade) || (focusOf(ch) === 'all' ? 2 : focusOf(ch));
@@ -3747,6 +3852,7 @@ tr:last-child td { border-bottom: none; }
     if (e.target.id === 'sfx-on') { S.settings.sfx = !!e.target.checked; save(); render(); const el = document.getElementById('sfx-on'); if (el) el.focus(); }
     if (e.target.id === 'sfx-vol') { S.settings.sfxVol = +e.target.value / 100; save(); sfx('correct'); }
     if (e.target.id === 'anim-level') { S.settings.anim = e.target.value; save(); render(); const el = document.getElementById('anim-level'); if (el) el.focus(); }
+    if (['adv-on', 'invest-on', 'invite-on'].includes(e.target.id)) { const k = { 'adv-on': 'adventures', 'invest-on': 'investing', 'invite-on': 'invites' }[e.target.id], id = e.target.id; S.settings[k] = !!e.target.checked; save(); render(); const el = document.getElementById(id); if (el) el.focus(); }
     if (e.target.id === 'trial-on') { S.settings.trials = !!e.target.checked; save(); render(); const el = document.getElementById('trial-on'); if (el) el.focus(); }
     if (e.target.id === 'voice-on') { S.settings.voice = !!e.target.checked && VOICE.status === 'available'; S.settings.voiceAt = S.settings.voice ? Date.now() : null; save(); render(); }
     if (e.target.id === 'sgrade') { const n = document.getElementById('sgrade-note'); if (n) n.textContent = gradeNote(e.target.value); }
@@ -3963,6 +4069,8 @@ tr:last-child td { border-bottom: none; }
       // Phase 5: games
       Object.values(GAME_DONE).forEach(F); Object.values(GAME_CLUE).forEach(F); F('Right!'); F('Right! You used the clue.');
       Object.keys(E.GAMES).forEach((g) => E.GAMES[g].levels.forEach((_, i) => { for (let k = 0; k < 60; k++) { const rd = E.gameRound(g, i + 1, rng); D(rd.prompt); D('Here is how. ' + rd.how); } }));
+      // Money & Wealth Adventures: what Pip says at the start of each story, each step, "here is how", and the explainers
+      Object.keys(E.ADVENTURES).forEach((id) => { for (let k = 0; k < 60; k++) { const a = E.adventure(id, rng); D(a.intro + ' ' + a.steps[0].prompt); a.steps.forEach((st) => { D(st.prompt); D('Here is how. ' + st.how); }); } if (E.ADVENTURES[id].explainer) for (let k = 0; k < 40; k++) E.adventureExplainer(id, rng).forEach((f) => D(f.say)); });
       Object.values(X_LABEL).forEach((l) => { F(l); F('Let’s try it a new way. ' + l); });
       E.SKILL_ORDER.forEach((id) => {
         F(X_LABEL.idea + ' ' + C[id].teach.join(' ')); F('Let’s try it a new way. ' + X_LABEL.idea + ' ' + C[id].teach.join(' '));
@@ -3989,7 +4097,8 @@ tr:last-child td { border-bottom: none; }
       view = { name: 'item' }; render(); return true;
     };
     // open a game at a level for a test (unlocking the skill that opens it)
-    window.__tbAdventure = (id) => { startAdventure(id); return session && session.game === 'adventure' ? session.rounds.length : 0; };
+    window.__tbAdventure = (id) => { startAdventureNow(id); return session && session.game === 'adventure' ? session.rounds.length : 0; };
+    window.__tbExplainer = (id) => { startExplainer(id, false); return session && session.mode === 'explain' ? session.frames.length : 0; };
     window.__tbGame = (g, level, timed) => {
       const ch = child(); const ids = E.GAMES[g].levels.slice(0, level).map((x) => x[0]);
       ids.forEach((id) => { ch.skills[id].status = 'mastered'; ch.skills[id].learned = true; });

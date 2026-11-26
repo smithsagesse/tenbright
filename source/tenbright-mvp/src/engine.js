@@ -1538,26 +1538,170 @@
   };
   const GAME_ROUNDS = 5;
   // ---------- Money & Wealth Adventures: pretend money inside one story, fresh each time ----------
+  // Each adventure is a short story of engine questions. A step names the math skill it uses (its first answer counts as
+  // story evidence for that skill); the last step is an idea check with two or three choices. `story` is the strip of
+  // running totals the child sees, as [label, value] pairs. Investing stories open only when a parent turns them on.
   const ADVENTURES = {
-    lemonade: { name: 'Build a Lemonade Stand', needs: ['FN02'], skills: ['FN01', 'FN02'], idea: 'Revenue, cost and profit', real: 'Shops and businesses take their costs away from the money that comes in to know if they made money.' }
+    piggy: { name: 'Piggy Bank Start', needs: ['C102', 'C103'], skills: ['C102', 'C103'], idea: 'Saving adds up; spending takes away', real: 'Families save a little at a time to buy something later.', home: 'Count the coins in a jar together, add a few, and count again.' },
+    shelf: { name: 'The Toy Shelf', needs: ['MY01', 'AS01'], skills: ['AS01'], idea: 'Spending takes money away', real: 'Before buying, people check how much money will be left.', home: 'Give your child a few coins at a shop and let them work out what is left after one small buy.' },
+    kite: { name: 'Save for the Kite', needs: ['AS10'], skills: ['AS10', 'AS05'], idea: 'A saving goal', real: 'People set a goal and count up to see how much more they need.', home: 'Choose something your child wants and work out together how much more is needed.' },
+    jar: { name: 'Count the Jar', needs: ['MY02'], skills: ['MY02', 'AS10'], idea: 'What money is worth', real: 'Cashiers count coins starting with the ones worth the most.', home: 'Empty a coin jar together and count it, biggest coins first.' },
+    change: { name: 'Check Your Change', needs: ['MY04'], skills: ['MY04', 'AS05'], idea: 'Making and checking change', real: 'Shoppers count up from the price to check their change.', home: 'At a store, guess the change before the cashier gives it.' },
+    twenty: { name: 'The $20 Challenge', needs: ['FN04'], skills: ['AS01', 'AS10', 'FN04'], idea: 'Spend, save or set aside for a goal', real: 'People decide what to spend now and what to save for later.', home: 'Talk about one thing your family needs and one thing someone wants, and which comes first.' },
+    stall: { name: 'Market Stall Prices', needs: ['FN01'], skills: ['FN01', 'AS05', 'AS07'], idea: 'Price times quantity', real: 'Shops multiply the price by how many to find a total.', home: 'At the market, pick one item and work out the cost of several.' },
+    lemonade: { name: 'Build a Lemonade Stand', needs: ['FN02'], skills: ['FN01', 'FN02'], idea: 'Revenue, cost and profit', real: 'Shops and businesses take their costs away from the money that comes in to know if they made money.', home: 'Ask: if the lemonade cost more to make, what would happen to the profit?', explainer: true },
+    company: { name: 'Become a Company Owner', needs: ['FN05'], skills: ['F408', 'FN05'], idea: 'A share is part ownership', real: 'People who own shares own part of a company and get part of its profit.', home: 'Ask: if a company makes less profit next year, what happens to each owner’s part?', investing: true, explainer: true },
+    growth: { name: 'The Money-Growing Mystery', needs: ['FN07'], skills: ['FN07'], idea: 'Interest and compound growth', real: 'Banks add interest to savings, and the interest can grow on itself.', home: 'Look at a bank savings rate together and talk about how it can change.', investing: true, explainer: true }
   };
   const litStatus = (st) => ['mastered', 'certified', 'placed'].includes(st.status);
-  function adventureOpen(skills, id) { return ADVENTURES[id].needs.every((s) => skills[s] && litStatus(skills[s])); }
+  function adventureOpen(skills, id, opts) {
+    const A = ADVENTURES[id];
+    if (A.investing && !(opts && opts.investing)) return false;
+    return A.needs.every((s) => skills[s] && litStatus(skills[s]));
+  }
+  // clue answers as text, like every engine item, and never equal to the right answer
+  function advStep(skill, prompt, answer, how, story, predicted, extra) {
+    const pr = {};
+    Object.keys(predicted || {}).forEach((k) => { if (predicted[k] === null || predicted[k] === undefined) return; const v = String(predicted[k]); if (v !== String(answer) && !Object.values(pr).includes(v)) pr[k] = v; });
+    return Object.assign({ game: 'adventure', skill, prompt, answer: String(answer), how, story, predicted: pr }, extra || {});
+  }
+  const idea = (prompt, answer, choices, how, story) => advStep(null, prompt, answer, how, story, {}, { choices, idea: true });
+  const D = (n) => '$' + n, CT = (n) => n + '¢';
+  const ADV_BUILD = {
+    piggy(r) {
+      const name = r.pick(NAMES), a = r.int(2, 5), b = r.int(2, 4), t1 = a + b, c = r.int(1, 10 - t1), t2 = t1 + c, d = r.int(2, t2 - 1), t3 = t2 - d;
+      return { intro: name + ' is saving pennies in a piggy bank. Every coin is pretend.', steps: [
+        advStep('C102', name + ' has ' + a + ' pennies and saves ' + b + ' more. How many pennies now?', t1, a + ' + ' + b + ' = ' + t1, [['Pennies', a]], { M12: t1 - 1 }),
+        advStep('C102', 'Next week ' + name + ' saves ' + c + ' more. How many pennies now?', t2, t1 + ' + ' + c + ' = ' + t2, [['Pennies', t1]], { M12: t2 - 1 }),
+        advStep('C103', name + ' spends ' + d + ' pennies on a sticker. How many pennies are left?', t3, t2 + ' − ' + d + ' = ' + t3, [['Pennies', t2], ['Spent', d]], { M14: t2 + d }),
+        idea('When you save, does the money in the bank go up or down?', 'Up', ['Up', 'Down'], 'Saving adds to the money, so it goes up.', [['Pennies', t3]])
+      ] };
+    },
+    shelf(r) {
+      const name = r.pick(NAMES), have = r.int(14, 20), p1 = r.int(3, 6), left1 = have - p1, p2 = r.int(2, left1 - 3), left2 = left1 - p2, want = left2 + r.int(2, Math.min(6, 20 - left2)), more = want - left2;
+      return { intro: name + ' has ' + CT(have) + ' to spend at the toy shelf. The money is pretend.', steps: [
+        advStep('AS01', 'A sticker costs ' + CT(p1) + '. How many cents are left after ' + name + ' buys it?', left1, have + ' − ' + p1 + ' = ' + left1, [['Have', CT(have)], ['Price', CT(p1)]], { M14: have + p1 }),
+        advStep('AS01', 'A pencil top costs ' + CT(p2) + '. How many cents are left now?', left2, left1 + ' − ' + p2 + ' = ' + left2, [['Have', CT(left1)], ['Price', CT(p2)]], { M14: left1 + p2 }),
+        advStep('AS01', 'A toy car costs ' + CT(want) + '. How many more cents does ' + name + ' need for it?', more, want + ' − ' + left2 + ' = ' + more, [['Have', CT(left2)], ['Price', CT(want)]], { M14: want + left2 }),
+        idea('When you spend money, does the money you have go up or down?', 'Down', ['Up', 'Down'], 'Spending takes money away, so it goes down.', [['Have', CT(left2)]])
+      ] };
+    },
+    kite(r) {
+      const name = r.pick(NAMES), K = r.int(9, 18) * 5, S = r.int(12, K - 20), need1 = K - S, w = r.int(4, need1 - 6), S2 = S + w, need2 = K - S2, g = need2 + r.int(2, 9), left = S2 + g - K;
+      return { intro: name + ' wants a kite that costs ' + D(K) + '. The money is pretend.', steps: [
+        advStep('AS10', name + ' has saved ' + D(S) + '. How many more dollars are needed?', need1, K + ' − ' + S + ' = ' + need1, [['Goal', D(K)], ['Saved', D(S)]], { M14: K + S }),
+        advStep('AS10', name + ' saves ' + D(w) + ' more. How many more dollars are needed now?', need2, K + ' − ' + S2 + ' = ' + need2, [['Goal', D(K)], ['Saved', D(S2)]], { M14: need1 + w }),
+        advStep('AS05', 'Grandma adds ' + D(g) + '. After buying the kite, how many dollars are left?', left, S2 + ' + ' + g + ' − ' + K + ' = ' + left, [['Goal', D(K)], ['Saved', D(S2 + g)]], { MN6: S2 + g }),
+        idea('Which reaches a goal sooner?', 'Saving more each week', ['Saving more each week', 'Saving less each week'], 'More each week means fewer weeks to the goal.', [['Goal', D(K)]])
+      ] };
+    },
+    jar(r) {
+      let coins, total;
+      do { const n = r.int(3, 6); coins = Array.from({ length: n }, () => r.pick([25, 10, 10, 5, 5, 1, 1])).sort((x, y) => y - x); total = coins.reduce((a, x) => a + x, 0); } while (total > 70 || total < 20 || new Set(coins).size < 2);
+      const t2 = total + 25, toDollar = 100 - t2;
+      return { intro: 'Pip found a jar of coins. Let’s count it. Every coin is pretend.', steps: [
+        advStep('MY02', 'How many cents are the coins in the jar worth?', total, 'Start with the biggest coin and count on: ' + coins.join(' + ') + ' = ' + total, [['Coins', coins.length]], { MY1: coins.length }, { coins }),
+        advStep('MY02', 'Pip adds one quarter. How many cents are in the jar now?', t2, total + ' + 25 = ' + t2, [['Jar', CT(total)]], { MY1: coins.length + 1 }, { coins: coins.concat([25]).sort((x, y) => y - x) }),
+        advStep('AS10', 'A dollar is 100 cents. How many more cents make a dollar?', toDollar, '100 − ' + t2 + ' = ' + toDollar, [['Jar', CT(t2)]], { MY2: t2 % 10 ? String((10 - Math.floor(t2 / 10)) * 10 + (10 - t2 % 10)) : null }),
+        idea('Are 3 pennies worth more than 1 dime?', 'No', ['Yes', 'No'], '3 pennies are 3 cents. A dime is 10 cents.', [['Jar', CT(t2)]])
+      ] };
+    },
+    change(r) {
+      const p1 = r.int(4, 17) * 5, c1 = 100 - p1, p2 = r.int(4, 17) * 5, c2 = 100 - p2, both = c1 + c2;
+      return { intro: 'Pip pays with a dollar twice. Let’s check the change. The money is pretend.', steps: [
+        advStep('MY04', 'A juice costs ' + CT(p1) + '. Pip pays 100 cents. How many cents of change?', c1, 'Count up from ' + p1 + ' to 100: 100 − ' + p1 + ' = ' + c1, [['Paid', CT(100)], ['Price', CT(p1)]], { MY2: p1 % 10 ? String((10 - Math.floor(p1 / 10)) * 10 + (10 - p1 % 10)) : null }),
+        advStep('MY04', 'A snack costs ' + CT(p2) + '. Pip pays 100 cents again. How many cents of change?', c2, 'Count up from ' + p2 + ' to 100: 100 − ' + p2 + ' = ' + c2, [['Paid', CT(100)], ['Price', CT(p2)]], { MY2: p2 % 10 ? String((10 - Math.floor(p2 / 10)) * 10 + (10 - p2 % 10)) : null }),
+        advStep('AS05', 'How many cents of change did Pip get in all?', both, c1 + ' + ' + c2 + ' = ' + both, [['Change', CT(c1)], ['Change', CT(c2)]], { M14: Math.abs(c1 - c2) || null }),
+        idea('What does counting up from the price to the money paid find?', 'Change', ['Change', 'Price'], 'The jump from the price to the money paid is the change.', [['Change', CT(both)]])
+      ] };
+    },
+    twenty(r) {
+      const b = r.int(4, 12), left = 20 - b, w = r.int(2, 5), k = r.int(2, 6), G = left + w * k, need = G - left;
+      return { intro: 'You have $20 of pretend money. Let’s make a plan.', steps: [
+        advStep('AS01', 'A book costs ' + D(b) + '. How many dollars are left if you buy it?', left, '20 − ' + b + ' = ' + left, [['Have', D(20)], ['Book', D(b)]], { M14: 20 + b }),
+        advStep('AS10', 'You save what is left for a game that costs ' + D(G) + '. How many more dollars do you need?', need, G + ' − ' + left + ' = ' + need, [['Saved', D(left)], ['Goal', D(G)]], { M14: G + left }),
+        advStep('FN04', 'You save ' + D(w) + ' each week. How many weeks until you have enough?', k, need + ' ÷ ' + w + ' = ' + k, [['Still needed', D(need)], ['Each week', D(w)]], { MN6: need }),
+        idea('Which of these is a need?', 'Lunch', ['Lunch', 'A toy'], 'A need is something we must have, like food. A want is nice to have.', [['Goal', D(G)]])
+      ] };
+    },
+    stall(r) {
+      const n1 = r.int(2, 6), p1 = r.int(2, 6), n2 = r.int(2, 6), p2 = r.int(2, 6), a = n1 * p1, b = n2 * p2, tot = a + b, pay = (Math.floor(tot / 10) + 1) * 10, ch = pay - tot;
+      return { intro: 'Pip is shopping at the market stall. The money is pretend.', steps: [
+        advStep('FN01', 'Melons cost ' + D(p1) + ' each. How many dollars do ' + n1 + ' melons cost?', a, n1 + ' × ' + p1 + ' = ' + a, [['Melons', n1], ['Price', D(p1)]], { M15: n1 + p1 }),
+        advStep('FN01', 'Notebooks cost ' + D(p2) + ' each. How many dollars do ' + n2 + ' notebooks cost?', b, n2 + ' × ' + p2 + ' = ' + b, [['Notebooks', n2], ['Price', D(p2)]], { M15: n2 + p2 }),
+        advStep('AS05', 'How many dollars for the melons and the notebooks together?', tot, a + ' + ' + b + ' = ' + tot, [['Melons', D(a)], ['Notebooks', D(b)]], {}),
+        advStep('AS07', 'Pip pays with ' + D(pay) + '. How many dollars of change?', ch, pay + ' − ' + tot + ' = ' + ch, [['Total', D(tot)], ['Paid', D(pay)]], { M14: pay + tot }),
+        idea('When every item costs the same, which finds the total?', 'Multiply', ['Multiply', 'Subtract'], 'The number of items times the price is the total.', [['Total', D(tot)]])
+      ] };
+    },
+    lemonade(r) {
+      const n = r.pick([10, 12, 15, 20, 24, 30]), p = r.int(2, 5), c = 1, e = r.int(4, 9), R = n * p, C = n * c, G = R - C, N = G - e;
+      return { intro: 'Let’s run a lemonade stand. Every number is pretend money for this story.', explain: { cups: n, price: p, cost: c, sign: e }, steps: [
+        advStep('FN01', 'You sold ' + n + ' cups at ' + D(p) + ' each. How many dollars came in?', R, 'Money in is revenue. ' + n + ' × ' + p + ' = ' + R, [['Cups', n], ['Price', D(p)]], { M15: n + p }),
+        advStep('FN01', 'Each cup cost ' + D(c) + ' to make. How many dollars did the ' + n + ' cups cost?', C, n + ' × ' + c + ' = ' + C, [['Cups', n], ['Price', D(p)], ['Sales', D(R)]]),
+        advStep('FN02', 'Profit is the money in take away the costs. What is the profit?', G, R + ' − ' + C + ' = ' + G, [['Cups', n], ['Price', D(p)], ['Sales', D(R)], ['Costs', D(C)]], { MF1: R, MF3: R + C }),
+        advStep('FN02', 'The sign for the stand cost ' + D(e) + '. What is the profit now?', N, R + ' − ' + C + ' − ' + e + ' = ' + N, [['Cups', n], ['Price', D(p)], ['Sales', D(R)], ['Costs', D(C + e)]], { MF1: R, MF2: G, MF3: R + C + e }),
+        idea('Which is bigger, the revenue or the profit?', 'Revenue', ['Revenue', 'Profit'], 'The revenue is ' + R + '. The profit is ' + N + '. Profit is what is left after costs, so it is smaller.', [['Sales', D(R)], ['Costs', D(C + e)], ['Profit', D(N)]])
+      ] };
+    },
+    company(r) {
+      const T = 10, k = r.int(2, 5), m = r.int(3, 9), P = T * m, m2 = r.int(1, m - 1), P2 = T * m2;
+      return { intro: 'A lemonade company is split into 10 equal shares. You own ' + k + ' of them. The money is pretend.', explain: { shares: T, own: k, profit: P, profit2: P2 }, steps: [
+        advStep('F408', 'The company makes ' + D(P) + ' profit. How many dollars does each share get?', m, P + ' ÷ ' + T + ' = ' + m, [['Shares', T], ['You own', k], ['Profit', D(P)]], {}),
+        advStep('FN05', 'You own ' + k + ' shares. How many dollars is your part?', k * m, k + ' × ' + m + ' = ' + k * m, [['You own', k], ['Each share', D(m)]], { MF5: P, M15: k + m }),
+        advStep('FN05', 'Next year the profit is only ' + D(P2) + '. How many dollars is your part now?', k * m2, P2 + ' ÷ ' + T + ' = ' + m2 + ', and ' + k + ' × ' + m2 + ' = ' + k * m2, [['You own', k], ['Profit', D(P2)]], { MF5: P2 }),
+        idea('Is owning a share a promise of money every year?', 'No', ['Yes', 'No'], 'Profit can go up or down, so a share is not a promise.', [['Your part', D(k * m2)]])
+      ] };
+    },
+    growth(r) {
+      const A = r.int(1, 9) * 100, a = A / 10, flat2 = A + 2 * a, A1 = A + a, b = A1 / 10, A2 = A1 + b, diff = A2 - flat2;
+      return { intro: 'Two jars each start with ' + D(A) + '. Which one grows more? The money is pretend.', explain: { start: A }, steps: [
+        advStep('FN07', 'Jar A adds ' + D(a) + ' each year. How many dollars after 2 years?', flat2, A + ' + ' + a + ' + ' + a + ' = ' + flat2, [['Jar A', D(A)]], {}),
+        advStep('FN07', 'Jar B grows by one tenth of what is in it. How many dollars after 1 year?', A1, 'One tenth of ' + A + ' is ' + a + '. ' + A + ' + ' + a + ' = ' + A1, [['Jar B', D(A)]], {}),
+        advStep('FN07', 'How many dollars are in Jar B after 2 years?', A2, 'One tenth of ' + A1 + ' is ' + b + '. ' + A1 + ' + ' + b + ' = ' + A2, [['Jar B', D(A1)]], { MF4: A1 + a }),
+        advStep('FN07', 'How many more dollars does Jar B have than Jar A after 2 years?', diff, A2 + ' − ' + flat2 + ' = ' + diff, [['Jar A', D(flat2)], ['Jar B', D(A2)]], {}),
+        idea('Why does Jar B grow more?', 'It grows on its growth', ['It grows on its growth', 'It started with more'], 'Both started the same. Jar B adds a tenth of a bigger amount each year.', [['Jar B', D(A2)]])
+      ] };
+    }
+  };
+  // short animated explainers (plan section 7, scripts A, B and C): frames of a picture and one Pip line, numbers from here
+  function adventureExplainer(id, r) {
+    if (id === 'lemonade') {
+      const n = r.pick([10, 12, 15, 20]), p = r.int(2, 4), e = r.int(4, 9), R = n * p, C = n, N = R - C - e;
+      return [
+        { say: 'I am Pip, a helper made by a computer. Let\u2019s run a lemonade stand.', pic: { type: 'stand' } },
+        { say: 'We sold ' + n + ' cups. Each cup sells for $' + p + '.', pic: { type: 'cups', n } },
+        { say: 'Money in is called revenue. ' + n + ' × ' + p + ' = ' + R, pic: { type: 'bars', bars: [['Revenue', R]] } },
+        { say: 'Each cup costs $1 to make. ' + n + ' × 1 = ' + C, pic: { type: 'bars', bars: [['Revenue', R], ['Costs', C]] } },
+        { say: 'Profit is what is left after costs. The sign cost $' + e + '. ' + R + ' − ' + C + ' − ' + e + ' = ' + N, pic: { type: 'bars', bars: [['Revenue', R], ['Costs', C + e], ['Profit', N]] } }
+      ];
+    }
+    if (id === 'growth') {
+      const A = r.int(1, 9) * 100, a = A / 10, A1 = A + a, b = A1 / 10, A2 = A1 + b, flat2 = A1 + a;
+      return [
+        { say: 'Two jars start with $' + A + '. Which one grows faster?', pic: { type: 'bars', bars: [['Jar A', A], ['Jar B', A]] } },
+        { say: 'Jar A adds $' + a + ' each year. Jar B adds one tenth of what it holds.', pic: { type: 'bars', bars: [['Jar A', A], ['Jar B', A]] } },
+        { say: 'After one year, both jars have $' + A1 + '. ' + A + ' + ' + a + ' = ' + A1, pic: { type: 'bars', bars: [['Jar A', A1], ['Jar B', A1]] } },
+        { say: 'Now one tenth of ' + A1 + ' is ' + b + '. ' + A1 + ' + ' + b + ' = ' + A2 + '. Jar A has ' + flat2 + '.', pic: { type: 'bars', bars: [['Jar A', flat2], ['Jar B', A2]] } },
+        { say: 'Growth on growth is called compound growth. Banks use it for interest. A bank tells you its rate first, and the rate can change.', pic: { type: 'bars', bars: [['Jar A', flat2], ['Jar B', A2]] } }
+      ];
+    }
+    if (id === 'company') {
+      const k = r.int(2, 5), m = r.int(3, 9), P = 10 * m, m2 = r.int(1, m - 1), P2 = 10 * m2;
+      return [
+        { say: 'A company can be split into equal parts called shares. This one has 10.', pic: { type: 'pie', n: 10, own: 0 } },
+        { say: 'You own ' + k + ' of the 10 shares. You own ' + k + ' tenths of the company.', pic: { type: 'pie', n: 10, own: k } },
+        { say: 'The company made $' + P + ' profit. Each share gets ' + P + ' ÷ 10 = ' + m, pic: { type: 'pie', n: 10, own: k } },
+        { say: 'Your ' + k + ' shares get ' + k + ' × ' + m + ' = ' + k * m, pic: { type: 'bars', bars: [['Profit', P], ['Your part', k * m]] } },
+        { say: 'Next year the profit is $' + P2 + '. Your part is ' + k + ' × ' + m2 + ' = ' + k * m2 + '. Profit can be smaller, so a share is not a promise.', pic: { type: 'bars', bars: [['Profit', P2], ['Your part', k * m2]] } }
+      ];
+    }
+    return null;
+  }
   function adventure(id, r) {
-    if (id !== 'lemonade') return null;
-    const n = r.pick([10, 12, 15, 20, 24, 30]), p = r.int(2, 5), c = 1, e = r.int(4, 9), R = n * p, C = n * c, G = R - C, N = G - e;
-    // clue answers as text, like every engine item, and never equal to the right answer
-    const step = (skill, prompt, answer, how, story, predicted, extra) => { const pr = {}; Object.keys(predicted || {}).forEach((k) => { const v = String(predicted[k]); if (v !== String(answer) && !Object.values(pr).includes(v)) pr[k] = v; }); return Object.assign({ game: 'adventure', skill, prompt, answer: String(answer), how, story, predicted: pr }, extra || {}); };
-    return {
-      id, intro: 'Let\u2019s run a lemonade stand. Every number is pretend money for this story.',
-      steps: [
-        step('FN01', 'You sold ' + n + ' cups at $' + p + ' each. How many dollars came in?', R, 'Money in is revenue. ' + n + ' × ' + p + ' = ' + R, { cups: n, price: p }, { M15: n + p }),
-        step('FN01', 'Each cup cost $' + c + ' to make. How many dollars did the ' + n + ' cups cost?', C, n + ' × ' + c + ' = ' + C, { cups: n, price: p, sales: R }),
-        step('FN02', 'Profit is the money in take away the costs. What is the profit?', G, R + ' − ' + C + ' = ' + G, { cups: n, price: p, sales: R, costs: C }, { MF1: R, MF3: R + C }),
-        step('FN02', 'The sign for the stand cost $' + e + '. What is the profit now?', N, R + ' − ' + C + ' − ' + e + ' = ' + N, { cups: n, price: p, sales: R, costs: C + e }, { MF1: R, MF2: G, MF3: R + C + e }),
-        step(null, 'Which is bigger, the revenue or the profit?', 'Revenue', 'The revenue is ' + R + '. The profit is ' + N + '. Profit is what is left after costs, so it is smaller.', { cups: n, price: p, sales: R, costs: C + e, profit: N }, {}, { choices: ['Revenue', 'Profit'], idea: true })
-      ]
-    };
+    const b = ADV_BUILD[id];
+    if (!b) return null;
+    return Object.assign({ id }, b(r));
   }
   const lit = (st) => !!st && ['mastered', 'certified', 'placed'].includes(st.status);
   // the highest level open for this child, or 0 while the game is still closed
@@ -2006,7 +2150,7 @@
     return L;
   }
 
-  const api = { makeRng, digits, MISCONCEPTIONS, SKILLS, SKILL_ORDER, generate, check, bktUpdate, BKT, masteryMet, recordAttempt, recordCheckItem, dueCheck, nextActivity, newLearner, refreshUnlocks, PLACEMENT_ANCHORS, PLACEMENT_MAX_ITEMS, STRAND_ANCHORS, strandAnchors, placementPlan, newPlacement, placementRecord, applyPlacement, STORY_ANCHORS, READING_PROBE, isSlip, placementNext, placementProbeRecord, placementRestDue, placementRested, placementStage, discoverySummary, UNDERSTANDING, understanding, recordWhy, migrateLearner, GAMES, GAME_ROUNDS, gameLevel, gameRound, ADVENTURES, adventureOpen, adventure, makeTransfer, makeStepFill, canOffer, evidence, evidenceMissing, EXPLAIN_KINDS, explainPick, explainShown, explainOutcome, explainBest, stepResult, ancestors, numberName, DAY, CHECK_DAYS, GRADE_LEVELS, SCHOOL_GRADES, gradeOf, defaultFocus, gradeProgress, makeMistake, PIP_DID, lineItem, linePAE };
+  const api = { makeRng, digits, MISCONCEPTIONS, SKILLS, SKILL_ORDER, generate, check, bktUpdate, BKT, masteryMet, recordAttempt, recordCheckItem, dueCheck, nextActivity, newLearner, refreshUnlocks, PLACEMENT_ANCHORS, PLACEMENT_MAX_ITEMS, STRAND_ANCHORS, strandAnchors, placementPlan, newPlacement, placementRecord, applyPlacement, STORY_ANCHORS, READING_PROBE, isSlip, placementNext, placementProbeRecord, placementRestDue, placementRested, placementStage, discoverySummary, UNDERSTANDING, understanding, recordWhy, migrateLearner, GAMES, GAME_ROUNDS, gameLevel, gameRound, ADVENTURES, adventureOpen, adventure, adventureExplainer, makeTransfer, makeStepFill, canOffer, evidence, evidenceMissing, EXPLAIN_KINDS, explainPick, explainShown, explainOutcome, explainBest, stepResult, ancestors, numberName, DAY, CHECK_DAYS, GRADE_LEVELS, SCHOOL_GRADES, gradeOf, defaultFocus, gradeProgress, makeMistake, PIP_DID, lineItem, linePAE };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.TBEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);

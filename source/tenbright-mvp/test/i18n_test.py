@@ -84,7 +84,9 @@ with sync_playwright() as p:
         page.screenshot(path=str(OUT / ('%s-intro.png' % L)))
         page.locator('[data-act="startPlacement"]').click()
         n = 0
-        while not page.locator('[data-act="go"][data-to="map"]').count() and n < 40:
+        # room for every question (PLACEMENT_MAX_ITEMS), a clue retry on each and the rest stops
+        cap = 2 * page.evaluate('() => window.TBEngine.PLACEMENT_MAX_ITEMS') + 12
+        while not page.locator('[data-act="go"][data-to="map"]').count() and n < cap:
             if page.locator('[data-act="restGo"]').count():  # Discovery Adventure rest stop
                 look('rest-stop'); page.locator('[data-act="restGo"]').click(); n += 1; continue
             look('placement'); answer(page)

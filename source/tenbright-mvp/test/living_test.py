@@ -140,7 +140,7 @@ with sync_playwright() as p:
         pg.locator('[data-act="go"][data-to="journal"]').click()
         got = pg.evaluate('() => Object.keys(window.__tbChild().badges)')
         assert got, 'badges not stored'
-        assert pg.locator('.badge-cell').count() == 8
+        assert pg.locator('.badge-cell').count() == 9  # 8 badges plus Market maker (money adventures)
         opens = pg.locator('[data-act="look"][data-k="acc"]:not([disabled])')
         assert opens.count() >= 2, 'no accessory unlocked'
         v = opens.nth(1).get_attribute('data-v'); opens.nth(1).click()
