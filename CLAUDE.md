@@ -55,7 +55,8 @@ https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
   works them step by step, then answer by voice.
 - **Languages:** English, Spanish (Latin America), French, Haitian Creole, Traditional Chinese (Taiwan)
   and Modern Standard Arabic, with full RTL, an embedded Cairo font and LTR isolation for math. All translations are
-  machine-drafted and need native-speaker review (`tenbright-translation-review.xlsx` in the source zip).
+  machine-drafted and need native-speaker review: `source/tenbright-mvp/tenbright-translation-review.xlsx`, rebuilt Nov 26, 2026
+  with all 4,125 phrases and Arabic (`tools/translation-review/` regenerates it from the source).
 - **"Living Pip"** animation: one character rig with moods, capoeira on correct answers (aú, meia-lua, bananeira
   plus a berimbau sound), flyovers, a galaxy dive (about 1 in 3 correct answers, at most once per 20 s) and piano when idle.
   Settings are Full, Gentle or Still, and the app respects OS reduced-motion.
