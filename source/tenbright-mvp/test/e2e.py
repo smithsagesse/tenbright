@@ -56,7 +56,8 @@ with sync_playwright() as p:
     assert page.get_by_text('Thanks for exploring!').is_visible(), 'placement did not finish'
     print('placement items:', n)
     page.get_by_text('Back to the map').click()
-    assert page.locator('.region').count() == 9
+    # one region button per region the engine uses (11 since Phase 7)
+    assert page.locator('.region').count() == page.evaluate("() => new Set(window.TBEngine.SKILL_ORDER.map((id) => window.TBEngine.SKILLS[id].region)).size") >= 11
     # grade chips: Grade 2 is the default focus for a Grade 2 child; switching shows only that grade's skills
     assert page.locator('.gchip[aria-pressed="true"]').inner_text().startswith('Grade 2'), 'default focus not Grade 2'
     page.locator('.gchip[data-g="3"]').click()

@@ -215,7 +215,34 @@ ok(!L2.skills.PV01.activeMis, 'three correct clears it');
 // graph integrity: every prerequisite exists and appears earlier in the order or in another strand without cycles
 E.SKILL_ORDER.forEach((id) => E.SKILLS[id].prereqs.forEach((p) => ok(E.SKILLS[p], id + ' has unknown prereq ' + p)));
 E.SKILL_ORDER.forEach((id) => ok(!E.ancestors(id).has(id), 'cycle at ' + id));
-ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 110, '110 core skills (102 + 8 money and time)');
+ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 117, '117 core skills (102 + 8 money and time + 7 measurement and geometry)');
+// Phase 7: measurement and geometry
+{
+  const R8 = E.makeRng(808);
+  ['MS01', 'MS02', 'MS03', 'MS04', 'GE01', 'GE02', 'GE03'].forEach((id) => ok(['workshop', 'shapes'].includes(E.SKILLS[id].region), id + ' region'));
+  for (let i = 0; i < 4000; i++) {
+    const a = E.generate('MS01', R8), m = a.model;
+    ok(m.type === 'ruler' && m.end <= m.max && Number(a.answer) === m.end - m.start && m.end > m.start, 'MS01 length is end minus start');
+    if (m.start) ok(a.predicted.MM1 === String(m.end), 'MS01 reading the end is the clue');
+    const b = E.generate('MS02', R8);
+    ok(Number(b.answer) === b.model.a - b.model.b && Number(b.answer) > 0, 'MS02 difference');
+    const c = E.generate('MS03', R8), cm = c.model;
+    ok(Number(c.answer) === (cm.unknownH ? cm.h : 2 * (cm.w + cm.h)), 'MS03 perimeter or missing side');
+    const d = E.generate('MS04', R8);
+    ok(Number(d.answer) === d.model.w * d.model.h, 'MS04 area is length times width');
+    Object.values(d.predicted).forEach((w) => ok(w !== d.answer, 'MS04 clue differs from the answer'));
+    const g = E.generate('GE01', R8);
+    if (g.format === 'choice' && g.textChoices) ok(g.choices.length === 4 && g.choices.includes(g.answer) && ['triangle', 'quadrilateral', 'pentagon', 'hexagon'][g.model.n - 3] === g.answer, 'GE01 name matches the sides');
+    const h = E.generate('GE02', R8);
+    ok(Number(h.answer) + h.model.a === h.model.total && Number(h.answer) > 0, 'GE02 angles add to the whole');
+    const k = E.generate('GE03', R8);
+    ok(Number(k.answer) === (/across/.test(k.prompt) ? k.model.x : k.model.y) && k.model.x !== k.model.y, 'GE03 across or up');
+  }
+  const L8 = E.newLearner('G');
+  ok(L8.skills.MS01.status === 'locked' && L8.skills.GE01.status === 'locked', 'measurement and shapes wait for counting');
+  L8.skills.C101.status = 'mastered'; E.refreshUnlocks(L8.skills);
+  ok(L8.skills.MS01.status === 'learning' && L8.skills.GE01.status === 'learning', 'they open after counting to 120');
+}
 // Phase 7: money and time
 {
   const R7 = E.makeRng(707), clock = /^(\d{1,2}):(\d{2})$/;
@@ -275,7 +302,7 @@ ok(E.numberName(406) === 'four hundred six' && E.numberName(570) === 'five hundr
 // grade levels: every skill has grade 2 or 3; a grade focus picks on-grade work first, never locks anything
 const per = [1, 2, 3, 4, 5].map((g) => E.SKILL_ORDER.filter((id) => E.gradeOf(id) === g).length);
 ok(E.SKILL_ORDER.every((id) => [1, 2, 3, 4, 5].includes(E.gradeOf(id))), 'every skill has a grade 1-5');
-ok(per.join() === '15,35,26,20,15', 'grade split (with money and time) ' + per.join());
+ok(per.join() === '15,38,28,21,16', 'grade split (with money, time, measurement and geometry) ' + per.join());
 ok(E.defaultFocus('1') === 1 && E.defaultFocus('2') === 2 && E.defaultFocus('3') === 3 && E.defaultFocus('5') === 5 && E.defaultFocus('other') === 'all', 'default focus');
 const LG = E.newLearner('G', 2017, 'pv', '3');
 ok(LG.grade === '3' && LG.focus === 3, 'grade stored with default focus');
@@ -297,7 +324,7 @@ ok(nAll.skill, 'all still works');
 mid.skills.PV01.activeMis = 'M09';
 ok(E.nextActivity(mid.skills, now, 3).kind === 'remediate', 'remediation beats grade focus');
 const gp = E.gradeProgress(mid.skills);
-ok(gp.length === 5 && gp[1].grade === 2 && gp[1].total === 35 && gp[2].total === 26, 'grade progress (with money and time)');
+ok(gp.length === 5 && gp[1].grade === 2 && gp[1].total === 38 && gp[2].total === 28, 'grade progress (with money, time, measurement and geometry)');
 const oldL = { skills: {} }; E.migrateLearner(oldL); ok(oldL.grade === null && oldL.focus === 'all', 'migration adds grade fields');
 
 // grade-aware placement

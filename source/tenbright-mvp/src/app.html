@@ -114,6 +114,10 @@ td.num, th.num { text-align: right; }
 .region.docks { background: #5B5FB8; }
 .region.market { background: #8A5A12; }
 .region.clock { background: #7A3E8C; }
+.region.workshop { background: #1F6E5A; }
+.region.shapes { background: #A23B5C; }
+.mpic { width: min(460px, 100%); height: auto; display: block; margin: 0 auto; }
+.mpic.sq { width: min(300px, 80vw); }
 .coins-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; }
 .clock-svg { width: min(240px, 70vw); height: auto; }
 .clock-pair { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; text-align: center; }
@@ -1031,7 +1035,9 @@ tr:last-child td { border-bottom: none; }
     { id: 'falls', name: 'Fraction Falls', what: 'Fractions' },
     { id: 'docks', name: 'Decimal Docks', what: 'Decimals' },
     { id: 'market', name: 'Money Market', what: 'Coins and money' },
-    { id: 'clock', name: 'Clock Tower', what: 'Telling time' }
+    { id: 'clock', name: 'Clock Tower', what: 'Telling time' },
+    { id: 'workshop', name: 'Measuring Workshop', what: 'Length, perimeter and area' },
+    { id: 'shapes', name: 'Shape Garden', what: 'Shapes, angles and grids' }
   ];
   // understanding states for parents (Tenbright 2.0): plain words, never shown to the child
   // ---------- Tenbright 2.0 Phase 6: strategy library ----------
@@ -1987,8 +1993,68 @@ tr:last-child td { border-bottom: none; }
     for (let i = 0; i <= k && i < steps.length; i++) lines.push(`<li class="${i === k ? 'now' : ''}">${escM(steps[i])}</li>`);
     return `<div class="paper-sheet" aria-label="What to write on paper"><span class="paper-tag">On your paper</span><ol>${lines.join('')}</ol></div>`;
   }
-  const NEW_MODELS = new Set(['coins', 'clock', 'clock2', 'pairsum', 'compare2', 'fracbar', 'fracline', 'pvbig', 'pvbig2', 'area', 'divgroups', 'timesbar', 'decgrid', 'decgrid2', 'pvdec', 'pvdec2', 'deccol', 'paper', 'fracarea', 'volume']);
+  const NEW_MODELS = new Set(['ruler', 'lengths', 'rect', 'shape', 'angle', 'grid', 'coins', 'clock', 'clock2', 'pairsum', 'compare2', 'fracbar', 'fracline', 'pvbig', 'pvbig2', 'area', 'divgroups', 'timesbar', 'decgrid', 'decgrid2', 'pvdec', 'pvdec2', 'deccol', 'paper', 'fracarea', 'volume']);
   // the picture in the practice screen (k = -1: nothing solved yet)
+  // ---------- Phase 7: measuring and shapes ----------
+  // pictures use the app's ink colors; each description gives what the picture shows, in words
+  const INK = '#1E2A3B', unitAb = (cm) => (cm ? 'cm' : 'in'); // the screen translator handles "{N} cm" and "{N} in"
+  const svgT = (x, y, t, size, extra) => `<text x="${x}" y="${y}" text-anchor="middle" font-size="${size || 18}" font-weight="800" fill="${INK}" ${extra || ''}>${t}</text>`;
+  function rulerHtml(m) {
+    const u = 30, x0 = 24, W = m.max * u + 48, rib = m.cm ? '#C0392B' : '#1F5FBF';
+    let g = `<rect x="${x0 + m.start * u}" y="14" width="${(m.end - m.start) * u}" height="26" rx="6" fill="${rib}"></rect>`;
+    g += `<rect x="${x0 - 12}" y="52" width="${m.max * u + 24}" height="62" rx="6" fill="#FFE9A8" stroke="${INK}" stroke-width="2"></rect>`;
+    for (let i = 0; i <= m.max; i++) { const x = x0 + i * u; g += `<line x1="${x}" y1="52" x2="${x}" y2="76" stroke="${INK}" stroke-width="2.5"></line>` + svgT(x, 102, i, 17); if (i < m.max && !m.cm) g += `<line x1="${x + u / 2}" y1="52" x2="${x + u / 2}" y2="66" stroke="${INK}" stroke-width="1.5"></line>`; }
+    g += `<line x1="${x0 + m.start * u}" y1="40" x2="${x0 + m.start * u}" y2="52" stroke="${INK}" stroke-width="2" stroke-dasharray="3 3"></line><line x1="${x0 + m.end * u}" y1="40" x2="${x0 + m.end * u}" y2="52" stroke="${INK}" stroke-width="2" stroke-dasharray="3 3"></line>`;
+    const label = (m.cm ? 'A ruler in centimeters, from 0 to ' : 'A ruler in inches, from 0 to ') + m.max + '. The object starts at ' + m.start + ' and ends at ' + m.end + '.';
+    return `<svg class="mpic" viewBox="0 0 ${W} 124" role="img" aria-label="${esc(label)}">${g}</svg>`;
+  }
+  function lengthsHtml(m) {
+    const big = Math.max(m.a, m.b), full = 380, wa = Math.max(40, full * m.a / big), wb = Math.max(40, full * m.b / big), ua = unitAb(m.cm);
+    const g = `<rect x="10" y="10" width="${wa}" height="40" rx="8" fill="#B3261E"></rect><text x="${10 + wa / 2}" y="37" text-anchor="middle" font-size="19" font-weight="800" fill="#FFFFFF">${m.a} ${ua}</text>`
+      + `<rect x="10" y="66" width="${wb}" height="40" rx="8" fill="#1F5FBF"></rect><text x="${10 + wb / 2}" y="93" text-anchor="middle" font-size="19" font-weight="800" fill="#FFFFFF">${m.b} ${ua}</text>`;
+    return `<svg class="mpic" viewBox="0 0 400 116" role="img" aria-label="${esc('Two ribbons. The red ribbon is ' + m.a + ' long. The blue ribbon is ' + m.b + ' long.')}">${g}</svg>`;
+  }
+  function rectHtml(m) {
+    if (m.show === 'grid') {
+      const c = 32, W = m.w * c, H = m.h * c;
+      let g = `<rect x="4" y="4" width="${W}" height="${H}" fill="#CDEBDD" stroke="${INK}" stroke-width="4"></rect>`;
+      for (let i = 1; i < m.w; i++) g += `<line x1="${4 + i * c}" y1="4" x2="${4 + i * c}" y2="${4 + H}" stroke="${INK}" stroke-width="1.5"></line>`;
+      for (let j = 1; j < m.h; j++) g += `<line x1="4" y1="${4 + j * c}" x2="${4 + W}" y2="${4 + j * c}" stroke="${INK}" stroke-width="1.5"></line>`;
+      return `<svg class="mpic sq" viewBox="0 0 ${W + 8} ${H + 8}" role="img" aria-label="${esc('A rectangle covered by squares: ' + m.h + ' rows, ' + m.w + ' squares in each row.')}">${g}</svg>`;
+    }
+    const sc = Math.min(260 / m.w, 150 / m.h, 32), W = m.w * sc, H = m.h * sc, x0 = 20, y0 = 34, ua = unitAb(m.cm), hl = m.unknownH ? '?' : m.h + ' ' + ua;
+    const g = `<rect x="${x0}" y="${y0}" width="${W}" height="${H}" fill="#CDEBDD" stroke="${INK}" stroke-width="4"></rect>` + svgT(x0 + W / 2, y0 - 10, m.w + ' ' + ua, 18) + svgT(x0 + W + 34, y0 + H / 2 + 6, hl, 18);
+    const label = 'A rectangle. The long side is ' + m.w + '. The short side is ' + (m.unknownH ? 'not known' : m.h) + '.';
+    return `<svg class="mpic sq" viewBox="0 0 ${x0 + W + 76} ${y0 + H + 14}" role="img" aria-label="${esc(label)}">${g}</svg>`;
+  }
+  function shapeHtml(m) {
+    const cx = 110, cy = 112, R = 86, pts = [];
+    for (let i = 0; i < m.n; i++) { const a = (m.rot + i * 360 / m.n) * Math.PI / 180, rr = R * (i % 2 ? 0.86 : 1); pts.push((cx + rr * Math.cos(a)).toFixed(1) + ',' + (cy + rr * Math.sin(a)).toFixed(1)); }
+    return `<svg class="mpic sq" viewBox="0 0 220 224" role="img" aria-label="${esc('A closed shape with ' + m.n + ' straight sides.')}"><polygon points="${pts.join(' ')}" fill="#F7C6D4" stroke="${INK}" stroke-width="5" stroke-linejoin="round"></polygon></svg>`;
+  }
+  function angleHtml(m) {
+    const rad = (d) => d * Math.PI / 180;
+    if (m.total === 90) {
+      const vx = 40, vy = 200, L = 170, ex = vx + L * Math.cos(rad(m.a)), ey = vy - L * Math.sin(rad(m.a));
+      const g = `<line x1="${vx}" y1="${vy}" x2="${vx + L}" y2="${vy}" stroke="${INK}" stroke-width="5" stroke-linecap="round"></line><line x1="${vx}" y1="${vy}" x2="${vx}" y2="${vy - L}" stroke="${INK}" stroke-width="5" stroke-linecap="round"></line>`
+        + `<line x1="${vx}" y1="${vy}" x2="${ex}" y2="${ey}" stroke="#1F5FBF" stroke-width="5" stroke-linecap="round"></line><rect x="${vx}" y="${vy - 18}" width="18" height="18" fill="none" stroke="${INK}" stroke-width="2"></rect>`
+        + svgT(vx + 95 * Math.cos(rad(m.a / 2)), vy - 95 * Math.sin(rad(m.a / 2)) + 7, m.a + '°', 18) + svgT(vx + 95 * Math.cos(rad((90 + m.a) / 2)), vy - 95 * Math.sin(rad((90 + m.a) / 2)) + 7, '?', 22);
+      return `<svg class="mpic sq" viewBox="0 0 230 214" role="img" aria-label="${esc('A right angle split into two parts. One part is ' + m.a + ' degrees. The other part is not known.')}">${g}</svg>`;
+    }
+    const vx = 200, vy = 170, L = 170, ex = vx + L * Math.cos(rad(m.a)), ey = vy - L * Math.sin(rad(m.a));
+    const g = `<line x1="${vx - L}" y1="${vy}" x2="${vx + L}" y2="${vy}" stroke="${INK}" stroke-width="5" stroke-linecap="round"></line><line x1="${vx}" y1="${vy}" x2="${ex}" y2="${ey}" stroke="#1F5FBF" stroke-width="5" stroke-linecap="round"></line><circle cx="${vx}" cy="${vy}" r="6" fill="${INK}"></circle>`
+      + svgT(vx + 90 * Math.cos(rad(m.a / 2)), vy - 90 * Math.sin(rad(m.a / 2)) + 7, m.a + '°', 18) + svgT(vx + 90 * Math.cos(rad((180 + m.a) / 2)), vy - 90 * Math.sin(rad((180 + m.a) / 2)) + 7, '?', 22);
+    return `<svg class="mpic" viewBox="0 0 400 190" role="img" aria-label="${esc('A straight angle split into two parts. One part is ' + m.a + ' degrees. The other part is not known.')}">${g}</svg>`;
+  }
+  function gridHtml(m) {
+    const c = 30, x0 = 34, top = 12, H = m.max * c;
+    let g = '';
+    for (let i = 0; i <= m.max; i++) { g += `<line x1="${x0 + i * c}" y1="${top}" x2="${x0 + i * c}" y2="${top + H}" stroke="#7C8490" stroke-width="${i ? 1 : 3}"></line><line x1="${x0}" y1="${top + H - i * c}" x2="${x0 + H}" y2="${top + H - i * c}" stroke="#7C8490" stroke-width="${i ? 1 : 3}"></line>` + svgT(x0 + i * c, top + H + 22, i, 15) + svgT(x0 - 16, top + H - i * c + 5, i, 15); }
+    const sx = x0 + m.x * c, sy = top + H - m.y * c, star = [];
+    for (let k = 0; k < 10; k++) { const r = k % 2 ? 5.5 : 13, a = (k * 36 - 90) * Math.PI / 180; star.push((sx + r * Math.cos(a)).toFixed(1) + ',' + (sy + r * Math.sin(a)).toFixed(1)); }
+    g += `<polygon points="${star.join(' ')}" fill="#E0A100" stroke="${INK}" stroke-width="2"></polygon>`;
+    return `<svg class="mpic sq" viewBox="0 0 ${x0 + H + 16} ${top + H + 32}" role="img" aria-label="${esc('A grid numbered 0 to ' + m.max + ' across the bottom and up the side, with a star on it.')}">${g}</svg>`;
+  }
   // ---------- Phase 7: coins and clocks ----------
   const COIN_LOOK = { 1: { r: 30, fill: '#C8743A', ring: '#8A4A1E', name: ['penny', 'pennies'] }, 5: { r: 34, fill: '#C9CED6', ring: '#7C8490', name: ['nickel', 'nickels'] }, 10: { r: 27, fill: '#D8DDE4', ring: '#7C8490', name: ['dime', 'dimes'] }, 25: { r: 40, fill: '#D0D5DC', ring: '#6C7480', name: ['quarter', 'quarters'] } };
   function coinsHtml(coins) {
@@ -2015,6 +2081,12 @@ tr:last-child td { border-bottom: none; }
   function newModel(item, hint, k) {
     const m = item.model, steps = item.steps || [], last = k >= steps.length - 1;
     switch (m.type) {
+      case 'ruler': return rulerHtml(m);
+      case 'lengths': return lengthsHtml(m);
+      case 'rect': return rectHtml(m);
+      case 'shape': return shapeHtml(m);
+      case 'angle': return angleHtml(m);
+      case 'grid': return gridHtml(m);
       case 'coins': return coinsHtml(m.coins);
       case 'clock': return clockHtml(m.h, m.m);
       case 'clock2': return `<div class="clock-pair"><div><p class="eyebrow">Start</p>${clockHtml(m.h, m.m)}</div><div><p class="eyebrow">End</p>${clockHtml(m.eh, m.em)}</div></div>`;

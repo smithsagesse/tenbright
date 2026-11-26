@@ -101,7 +101,7 @@
 
   // a sentence becomes a pattern plus the slot values, in order
   const SLOT_RE = new RegExp([
-    '\\b\\d\\.[A-Z]{2,3}\\.[A-D]\\.\\d+[a-z]?\\b',
+    '\\b\\d\\.[A-Z]{1,3}\\.[A-D]\\.\\d+[a-z]?\\b', // Common Core codes, including geometry (2.G.A.1)
     '\\b(?:one|two|three|four|five|six|seven|eight|nine)(?: hundred)(?:[ -](?:' + NW + '))*\\b',
     '\\b(?:twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)-(?:one|two|three|four|five|six|seven|eight|nine)\\b',
     '\\d+(?:,\\d{3})*(?:\\.\\d+)?',

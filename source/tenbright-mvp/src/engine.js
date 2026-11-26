@@ -85,6 +85,11 @@
     MT2: { name: 'Next hour', parent: 'Reads the hour as the number the short hand is moving toward, not the one it has passed.', clue: 'A clue! The hour is the number the short hand has just passed.' },
     MT3: { name: 'Clock number as minutes', parent: 'Reads the number the long hand points to as the minutes, instead of counting by 5s.', clue: 'A clue! Each number on the clock is 5 more minutes. Count by 5s.' },
     MT4: { name: 'Time as hundreds', parent: 'Subtracts times like whole numbers, as if an hour had 100 minutes.', clue: 'A clue! An hour has 60 minutes, not 100. Count on to the next hour first.' },
+    MM1: { name: 'Read the end, not the length', parent: 'Reads the number at the end of an object on a ruler instead of counting the units from where it starts.', clue: 'A clue! It does not start at 0. Count the units from the start to the end.' },
+    MM2: { name: 'Only two sides', parent: 'Adds only the two given sides of a rectangle instead of all four for the perimeter.', clue: 'A clue! The perimeter goes all the way around. A rectangle has 4 sides.' },
+    MM3: { name: 'Area and perimeter mixed', parent: 'Finds the distance around when the question asks for the squares inside, or the other way around.', clue: 'A clue! Area counts the squares inside. Perimeter is the distance around the edge.' },
+    MG1: { name: 'Right angle as 100', parent: 'Treats a right angle as 100 degrees instead of 90.', clue: 'A clue! A right angle is 90 degrees, not 100.' },
+    MG2: { name: 'Up before across', parent: 'Reads how far up a point is before how far across on a grid.', clue: 'A clue! Go across first, then up.' },
     MO1: { name: 'Left to right only', parent: 'Works from left to right and ignores parentheses or the order of operations.', clue: 'A clue! Parentheses first, then times, then plus and minus.' }
   };
 
@@ -218,7 +223,15 @@
     TM01: S('Hour and half hour', 'clock', ['C101'], '1.MD.B.3'),
     TM02: S('Time to 5 minutes', 'clock', ['TM01', 'PV07'], '2.MD.C.7'),
     TM03: S('Time to the minute', 'clock', ['TM02'], '3.MD.A.1'),
-    TM04: S('How much time passed', 'clock', ['TM03', 'AS10'], '3.MD.A.1')
+    TM04: S('How much time passed', 'clock', ['TM03', 'AS10'], '3.MD.A.1'),
+    // measurement and geometry
+    MS01: S('Measure with a ruler', 'workshop', ['C101'], '2.MD.A.1'),
+    MS02: S('Compare lengths', 'workshop', ['MS01', 'AS10'], '2.MD.A.4'),
+    MS03: S('Perimeter', 'workshop', ['MS01', 'AS05'], '3.MD.D.8'),
+    MS04: S('Area of a rectangle', 'workshop', ['MS03', 'MU03'], '3.MD.C.7'),
+    GE01: S('Name shapes by their sides', 'shapes', ['C101'], '2.G.A.1'),
+    GE02: S('Angles that fit together', 'shapes', ['GE01', 'AS10'], '4.MD.C.7'),
+    GE03: S('Points on a grid', 'shapes', ['GE01', 'PV07'], '5.G.A.2')
   };
   const SKILLS = Object.assign({}, SKILLS_G1, SKILLS_CORE, SKILLS_G3F, SKILLS_G4, SKILLS_G5, SKILLS_P7);
   const SKILL_ORDER = Object.keys(SKILLS);
@@ -637,6 +650,7 @@
     }
   });
 
+  const SHAPES = [{ n: 3, name: 'triangle' }, { n: 4, name: 'quadrilateral' }, { n: 5, name: 'pentagon' }, { n: 6, name: 'hexagon' }];
   const COINS = [{ v: 1, one: 'penny', many: 'pennies' }, { v: 5, one: 'nickel', many: 'nickels' }, { v: 10, one: 'dime', many: 'dimes' }, { v: 25, one: 'quarter', many: 'quarters' }];
   // read a clock: the short hand gives the hour it has passed, the long hand the minutes (5 for each number)
   function clockItem(skill, h, m, r) {
@@ -1171,6 +1185,54 @@
       const asHundreds = (eh * 100 + em) - (h * 100 + m);
       return num('TM04', what + ' starts at ' + t(h, m) + ' and ends at ' + t(eh, em) + '. How many minutes long is it?', d, { MT4: asHundreds !== d ? asHundreds : null }, steps, { type: 'clock2', h, m, eh, em });
     },
+    // ===== Phase 7: measurement and geometry =====
+    MS01(r) {
+      const cm = r.next() < 0.5, max = cm ? 15 : 12, len = r.int(2, max - 2), start = r.next() < 0.5 ? 0 : r.int(1, max - len), end = start + len;
+      const thing = r.pick(['ribbon', 'pencil', 'crayon']), unit = cm ? 'centimeters' : 'inches';
+      const steps = start === 0 ? ['It starts at 0 and ends at ' + end + '.', 'So it is ' + len + ' ' + unit + ' long.'] : ['It starts at ' + start + ', not at 0.', 'Count the units from ' + start + ' to ' + end + '.', end + ' − ' + start + ' = ' + len];
+      return num('MS01', 'How many ' + unit + ' long is the ' + thing + '?', len, { MM1: start ? end : null }, steps, { type: 'ruler', cm, max, start, end });
+    },
+    MS02(r) {
+      const cm = r.next() < 0.5, a = r.int(12, cm ? 90 : 48), b = r.int(5, a - 3), unit = cm ? 'centimeters' : 'inches';
+      return num('MS02', 'The red ribbon is ' + a + ' ' + unit + ' long. The blue ribbon is ' + b + ' ' + unit + ' long. How much longer is the red ribbon?', a - b, { M14: a + b }, ['How much longer means find the difference.', a + ' − ' + b + ' = ' + (a - b)], { type: 'lengths', a, b, cm });
+    },
+    MS03(r) {
+      const cm = r.next() < 0.5, unit = cm ? 'centimeters' : 'inches', w = r.int(3, 12); let h; do { h = r.int(2, 9); } while (h === w);
+      const P = 2 * (w + h);
+      if (r.next() < 0.35) {
+        const pred = {}; if (P - w !== h) pred.MM2 = P - w;
+        return num('MS03', 'A rectangle has a perimeter of ' + P + ' ' + unit + '. It is ' + w + ' ' + unit + ' long. How wide is it?', h, pred, ['The two long sides: ' + w + ' + ' + w + ' = ' + 2 * w, 'The two short sides share the rest: ' + P + ' − ' + 2 * w + ' = ' + 2 * h, 'Each short side is half of that: ' + 2 * h + ' ÷ 2 = ' + h], { type: 'rect', w, h, cm, show: 'perim', unknownH: true });
+      }
+      return num('MS03', 'A rectangle is ' + w + ' ' + unit + ' long and ' + h + ' ' + unit + ' wide. What is its perimeter in ' + unit + '?', P, { MM2: w + h, MM3: w * h !== P ? w * h : null }, ['A rectangle has 4 sides. Opposite sides are the same length.', 'Add all 4 sides: ' + w + ' + ' + h + ' + ' + w + ' + ' + h + ' = ' + P], { type: 'rect', w, h, cm, show: 'perim' });
+    },
+    MS04(r) {
+      const w = r.int(2, 9), h = r.int(2, 7), A = w * h, P = 2 * (w + h);
+      const pred = { MM3: P !== A ? P : null, M15: w + h !== A ? w + h : null };
+      if (r.next() < 0.5) return num('MS04', 'How many squares cover the rectangle?', A, pred, ['There are ' + h + ' rows with ' + w + ' squares in each row.', h + ' × ' + w + ' = ' + A], { type: 'rect', w, h, cm: true, show: 'grid' });
+      const cm = r.next() < 0.5, unit = cm ? 'centimeters' : 'inches';
+      return num('MS04', 'A rectangle is ' + w + ' ' + unit + ' long and ' + h + ' ' + unit + ' wide. What is its area in square ' + unit + '?', A, pred, ['Area is the length times the width.', w + ' × ' + h + ' = ' + A], { type: 'rect', w, h, cm, show: 'area' });
+    },
+    GE01(r) {
+      const sh = r.pick(SHAPES), rot = r.int(0, 359);
+      const count = Array.from({ length: sh.n }, (_, i) => i + 1).join(', ');
+      const steps = ['Count the straight sides: ' + count + '.', 'A shape with ' + sh.n + ' sides is a ' + sh.name + '.'];
+      if (r.next() < 0.5) return textChoice('GE01', 'What is this shape called?', sh.name, SHAPES.filter((x) => x !== sh).map((x) => x.name), steps, { type: 'shape', n: sh.n, rot }, r);
+      return num('GE01', 'How many sides does a ' + sh.name + ' have?', sh.n, {}, ['A ' + sh.name + ' has ' + sh.n + ' sides and ' + sh.n + ' corners.'], { type: 'paper' });
+    },
+    GE02(r) {
+      if (r.next() < 0.6) {
+        const a = r.int(1, 17) * 5;
+        return num('GE02', 'A right angle is split into two angles. One angle is ' + a + ' degrees. How many degrees is the other angle?', 90 - a, { MG1: 100 - a }, ['A right angle is 90 degrees.', '90 − ' + a + ' = ' + (90 - a)], { type: 'angle', total: 90, a });
+      }
+      const a = r.int(2, 34) * 5;
+      return num('GE02', 'A straight angle is split into two angles. One angle is ' + a + ' degrees. How many degrees is the other angle?', 180 - a, { M14: 180 + a }, ['A straight angle is 180 degrees.', '180 − ' + a + ' = ' + (180 - a)], { type: 'angle', total: 180, a });
+    },
+    GE03(r) {
+      let x, y; do { x = r.int(0, 8); y = r.int(0, 8); } while (x === y);
+      const steps = ['Start at 0.', 'Go across to ' + x + '.', 'Then go up to ' + y + '.', 'The star is ' + x + ' across and ' + y + ' up.'];
+      if (r.next() < 0.5) return num('GE03', 'How far across from 0 is the star?', x, { MG2: y }, steps, { type: 'grid', x, y, max: 8 });
+      return num('GE03', 'How far up from 0 is the star?', y, { MG2: x }, steps, { type: 'grid', x, y, max: 8 });
+    },
     F515(r) {
       const l = r.int(2, 6), w = r.int(2, 5), h = r.int(2, 5);
       return num('F515', 'A box is ' + l + ' cubes long, ' + w + ' cubes wide and ' + h + ' cubes tall. How many cubes fill it?', l * w * h, { M15: l + w + h }, ['One layer: ' + l + ' × ' + w + ' = ' + l * w + ' cubes.', h + ' layers: ' + l * w + ' × ' + h + ' = ' + l * w * h], { type: 'volume', l, w, h }, { a: l * w, b: h, op: '×' });
@@ -1216,6 +1278,11 @@
   // ---------- Fix Pip's mistake: an erroneous worked example built from a real misconception ----------
   // What Pip did wrong, in words a child can read
   const PIP_DID = {
+    MM1: 'Pip read the number at the end instead of counting from the start.',
+    MM2: 'Pip added only two sides of the rectangle.',
+    MM3: 'Pip mixed up area and perimeter.',
+    MG1: 'Pip used 100 degrees for a right angle.',
+    MG2: 'Pip went up first, then across.',
     MY1: 'Pip counted the coins instead of adding what they are worth.',
     MY2: 'Pip took each digit from 10 instead of counting up to 100 cents.',
     MT4: 'Pip subtracted the times as if an hour had 100 minutes.',
@@ -1267,6 +1334,7 @@
     MO1: 'Pip worked left to right and ignored the order rules.'
   };
   const MIS_FAMILIES = [
+    ['MM1', 'MM2', 'MM3', 'M12', 'M15'], ['MG1', 'MG2', 'MT4', 'M14'],
     ['MY1', 'MY2', 'M12', 'M13'], ['MT4', 'M01', 'M02', 'M13'],
     ['M01', 'M02', 'M04', 'M05', 'M06', 'M12', 'M13', 'M1T', 'MP1', 'ME1', 'MC1', 'M14', 'MN6'],
     ['M07', 'M08', 'M09', 'M11', 'MN1', 'M1T'],
