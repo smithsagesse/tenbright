@@ -370,6 +370,15 @@ td.num, th.num { text-align: right; }
 .pizza-svg .slice:focus-visible path { stroke: #1E2A3B; stroke-width: 5; }
 .game-panel .pad, .game-panel .entry { width: min(340px, 100%); }
 .game-panel .pad button { min-width: 64px; }
+.lib-entry { background: var(--surface); color: var(--ink); border: 1px solid var(--hairline); border-radius: 14px; padding: 10px 14px; margin: 8px 0; }
+.lib-entry summary { cursor: pointer; font-weight: 800; min-height: 44px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.lib-entry dl { display: grid; grid-template-columns: minmax(120px, 200px) 1fr; gap: 6px 14px; margin: 10px 0 0; }
+.lib-entry dt { font-weight: 800; }
+.lib-entry dd { margin: 0; }
+.lib-tag { font-size: 13px; font-weight: 800; border-radius: 999px; padding: 2px 10px; border: 1px solid var(--hairline); }
+.lib-tag.trial { background: #FFF3D6; color: #5A3B00; border-color: #E0B85C; }
+@media (max-width: 600px) { .lib-entry dl { grid-template-columns: 1fr; } }
+.bond-svg { width: min(260px, 80vw); height: auto; }
 .clue-card { background: #FFFDF6; color: #1E2A3B; border-radius: 14px; padding: 14px 20px; border: 3px solid #1E2A3B; font-family: var(--font-num); font-size: 32px; font-weight: 800; letter-spacing: 1px; text-align: center; }
 .clue-card .hole { display: inline-block; min-width: 1.6em; border-bottom: 4px solid #1E2A3B; }
 .game-time { font-family: var(--font-num); font-weight: 800; }
@@ -932,6 +941,7 @@ tr:last-child td { border-bottom: none; }
 </script>
 <script>
 /*EXPLAIN*/
+/*STRATEGIES*/
 </script>
 <script>
 /*I18N*/
@@ -939,7 +949,7 @@ tr:last-child td { border-bottom: none; }
 <script>
 (function () {
   'use strict';
-  const E = window.TBEngine, C = window.TBContent, X = window.TBExplain;
+  const E = window.TBEngine, C = window.TBContent, X = window.TBExplain, ST = window.TBStrategies;
   // the child-facing worked steps: plain words with the engine's numbers when written (explain.js), else the engine's own steps
   // several steps read as one: each ends with a stop, joined by spaces (no doubled stops)
   const joinSteps = (arr) => arr.map((x) => (/[.?!]$/.test(String(x).trim()) ? String(x).trim() : String(x).trim() + '.')).join(' ');
@@ -1017,6 +1027,50 @@ tr:last-child td { border-bottom: none; }
     { id: 'docks', name: 'Decimal Docks', what: 'Decimals' }
   ];
   // understanding states for parents (Tenbright 2.0): plain words, never shown to the child
+  // ---------- Tenbright 2.0 Phase 6: strategy library ----------
+  const STRAT_PARTS = [['concept', 'Mathematical idea'], ['skillsTxt', 'Skills'], ['readiness', 'Ready when'], ['childTxt', 'How Pip explains it'], ['visual', 'Picture'], ['examples', 'Worked examples'], ['procedureTxt', 'Step by step'], ['why', 'Why it works'], ['when', 'When to use it'], ['whenNot', 'When not to use it'], ['mistakesTxt', 'Common mistakes'], ['practice', 'Practice questions'], ['test', 'Independent mastery test'], ['originTxt', 'Where it comes from'], ['evidence', 'What the research says']];
+  const hashId = (id) => id.split('').reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 11);
+  const escE = (x) => fracHtml(esc(x)); // the library body is English for now
+  function stratHtml(sg, ch) {
+    const r = E.makeRng(hashId(sg.id));
+    const qs = Array.from({ length: 5 }, () => ST.question(sg.id, E, r));
+    const steps = (q) => (sg.trial ? q.steps : plainSteps(q));
+    const ex = qs.slice(0, 2).map((q) => `<p><b>${escE(q.prompt)}</b></p><ol>${steps(q).map((x) => `<li>${escE(x)}</li>`).join('')}</ol>`).join('');
+    const practice = '<ul>' + qs.slice(2).map((q) => `<li>${escE(q.prompt)} <span class="hint-text">(${esc(q.answer)})</span></li>`).join('') + '</ul>';
+    const tried = sg.trial && ch && (ch.trials || {})[sg.id];
+    const test = 'Four new questions with no hints; 3 of 4 right on the first try shows the child can use it alone.' + (tried && tried.length ? ' ' + tried.map((x) => x.right + ' of ' + x.n).join(', ') + '.' : '');
+    const v = { concept: sg.concept, skillsTxt: sg.skills.map((id) => E.SKILLS[id].name + ' (' + id + ')').join(', '), readiness: sg.readiness, childTxt: sg.child.join(' '), visual: sg.visual, examples: ex, procedureTxt: '<ol>' + sg.procedure.map((x) => `<li>${escE(x)}</li>`).join('') + '</ol>', why: sg.why, when: sg.when, whenNot: sg.whenNot, mistakesTxt: sg.mistakes.length ? sg.mistakes.map((m) => E.MISCONCEPTIONS[m].parent).join(' ') : 'None recorded yet.', practice, test, originTxt: sg.origin || 'Common to many curricula.', evidence: sg.evidence };
+    const HTML = new Set(['examples', 'procedureTxt', 'practice']);
+    return `<details class="lib-entry"><summary>${esc(sg.name)} <span class="lib-tag ${sg.status}">${sg.status === 'trial' ? 'Trial: kept only if the pilot shows children do better' : 'Taught in the lessons'}</span></summary><dl>${STRAT_PARTS.map(([k, label]) => `<dt>${label}</dt><dd>${HTML.has(k) ? v[k] : esc(v[k])}</dd>`).join('')}</dl></details>`;
+  }
+  function libraryList(q) {
+    const ch = S.children.find((c) => c.id === view.childId) || S.children[0];
+    const found = ST.search(q);
+    return found.length ? found.map((sg) => stratHtml(sg, ch)).join('') : '<p>No strategy matches that search.</p>';
+  }
+  // the number-bond picture: the whole above, two parts below
+  function bondSvg(whole, part, other) {
+    return `<svg class="bond-svg" viewBox="0 0 260 200" role="img" aria-label="${esc('Number bond: the whole is ' + whole + ', the parts are ' + part + ' and ' + (other === null ? 'missing' : other) + '.')}"><line x1="130" y1="58" x2="62" y2="140" stroke="var(--ink)" stroke-width="4"></line><line x1="130" y1="58" x2="198" y2="140" stroke="var(--ink)" stroke-width="4"></line><circle cx="130" cy="50" r="40" fill="#FFF3D6" stroke="var(--ink)" stroke-width="4"></circle><circle cx="62" cy="150" r="36" fill="#E6F2FF" stroke="var(--ink)" stroke-width="4"></circle><circle cx="198" cy="150" r="36" fill="#E6F2FF" stroke="var(--ink)" stroke-width="4"></circle><text x="130" y="60" text-anchor="middle" font-size="30" font-weight="800" fill="#1E2A3B">${whole}</text><text x="62" y="160" text-anchor="middle" font-size="28" font-weight="800" fill="#1E2A3B">${part}</text><text x="198" y="160" text-anchor="middle" font-size="28" font-weight="800" fill="#1E2A3B">${other === null ? '?' : other}</text></svg>`;
+  }
+  function trialVisual(q, reveal) {
+    if (q.bond) return bondSvg(q.bond.whole, q.bond.part, reveal ? Number(q.answer) : null);
+    if (q.abacus) { const a = q.abacus.a; return `<div class="model">${sorobanHtml([0, Math.floor(a / 10), a % 10], false)}</div>`; }
+    return '';
+  }
+  const trialsOn = () => !!(S.settings && S.settings.trials);
+  function openTrials(ch) { return ST.LIST.filter((sg) => sg.status === 'trial' && ST.open(sg, ch.skills)); }
+  function startTrialLesson(id) {
+    const sg = ST.byId[id], r = E.makeRng(Date.now() % 100000);
+    const ex = ST.question(id, E, r);
+    session = { mode: 'trialLesson', trial: id, ex };
+    view = { name: 'trialLesson' }; react('hello'); render(); speak(sg.child.join(' '));
+  }
+  function startTrialTest(id) {
+    const rounds = Array.from({ length: ST.MASTERY_TEST.items }, () => { const q = ST.question(id, E, rng); return Object.assign({}, q, { game: 'trial', how: q.steps[q.steps.length - 1] }); });
+    session = { mode: 'game', game: 'trial', trial: id, level: 1, timed: false, rounds, i: 0, first: 0, tries: 0, picked: null, slices: [], entry: '', fb: null, start: Date.now() };
+    view = { name: 'game' }; render(); speak(rounds[0].prompt);
+  }
+
   // ---------- Tenbright 2.0 Phase 5: games ----------
   const GAME_ART = {
     bridge: '<svg width="140" height="80" viewBox="0 0 140 80" aria-hidden="true"><rect x="0" y="50" width="140" height="30" fill="#4A8FCF"></rect><rect x="0" y="40" width="30" height="40" fill="#6BA368"></rect><rect x="110" y="40" width="30" height="40" fill="#6BA368"></rect><rect x="30" y="36" width="50" height="8" fill="#B07A3E"></rect><rect x="88" y="36" width="22" height="8" fill="#E8B878" stroke="#7A4A1E" stroke-dasharray="3 3"></rect></svg>',
@@ -1024,8 +1078,8 @@ tr:last-child td { border-bottom: none; }
     detective: '<svg width="90" height="90" viewBox="0 0 90 90" aria-hidden="true"><circle cx="38" cy="38" r="24" fill="#FFFDF6" stroke="#1E2A3B" stroke-width="6"></circle><path d="M56 56 L80 80" stroke="#1E2A3B" stroke-width="10" stroke-linecap="round"></path><text x="38" y="48" text-anchor="middle" font-size="28" font-weight="800" fill="#1E2A3B">?</text></svg>'
   };
   const GAME_PURPOSE = { bridge: 'Find the missing part to finish the bridge.', pizza: 'Serve fractions of a pizza.', detective: 'Find the hidden number in patterns and number sentences.' };
-  const GAME_DONE = { bridge: 'The bridge is built!', pizza: 'Every order is served!', detective: 'Case closed!' };
-  const GAME_CLUE = { bridge: 'A clue! The gap is the whole take away the part. Try again.', pizza: 'A clue! Count the slices again. Look at the bottom number of the order. Try again.', detective: 'A clue! Look at how each number changes, or what the hidden number must make. Try again.' };
+  const GAME_DONE = { trial: 'You tried a new way to solve!', bridge: 'The bridge is built!', pizza: 'Every order is served!', detective: 'Case closed!' };
+  const GAME_CLUE = { trial: 'A clue! Think of the steps in the lesson. Try again.', bridge: 'A clue! The gap is the whole take away the part. Try again.', pizza: 'A clue! Count the slices again. Look at the bottom number of the order. Try again.', detective: 'A clue! Look at how each number changes, or what the hidden number must make. Try again.' };
   function gameData(ch, g) { ch.games = ch.games || {}; return (ch.games[g] = ch.games[g] || { plays: [], done: {}, best: {} }); }
   function startGame(g, timed) {
     const ch = child(), level = E.gameLevel(ch.skills, g);
@@ -1052,6 +1106,17 @@ tr:last-child td { border-bottom: none; }
   function gameNext() {
     session.i++; session.tries = 0; session.picked = null; session.slices = []; session.entry = ''; session.fb = null;
     if (session.i < session.rounds.length) { render(); speak(session.rounds[session.i].prompt); return; }
+    if (session.trial) {
+      const ch = child(), ms = Date.now() - session.start;
+      ch.trials = ch.trials || {};
+      ch.trials[session.trial] = (ch.trials[session.trial] || []).concat([{ at: now(), right: session.first, n: session.rounds.length }]).slice(-20);
+      ch.sessions.push({ start: now() - ms, end: now(), mode: 'trial', items: session.rounds.length, correct: session.first });
+      if (ch.sessions.length > 200) ch.sessions.shift();
+      save();
+      session.result = { ms, trialPass: session.first >= ST.MASTERY_TEST.pass };
+      view = { name: 'gameEnd' }; react('dance'); render(); celebrate({ small: true, badges: [] }); speak(GAME_DONE.trial);
+      return;
+    }
     const ch = child(), d = gameData(ch, session.game), ms = Date.now() - session.start;
     d.plays = d.plays.concat([{ at: now(), level: session.level, first: session.first, rounds: session.rounds.length, timed: session.timed, ms: session.timed ? ms : null }]).slice(-30);
     let newBest = false;
@@ -2621,7 +2686,7 @@ tr:last-child td { border-bottom: none; }
           <button class="kbtn icon" data-act="pin" data-target="dashboard" aria-label="Grown-ups: enter PIN">${icoLock}</button>
         </div>
         <div class="pip-row"><button class="pip-poke" data-act="pipPoke" aria-label="Say hi to Pip">${pipSvg(96, FX.poke || 'idle', { react: reactNow(), hidden: true })}</button><button class="kbtn big" data-act="pipIdea" data-autofocus>Pip's idea: ${idea}<span class="sr-only">, ${esc(E.SKILLS[na.skill].name)}</span></button></div>
-        <div class="row" style="justify-content:center"><button class="kbtn" data-act="lineStart"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M2 14h20M4 11v6M20 11v6M14 9l-2 5-2-5z"></path></svg> Warm-up: Lantern Line</button><button class="kbtn" data-act="go" data-to="games"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="12" rx="4"></rect><path d="M7 11v4M5 13h4M15 12h.01M18 14h.01"></path></svg> Math games</button><button class="kbtn" data-act="go" data-to="journal"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"></path><path d="M5 17a3 3 0 0 1 3-3h11"></path></svg> My journal</button></div>
+        <div class="row" style="justify-content:center"><button class="kbtn" data-act="lineStart"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M2 14h20M4 11v6M20 11v6M14 9l-2 5-2-5z"></path></svg> Warm-up: Lantern Line</button><button class="kbtn" data-act="go" data-to="games"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="12" rx="4"></rect><path d="M7 11v4M5 13h4M15 12h.01M18 14h.01"></path></svg> Math games</button>${trialsOn() ? '<button class="kbtn" data-act="go" data-to="trials">Extra ways to solve</button>' : ''}<button class="kbtn" data-act="go" data-to="journal"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"></path><path d="M5 17a3 3 0 0 1 3-3h11"></path></svg> My journal</button></div>
         <div class="grade-pick" role="group" aria-label="Grade level">${[['all', 'All levels'], [1, 'Grade 1'], [2, 'Grade 2'], [3, 'Grade 3'], [4, 'Grade 4'], [5, 'Grade 5']].map(([v, l]) => `<button class="gchip" data-act="focus" data-g="${v}" aria-pressed="${fg === v}">${l}${v !== 'all' ? ` <span class="gcount num">${E.gradeProgress(ch.skills).find((x) => x.grade === v).lit}/${E.gradeProgress(ch.skills).find((x) => x.grade === v).total}</span>` : ''}</button>`).join('')}</div>
         <div class="map">${REGIONS.map((r) => {
           const ids = E.SKILL_ORDER.filter((id) => regionOf(id) === r.id && (fg === 'all' || E.gradeOf(id) === fg));
@@ -2761,6 +2826,33 @@ tr:last-child td { border-bottom: none; }
         </div>
       </main>`;
     },
+    library() {
+      return `<main class="paper"><div class="paper-body" style="width:min(980px,100%);margin:0 auto">
+        <div class="row" style="justify-content:space-between"><h1>Strategy library</h1><button class="btn" data-act="go" data-to="dashboard">Back to the grown-ups page</button></div>
+        <p>Every way of solving that Tenbright teaches, with the same 14 parts for each: the idea, what comes first, readiness, how Pip explains it, the picture, worked examples, the steps, why it works, when to use it and when not, common mistakes, practice questions and an independent mastery test. Each also says where it comes from and what the research says, honestly.</p>
+        <p class="hint-text">Trial methods are shown to children only if you turn on "Offer extra ways to solve" in the settings. They are kept only if children in the pilot do better with them.</p>
+        ${lang() !== 'en' ? '<p class="hint-text"><b>The strategy library is in English for now. Its translation needs a native-speaker review first.</b></p>' : ''}
+        <label class="field" for="strat-q"><span>Search by name, idea, skill or tradition</span><input type="text" id="strat-q" value="${esc(view.q || '')}" autocomplete="off"></label>
+        <div id="lib-list" lang="en" data-notr>${libraryList(view.q || '')}</div>
+      </div></main>`;
+    },
+    trials() {
+      const ch = child(), list = openTrials(ch);
+      return `<main class="stage"><div class="game-stage">
+        <div class="topbar" style="width:100%"><button class="kbtn" data-act="go" data-to="map">${icoBack} Map</button><h1 style="margin:0;font-size:26px">Extra ways to solve</h1><span style="width:64px"></span></div>
+        <div class="games-grid">${list.length ? list.map((sg) => `<div class="game-card"><h2>${esc(sg.name)}</h2><p>${escM(sg.child[0])}</p><button class="kbtn big" data-act="trialLesson" data-id="${sg.id}">Learn it</button></div>`).join('') : '<div class="game-card"><p>Light more lanterns to open a new way.</p></div>'}</div>
+      </div></main>`;
+    },
+    trialLesson() {
+      const sg = ST.byId[session.trial], q = session.ex;
+      return `<main class="stage"><div class="game-stage"><div class="topbar" style="width:100%"><button class="kbtn" data-act="go" data-to="trials">${icoBack} Extra ways</button><span style="font-weight:800">${esc(sg.name)}</span><span style="width:64px"></span></div>
+        <div class="panel game-panel" style="width:100%;align-items:center">
+          <div class="pip-say"><div class="pip-fig pose-point">${pipPose(100, 'point', { react: reactNow() })}</div><div class="bubble"><ol class="learn-steps">${sg.child.map((x) => `<li>${escM(x)}</li>`).join('')}</ol></div></div>
+          <p><b>${escM(q.prompt)}</b></p>${trialVisual(q, true)}
+          <div class="paper-sheet"><span class="paper-tag">Pip's steps</span><ol>${q.steps.map((x) => `<li>${escM(x)}</li>`).join('')}</ol></div>
+          <button class="kbtn big" data-act="trialTest" data-id="${sg.id}" data-autofocus>Try 4 on your own</button>
+        </div></div></main>`;
+    },
     games() {
       const ch = child();
       return `<main class="stage"><div class="game-stage">
@@ -2780,6 +2872,9 @@ tr:last-child td { border-bottom: none; }
       } else if (g === 'pizza') {
         play = `${pizzaSvg(rd)}<p class="hint-text" aria-live="polite">${session.slices.length} ${session.slices.length === 1 ? 'slice' : 'slices'} chosen</p>`;
         action = done ? '' : `<button class="checkbtn" data-act="gameCheck" ${session.slices.length ? '' : 'disabled'}>Serve</button>`;
+      } else if (g === 'trial') {
+        play = trialVisual(rd, done) + (done ? '' : `<div class="entry num" aria-label="Your answer">${session.entry ? esc(session.entry) : '?'}</div><div class="pad">${['1','2','3','4','5','6','7','8','9'].map((d) => `<button data-act="gdigit" data-d="${d}" aria-label="${d}">${d}</button>`).join('')}<button data-act="gdel" aria-label="Delete">⌫</button><button data-act="gdigit" data-d="0" aria-label="0">0</button><button data-act="gclear" aria-label="Clear">C</button></div>`);
+        action = done ? '' : `<button class="checkbtn" data-act="gameCheck" ${session.entry ? '' : 'disabled'}>Check</button>`;
       } else {
         const card = rd.seq ? rd.seq.map((x) => (x === '?' ? '<span class="hole">?</span>' : x)).join(', ') : esc(rd.clue).replace('?', '<span class="hole">?</span>');
         play = `<div class="clue-card" role="img" aria-label="${esc(rd.seq ? rd.seq.join(', ') : rd.clue)}">${card}</div>` + (done ? '' : `<div class="entry num" aria-label="Your answer">${session.entry ? esc(session.entry) : '?'}</div><div class="pad">${['1','2','3','4','5','6','7','8','9'].map((d) => `<button data-act="gdigit" data-d="${d}" aria-label="${d}">${d}</button>`).join('')}<button data-act="gdel" aria-label="Delete">⌫</button><button data-act="gdigit" data-d="0" aria-label="0">0</button><button data-act="gclear" aria-label="Clear">C</button></div>`);
@@ -2788,7 +2883,7 @@ tr:last-child td { border-bottom: none; }
       const fbHtml = fb ? `<div class="feedback ${fb.ok ? 'ok' : 'clue'} pop">${fb.ok ? icoCheck : icoClue}<div>${escM(fb.text)}</div></div>` : '';
       const next = done ? `<button class="checkbtn" data-act="gameNext" data-autofocus>${session.i + 1 >= session.rounds.length ? 'Finish' : 'Next'}</button>` : '';
       return `<main class="stage"><div class="game-stage">
-        <div class="topbar" style="width:100%"><button class="kbtn" data-act="go" data-to="games">${icoBack} Games</button><div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="font-weight:800">${E.GAMES[g].name}</span><span class="progress" aria-label="${session.i} of ${session.rounds.length} done">${session.rounds.map((_, k) => `<i class="${k < session.i ? 'done' : ''}"></i>`).join('')}</span>${session.timed ? `<span class="game-time" id="game-time">${secs(Date.now() - session.start)} s</span>` : ''}</div><button class="kbtn" data-act="say" data-text="${esc(rd.prompt)}">${icoSpeaker} Listen</button></div>
+        <div class="topbar" style="width:100%"><button class="kbtn" data-act="go" data-to="${g === 'trial' ? 'trials' : 'games'}">${icoBack} ${g === 'trial' ? 'Extra ways' : 'Games'}</button><div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="font-weight:800">${g === 'trial' ? esc(ST.byId[session.trial].name) : E.GAMES[g].name}</span><span class="progress" aria-label="${session.i} of ${session.rounds.length} done">${session.rounds.map((_, k) => `<i class="${k < session.i ? 'done' : ''}"></i>`).join('')}</span>${session.timed ? `<span class="game-time" id="game-time">${secs(Date.now() - session.start)} s</span>` : ''}</div><button class="kbtn" data-act="say" data-text="${esc(rd.prompt)}">${icoSpeaker} Listen</button></div>
         <div class="panel game-panel" style="width:100%;align-items:center">
         <div class="pip-say"><div class="pip-fig pose-${fb && fb.ok ? 'cheer' : 'point'}">${pipPose(100, fb && fb.ok ? 'cheer' : fb ? 'encourage' : 'point', { react: reactNow() })}</div><div class="bubble"><p>${escM(rd.prompt)}</p></div></div>
         ${play}${fbHtml}${action}${next}
@@ -2797,6 +2892,7 @@ tr:last-child td { border-bottom: none; }
     },
     gameEnd() {
       const r = session.result;
+      if (session.game === 'trial') return `<main class="stage"><div class="end"><h1>${GAME_DONE.trial}</h1>${pipPose(150, 'dance', { react: reactNow() })}<p class="speech">You got ${session.first} of ${session.rounds.length} on the first try.</p><div class="row" style="justify-content:center"><button class="kbtn big" data-act="go" data-to="trials" data-autofocus>Extra ways</button><button class="kbtn" data-act="go" data-to="map">Back to the map</button></div></div></main>`;
       return `<main class="stage"><div class="end">
         <h1>${GAME_DONE[session.game]}</h1>
         ${pipPose(150, 'dance', { react: reactNow() })}
@@ -2913,6 +3009,7 @@ tr:last-child td { border-bottom: none; }
           return `<div class="grid2"><section class="card"><span class="eyebrow">Number sense (Lantern Line)</span>${ln.length ? `<p>Recent estimates land <b>${recent}%</b> of the line away from the true spot${ln.length > 5 ? ` (first warm-ups: ${first}%)` : ''}. Lower is better; under 10% is strong for this age.</p>` : '<p>No warm-ups yet. The 1-minute Lantern Line on the map practices how big numbers are.</p>'}</section>
           <section class="card"><span class="eyebrow">Thinking skills</span><p>Found what went wrong in Pip's work <b>${st.mistakesSpotted || 0}</b> times and fixed it <b>${st.mistakesFixed || 0}</b> times. Chose the right "why" <b>${st.whyRight || 0}</b> times.</p><p class="hint-text">Spotting errors and explaining why a method works build deeper understanding than answers alone.</p></section></div>`;
         })()}
+        <section class="card"><span class="eyebrow">Ways to solve</span><p>The strategy library explains every method Tenbright teaches, where it comes from and what the research says.</p>${Object.keys(ch.trials || {}).length ? `<p>Extra ways tried, latest result:</p><ul>${Object.keys(ch.trials).map((id) => { const x = ch.trials[id][ch.trials[id].length - 1]; return `<li>${esc(ST.byId[id].name)}: ${x.right} of ${x.n} on the first try</li>`; }).join('')}</ul>` : ''}<button class="btn" data-act="go" data-to="library">Open the strategy library</button></section>
         <section class="card"><span class="eyebrow">Math games</span>${(() => {
           const rows = Object.keys(E.GAMES).map((g) => { const pl = ((ch.games || {})[g] || { plays: [] }).plays; if (!pl.length) return ''; const f = pl.reduce((a, x) => a + x.first, 0), n = pl.reduce((a, x) => a + x.rounds, 0); return `<p>${E.GAMES[g].name}: played ${pl.length} ${pl.length === 1 ? 'time' : 'times'}, ${f} of ${n} right on the first try.</p>`; }).join('');
           return rows || '<p>No games yet. Each game opens once its skills are lit, and uses only math the child has already learned.</p>';
@@ -2937,6 +3034,7 @@ tr:last-child td { border-bottom: none; }
           <div class="field"><label for="child-grade">School grade</label><select id="child-grade">${gradeOptions(ch.grade, !ch.grade)}</select><span class="hint-text">Changing the grade resets the practice focus to match it. Progress is never lost.</span></div>
           <div class="field"><label for="child-focus">Practice focus</label><select id="child-focus">${[['all', 'All levels: follow the learning path']].concat([1, 2, 3, 4, 5].map((g) => [String(g), 'Grade ' + g + ' skills first'])).map(([v, l]) => `<option value="${v}" ${String(focusOf(ch)) === v ? 'selected' : ''}>${l}</option>`).join('')}</select><span class="hint-text">${esc(ch.nickname)} can also switch this on the map. Clues and retention checks always come first, and earlier skills a grade needs are practiced before it.</span></div>
           <fieldset class="field" style="border:none;padding:0;margin:0"><legend>Voice answers</legend>
+            <label class="check"><input type="checkbox" id="trial-on" ${S.settings.trials ? 'checked' : ''}> Offer extra ways to solve (trial methods: number bonds, mental abacus, numbers near 100, vertically and crosswise)</label>
             <label class="check"><input type="checkbox" id="voice-on" ${S.settings.voice ? 'checked' : ''} ${VOICE.status === 'available' ? '' : 'disabled'}> Let children say their answers and "next", "back", "again" or "help" out loud</label>
             <p class="hint-text" id="voice-status">${{ available: 'This browser recognizes speech on this device. Pip listens only after a tap on the Talk button, for one short answer. Nothing your child says is recorded, saved or sent anywhere.', downloadable: 'This browser can recognize speech on this device after a one-time download of its English speech pack.', downloading: 'Downloading the speech pack…', unavailable: 'This browser cannot recognize English speech on this device, so voice answers stay off. Tenbright never sends a child\'s voice to an online speech service.', unsupported: 'This browser cannot recognize speech on the device itself, so voice answers stay off. Tenbright never sends a child\'s voice to an online speech service. A recent version of Google Chrome may support it.', unknown: 'Checking whether this browser can recognize speech on this device…' }[VOICE.status] || ''}</p>
             ${VOICE.status === 'downloadable' ? '<div class="row"><button class="btn" type="button" data-act="installVoice">Download the speech pack</button></div>' : ''}
@@ -3335,6 +3433,8 @@ tr:last-child td { border-bottom: none; }
       case 'check': doCheck(); break;
       case 'next': session.count++; nextItem(); break;
       case 'gameStart': startGame(b.dataset.g, b.dataset.timed === '1'); break;
+      case 'trialLesson': startTrialLesson(b.dataset.id); break;
+      case 'trialTest': startTrialTest(b.dataset.id); break;
       case 'plank': if (session.fb && (session.fb.ok || session.fb.final)) break; session.picked = b.dataset.v; session.fb = null; render(); { const nb = app.querySelector(`[data-act="plank"][data-v="${b.dataset.v}"]`); if (nb) nb.focus(); } break;
       case 'slice': { if (session.fb && (session.fb.ok || session.fb.final)) break; const k = +b.dataset.k, set = new Set(session.slices); if (set.has(k)) set.delete(k); else set.add(k); session.slices = [...set]; session.fb = null; sfx('hint'); render(); const nb = app.querySelector(`[data-act="slice"][data-k="${k}"]`); if (nb) nb.focus(); break; }
       case 'gdigit': if (session.fb && (session.fb.ok || session.fb.final)) break; if (session.entry.length < 7) session.entry += b.dataset.d; session.fb = null; render(); break;
@@ -3404,6 +3504,7 @@ tr:last-child td { border-bottom: none; }
     if (e.target.id === 'sfx-on') { S.settings.sfx = !!e.target.checked; save(); render(); const el = document.getElementById('sfx-on'); if (el) el.focus(); }
     if (e.target.id === 'sfx-vol') { S.settings.sfxVol = +e.target.value / 100; save(); sfx('correct'); }
     if (e.target.id === 'anim-level') { S.settings.anim = e.target.value; save(); render(); const el = document.getElementById('anim-level'); if (el) el.focus(); }
+    if (e.target.id === 'trial-on') { S.settings.trials = !!e.target.checked; save(); render(); const el = document.getElementById('trial-on'); if (el) el.focus(); }
     if (e.target.id === 'voice-on') { S.settings.voice = !!e.target.checked && VOICE.status === 'available'; S.settings.voiceAt = S.settings.voice ? Date.now() : null; save(); render(); }
     if (e.target.id === 'sgrade') { const n = document.getElementById('sgrade-note'); if (n) n.textContent = gradeNote(e.target.value); }
     if (e.target.id === 'child-grade' || e.target.id === 'child-focus') {
@@ -3459,6 +3560,7 @@ tr:last-child td { border-bottom: none; }
     render();
   });
   app.addEventListener('input', (e) => {
+    if (e.target.id === 'strat-q') { view.q = e.target.value; const l = document.getElementById('lib-list'); if (l) l.innerHTML = libraryList(view.q); return; }
     if (e.target.id === 'line-range' && view.name === 'line') { session.line.placed = Number(e.target.value); render(); const el = document.getElementById('line-range'); if (el) el.focus(); }
   });
   // keyboard: number keys work on item screens
@@ -3612,6 +3714,9 @@ tr:last-child td { border-bottom: none; }
       ['Bullseye!', 'So close!', 'Here is where it lives.'].forEach(F);
       // Phase 4: new kinds of questions and explanation variants
       F('One step is missing. What number goes in the box?');
+      // Phase 6: trial strategies (children see these only when a parent turns them on)
+      ST.LIST.forEach((sg) => { if (sg.status !== 'trial') return; F(sg.child.join(' ')); sg.child.forEach(F); for (let k = 0; k < 80; k++) { const q = ST.question(sg.id, E, rng); D(q.prompt); q.steps.forEach(D); } });
+      F(GAME_DONE.trial); F(GAME_CLUE.trial);
       // Phase 5: games
       Object.values(GAME_DONE).forEach(F); Object.values(GAME_CLUE).forEach(F); F('Right!'); F('Right! You used the clue.');
       Object.keys(E.GAMES).forEach((g) => E.GAMES[g].levels.forEach((_, i) => { for (let k = 0; k < 60; k++) { const rd = E.gameRound(g, i + 1, rng); D(rd.prompt); D('Here is how. ' + rd.how); } }));

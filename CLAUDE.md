@@ -101,9 +101,9 @@ On Nov 21, 2026 `node build.js` reproduced the live v22 page byte for byte (apar
 with identical sw.js, manifest, icons, art and audio. It contains:
 - `src/app.html`: the main source. Also `src/i18n/*.js` (es, fr, ht, zh, ar), `src/art/`, `narration/audio/map.json`.
 - `build.js`: run `node build.js` to produce `dist/index.html` (and `dist/test.html` with test hooks).
-- Tests: `node test/engine.test.js` (math engine, millions of generated checks); `node test/explain.test.js` (plain-words lessons); Playwright suites
+- Tests: `node test/engine.test.js` (math engine, millions of generated checks); `node test/explain.test.js` (plain-words lessons); `node test/strategies.test.js` (strategy library); Playwright suites
   `test/e2e.py`, `test/features_test.py`, `test/audio_test.py`, `test/living_test.py`,
-  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
+  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
 - `docs/animation-system.md` and `README.md`.
 
 Make changes in `source/tenbright-mvp/src/`, rebuild and run every suite.
@@ -160,7 +160,7 @@ Current focus (Nov 25, 2026): developing the app. Do not raise launch items or p
   Any new kind of stored data needs a notice version bump and re-agreement (the parent page shows the update card).
 - **Build order:** 2 Discovery Adventure (done Nov 26) · 3 foundation lessons (done Nov 26: all 103 skills, Grades 1–5) (micro-step rewrite, Grades 1–2 first,
   keep math words with plain explanations, translations in the same pass) · 4 adaptive Pip + independence and mastery
-  evidence (done Nov 26) · 5 games (done Nov 26) · 6 strategy library (verify the cited research first) · 7 geometry, measurement, time, money ·
+  evidence (done Nov 26) · 5 games (done Nov 26) · 6 strategy library (verify the cited research first; done Nov 26) · 7 geometry, measurement, time, money ·
   8 parent dashboard v2 · 9 pilot and effectiveness study.
 - The four wording issues were fixed on Nov 26, 2026 ("Regrouping in adding and taking away", "You looked closely at every clue.
   That is how you learn.", the Lantern Line note without the outcome claim, glowmoth labels removed).
@@ -190,4 +190,16 @@ sentences). Rounds come from `gameRound` in engine.js; a game opens only when it
 brings a clue, a second miss shows how. No clock unless the child picks the optional timed run, offered only after the
 game was finished once; it counts up and compares only with the child's own best. Games never change mastery.
 Touch targets: `--t-child` 64 px and `--t-primary` 88 px (hard rule 8), on every screen size.
+**Strategy library (Phase 6):** `src/strategies.js` (window.TBStrategies), 18 strategies taught today plus 4 trial
+additions (number bonds picture, mental abacus, numbers near 100 / Nikhilam, vertically and crosswise), each with the
+owner's 14 parts, an honest origin note and a research note (sources named in words: no outside URL in the build).
+Worked examples, practice and the 4-question independent mastery test (3 of 4) are generated, so every number is the
+engine's. Parents read it from the grown-ups page (searchable; the body is English for now, pending native-speaker
+review of translations). Children see trial methods only when a parent turns on "Offer extra ways to solve" (off by
+default); trial results are kept on the device (`ch.trials`) for the pilot, which decides whether each trial stays.
+Research checked Nov 26, 2026: mental abacus (Barner et al. 2016 RCT, gains moderated by spatial working memory; 2018
+one-year trial, first graders struggled); make ten/decomposition (correlational: Laski and Yu 2013; Vasilyeva, Laski
+and Shen 2015); comparing methods (Rittle-Johnson and Star 2007, grades 7 to 8); number lines and representations
+(WWC practice guide 2021); bar models (small studies only); Vedic methods (no rigorous study found; 1965 book, not in
+the Vedas per Dani and the book's own editor).
 Do not claim legal sign-off, hiring or payments. Those are his.

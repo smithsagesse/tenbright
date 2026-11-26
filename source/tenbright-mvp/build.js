@@ -6,6 +6,7 @@ const engine = R('src/engine.js');
 const content = R('src/content.js');
 const speech = R('src/speech.js');
 const explain = R('src/explain.js');
+const strategies = R('src/strategies.js');
 const i18n = R('src/i18n.js') + '\n' + ['es', 'fr', 'ht', 'zh', 'ar'].map((l) => (fs.existsSync(path.join(__dirname, 'src/i18n', l + '.js')) ? R('src/i18n/' + l + '.js') : '')).join('\n');
 const audioDir = path.join(__dirname, 'narration/audio');
 const audioMap = fs.existsSync(path.join(audioDir, 'map.json')) ? fs.readFileSync(path.join(audioDir, 'map.json'), 'utf8').trim() : 'null';
@@ -16,7 +17,7 @@ const fonts = '/* Nunito, Atkinson Hyperlegible and Cairo (Arabic), SIL Open Fon
   face('Atkinson Hyperlegible', 'atkinson-hyperlegible-latin-400-normal.woff2', 400), face('Atkinson Hyperlegible', 'atkinson-hyperlegible-latin-700-normal.woff2', 700),
   face('Cairo', 'cairo-arabic-400-normal.woff2', 400), face('Cairo', 'cairo-arabic-600-normal.woff2', 600), face('Cairo', 'cairo-arabic-700-normal.woff2', 700), face('Cairo', 'cairo-arabic-800-normal.woff2', 800)
 ].join('\n');
-const full = tpl.replace('/*FONTS*/', () => fonts).replace('/*ENGINE*/', () => engine).replace('/*CONTENT*/', () => content).replace('/*SPEECH*/', () => speech).replace('/*EXPLAIN*/', () => explain).replace('/*I18N*/', () => i18n).replace('/*AUDIOMAP*/null', () => audioMap);
+const full = tpl.replace('/*FONTS*/', () => fonts).replace('/*ENGINE*/', () => engine).replace('/*CONTENT*/', () => content).replace('/*SPEECH*/', () => speech).replace('/*EXPLAIN*/', () => explain).replace('/*STRATEGIES*/', () => strategies).replace('/*I18N*/', () => i18n).replace('/*AUDIOMAP*/null', () => audioMap);
 const release = full.replace(/\/\*SELFTEST-START\*\/[\s\S]*?\/\*SELFTEST-END\*\//, '');
 if (/https?:\/\/(?!www\.w3\.org)/.test(release.replace(/<!--[\s\S]*?-->/g, ''))) {
   const m = release.match(/https?:\/\/(?!www\.w3\.org)[^\s"'<)]+/g); throw new Error('external URL in release build: ' + m.slice(0, 5).join(', '));
