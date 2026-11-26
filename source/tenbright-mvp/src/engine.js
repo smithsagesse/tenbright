@@ -90,6 +90,11 @@
     MM3: { name: 'Area and perimeter mixed', parent: 'Finds the distance around when the question asks for the squares inside, or the other way around.', clue: 'A clue! Area counts the squares inside. Perimeter is the distance around the edge.' },
     MG1: { name: 'Right angle as 100', parent: 'Treats a right angle as 100 degrees instead of 90.', clue: 'A clue! A right angle is 90 degrees, not 100.' },
     MG2: { name: 'Up before across', parent: 'Reads how far up a point is before how far across on a grid.', clue: 'A clue! Go across first, then up.' },
+    MF1: { name: 'Revenue as profit', parent: 'Gives all the money that came in when the question asks for the profit left after costs.', clue: 'A clue! That is all the money in. What is left after costs?' },
+    MF2: { name: 'Forgot a cost', parent: 'Takes away one cost but not another one in the story.', clue: 'A clue! Look again. Is there another cost?' },
+    MF3: { name: 'Added the costs', parent: 'Adds the costs to the money that came in instead of taking them away.', clue: 'A clue! Costs are money going out. Take them away.' },
+    MF4: { name: 'Growth added once', parent: 'Adds the first year\u2019s growth again instead of growing the new, bigger amount.', clue: 'A clue! This year the tenth is of the new amount.' },
+    MF5: { name: 'Whole instead of part', parent: 'Gives the whole company\u2019s profit to one owner instead of the owner\u2019s share of it.', clue: 'A clue! You own only some of the shares. Find your part.' },
     MO1: { name: 'Left to right only', parent: 'Works from left to right and ignores parentheses or the order of operations.', clue: 'A clue! Parentheses first, then times, then plus and minus.' }
   };
 
@@ -231,7 +236,13 @@
     MS04: S('Area of a rectangle', 'workshop', ['MS03', 'MU03'], '3.MD.C.7'),
     GE01: S('Name shapes by their sides', 'shapes', ['C101'], '2.G.A.1'),
     GE02: S('Angles that fit together', 'shapes', ['GE01', 'AS10'], '4.MD.C.7'),
-    GE03: S('Points on a grid', 'shapes', ['GE01', 'PV07'], '5.G.A.2')
+    GE03: S('Points on a grid', 'shapes', ['GE01', 'PV07'], '5.G.A.2'),
+    // Money & Wealth Adventures (owner approved Nov 26, 2026): the math of money, with pretend money only
+    FN01: S('Price times quantity', 'market', ['MU06', 'MY03'], '3.OA.A.3'),
+    FN02: S('Revenue, cost and profit', 'market', ['FN01', 'WP05'], '3.OA.D.8'),
+    FN04: S('Saving plan: weeks to a goal', 'market', ['FN01', 'F408'], '4.OA.A.3'),
+    FN05: S('Share of a company', 'market', ['F417'], '4.NF.B.4'),
+    FN07: S('Growth year by year', 'market', ['F513', 'F404'], '5.NF.B.4')
   };
   const SKILLS = Object.assign({}, SKILLS_G1, SKILLS_CORE, SKILLS_G3F, SKILLS_G4, SKILLS_G5, SKILLS_P7);
   const SKILL_ORDER = Object.keys(SKILLS);
@@ -1185,6 +1196,48 @@
       const asHundreds = (eh * 100 + em) - (h * 100 + m);
       return num('TM04', what + ' starts at ' + t(h, m) + ' and ends at ' + t(eh, em) + '. How many minutes long is it?', d, { MT4: asHundreds !== d ? asHundreds : null }, steps, { type: 'clock2', h, m, eh, em });
     },
+    // ===== Money & Wealth Adventures: the math of money =====
+    FN01(r) {
+      const n = r.int(2, 9), p = r.int(2, 9), name = r.pick(NAMES);
+      if (r.next() < 0.5) {
+        const thing = r.pick(['melon', 'notebook', 'kite', 'ball']);
+        return num('FN01', 'A ' + thing + ' costs $' + p + '. How much do ' + n + ' ' + thing + 's cost?', n * p, { M15: n + p }, [n + ' ' + thing + 's at $' + p + ' each is ' + n + ' groups of ' + p + '.', n + ' × ' + p + ' = ' + n * p], { type: 'paper' });
+      }
+      return num('FN01', name + ' sells ' + n + ' cups of lemonade at $' + p + ' each. How many dollars come in?', n * p, { M15: n + p }, ['Money that comes in is called revenue.', n + ' × ' + p + ' = ' + n * p], { type: 'paper' });
+    },
+    FN02(r) {
+      const n = r.pick([5, 6, 8, 10, 12, 15, 20]), p = r.int(2, 5), c = r.int(1, p - 1), R = n * p, C = n * c;
+      const e = r.next() < 0.5 ? 0 : r.int(2, Math.max(2, Math.min(9, R - C - 1)));
+      const P = R - C - e;
+      if (P <= 0) return GEN.FN02(r);
+      const name = r.pick(NAMES);
+      const prompt = name + ' sells ' + n + ' cups of lemonade at $' + p + ' each. Each cup costs $' + c + ' to make.' + (e ? ' The sign cost $' + e + '.' : '') + ' What is the profit in dollars?';
+      const steps = ['Revenue: ' + n + ' × ' + p + ' = ' + R, 'Cost of the cups: ' + n + ' × ' + c + ' = ' + C, e ? 'Profit: ' + R + ' − ' + C + ' − ' + e + ' = ' + P : 'Profit: ' + R + ' − ' + C + ' = ' + P];
+      const pred = { MF1: R, MF3: R + C + e };
+      if (e) pred.MF2 = R - C;
+      return num('FN02', prompt, P, pred, steps, { type: 'paper' });
+    },
+    FN04(r) {
+      const w = r.int(2, 9), k = r.int(2, 9), have = r.int(0, 4) * 5, goal = have + w * k, name = r.pick(NAMES), thing = r.pick(['game', 'bike bell', 'book set', 'kite']);
+      const need = goal - have;
+      const prompt = name + ' wants a ' + thing + ' that costs $' + goal + '.' + (have ? ' ' + name + ' has saved $' + have + '.' : '') + ' ' + name + ' saves $' + w + ' each week. How many weeks until ' + name + ' has enough?';
+      const steps = have ? ['Still needed: ' + goal + ' − ' + have + ' = ' + need, 'Weeks: ' + need + ' ÷ ' + w + ' = ' + k] : ['Weeks: ' + goal + ' ÷ ' + w + ' = ' + k];
+      const pred = {}; if (have) pred.MN6 = need;
+      return num('FN04', prompt, k, pred, steps, { type: 'paper' });
+    },
+    FN05(r) {
+      const T = r.pick([4, 5, 10]), k = r.int(1, T - 1), m = r.int(2, 9), P = T * m, name = r.pick(NAMES);
+      const prompt = 'A lemonade company is split into ' + T + ' equal shares. ' + name + ' owns ' + k + ' of them. The company makes $' + P + ' profit. How many dollars is ' + name + '\u2019s part?';
+      const steps = ['Each share gets ' + P + ' ÷ ' + T + ' = ' + m, k + ' shares get ' + k + ' × ' + m + ' = ' + k * m];
+      return num('FN05', prompt, k * m, { MF5: P, M15: k + m }, steps, { type: 'paper' });
+    },
+    FN07(r) {
+      const A = r.int(1, 9) * 100, a = A / 10, A1 = A + a, b = A1 / 10, A2 = A1 + b, name = r.pick(NAMES);
+      const intro = name + ' puts $' + A + ' in a savings jar. Each year the jar grows by one tenth of what is in it.';
+      const steps = ['Year 1: one tenth of ' + A + ' is ' + a + '. ' + A + ' + ' + a + ' = ' + A1, 'Year 2: one tenth of ' + A1 + ' is ' + b + '. ' + A1 + ' + ' + b + ' = ' + A2];
+      if (r.next() < 0.35) return num('FN07', intro + ' How many dollars does the jar grow in year 2?', b, { MF4: a }, steps.concat(['Growth in year 2: ' + A2 + ' − ' + A1 + ' = ' + b]), { type: 'paper' });
+      return num('FN07', intro + ' How many dollars are in the jar after 2 years?', A2, { MF4: A + 2 * a }, steps, { type: 'paper' });
+    },
     // ===== Phase 7: measurement and geometry =====
     MS01(r) {
       const cm = r.next() < 0.5, max = cm ? 15 : 12, len = r.int(2, max - 2), start = r.next() < 0.5 ? 0 : r.int(1, max - len), end = start + len;
@@ -1278,6 +1331,11 @@
   // ---------- Fix Pip's mistake: an erroneous worked example built from a real misconception ----------
   // What Pip did wrong, in words a child can read
   const PIP_DID = {
+    MF1: 'Pip gave all the money that came in, not the profit.',
+    MF2: 'Pip forgot one of the costs.',
+    MF3: 'Pip added the costs instead of taking them away.',
+    MF4: 'Pip added the first year\u2019s growth again.',
+    MF5: 'Pip gave the whole profit to one owner.',
     MM1: 'Pip read the number at the end instead of counting from the start.',
     MM2: 'Pip added only two sides of the rectangle.',
     MM3: 'Pip mixed up area and perimeter.',
@@ -1334,6 +1392,7 @@
     MO1: 'Pip worked left to right and ignored the order rules.'
   };
   const MIS_FAMILIES = [
+    ['MF1', 'MF2', 'MF3', 'M14', 'MN6'], ['MF4', 'MF5', 'M15', 'MN6'],
     ['MM1', 'MM2', 'MM3', 'M12', 'M15'], ['MG1', 'MG2', 'MT4', 'M14'],
     ['MY1', 'MY2', 'M12', 'M13'], ['MT4', 'M01', 'M02', 'M13'],
     ['M01', 'M02', 'M04', 'M05', 'M06', 'M12', 'M13', 'M1T', 'MP1', 'ME1', 'MC1', 'M14', 'MN6'],
@@ -1478,6 +1537,28 @@
     detective: { name: 'Number Detective', levels: [['PV07', 'C107'], ['F412', 'MU13']] }
   };
   const GAME_ROUNDS = 5;
+  // ---------- Money & Wealth Adventures: pretend money inside one story, fresh each time ----------
+  const ADVENTURES = {
+    lemonade: { name: 'Build a Lemonade Stand', needs: ['FN02'], skills: ['FN01', 'FN02'], idea: 'Revenue, cost and profit', real: 'Shops and businesses take their costs away from the money that comes in to know if they made money.' }
+  };
+  const litStatus = (st) => ['mastered', 'certified', 'placed'].includes(st.status);
+  function adventureOpen(skills, id) { return ADVENTURES[id].needs.every((s) => skills[s] && litStatus(skills[s])); }
+  function adventure(id, r) {
+    if (id !== 'lemonade') return null;
+    const n = r.pick([10, 12, 15, 20, 24, 30]), p = r.int(2, 5), c = 1, e = r.int(4, 9), R = n * p, C = n * c, G = R - C, N = G - e;
+    // clue answers as text, like every engine item, and never equal to the right answer
+    const step = (skill, prompt, answer, how, story, predicted, extra) => { const pr = {}; Object.keys(predicted || {}).forEach((k) => { const v = String(predicted[k]); if (v !== String(answer) && !Object.values(pr).includes(v)) pr[k] = v; }); return Object.assign({ game: 'adventure', skill, prompt, answer: String(answer), how, story, predicted: pr }, extra || {}); };
+    return {
+      id, intro: 'Let\u2019s run a lemonade stand. Every number is pretend money for this story.',
+      steps: [
+        step('FN01', 'You sold ' + n + ' cups at $' + p + ' each. How many dollars came in?', R, 'Money in is revenue. ' + n + ' × ' + p + ' = ' + R, { cups: n, price: p }, { M15: n + p }),
+        step('FN01', 'Each cup cost $' + c + ' to make. How many dollars did the ' + n + ' cups cost?', C, n + ' × ' + c + ' = ' + C, { cups: n, price: p, sales: R }),
+        step('FN02', 'Profit is the money in take away the costs. What is the profit?', G, R + ' − ' + C + ' = ' + G, { cups: n, price: p, sales: R, costs: C }, { MF1: R, MF3: R + C }),
+        step('FN02', 'The sign for the stand cost $' + e + '. What is the profit now?', N, R + ' − ' + C + ' − ' + e + ' = ' + N, { cups: n, price: p, sales: R, costs: C + e }, { MF1: R, MF2: G, MF3: R + C + e }),
+        step(null, 'Which is bigger, the revenue or the profit?', 'Revenue', 'The revenue is ' + R + '. The profit is ' + N + '. Profit is what is left after costs, so it is smaller.', { cups: n, price: p, sales: R, costs: C + e, profit: N }, {}, { choices: ['Revenue', 'Profit'], idea: true })
+      ]
+    };
+  }
   const lit = (st) => !!st && ['mastered', 'certified', 'placed'].includes(st.status);
   // the highest level open for this child, or 0 while the game is still closed
   function gameLevel(skills, game) {
@@ -1925,7 +2006,7 @@
     return L;
   }
 
-  const api = { makeRng, digits, MISCONCEPTIONS, SKILLS, SKILL_ORDER, generate, check, bktUpdate, BKT, masteryMet, recordAttempt, recordCheckItem, dueCheck, nextActivity, newLearner, refreshUnlocks, PLACEMENT_ANCHORS, PLACEMENT_MAX_ITEMS, STRAND_ANCHORS, strandAnchors, placementPlan, newPlacement, placementRecord, applyPlacement, STORY_ANCHORS, READING_PROBE, isSlip, placementNext, placementProbeRecord, placementRestDue, placementRested, placementStage, discoverySummary, UNDERSTANDING, understanding, recordWhy, migrateLearner, GAMES, GAME_ROUNDS, gameLevel, gameRound, makeTransfer, makeStepFill, canOffer, evidence, evidenceMissing, EXPLAIN_KINDS, explainPick, explainShown, explainOutcome, explainBest, stepResult, ancestors, numberName, DAY, CHECK_DAYS, GRADE_LEVELS, SCHOOL_GRADES, gradeOf, defaultFocus, gradeProgress, makeMistake, PIP_DID, lineItem, linePAE };
+  const api = { makeRng, digits, MISCONCEPTIONS, SKILLS, SKILL_ORDER, generate, check, bktUpdate, BKT, masteryMet, recordAttempt, recordCheckItem, dueCheck, nextActivity, newLearner, refreshUnlocks, PLACEMENT_ANCHORS, PLACEMENT_MAX_ITEMS, STRAND_ANCHORS, strandAnchors, placementPlan, newPlacement, placementRecord, applyPlacement, STORY_ANCHORS, READING_PROBE, isSlip, placementNext, placementProbeRecord, placementRestDue, placementRested, placementStage, discoverySummary, UNDERSTANDING, understanding, recordWhy, migrateLearner, GAMES, GAME_ROUNDS, gameLevel, gameRound, ADVENTURES, adventureOpen, adventure, makeTransfer, makeStepFill, canOffer, evidence, evidenceMissing, EXPLAIN_KINDS, explainPick, explainShown, explainOutcome, explainBest, stepResult, ancestors, numberName, DAY, CHECK_DAYS, GRADE_LEVELS, SCHOOL_GRADES, gradeOf, defaultFocus, gradeProgress, makeMistake, PIP_DID, lineItem, linePAE };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.TBEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -215,7 +215,34 @@ ok(!L2.skills.PV01.activeMis, 'three correct clears it');
 // graph integrity: every prerequisite exists and appears earlier in the order or in another strand without cycles
 E.SKILL_ORDER.forEach((id) => E.SKILLS[id].prereqs.forEach((p) => ok(E.SKILLS[p], id + ' has unknown prereq ' + p)));
 E.SKILL_ORDER.forEach((id) => ok(!E.ancestors(id).has(id), 'cycle at ' + id));
-ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 117, '117 core skills (102 + 8 money and time + 7 measurement and geometry)');
+ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 122, '122 core skills (102 + 8 money and time + 7 measurement and geometry + 5 money math)');
+// Money & Wealth Adventures, step 1: five money skills and the lemonade adventure; every number sentence is true
+{
+  const RF = E.makeRng(909);
+  // a + b − c = d style sentences, left to right (× and ÷ only appear alone)
+  const trueSentences = (text, tag) => { const re = /(\d+)((?: [+−×÷] \d+)+) = (\d+)/g; let m; while ((m = re.exec(text))) { const t = (m[1] + m[2]).split(' '); let v = +t[0]; for (let i = 1; i < t.length; i += 2) { const x = +t[i + 1]; v = t[i] === '+' ? v + x : t[i] === '−' ? v - x : t[i] === '×' ? v * x : v / x; } ok(v === +m[3], tag + ': false sentence ' + m[0]); } };
+  ['FN01', 'FN02', 'FN04', 'FN05', 'FN07'].forEach((id) => ok(E.SKILLS[id].region === 'market', id + ' in the Money Market'));
+  for (let i = 0; i < 4000; i++) {
+    for (const id of ['FN01', 'FN02', 'FN04', 'FN05', 'FN07']) {
+      const it = E.generate(id, RF);
+      it.steps.forEach((st) => trueSentences(st, id));
+      ok(/^\d+$/.test(it.answer) && +it.answer > 0, id + ' whole-dollar answer: ' + it.answer);
+      ok(it.steps.some((st) => new RegExp('= ' + it.answer + '(?!\\d)').test(st)), id + ' a step reaches the answer');
+      Object.values(it.predicted).forEach((w) => ok(w !== it.answer, id + ' clue differs from the answer'));
+      ok(!/undefined|NaN/.test(it.prompt + it.steps.join(' ')), id + ' text');
+    }
+    const a = E.adventure('lemonade', RF);
+    ok(a.steps.length === 5 && a.steps[4].idea && a.steps[4].answer === 'Revenue', 'lemonade has 4 calculations and an idea check');
+    const [s1, s2, s3, s4] = a.steps;
+    ok(+s3.answer === +s1.answer - +s2.answer && +s4.answer < +s3.answer && +s4.answer > 0, 'profit is revenue minus costs, then less after the sign');
+    a.steps.forEach((st) => { trueSentences(st.how, 'lemonade'); if (!st.idea) ok(E.SKILLS[st.skill] && new RegExp('= ' + st.answer + '$').test(st.how), 'lemonade step ends with its answer: ' + st.how); });
+    ok(s4.predicted.MF2 === s3.answer && s3.predicted.MF1 === s1.answer, 'money-idea clues: forgot a cost, revenue as profit');
+  }
+  const LF = E.newLearner('M', 2016, 'pv', '3');
+  ok(!E.adventureOpen(LF.skills, 'lemonade'), 'the adventure waits for its math');
+  LF.skills.FN02.status = 'mastered';
+  ok(E.adventureOpen(LF.skills, 'lemonade'), 'it opens when revenue, cost and profit is lit');
+}
 // Phase 7: measurement and geometry
 {
   const R8 = E.makeRng(808);
@@ -302,7 +329,7 @@ ok(E.numberName(406) === 'four hundred six' && E.numberName(570) === 'five hundr
 // grade levels: every skill has grade 2 or 3; a grade focus picks on-grade work first, never locks anything
 const per = [1, 2, 3, 4, 5].map((g) => E.SKILL_ORDER.filter((id) => E.gradeOf(id) === g).length);
 ok(E.SKILL_ORDER.every((id) => [1, 2, 3, 4, 5].includes(E.gradeOf(id))), 'every skill has a grade 1-5');
-ok(per.join() === '15,38,28,21,16', 'grade split (with money, time, measurement and geometry) ' + per.join());
+ok(per.join() === '15,38,30,23,17', 'grade split (with money, time, measurement, geometry and money math) ' + per.join());
 ok(E.defaultFocus('1') === 1 && E.defaultFocus('2') === 2 && E.defaultFocus('3') === 3 && E.defaultFocus('5') === 5 && E.defaultFocus('other') === 'all', 'default focus');
 const LG = E.newLearner('G', 2017, 'pv', '3');
 ok(LG.grade === '3' && LG.focus === 3, 'grade stored with default focus');
@@ -324,7 +351,7 @@ ok(nAll.skill, 'all still works');
 mid.skills.PV01.activeMis = 'M09';
 ok(E.nextActivity(mid.skills, now, 3).kind === 'remediate', 'remediation beats grade focus');
 const gp = E.gradeProgress(mid.skills);
-ok(gp.length === 5 && gp[1].grade === 2 && gp[1].total === 38 && gp[2].total === 28, 'grade progress (with money, time, measurement and geometry)');
+ok(gp.length === 5 && gp[1].grade === 2 && gp[1].total === 38 && gp[2].total === 30, 'grade progress (with money, time, measurement, geometry and money math)');
 const oldL = { skills: {} }; E.migrateLearner(oldL); ok(oldL.grade === null && oldL.focus === 'all', 'migration adds grade fields');
 
 // grade-aware placement

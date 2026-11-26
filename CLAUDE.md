@@ -24,7 +24,7 @@ The working MVP is a single-page HTML/JS app plus assets. The live private link 
 https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
 
 - A **deterministic math engine**: all problems, answers and worked steps come from code, never from an LLM.
-  It covers 118 skills across Grades 1–5 (including money, time, measurement and geometry since Nov 26), with a misconception library (wrong-answer patterns mapped to "clue" feedback).
+  It covers 123 skills across Grades 1–5 (including money, time, measurement, geometry and the math of money since Nov 26), with a misconception library (wrong-answer patterns mapped to "clue" feedback).
 - **Discovery Adventure** (Tenbright 2.0 Phase 2, Nov 26, 2026): the adaptive starting walk, framed for the child as a
   number adventure. It starts near the child's school grade (gently, with an easier check, if the parent said math feels
   hard), checks key skills including one or two story problems, asks each in two kinds of question, and stops at 29 questions (25 until Nov 26; raised so the strand spot checks cost no core check).
@@ -111,7 +111,7 @@ with identical sw.js, manifest, icons, art and audio. It contains:
 - `build.js`: run `node build.js` to produce `dist/index.html` (and `dist/test.html` with test hooks).
 - Tests: `node test/engine.test.js` (math engine, millions of generated checks); `node test/explain.test.js` (plain-words lessons); `node test/strategies.test.js` (strategy library); Playwright suites
   `test/e2e.py`, `test/features_test.py`, `test/audio_test.py`, `test/living_test.py`,
-  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py`, `test/money_time_test.py`, `test/measure_shape_test.py`, `test/dashboard2_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
+  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py`, `test/money_time_test.py`, `test/measure_shape_test.py`, `test/dashboard2_test.py`, `test/adventure_test.py` and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
 - `docs/animation-system.md` and `README.md`.
 
 Make changes in `source/tenbright-mvp/src/`, rebuild and run every suite.
@@ -230,9 +230,19 @@ before (only when both have 5 or more answers). Everything is computed from data
 answers, `masteredAt`); no new kind of data is stored, so the privacy notice stays v1.3. "What {child} is working on,
 and why" lists up to 3 skills in progress with a plain line per region (`REGION_WHY`, no outcome claims), what each
 builds on (its prerequisites) and what it opens next (skills that list it as a prerequisite).
-**Money & Wealth Adventures (proposed Nov 26, 2026, not built):** the owner asked for a Financial Intelligence Academy
-inside the app. The integration plan with 12 deliverables and 7 decisions for the owner is the doc
-"Money & Wealth Adventures: Integration Plan" (https://claude.ai/artifact/PHhg5uFNNrJQwKjNVfFRFA). Recommended first release:
-10 adventures for Grades 1–5 on new skills FN01, FN02, FN04, FN05, FN07, entered from the Money Market and by an optional
-invitation after mastery; no AI at run time, no carry-over money, no new data kind. Build nothing until he answers the decisions.
+**Money & Wealth Adventures (owner accepted all 7 recommendations, Nov 26, 2026):** plan in the doc "Money & Wealth
+Adventures: Integration Plan" (https://claude.ai/artifact/PHhg5uFNNrJQwKjNVfFRFA). Decisions: Grades 1–5 only (no teen or
+adult content); no AI at run time (Pip's on-device rules tell a math gap from a money-idea gap); pretend money exists only
+inside one adventure, fresh each time, never earned, kept or spent; animations drawn by code and narrated by Pip, scripts
+for a later human studio, no generated video; no options trading or life insurance for children; growth taught with
+tenths (no percent or exponents); spending choices are not kept (keeping them needs notice v1.4). Investing stories and
+invitations get parent switches. Every adventure step is an engine question; a first answer counts as story evidence
+(`kind: 'transfer'`) for its skill; adventures never light a lantern by themselves.
+Step 1 (done Nov 26): skills FN01 price × quantity, FN02 revenue/cost/profit, FN04 saving plan, FN05 share of a company,
+FN07 growth year by year (Money Market region); clues MF1 revenue as profit, MF2 forgot a cost, MF3 added the costs,
+MF4 growth added once, MF5 whole instead of part; `E.ADVENTURES`/`adventure(id, r)`/`adventureOpen`; the runner is the
+games shell with `game: 'adventure'` (story strip, idea-check choices, "What math did you use?" end screen), reached by a
+"Money adventures" map button shown only when an adventure is open; results in `ch.adventures` (at, first, steps, idea).
+First adventure: Build a Lemonade Stand (opens when FN02 is lit). Next: step 2 (9 more adventures, invitation after
+mastery, parent card and switches, badge, 3 animated explainers).
 Do not claim legal sign-off, hiring or payments. Those are his.
