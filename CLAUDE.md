@@ -18,6 +18,8 @@ Full history: `docs/DECISIONS_AND_HISTORY.md`. Planning documents: `docs/`.
   puffs with gold star clips, teal mask, purple-and-teal suit with gold trim, gold cape, gold hexagon emblem). Her superpower,
   **Shape Spark**: she draws glowing shapes in the air (triangle, square, hexagon) that become real things to build with
   (bridges, stairs, shields), so she pairs with shapes, patterns, measuring and building while Pip has numbers and lanterns.
+  Her interests (owner, Nov 27): **science, mathematics and the arts**: she experiments, measures and makes things beautiful
+  (patterns, symmetry, colour), so she fits the Shape Garden, Measuring Workshop, patterns and any science-flavoured story.
   Concept art only so far (ElevenLabs flow jhjer4eyYc924ozWSlgN, gpt-image model); not in the app yet. Like Pip she is a
   computer-made helper and never claims to be a friend (hard rule 6). AI-made art: the art-rights decision applies.
 - **Brand architecture:** GMIA is the company. Tenbright is the product. Number Kingdom is the world, with five regions:
