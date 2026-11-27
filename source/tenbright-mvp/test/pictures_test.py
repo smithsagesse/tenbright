@@ -45,7 +45,11 @@ with sync_playwright() as p:
             ans = str(pg.evaluate("() => window.__tbSession().item.answer"))
             hidden = pg.evaluate("() => [...document.querySelectorAll('.scene, .obj-hero')].every((e) => e.getAttribute('aria-hidden') === 'true')")
             assert hidden, sid
-            tags = pg.evaluate("() => [...document.querySelectorAll('.sc-tag, .bill b')].map((t) => t.textContent)")
+            tags = pg.evaluate("() => [...document.querySelectorAll('.sc-tag')].map((t) => t.textContent)")
+            bills = pg.evaluate("() => [...document.querySelectorAll('.sc-bills')].map((b) => [...b.querySelectorAll('b')].reduce((t, x) => t + Number(x.textContent.replace('$', '')), 0))")
+            for total in bills:  # the bills add up to an amount in the question
+                qn = (pg.evaluate("() => (window.__tbSession().item.q || window.__tbSession().item.prompt)") or '').replace(',', '')
+                assert ('$' + str(total)) in qn or ('1 dollar' in qn and total == 1), (sid, total, qn)
             q = pg.evaluate("() => (window.__tbSession().item.q || window.__tbSession().item.prompt)")
             for t in tags:  # a tag only repeats a number from the question
                 num = t.replace('$', '').replace('¢', '').replace('+', '')

@@ -4235,7 +4235,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
               const tfRow = panel.querySelector('.row[aria-label^="Ten-frames with"]');
               if (tfRow) { const want = +tfRow.getAttribute('aria-label').match(/\d+/)[0]; const filled = tfRow.querySelectorAll('b').length; checks++; if (filled !== want) fail('ten-frame count ' + filled + ' vs ' + want); }
               const groups = panel.querySelector('.groups[aria-label]');
-              if (groups) { const [g, s2] = groups.getAttribute('aria-label').match(/\d+/g).map(Number); checks++; if (groups.querySelectorAll('.grp').length !== g || groups.querySelectorAll('.grp i').length !== g * s2) fail('group count'); }
+              if (groups) { const [g, s2] = groups.getAttribute('aria-label').match(/\d+/g).map(Number); checks++; if (groups.querySelectorAll('.grp').length !== g || groups.querySelectorAll('.grp i, .grp .gi').length !== g * s2) fail('group count'); }
             }
           } catch (err) { bad.push({ id, err: String(err && err.stack || err) }); }
         }
