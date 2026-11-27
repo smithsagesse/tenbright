@@ -191,8 +191,12 @@ still needs the owner's approval.
 3. **Licensed privacy attorney sign-off.** Shortlist and scope are in `docs/Tenbright_Commissioning_and_Release_Plan.txt`.
 4. **Verifiable parental consent ("email plus") plus a backend,** required before any data syncs off the device
    (`docs/Tenbright_Accounts_Consent_and_Sync_Plan.txt`). The recommendation is managed Postgres with row-level security and an append-only event log.
-5. **Rights to the superhero Pip art.** It was cut out of an image the owner supplied, so confirm ownership and AI-tool commercial terms
-   before release. Earlier scene art was AI-generated, then upscaled and restyled. Final art is planned as a human commission
+5. **Rights to the superhero Pip art.** It was cut out of an image the owner supplied; **the owner confirmed on Nov 27, 2026 that
+   it is computer-generated (AI)**. Consequences: under US Copyright Office guidance (Copyright and AI, Part 2, Jan 2025) and
+   Thaler v. Perlmutter (D.C. Cir., Mar 2025), purely AI-generated images get no copyright, so GMIA cannot stop others copying
+   that exact picture (trademark on the name and character, and copyright in human-made changes, are separate). Still to
+   confirm: which tool and plan made it, and that its terms allow commercial use. Zuri's image (same style, from the owner) is
+   presumably the same and needs the same check. Before release. Earlier scene art was AI-generated, then upscaled and restyled. Final art is planned as a human commission
    with no generative AI and full copyright assignment (`docs/Tenbright_Art_Commission_Brief.txt`).
 6. **Native-speaker review** of all 5 translations.
 7. **Next build step the owner was offered:** App Store prep (store build with preview items hidden, iOS project, store listing).
