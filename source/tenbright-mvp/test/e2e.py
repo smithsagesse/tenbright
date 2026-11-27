@@ -43,7 +43,7 @@ with sync_playwright() as p:
     assert 'placement walk' in page.locator('#sgrade-note').inner_text(), 'grade note missing'
     page.select_option('#sgrade', '2')
     page.get_by_role('button', name='Add child').click()
-    page.get_by_role('button', name='Ava').click()
+    page.locator('.kid', has_text='Ava').click()
     page.get_by_text("Let's explore!").click()
     # adaptive placement: runs until the walk finishes (at most PLACEMENT_MAX_ITEMS questions, plus rest stops)
     n = 0; cap = 2 * page.evaluate('() => window.TBEngine.PLACEMENT_MAX_ITEMS') + 12
@@ -133,7 +133,7 @@ with sync_playwright() as p:
     phone.on('request', lambda r: network.append(r.url) if not r.url.startswith(('file:', 'data:', 'blob:')) else None)
     phone.get_by_text('Try the sample learner').click()
     phone.fill('#gate-year', '1980'); phone.get_by_role('button', name='Continue').click()
-    phone.get_by_role('button', name='Maya').click()
+    phone.locator('.kid', has_text='Maya').click()
     phone.screenshot(path=str(OUT / 'phone-map.png'), full_page=True)
     phone.locator('[data-act="pipIdea"]').click()
     phone.screenshot(path=str(OUT / 'phone-item.png'), full_page=True)
@@ -147,12 +147,12 @@ with sync_playwright() as p:
     phone.get_by_role('button', name='+ Add child').click()
     bypass_blocked = phone.get_by_text('Before your child plays').count() > 0
     phone.go_back() if False else None
-    phone.goto(URL); phone.get_by_role('button', name='Maya').click() if phone.get_by_role('button', name='Maya').count() else None
+    phone.goto(URL); phone.locator('.kid', has_text='Maya').click() if phone.locator('.kid', has_text='Maya').count() else None
     wide2 = phone.evaluate('document.documentElement.scrollWidth > window.innerWidth')
     report = ''
     phone.goto(URL)
-    if phone.get_by_role('button', name='Maya').count():
-        phone.get_by_role('button', name='Maya').click()
+    if phone.locator('.kid', has_text='Maya').count():
+        phone.locator('.kid', has_text='Maya').click()
         phone.locator('[data-act="pin"]').first.click()
         for d in '1234':
             phone.locator('[data-act="pinDigit"][data-d="%s"]' % d).click()

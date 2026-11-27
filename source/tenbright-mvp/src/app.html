@@ -1004,6 +1004,8 @@ tr:last-child td { border-bottom: none; }
 .w2-cards { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; }
 .w2-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 10px 12px; min-height: 196px; border-radius: 26px; border: 3px solid rgba(255,255,255,.75); color: #FFFFFF; cursor: pointer;
   background: radial-gradient(circle at 50% 34%, rgba(255,255,255,.55), transparent 58%), var(--tone-bg); box-shadow: 0 12px 28px rgba(8,16,60,.45), inset 0 2px 0 rgba(255,255,255,.4); transition: transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease; }
+.kid.w2-card { min-height: 196px; justify-content: flex-start; font-size: inherit; letter-spacing: normal; border-radius: 26px; border: 3px solid rgba(255,255,255,.75); background: radial-gradient(circle at 50% 34%, rgba(255,255,255,.55), transparent 58%), var(--tone-bg); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.kid.w2-card.on { border-color: #FFD84A; }
 .w2-card.t-blue { --tone-bg: linear-gradient(180deg, #7FB6FF, #3C7BEA); --tone: #1E56D8; }
 .w2-card.t-purple { --tone-bg: linear-gradient(180deg, #C7A6FF, #8A5BE6); --tone: #7B3FD0; }
 .w2-card.t-green { --tone-bg: linear-gradient(180deg, #A8EB7E, #4CB04A); --tone: #1F7A3A; }
@@ -3101,7 +3103,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
       const lead = 'Who is playing? Choose your player to start your Tenbright adventure!';
       const card = (c, i) => {
         const n = litCount(c), on = sel && c.id === sel.id;
-        return `<button class="w2-card t-${TONES[i % TONES.length]}${on ? ' on' : ''}" data-act="pick" data-id="${c.id}" style="--i:${i}">
+        return `<button class="kid w2-card t-${TONES[i % TONES.length]}${on ? ' on' : ''}" data-act="pick" data-id="${c.id}" style="--i:${i}">
           ${on ? `<span class="w2-star" aria-hidden="true">${icoStar}</span>` : ''}
           <span class="w2-face" aria-hidden="true">${pipSvg(110, 'wave', { look: c.look || {} })}</span>
           <span class="w2-name">${esc(c.nickname)}</span>
