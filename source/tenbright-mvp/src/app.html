@@ -981,6 +981,73 @@ tr:last-child td { border-bottom: none; }
   .muted, .hint-text, .eyebrow { color: var(--ink); }
 }
 
+
+/* ===== "Who is playing?" (Nov 27, 2026): the owner's Number Kingdom scene, real cards and buttons on top ===== */
+.stage.w2 { position: relative; overflow: hidden; gap: 0; padding-bottom: 36px; min-height: 100vh; min-height: 100dvh; background: linear-gradient(180deg, #2747B8 0%, #1C2F86 46%, #131C55 100%); }
+.w2 > .w2-sky { position: absolute; inset: 0; width: auto; max-width: none; margin: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.w2-world { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; }
+.w2-hero { display: none; }
+.w2-sky::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 8%; background: linear-gradient(180deg, transparent, rgba(19,28,85,.6)); }
+.w2 > .w2-top, .w2 > .w2-panel { position: relative; z-index: 1; }
+.w2-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.w2-brand { display: inline-flex; align-items: center; gap: 10px; padding: 6px 16px 6px 8px; border-radius: 999px; background: rgba(16,26,78,.62); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.22); color: #FFFFFF; font-size: 22px; font-weight: 800; letter-spacing: -.01em; }
+.w2-tools { display: flex; gap: 10px; }
+@media (max-width: 370px) { .w2-brand span { display: none; } .w2-brand { padding: 6px; } }
+.w2-tools .kbtn { background: rgba(16,26,78,.62); border-color: rgba(255,255,255,.25); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+/* wide screens: the panel sits over the scene's soft glow (39% down the picture) */
+.w2-panel { margin: calc(max(100vh, 100vw * 655 / 1160) * 0.385 - 96px) auto 0; width: min(800px, 64vw); display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.w2-banner { width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px 22px 16px; border-radius: 36px; text-align: center;
+  background: linear-gradient(180deg, #2E67F0 0%, #1B45C7 55%, #13339C 100%); border: 4px solid #F7C948; box-shadow: 0 0 0 3px rgba(255,255,255,.35), 0 16px 40px rgba(8,16,60,.5), inset 0 2px 0 rgba(255,255,255,.35); }
+.w2-banner h1 { margin: 0; font-size: clamp(32px, 4.6vw, 54px); line-height: 1.05; font-weight: 800; letter-spacing: -.02em; color: #FFFFFF; text-shadow: 0 3px 0 #0E2A80, 0 6px 18px rgba(0,0,0,.35); }
+.w2-banner p { margin: 6px 0 0; font-size: clamp(16px, 1.7vw, 20px); font-weight: 800; color: #FFFFFF; }
+.w2-bstar svg { width: 34px; height: 34px; flex: none; filter: drop-shadow(0 2px 4px rgba(0,0,0,.35)); }
+.w2-cards { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; }
+.w2-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 10px 12px; min-height: 196px; border-radius: 26px; border: 3px solid rgba(255,255,255,.75); color: #FFFFFF; cursor: pointer;
+  background: radial-gradient(circle at 50% 34%, rgba(255,255,255,.55), transparent 58%), var(--tone-bg); box-shadow: 0 12px 28px rgba(8,16,60,.45), inset 0 2px 0 rgba(255,255,255,.4); transition: transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease; }
+.w2-card.t-blue { --tone-bg: linear-gradient(180deg, #7FB6FF, #3C7BEA); --tone: #1E56D8; }
+.w2-card.t-purple { --tone-bg: linear-gradient(180deg, #C7A6FF, #8A5BE6); --tone: #7B3FD0; }
+.w2-card.t-green { --tone-bg: linear-gradient(180deg, #A8EB7E, #4CB04A); --tone: #1F7A3A; }
+.w2-card.t-orange { --tone-bg: linear-gradient(180deg, #FFC58A, #F08A3A); --tone: #C24D12; }
+.w2-card.t-pink { --tone-bg: linear-gradient(180deg, #FFB5D3, #E86AA0); --tone: #B8326E; }
+.w2-card.t-teal { --tone-bg: linear-gradient(180deg, #8FE8E0, #2FB3A6); --tone: #11707A; }
+.w2-card.on { border-color: #FFD84A; box-shadow: 0 0 0 4px rgba(255,216,74,.55), 0 0 34px 6px rgba(255,201,60,.55), 0 12px 28px rgba(8,16,60,.45); }
+.w2-star { position: absolute; top: -14px; right: -12px; }
+.w2-star svg { width: 38px; height: 38px; filter: drop-shadow(0 3px 6px rgba(0,0,0,.35)); }
+.w2-face { width: 124px; height: 112px; display: block; overflow: hidden; border-radius: 22px; position: relative; }
+.w2-face svg { position: absolute; left: 50%; top: 2px; width: 190px; height: auto; transform: translateX(-50%); }
+.w2-name { width: 100%; min-height: 44px; display: grid; place-items: center; padding: 4px 10px; border-radius: 14px; background: var(--tone); border: 2px solid rgba(255,255,255,.85); font-size: 24px; font-weight: 800; letter-spacing: -.01em; line-height: 1.1; overflow-wrap: anywhere; box-shadow: 0 4px 10px rgba(0,0,0,.2); }
+.w2-meta { font-size: 14px; font-weight: 800; color: #FFFFFF; text-shadow: 0 1px 3px rgba(0,0,0,.55); }
+.w2-card:focus-visible, .w2-start:focus-visible, .w2-add:focus-visible { outline: 4px solid #FFFFFF; outline-offset: 4px; }
+@media (hover: hover) { .w2-card:hover { transform: translateY(-6px) scale(1.02); } .w2-start:hover, .w2-add:hover { transform: translateY(-3px); } }
+.w2-card:active, .w2-start:active, .w2-add:active { transform: scale(.97); }
+.w2-actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 16px; margin-top: 4px; }
+.w2-start { min-height: var(--t-primary); min-width: 280px; padding: 0 36px; display: inline-flex; align-items: center; justify-content: center; gap: 14px; border-radius: 999px; border: 4px solid #E9FFD6; font-size: 30px; font-weight: 800; color: #FFFFFF; text-shadow: 0 2px 0 #145A22;
+  background: linear-gradient(180deg, #5ED35A 0%, #2FA83A 55%, #1E8A2C 100%); box-shadow: 0 12px 30px rgba(10,60,20,.5), inset 0 2px 0 rgba(255,255,255,.45); transition: transform .2s ease; }
+.w2-add { min-height: var(--t-child); padding: 0 26px; display: inline-flex; align-items: center; gap: 10px; border-radius: 999px; border: 3px solid #BFD3FF; background: #FFFFFF; color: #1B45C7; font-size: 20px; font-weight: 800; box-shadow: 0 10px 24px rgba(8,16,60,.4); transition: transform .2s ease; }
+.w2-empty { margin: 0; padding: 14px 18px; border-radius: 18px; background: rgba(16,26,78,.7); color: #FFFFFF; font-size: 20px; font-weight: 700; }
+/* phones and narrow tablets: the explorers' strip on top, everything else below it */
+@media (max-width: 820px), (max-aspect-ratio: 4/5) {
+  .w2-world { display: none; }
+  .w2 > .w2-sky { bottom: auto; height: min(calc(100vw / 2.25), 340px); }
+  .w2-hero { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 42% 0%; }
+  .w2-sky::after { height: 40%; background: linear-gradient(180deg, transparent, #2747B8); }
+  .w2-panel { width: 100%; margin-top: calc(min(calc(100vw / 2.25), 340px) - 82px); }
+  .w2-cards { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .w2-cards .w2-card { width: calc(50% - 6px); }
+  .w2-banner { padding: 12px 14px 14px; border-radius: 28px; } .w2-bstar svg { width: 24px; height: 24px; }
+  .w2-start { width: 100%; min-width: 0; font-size: 26px; }
+}
+@media (orientation: landscape) and (max-height: 520px) { .w2-panel { margin-top: 96px; } .w2-banner h1 { font-size: 30px; } .w2-banner p { font-size: 15px; } .w2-world { display: none; } .w2 > .w2-sky { bottom: auto; height: 170px; } .w2-hero { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; } }
+/* motion: cards rise in, the highlighted player glows gently, the scene drifts very slowly; Still and reduced motion stop it */
+@keyframes w2Rise { from { opacity: 0; transform: translateY(16px) scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes w2Glow { from { box-shadow: 0 0 0 4px rgba(255,216,74,.45), 0 0 22px 2px rgba(255,201,60,.4), 0 12px 28px rgba(8,16,60,.45); } to { box-shadow: 0 0 0 4px rgba(255,216,74,.7), 0 0 40px 8px rgba(255,201,60,.6), 0 12px 28px rgba(8,16,60,.45); } }
+@keyframes w2Drift { from { transform: scale(1); } to { transform: scale(1.035); } }
+@keyframes w2Twinkle { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.15) rotate(12deg); } }
+html:not(.motion-still) .w2-card { animation: w2Rise .5s cubic-bezier(.2,.8,.2,1) calc(var(--i, 0) * 70ms + 100ms) both; }
+html:not(.motion-still) .w2-card.on { animation: w2Rise .5s cubic-bezier(.2,.8,.2,1) calc(var(--i, 0) * 70ms + 100ms) both, w2Glow 2.6s ease-in-out .8s infinite alternate; }
+html.motion-full .w2-world, html.motion-full .w2-hero { transform-origin: 50% 40%; animation: w2Drift 26s ease-in-out infinite alternate; }
+html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { animation: w2Twinkle 3.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .w2-card, .w2-card.on, .w2-world, .w2-hero, .w2-star svg, .w2-bstar svg { animation: none !important; } }
 </style>
 
 <div id="app" aria-live="polite"></div>
@@ -2065,6 +2132,9 @@ tr:last-child td { border-bottom: none; }
   const markSvg = `<svg width="34" height="34" viewBox="0 0 112 112" aria-hidden="true"><rect width="112" height="112" rx="28" fill="#24304A"></rect>${[22,39,56,73,90].map((y) => `<circle cx="38" cy="${y}" r="8" fill="#F4A425"></circle><circle cx="74" cy="${y}" r="8" fill="#F4A425"></circle>`).join('')}</svg>`;
   const icoCheck = '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--meadow)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>';
   const icoClue = '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--clue)" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M16.5 16.5L21 21"></path></svg>';
+  const icoPlay = '<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.8v14.4a1.2 1.2 0 0 0 1.8 1l11.4-7.2a1.2 1.2 0 0 0 0-2L8.8 3.8A1.2 1.2 0 0 0 7 4.8z" fill="currentColor"></path></svg>';
+  const icoPlus = '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M4 12h16" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"></path></svg>';
+  const icoStar = '<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z" fill="#FFC93C" stroke="#C77A12" stroke-width="1.2" stroke-linejoin="round"></path></svg>';
   const icoSpeaker = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"></path><path d="M17 8a5 5 0 0 1 0 8"></path></svg>';
   const icoLock = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>';
   const icoBack = '<svg class="ico-back" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>';
@@ -2815,8 +2885,11 @@ tr:last-child td { border-bottom: none; }
     if (!document.hidden) live.forEach((sc) => { if (sc.visible && moved) draw(sc); });
     requestAnimationFrame(tick3D);
   }
+  let lastRendered = null;
   function render() {
     const fn = VIEWS[view.name];
+    // a new screen starts at the top (the same screen redrawing keeps its place)
+    const newScreen = lastRendered !== view.name; lastRendered = view.name;
     app.innerHTML = DATA.otherTab ? `<main class="paper"><section class="card" role="alert"><h1 style="font-size:24px">Tenbright is open in another window.</h1><p>Progress was saved there. Please use that window, or tap Reload to continue here with the newest progress.</p><div class="row"><button class="btn primary" data-act="reloadData">Reload</button></div></section></main>` : fn ? fn() : '';
     document.documentElement.classList.toggle('big-text', !!(S.settings && S.settings.bigText));
     // accessibility: every screen has one main heading, and labelled pictures are announced as pictures
@@ -2826,8 +2899,9 @@ tr:last-child td { border-bottom: none; }
     if (lang() !== 'en') translateScreen(app);
     try { mount3D(app); } catch (e) { /* flat pictures */ }
     try { afterRender(); } catch (e) { /* motion is optional */ }
+    if (newScreen) { try { window.scrollTo(0, 0); } catch (e) { /* not available */ } }
     const focus = app.querySelector('[data-autofocus]');
-    if (focus) focus.focus();
+    if (focus) focus.focus({ preventScroll: !newScreen });
   }
 
   // new badges on the end screens: a medal drops in, with the gift it unlocks for Pip
@@ -3017,11 +3091,34 @@ tr:last-child td { border-bottom: none; }
         <div class="row" style="justify-content:center">${e.length ? '<button class="kbtn" data-act="picUndo">Undo</button>' : ''}<button class="kbtn" data-act="picSkip">${view.from === 'dashboard' ? 'Cancel' : 'Skip for now'}</button></div>
       </div></main>`;
     },
+    // "Who is playing?": the owner's Number Kingdom scene (art/who-world.webp, art/who-hero.webp, made from his reference
+    // image by tools/art/who_playing.py) with real, translated cards and buttons on top. One tap on a card plays; Start
+    // Playing plays as the highlighted player (the one who played last). Secret pictures still guard locked profiles.
     who() {
-      return `<main class="stage">
-        <div class="topbar"><div class="lanterns-lit">${markSvg} Who's playing?</div><button class="kbtn icon" data-act="pin" data-target="dashboard" aria-label="Grown-ups: enter PIN">${icoLock}</button></div>
-        <div class="kids">${S.children.map((c) => `<button class="kid" data-act="pick" data-id="${c.id}"><span class="avatar"></span>${esc(c.nickname)}${hasPicLock(c) ? `<span class="kid-lock" aria-hidden="true">${picSvg('star', 18)}${picSvg('star', 18)}${picSvg('star', 18)}</span>` : ''}${c.sample ? '<span class="sample-flag" style="color:var(--lantern-soft)">Sample learner</span>' : ''}</button>`).join('')}</div>
-        ${S.children.length ? '' : '<p class="speech">No players yet. A grown-up can add one.</p>'}
+      const TONES = ['blue', 'purple', 'green', 'orange', 'pink', 'teal'];
+      const canAdd = !!(S.parent && !S.parent.sampleOnly);
+      const sel = S.children.find((c) => c.id === S.activeChild) || S.children[0];
+      const lead = 'Who is playing? Choose your player to start your Tenbright adventure!';
+      const card = (c, i) => {
+        const n = litCount(c), on = sel && c.id === sel.id;
+        return `<button class="w2-card t-${TONES[i % TONES.length]}${on ? ' on' : ''}" data-act="pick" data-id="${c.id}" style="--i:${i}">
+          ${on ? `<span class="w2-star" aria-hidden="true">${icoStar}</span>` : ''}
+          <span class="w2-face" aria-hidden="true">${pipSvg(110, 'wave', { look: c.look || {} })}</span>
+          <span class="w2-name">${esc(c.nickname)}</span>
+          <span class="w2-meta">${n ? (n === 1 ? '1 lantern lit' : `${n} lanterns lit`) : 'Ready to explore'}${hasPicLock(c) ? ' · Secret pictures' : ''}</span>
+        </button>`;
+      };
+      return `<main class="stage w2">
+        <div class="w2-sky" aria-hidden="true"><img class="w2-world" src="art/who-world.webp" alt="" width="1160" height="655" decoding="async"><img class="w2-hero" src="art/who-hero.webp" alt="" width="810" height="262" decoding="async"></div>
+        <div class="w2-top"><div class="w2-brand">${markSvg}<span>Tenbright</span></div><div class="w2-tools"><button class="kbtn icon" data-act="say" data-text="${esc(lead)}" aria-label="Listen">${icoSpeaker}</button><button class="kbtn icon" data-act="pin" data-target="dashboard" aria-label="Grown-ups: enter PIN">${icoLock}</button></div></div>
+        <div class="w2-panel">
+          <header class="w2-banner"><span class="w2-bstar" aria-hidden="true">${icoStar}</span><div><h1>Who is playing?</h1><p>Choose your player to start your Tenbright adventure!</p></div><span class="w2-bstar" aria-hidden="true">${icoStar}</span></header>
+          ${S.children.length ? `<div class="w2-cards">${S.children.map(card).join('')}</div>` : '<p class="w2-empty">No players yet. A grown-up can add one.</p>'}
+          <div class="w2-actions">
+            ${sel ? `<button class="w2-start" data-act="pick" data-id="${sel.id}" aria-label="${esc('Start Playing as ' + sel.nickname)}">${icoPlay}<span>Start Playing</span></button>` : ''}
+            ${canAdd ? `<button class="w2-add" data-act="pin" data-target="addChild">${icoPlus}<span>Add Player</span></button>` : ''}
+          </div>
+        </div>
       </main>`;
     },
     intro() {
@@ -4118,6 +4215,7 @@ tr:last-child td { border-bottom: none; }
       const F = (t) => { if (t) fixed.add(String(t)); }, D = (t) => { if (t) dyn.add(String(t)); };
       F("Hi, I'm Pip! I'm a helper made by the Tenbright team using a computer, and my voice is made by a computer too. I collect light beads. Ten beads make a lantern. Will you help me light the Kingdom?");
       F(ADV.intro); F(ADV.back); F(ADV.rest); D('I found 12 lanterns you can already light. ' + ADV.found); D('I found 1 lanterns you can already light. ' + ADV.found);
+      F('Who is playing? Choose your player to start your Tenbright adventure!');
       F('Watch my capoeira moves!'); F('Let me play you a song!'); F('Hi, friend! I am so glad you are here.');
       F('Got it!'); F("Thanks! Let's keep exploring."); F('That’s how it works! Now it’s your turn.');
       Object.values(PRAISE).forEach((x) => { F(x); F(x + ' You fixed it.'); });

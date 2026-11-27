@@ -4954,5 +4954,13 @@ TBi18n.add("fr", {"Count to {N}":"Compter jusqu'à {N}",
 "A copy of the old data was kept on this device and was not changed.":"Une copie des anciennes données a été gardée sur cet appareil, sans changement.",
 "Keep progress on iPhone and iPad":"Garder la progression sur iPhone et iPad",
 "Safari can clear a website's saved data when the site is not opened for {N} days of Safari use.":"Safari peut effacer les données d'un site web s'il n'est pas ouvert pendant {N} jours d'utilisation de Safari.",
-"To keep your child's progress, add Tenbright to the Home Screen: tap Share, then Add to Home Screen, and open it from there.":"Pour garder la progression de votre enfant, ajoutez Tenbright à l'écran d'accueil : touchez Partager, puis Sur l'écran d'accueil, et ouvrez-le de là."
+"To keep your child's progress, add Tenbright to the Home Screen: tap Share, then Add to Home Screen, and open it from there.":"Pour garder la progression de votre enfant, ajoutez Tenbright à l'écran d'accueil : touchez Partager, puis Sur l'écran d'accueil, et ouvrez-le de là.",
+"Who is playing?":"Qui joue ?",
+"Choose your player to start your Tenbright adventure!":"Choisis ton joueur pour commencer ton aventure Tenbright !",
+"Start Playing":"Commencer à jouer",
+"Start Playing as {P}":"Commencer à jouer avec {P}",
+"Add Player":"Ajouter un joueur",
+"Ready to explore":"Prêt à explorer",
+"{N} lantern lit":"{N} lanterne allumée",
+"{N} lanterns lit":"{N} lanternes allumées"
 });
