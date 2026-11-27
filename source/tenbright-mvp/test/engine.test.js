@@ -183,10 +183,28 @@ ok(!L2.skills.PV01.activeMis, 'three correct clears it');
 // ---------- Phase 5: games ----------
 {
   const R5 = E.makeRng(505);
-  ok(E.GAME_ROUNDS === 5 && Object.keys(E.GAMES).join() === 'bridge,pizza,detective', 'three games');
+  ok(E.GAME_ROUNDS === 5 && Object.keys(E.GAMES).join() === 'bridge,pizza,detective,race,zrace', 'three games and two races');
+  // the races: Pip's pool is every skill but Zuri's (GE, MS); hers is exactly those; rounds come only from lit skills
+  ok(E.GAMES.race.levels.length === 1 && E.GAMES.zrace.levels.length === 1, 'one level per race');
+  ok(E.GAMES.zrace.levels[0].length > 0 && E.GAMES.zrace.levels[0].every((id) => /^(GE|MS)\d/.test(id)), 'Zuri race: her skills');
+  ok(E.GAMES.race.levels[0].every((id) => !/^(GE|MS)\d/.test(id)) && E.GAMES.race.levels[0].length + E.GAMES.zrace.levels[0].length === E.SKILL_ORDER.length, 'Pip race: every other skill');
+  {
+    const L = E.newLearner('R'); ['AS05', 'MU03', 'MS01', 'GE01'].forEach((id) => { L.skills[id].status = 'mastered'; });
+    ok(E.raceRounds('race', E.newLearner('Q').skills, R5).length === 0, 'no race for a child with nothing lit');
+    for (let k = 0; k < 400; k++) {
+      ['race', 'zrace'].forEach((g) => {
+        const rs = E.raceRounds(g, L.skills, R5);
+        ok(rs.length === E.RACE_STOPS, g + ': ' + E.RACE_STOPS + ' stops');
+        rs.forEach((rd) => {
+          ok((g === 'race' ? ['AS05', 'MU03'] : ['MS01', 'GE01']).includes(rd.skill), g + ': only lit skills of the racer, not ' + rd.skill);
+          ok(['number', 'choice'].includes(rd.item.format) && rd.answer === String(rd.item.answer) && E.check(rd.item, rd.answer).correct, g + ': answerable round');
+        });
+      });
+    }
+  }
   const fresh = E.newLearner('G');
   Object.keys(E.GAMES).forEach((g) => ok(E.gameLevel(fresh.skills, g) === 0, g + ' is closed for a new child'));
-  Object.keys(E.GAMES).forEach((g) => {
+  Object.keys(E.GAMES).filter((g) => g !== 'race' && g !== 'zrace').forEach((g) => {
     E.GAMES[g].levels.forEach((ids, i) => {
       ids.forEach((id) => ok(E.SKILLS[id], g + ': unknown skill ' + id));
       const L = E.newLearner('G'); L.skills[ids[0]].status = 'mastered';

@@ -58,7 +58,7 @@ with sync_playwright() as p:
         pg.locator('[data-act="go"][data-to="games"]').click()
         txt = pg.locator('main').inner_text()
         for name in ['Build the Bridge', 'Pizza Shop', 'Number Detective']: assert name in txt, name
-        assert pg.locator('[data-act="gameStart"]').count() == 0 and txt.count('Light more lanterns to open it.') == 3, 'games should be closed'
+        assert pg.locator('[data-act="gameStart"]').count() == 0 and txt.count('Light more lanterns to open it.') == 5, 'games and races should be closed'
         axe(pg, 'games list closed ' + scheme)
         # 2. each game, each level: play all rounds; a clue after a miss, "how" after two; no clock
         for g, levels in [('bridge', 3), ('pizza', 3), ('detective', 2)]:
