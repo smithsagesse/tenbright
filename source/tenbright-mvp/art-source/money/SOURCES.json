@@ -1,0 +1,38 @@
+{
+ "penny-front.png": {
+  "source": "https://commons.wikimedia.org/wiki/File:US_One_Cent_Obv.png",
+  "license": "Public domain (US government work)"
+ },
+ "dime-front.png": {
+  "source": "https://commons.wikimedia.org/wiki/File:Dime_Obverse_13.png",
+  "license": "Public domain"
+ },
+ "dime-back.png": {
+  "source": "https://commons.wikimedia.org/wiki/File:Dime_Reverse_13.png",
+  "license": "Public domain"
+ },
+ "quarter-front.png": {
+  "source": "https://commons.wikimedia.org/wiki/File:2006_Quarter_Proof.png",
+  "license": "Public domain"
+ },
+ "nickel-back.png": {
+  "source": "https://commons.wikimedia.org/wiki/File:US_Nickel_2013_Rev.png",
+  "license": "Public domain"
+ },
+ "bill-1.jpg": {
+  "source": "https://commons.wikimedia.org/wiki/File:United_States_one_dollar_bill,_obverse.jpg",
+  "license": "Public domain"
+ },
+ "bill-5.jpg": {
+  "source": "https://commons.wikimedia.org/wiki/File:US_$5_Series_2006_obverse.jpg",
+  "license": "Public domain"
+ },
+ "bill-20.jpg": {
+  "source": "https://commons.wikimedia.org/wiki/File:US_$20_Series_2006_Obverse.jpg",
+  "license": "Public domain"
+ },
+ "nickel-front.jpg": {
+  "source": "https://commons.wikimedia.org/wiki/File:Jefferson-Nickel-Unc-Obv.jpg",
+  "license": "Public domain (US government work)"
+ }
+}

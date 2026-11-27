@@ -152,6 +152,7 @@ td.num, th.num { text-align: right; }
 .mpic { width: min(460px, 100%); height: auto; display: block; margin: 0 auto; }
 .mpic.sq { width: min(300px, 80vw); }
 .coins-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; }
+.coin-img { display: block; border-radius: 50%; box-shadow: 0 3px 8px rgba(0,0,0,.28); background: transparent; }
 .clock-svg { width: min(240px, 70vw); height: auto; }
 .clock-pair { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; text-align: center; }
 .region.village { background: var(--dusk-2); border: 2px solid var(--dusk-line); color: var(--on-dusk); }
@@ -2401,8 +2402,11 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
     // built from short pieces so each language translates them once
     const parts = Object.keys(counts).sort((a, b) => b - a).map((v) => counts[v] + ' ' + COIN_LOOK[v].name[counts[v] === 1 ? 0 : 1]);
     const label = lang() === 'en' ? 'Coins: ' + parts.join(', ') : T('Coins:') + ' ' + parts.map((x) => T(x)).join(lang() === 'zh' ? '、' : lang() === 'ar' ? '، ' : ', ');
-    return `<div class="coins-row" role="img" data-notr aria-label="${esc(label)}">${coins.map((v) => { const c = COIN_LOOK[v]; const d = c.r * 2 + 6; return `<svg width="${d}" height="${d}" viewBox="0 0 ${d} ${d}" aria-hidden="true"><circle cx="${d / 2}" cy="${d / 2}" r="${c.r}" fill="${c.fill}" stroke="${c.ring}" stroke-width="4"></circle><text x="${d / 2}" y="${d / 2 + 8}" text-anchor="middle" font-size="${v === 25 ? 24 : 20}" font-weight="800" fill="#1E2A3B">${v}¢</text></svg>`; }).join('')}</div>`;
+    // real US coins (official US Mint images, public domain) at their true relative sizes: a dime is smaller than a penny
+    return `<div class="coins-row" role="img" data-notr aria-label="${esc(label)}">${coins.map((v) => { const f = COIN_FILE[v]; const d = Math.round(COIN_MM[v] * 2.97); return `<img class="coin-img" src="art/coin-${f}.webp" alt="" width="${d}" height="${d}" decoding="async" draggable="false">`; }).join('')}</div>`;
   }
+  const COIN_FILE = { 1: 'penny', 5: 'nickel', 10: 'dime', 25: 'quarter' };
+  const COIN_MM = { 1: 19.05, 5: 21.21, 10: 17.91, 25: 24.26 }; // US Mint coin diameters
   // the description says where the hands are, never the time, so it gives the same clues the picture gives
   function clockHtml(h, m) {
     const R = 100, cx = 110, cy = 110, ang = (deg) => (deg - 90) * Math.PI / 180;
