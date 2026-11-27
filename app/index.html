@@ -760,7 +760,7 @@ h3 { font-size: 19px; line-height: 1.25; font-weight: 600; letter-spacing: -.012
 ::selection { background: color-mix(in srgb, var(--river) 28%, transparent); }
 
 /* ---------- press feedback: on pointer-down, instant, the same everywhere ---------- */
-.btn, .kbtn, .checkbtn, .pad button, .pinpad button, .choices button, .kid, .region:not(.locked), .gchip, .pic-pad button, .look-opts button, .pip-poke {
+.btn, .kbtn, .checkbtn, .pad button, .pinpad button, .choices button, .kid, .region:not(.locked), .gchip, .pic-pad button, .look-opts button, .pip-poke, .w2-start, .w2-add {
   transition: transform .14s var(--ease-out), filter .14s var(--ease-out), background-color .2s var(--ease-out), box-shadow .2s var(--ease-out); }
 .btn:not(:disabled):active, .kbtn:not(:disabled):active, .checkbtn:active, .choices button:active, .gchip:active, .look-opts button:not(:disabled):active { transform: scale(.97); transition-duration: .06s; }
 .pad button:active, .pinpad button:active, .pic-pad button:active { transform: scale(.94); transition-duration: .06s; }
@@ -984,7 +984,9 @@ tr:last-child td { border-bottom: none; }
   .kbtn, .speech, .gchip, .kid, .badge-new, .pic-dots span, .hero-bar .lang-pick .btn:not(.primary) { -webkit-backdrop-filter: none; backdrop-filter: none; background-color: var(--dusk-2); }
   .paper > .brandbar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--surface); box-shadow: 0 0 0 100vmax var(--surface); }
 }
+@media (prefers-reduced-transparency: reduce) { .w2-brand, .w2-tools .kbtn { -webkit-backdrop-filter: none; backdrop-filter: none; background-color: #101A4E; } }
 @media (prefers-contrast: more) {
+  .w2-brand, .w2-tools .kbtn { background-color: #101A4E; border: 2px solid #FFFFFF; }
   .kbtn, .gchip, .kid, .speech { border: 2px solid rgba(255,255,255,.7); background-color: var(--dusk-2); }
   .btn, .field input[type=text], .field input[type=password], .field select, .pad button, .choices button { border: 2px solid var(--ink) !important; }
   .card { box-shadow: 0 0 0 1.5px var(--ink); }
@@ -1052,13 +1054,10 @@ tr:last-child td { border-bottom: none; }
 @media (orientation: landscape) and (max-height: 520px) { .w2-panel { margin-top: 96px; } .w2-banner h1 { font-size: 30px; } .w2-banner p { font-size: 15px; } .w2-world { display: none; } .w2 > .w2-sky { bottom: auto; height: 170px; } .w2-hero { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; } }
 /* motion: cards rise in, the highlighted player glows gently, the scene drifts very slowly; Still and reduced motion stop it */
 @keyframes w2Rise { from { opacity: 0; transform: translateY(16px) scale(.96); } to { opacity: 1; transform: none; } }
-@keyframes w2Glow { from { box-shadow: 0 0 0 4px rgba(255,216,74,.45), 0 0 22px 2px rgba(255,201,60,.4), 0 12px 28px rgba(8,16,60,.45); } to { box-shadow: 0 0 0 4px rgba(255,216,74,.7), 0 0 40px 8px rgba(255,201,60,.6), 0 12px 28px rgba(8,16,60,.45); } }
-@keyframes w2Drift { from { transform: scale(1); } to { transform: scale(1.035); } }
 @keyframes w2Twinkle { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.15) rotate(12deg); } }
-html:not(.motion-still) .w2-card { animation: w2Rise .5s cubic-bezier(.2,.8,.2,1) calc(var(--i, 0) * 70ms + 100ms) both; }
-html:not(.motion-still) .w2-card.on { animation: w2Rise .5s cubic-bezier(.2,.8,.2,1) calc(var(--i, 0) * 70ms + 100ms) both, w2Glow 2.6s ease-in-out .8s infinite alternate; }
-html.motion-full .w2-world, html.motion-full .w2-hero { transform-origin: 50% 40%; animation: w2Drift 26s ease-in-out infinite alternate; }
-html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { animation: w2Twinkle 3.2s ease-in-out infinite; }
+html:not(.motion-still) .w2-card { animation: w2Rise .5s cubic-bezier(.2,.8,.2,1) calc(var(--i, 0) * 70ms + 100ms) backwards; }
+html:not(.motion-still) .w2-card.on { animation: w2Rise .5s cubic-bezier(.2,.8,.2,1) calc(var(--i, 0) * 70ms + 100ms) backwards; }
+html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { animation: w2Twinkle 1.6s ease-in-out .6s 2; }
 @media (prefers-reduced-motion: reduce) { .w2-card, .w2-card.on, .w2-world, .w2-hero, .w2-star svg, .w2-bstar svg { animation: none !important; } }
 
 /* pictures of what is being learned: story objects, coins, bills, shares */
@@ -1071,15 +1070,19 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
 .gi { width: 30px; height: 30px; display: block; }
 .grp.og { width: auto; height: auto; min-width: 92px; min-height: 92px; border-radius: 26px; display: grid; grid-template-columns: repeat(var(--c), 30px); gap: 4px; padding: 10px; align-content: center; }
 .sc-tag { display: inline-block; min-width: 44px; padding: 3px 10px; border-radius: 999px; background: #FFFFFF; border: 2px solid #F4A425; color: #1E2A3B; font-weight: 800; font-size: 18px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,.12); }
-.sc-label { font-weight: 800; font-size: 18px; color: var(--ink); }
-.sc-op { font-size: 34px; font-weight: 800; color: var(--ink); }
-.sc-times { font-size: 22px; font-weight: 800; color: var(--ink); }
+.sc-label { font-weight: 800; font-size: 18px; color: inherit; }
+.sc-op { font-size: 34px; font-weight: 800; color: inherit; }
+.sc-times { font-size: 22px; font-weight: 800; color: inherit; }
 .sc-bills { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 300px; }
 .bill { position: relative; display: inline-block; width: 74px; height: 74px; }
 .bill img { width: 74px; height: 74px; display: block; }
 .bill b { position: absolute; left: 50%; bottom: 2px; transform: translateX(-50%); padding: 0 8px; border-radius: 999px; background: #FFFFFF; color: #0B6B3A; border: 2px solid #1F8A4C; font-size: 16px; font-weight: 800; line-height: 1.4; }
 .obj-hero { display: flex; justify-content: center; margin-bottom: 6px; }
-.stage .sc-label, .stage .sc-op, .stage .sc-times { color: var(--on-dusk); }
+
+/* apple-design review (Nov 27, 2026): dark screens fill the window even when their content is short; captions sitting
+   on the night sky (not in a card) use the light caption colour in both themes */
+.stage { min-height: 100vh; min-height: 100dvh; }
+.stage > .hint-text, .stage .game-stage > .hint-text { color: rgba(235,240,255,.82); }
 </style>
 
 <div id="app" aria-live="polite"></div>
