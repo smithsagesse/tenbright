@@ -4954,5 +4954,10 @@ TBi18n.add("ar", {"Count to {N}":"العدّ حتى {N}",
 "A copy of the old data was kept on this device and was not changed.":"احتُفظ بنسخة من البيانات القديمة على هذا الجهاز دون تغيير.",
 "Keep progress on iPhone and iPad":"احتفظ بالتقدّم على iPhone وiPad",
 "Safari can clear a website's saved data when the site is not opened for {N} days of Safari use.":"قد يمسح Safari البيانات المحفوظة لموقع ما إذا لم يُفتح خلال {N} أيام من استخدام Safari.",
-"To keep your child's progress, add Tenbright to the Home Screen: tap Share, then Add to Home Screen, and open it from there.":"للاحتفاظ بتقدّم طفلك، أضف Tenbright إلى الشاشة الرئيسية: اضغط «مشاركة» ثم «إضافة إلى الشاشة الرئيسية»، وافتحه من هناك."
+"To keep your child's progress, add Tenbright to the Home Screen: tap Share, then Add to Home Screen, and open it from there.":"للاحتفاظ بتقدّم طفلك، أضف Tenbright إلى الشاشة الرئيسية: اضغط «مشاركة» ثم «إضافة إلى الشاشة الرئيسية»، وافتحه من هناك.",
+"Add a player":"أضف لاعبًا",
+"Ready to explore":"جاهز للاستكشاف",
+"Tap your name to step into Number Kingdom.":"اضغط على اسمك لتدخل مملكة الأعداد.",
+"{N} lantern lit":"فانوس واحد مضاء",
+"{N} lanterns lit":"{N} فوانيس مضاءة"
 });

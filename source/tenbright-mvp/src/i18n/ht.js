@@ -4954,5 +4954,10 @@ TBi18n.add("ht", {"Count to {N}":"Konte jiska {N}",
 "A copy of the old data was kept on this device and was not changed.":"Yon kopi ansyen done yo rete sou aparèy sa a, san chanjman.",
 "Keep progress on iPhone and iPad":"Kenbe pwogrè a sou iPhone ak iPad",
 "Safari can clear a website's saved data when the site is not opened for {N} days of Safari use.":"Safari ka efase done yon sit entènèt si yo pa louvri l pandan {N} jou itilizasyon Safari.",
-"To keep your child's progress, add Tenbright to the Home Screen: tap Share, then Add to Home Screen, and open it from there.":"Pou kenbe pwogrè pitit ou, mete Tenbright sou ekran dakèy la: peze Pataje, apre sa Ajoute sou ekran dakèy, epi louvri l la."
+"To keep your child's progress, add Tenbright to the Home Screen: tap Share, then Add to Home Screen, and open it from there.":"Pou kenbe pwogrè pitit ou, mete Tenbright sou ekran dakèy la: peze Pataje, apre sa Ajoute sou ekran dakèy, epi louvri l la.",
+"Add a player":"Ajoute yon jwè",
+"Ready to explore":"Pare pou eksplore",
+"Tap your name to step into Number Kingdom.":"Peze non ou pou antre nan Wayòm Nonb yo.",
+"{N} lantern lit":"{N} lantèn limen",
+"{N} lanterns lit":"{N} lantèn limen"
 });

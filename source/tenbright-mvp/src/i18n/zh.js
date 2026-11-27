@@ -4954,5 +4954,10 @@ TBi18n.add("zh", {"Count to {N}":"數到{N}",
 "A copy of the old data was kept on this device and was not changed.":"舊資料的副本已保留在這台裝置上，沒有被更改。",
 "Keep progress on iPhone and iPad":"在 iPhone 和 iPad 上保留進度",
 "Safari can clear a website's saved data when the site is not opened for {N} days of Safari use.":"如果在使用 Safari 的 {N} 天內都沒有開啟某個網站，Safari 可能會清除它儲存的資料。",
-"To keep your child's progress, add Tenbright to the Home Screen: tap Share, then Add to Home Screen, and open it from there.":"若要保留孩子的進度，請把 Tenbright 加入主畫面：點「分享」，再點「加入主畫面」，之後從那裡開啟。"
+"To keep your child's progress, add Tenbright to the Home Screen: tap Share, then Add to Home Screen, and open it from there.":"若要保留孩子的進度，請把 Tenbright 加入主畫面：點「分享」，再點「加入主畫面」，之後從那裡開啟。",
+"Add a player":"新增玩家",
+"Ready to explore":"準備好去探索",
+"Tap your name to step into Number Kingdom.":"點你的名字，走進數字王國。",
+"{N} lantern lit":"點亮了 {N} 盞燈籠",
+"{N} lanterns lit":"點亮了 {N} 盞燈籠"
 });
