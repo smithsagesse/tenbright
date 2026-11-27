@@ -1587,8 +1587,14 @@
   const GAMES = {
     bridge: { name: 'Build the Bridge', levels: [['C107', 'C103'], ['AS10', 'AS07'], ['AS13', 'AS15']] },
     pizza: { name: 'Pizza Shop', levels: [['F301'], ['F413'], ['F415']] },
-    detective: { name: 'Number Detective', levels: [['PV07', 'C107'], ['F412', 'MU13']] }
+    detective: { name: 'Number Detective', levels: [['PV07', 'C107'], ['F412', 'MU13']] },
+    // races (owner, Nov 27, 2026): each answer moves the racer one stop. Pip's race uses the child's lit number skills
+    // (every region but Zuri's); Zuri's race uses her lit shapes and measuring skills. Levels are filled in below.
+    race: { name: 'Pip’s Lantern Race', levels: [] },
+    zrace: { name: 'Zuri’s Shape Race', levels: [] }
   };
+  const RACE_STOPS = 6;
+  const isZuriSkill = (id) => /^(GE|MS)\d/.test(id);
   const GAME_ROUNDS = 5;
   // ---------- Money & Wealth Adventures: pretend money inside one story, fresh each time ----------
   // Each adventure is a short story of engine questions. A step names the math skill it uses (its first answer counts as
@@ -1925,6 +1931,18 @@
     const prev = seq[hide - 1];
     return { game: 'detective', level, kind, answer: String(ans), seq: shown, rule, prompt: 'Find the hidden number in the pattern.',
       how: 'The rule is ' + rule + '. ' + prev + (kind === 'add' ? ' + ' : ' × ') + step + ' = ' + ans + '.' };
+  }
+  // a race: RACE_STOPS engine questions from the skills this child has lit for that racer (no "build" questions)
+  function raceRounds(game, skills, r, n) {
+    const pool = GAMES[game].levels[0].filter((id) => lit(skills[id]));
+    if (!pool.length) return [];
+    const out = [];
+    for (let k = 0; out.length < (n || RACE_STOPS) && k < 200; k++) {
+      const id = r.pick(pool), it = generate(id, r);
+      if (it.format !== 'number' && it.format !== 'choice') continue;
+      out.push({ game, skill: id, item: it, prompt: it.prompt, answer: String(it.answer), how: (it.steps || []).slice(-2).join(' ') });
+    }
+    return out;
   }
   function gameRound(game, level, r) { return game === 'bridge' ? bridgeRound(level, r) : game === 'pizza' ? pizzaRound(level, r) : detectiveRound(level, r); }
 
@@ -2316,7 +2334,9 @@
     return L;
   }
 
-  const api = { makeRng, digits, MISCONCEPTIONS, SKILLS, SKILL_ORDER, generate, check, bktUpdate, BKT, masteryMet, recordAttempt, recordCheckItem, dueCheck, nextActivity, newLearner, refreshUnlocks, PLACEMENT_ANCHORS, PLACEMENT_MAX_ITEMS, STRAND_ANCHORS, strandAnchors, placementPlan, newPlacement, placementRecord, applyPlacement, STORY_ANCHORS, READING_PROBE, isSlip, placementNext, placementProbeRecord, placementRestDue, placementRested, placementStage, discoverySummary, UNDERSTANDING, understanding, recordWhy, migrateLearner, GAMES, GAME_ROUNDS, gameLevel, gameRound, ADVENTURES, adventureOpen, adventure, adventureExplainer, makeTransfer, makeStepFill, canOffer, evidence, evidenceMissing, EXPLAIN_KINDS, explainPick, explainShown, explainOutcome, explainBest, stepResult, ancestors, numberName, DAY, CHECK_DAYS, GRADE_LEVELS, SCHOOL_GRADES, gradeOf, defaultFocus, gradeProgress, makeMistake, PIP_DID, lineItem, linePAE };
+  GAMES.race.levels = [SKILL_ORDER.filter((id) => !isZuriSkill(id))];
+  GAMES.zrace.levels = [SKILL_ORDER.filter(isZuriSkill)];
+  const api = { makeRng, digits, MISCONCEPTIONS, SKILLS, SKILL_ORDER, generate, check, bktUpdate, BKT, masteryMet, recordAttempt, recordCheckItem, dueCheck, nextActivity, newLearner, refreshUnlocks, PLACEMENT_ANCHORS, PLACEMENT_MAX_ITEMS, STRAND_ANCHORS, strandAnchors, placementPlan, newPlacement, placementRecord, applyPlacement, STORY_ANCHORS, READING_PROBE, isSlip, placementNext, placementProbeRecord, placementRestDue, placementRested, placementStage, discoverySummary, UNDERSTANDING, understanding, recordWhy, migrateLearner, GAMES, GAME_ROUNDS, gameLevel, gameRound, RACE_STOPS, raceRounds, ADVENTURES, adventureOpen, adventure, adventureExplainer, makeTransfer, makeStepFill, canOffer, evidence, evidenceMissing, EXPLAIN_KINDS, explainPick, explainShown, explainOutcome, explainBest, stepResult, ancestors, numberName, DAY, CHECK_DAYS, GRADE_LEVELS, SCHOOL_GRADES, gradeOf, defaultFocus, gradeProgress, makeMistake, PIP_DID, lineItem, linePAE };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.TBEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);

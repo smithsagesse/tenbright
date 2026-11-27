@@ -1098,6 +1098,33 @@ html:not(.motion-still) .z-wave .zs { animation: zBurst .7s cubic-bezier(.2,.8,.
 .pip-fig .zuri { height: calc(clamp(96px, 20vw, 150px) * 1.4); margin-left: 9%; }
 .zuri-hi { margin: 0 0 6px; }
 @media (max-width: 520px) { .buddy .zuri { --zs: 84px; } }
+
+/* ---------- the races ---------- */
+.race-q { width: 100%; }
+.race-track { position: relative; width: 100%; height: 128px; border-radius: 22px; overflow: hidden; background: linear-gradient(180deg, #1B2A66 0%, #23347A 60%, #2C3F8C 100%); }
+.rt-z { background: linear-gradient(180deg, #2A2266 0%, #3A2C7E 60%, #46348F 100%); }
+.rt-ground { position: absolute; left: 0; right: 0; bottom: 0; height: 26px; background: #3B2F23; }
+.rt-z .rt-ground { background: #1E1648; }
+.rt-lane { position: absolute; left: 9%; right: 7%; top: 0; bottom: 0; }
+.rt-stop { position: absolute; bottom: 22px; width: 30px; transform: translateX(-50%); }
+.rt-stop svg { display: block; width: 100%; height: auto; }
+.rt-lantern .lt-glass { fill: #4A4F63; }
+.rt-lantern.on .lt-glass { fill: #FFD45E; }
+.rt-lantern.on svg { filter: drop-shadow(0 0 6px rgba(255,201,60,.9)); }
+.rt-shape { bottom: 14px; width: 34px; }
+.rt-shape svg { fill: none; stroke: rgba(155,231,255,.45); stroke-width: 6; stroke-dasharray: 10 8; stroke-linejoin: round; }
+.rt-shape.on svg { fill: rgba(95,208,255,.25); stroke: #9BE7FF; stroke-dasharray: none; filter: drop-shadow(0 0 3px #4FC3FF) drop-shadow(0 0 8px rgba(79,195,255,.7)); }
+.rt-flag { position: absolute; right: -6%; bottom: 24px; width: 26px; }
+.rt-flag svg { display: block; width: 100%; height: auto; }
+.rt-run { position: absolute; inset: 0; transform: translateX(var(--to)); pointer-events: none; }
+.rt-fig { position: absolute; left: 0; bottom: 22px; transform: translateX(-50%); }
+.rt-fig .pip { width: 72px; height: 72px; display: block; }
+.rt-fig .zuri { margin: 0; }
+.rt-fig .zuri .zs { display: none; }
+html:not(.motion-still) .rt-run.dash { animation: rtDash .75s cubic-bezier(.25,.8,.3,1) backwards; }
+@keyframes rtDash { from { transform: translateX(var(--from)); } to { transform: translateX(var(--to)); } }
+@media (prefers-reduced-motion: reduce) { .rt-run.dash { animation: none !important; } }
+.race-model { width: 100%; display: flex; justify-content: center; }
 </style>
 
 <div id="app" aria-live="polite"></div>
@@ -1365,9 +1392,12 @@ html:not(.motion-still) .z-wave .zs { animation: zBurst .7s cubic-bezier(.2,.8,.
     pizza: '<svg width="90" height="90" viewBox="-45 -45 90 90" aria-hidden="true"><circle r="42" fill="#E8B878" stroke="#B07A3E" stroke-width="4"></circle><circle r="34" fill="#E0623C"></circle><path d="M0 0 L0 -34 A34 34 0 0 1 34 0 Z" fill="#F4C542"></path><circle cx="-14" cy="10" r="5" fill="#7A2E1E"></circle><circle cx="10" cy="18" r="5" fill="#7A2E1E"></circle></svg>',
     detective: '<svg width="90" height="90" viewBox="0 0 90 90" aria-hidden="true"><circle cx="38" cy="38" r="24" fill="#FFFDF6" stroke="#1E2A3B" stroke-width="6"></circle><path d="M56 56 L80 80" stroke="#1E2A3B" stroke-width="10" stroke-linecap="round"></path><text x="38" y="48" text-anchor="middle" font-size="28" font-weight="800" fill="#1E2A3B">?</text></svg>'
   };
-  const GAME_PURPOSE = { bridge: 'Find the missing part to finish the bridge.', pizza: 'Serve fractions of a pizza.', detective: 'Find the hidden number in patterns and number sentences.' };
-  const GAME_DONE = { adventure: 'Adventure complete!', trial: 'You tried a new way to solve!', bridge: 'The bridge is built!', pizza: 'Every order is served!', detective: 'Case closed!' };
-  const GAME_CLUE = { adventure: 'A clue! Look at the story so far. Try again.', trial: 'A clue! Think of the steps in the lesson. Try again.', bridge: 'A clue! The gap is the whole take away the part. Try again.', pizza: 'A clue! Count the slices again. Look at the bottom number of the order. Try again.', detective: 'A clue! Look at how each number changes, or what the hidden number must make. Try again.' };
+  // the races draw their racer when the list is shown (Pip's rig and Zuri's picture are defined further down)
+  GAME_ART.race = () => pipChar(96, 'wave', { hidden: true });
+  GAME_ART.zrace = () => zuriChar(80, 'wave');
+  const GAME_PURPOSE = { race: 'Answer to light the lanterns and help Pip run to the finish.', zrace: 'Answer to help Zuri draw shape stones and cross to the finish.', bridge: 'Find the missing part to finish the bridge.', pizza: 'Serve fractions of a pizza.', detective: 'Find the hidden number in patterns and number sentences.' };
+  const GAME_DONE = { race: 'Pip crossed the finish line!', zrace: 'Zuri crossed the finish line!', adventure: 'Adventure complete!', trial: 'You tried a new way to solve!', bridge: 'The bridge is built!', pizza: 'Every order is served!', detective: 'Case closed!' };
+  const GAME_CLUE = { race: 'A clue! Read the question again, one step at a time. Try again.', zrace: 'A clue! Read the question again, one step at a time. Try again.', adventure: 'A clue! Look at the story so far. Try again.', trial: 'A clue! Think of the steps in the lesson. Try again.', bridge: 'A clue! The gap is the whole take away the part. Try again.', pizza: 'A clue! Count the slices again. Look at the bottom number of the order. Try again.', detective: 'A clue! Look at how each number changes, or what the hidden number must make. Try again.' };
   // ---------- Money & Wealth Adventures (owner approved Nov 26, 2026): pretend money inside one story ----------
   const coinArt = (fill, ring, t) => `<svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="32" fill="${fill}" stroke="${ring}" stroke-width="5"></circle><text x="40" y="49" text-anchor="middle" font-size="24" font-weight="800" fill="#1E2A3B">${t}</text></svg>`;
   const ADV_ART_MORE = {
@@ -1447,14 +1477,18 @@ html:not(.motion-still) .z-wave .zs { animation: zBurst .7s cubic-bezier(.2,.8,.
   function startGame(g, timed) {
     const ch = child(), level = E.gameLevel(ch.skills, g);
     if (!level) return;
-    const rounds = Array.from({ length: E.GAME_ROUNDS }, () => E.gameRound(g, level, rng));
+    const race = g === 'race' || g === 'zrace';
+    const rounds = race ? E.raceRounds(g, ch.skills, rng) : Array.from({ length: E.GAME_ROUNDS }, () => E.gameRound(g, level, rng));
+    if (!rounds.length) return;
+    if (race) rounds.forEach((rd) => { const pw = plainSteps(rd.item); if (pw && pw.length) rd.how = pw.slice(-2).join(' '); });
     session = { mode: 'game', game: g, level, timed: !!timed && !!gameData(ch, g).done[level], rounds, i: 0, first: 0, tries: 0, picked: null, slices: [], entry: '', fb: null, start: Date.now() };
     view = { name: 'game' }; react('hello'); sfx('start'); render(); speak(rounds[0].prompt);
   }
   function gameCheck(value) {
     const ch = child(), rd = session.rounds[session.i];
     if (session.fb && (session.fb.ok || session.fb.final)) return;
-    const right = rd.game === 'adventure' && !rd.choices ? E.check({ answer: rd.answer, predicted: {} }, String(value)).correct : String(value) === rd.answer;
+    const raceCheck = rd.item ? E.check(rd.item, String(value)) : null;
+    const right = raceCheck ? raceCheck.correct : rd.game === 'adventure' && !rd.choices ? E.check({ answer: rd.answer, predicted: {} }, String(value)).correct : String(value) === rd.answer;
     if (rd.game === 'adventure' && session.tries === 0) {
       // the first answer to a math step counts as story evidence for its skill; the idea check is kept with the adventure
       if (rd.skill) E.recordAttempt(ch.skills, rd.skill, { format: 'number', kind: 'transfer' }, { correct: right, misconception: right ? null : advMis(rd, value) }, 0, now());
@@ -1468,12 +1502,15 @@ html:not(.motion-still) .z-wave .zs { animation: zBurst .7s cubic-bezier(.2,.8,.
     } else {
       session.tries++;
       react('tilt'); sfx('clue');
-      const mis = rd.game === 'adventure' ? advMis(rd, value) : null;
+      const mis = rd.game === 'adventure' ? advMis(rd, value) : raceCheck ? raceCheck.misconception : null;
       session.fb = session.tries >= 2 ? { ok: false, final: true, text: 'Here is how. ' + rd.how } : { ok: false, text: mis ? E.MISCONCEPTIONS[mis].clue + ' Try again.' : GAME_CLUE[rd.game] };
     }
+    // a race: the racer runs to the next stop once the answer is right, or after "here is how" (never sent back)
+    if (rd.item && (session.fb.ok || session.fb.final)) session.justMoved = true;
     speak(session.fb.text); render();
   }
   function gameNext() {
+    session.justMoved = false;
     session.i++; session.tries = 0; session.picked = null; session.slices = []; session.entry = ''; session.fb = null;
     if (session.i < session.rounds.length) { render(); speak(session.rounds[session.i].prompt); return; }
     if (session.game === 'adventure') {
@@ -1512,6 +1549,17 @@ html:not(.motion-still) .z-wave .zs { animation: zBurst .7s cubic-bezier(.2,.8,.
     speak(GAME_DONE[session.game]);
   }
   const secs = (ms) => Math.max(1, Math.round(ms / 1000));
+  // ---------- the races: a track of stops; lanterns light for Pip, Zuri draws a glowing shape stone at each stop ----------
+  const LANTERN = '<svg viewBox="0 0 40 60" aria-hidden="true"><rect x="17" y="2" width="6" height="8" rx="2" fill="#6B5A3A"></rect><path class="lt-glass" d="M8 14 H32 L28 50 H12 Z" stroke="#6B5A3A" stroke-width="3" stroke-linejoin="round"></path><rect x="6" y="50" width="28" height="7" rx="3" fill="#6B5A3A"></rect></svg>';
+  const FLAG = '<svg viewBox="0 0 40 64" aria-hidden="true"><rect x="4" y="2" width="4" height="60" rx="2" fill="#E9EEF8"></rect><path d="M8 4 H36 V26 H8 Z" fill="#FFFFFF"></path><path d="M8 4h7v7H8zM22 4h7v7h-7zM15 11h7v7h-7zM29 11h7v7h-7zM8 18h7v8H8zM22 18h7v8h-7z" fill="#1E2A3B"></path></svg>';
+  function raceTrack(g, pos, moved) {
+    const N = session.rounds.length, z = g === 'zrace';
+    const stops = Array.from({ length: N }, (_, k) => `<span class="rt-stop ${k < pos ? 'on' : ''} ${z ? 'rt-shape' : 'rt-lantern'}" style="left:${((k + 1) / N) * 100}%">${z ? `<svg viewBox="0 0 100 100" aria-hidden="true">${sparkShape(k % 3)}</svg>` : LANTERN}</span>`).join('');
+    const from = ((moved ? pos - 1 : pos) / N) * 100, to = (pos / N) * 100;
+    const runner = `<span class="rt-run ${moved ? 'dash' : ''}" style="--from:${from}%;--to:${to}%"><span class="rt-fig">${z ? zuriChar(66, moved ? 'spark' : 'calm') : pipChar(72, moved ? 'cheer' : 'point', { hidden: true })}</span></span>`;
+    const label = z ? `Shape stones: ${pos} of ${N}` : `Lanterns lit: ${pos} of ${N}`;
+    return `<div class="race-track ${z ? 'rt-z' : 'rt-p'}" role="img" aria-label="${esc(label)}"><div class="rt-ground"></div><div class="rt-lane">${stops}<span class="rt-flag">${FLAG}</span>${runner}</div></div>`;
+  }
   function bridgeSvg(rd, fb) {
     const W = 640, x0 = 70, x1 = 570, span = x1 - x0, built = Math.round(span * rd.have / rd.total), done = fb && (fb.ok || fb.final);
     return `<svg class="game-svg" viewBox="0 0 ${W} 220" role="img" aria-label="${esc('A bridge that must reach ' + rd.total + '. The planks reach ' + rd.have + '.')}">
@@ -1933,6 +1981,7 @@ html:not(.motion-still) .z-wave .zs { animation: zBurst .7s cubic-bezier(.2,.8,.
   function guideId() {
     if (view.name === 'learn' && session && zuriSkill(session.skill)) return 'zuri';
     if (view.name === 'item' && session && session.item && session.item.format !== 'mistake' && zuriSkill(session.item.skill)) return 'zuri';
+    if ((view.name === 'game' || view.name === 'gameEnd') && session && session.game === 'zrace') return 'zuri';
     return 'pip';
   }
   const guideName = () => (guideId() === 'zuri' ? 'Zuri' : 'Pip');
@@ -3478,7 +3527,7 @@ html:not(.motion-still) .z-wave .zs { animation: zBurst .7s cubic-bezier(.2,.8,.
         <div class="topbar" style="width:100%"><button class="kbtn" data-act="go" data-to="map">${icoBack} Map</button><h1 style="margin:0;font-size:26px">Math games</h1><span style="width:64px"></span></div>
         <div class="games-grid">${Object.keys(E.GAMES).map((g) => {
           const lv = E.gameLevel(ch.skills, g), d = gameData(ch, g), canTime = lv && d.done[lv];
-          return `<div class="game-card ${lv ? '' : 'locked'}"><div class="gc-pic">${GAME_ART[g]}</div><h2>${E.GAMES[g].name}</h2><p>${GAME_PURPOSE[g]}</p>${lv ? `<button class="kbtn big" data-act="gameStart" data-g="${g}">Play</button>${canTime ? `<button class="kbtn" data-act="gameStart" data-g="${g}" data-timed="1">Race the clock (optional)</button>${d.best[lv] ? `<p class="hint-text">Your best time: ${secs(d.best[lv])} seconds</p>` : ''}` : ''}` : '<p class="hint-text">Light more lanterns to open it.</p>'}</div>`;
+          return `<div class="game-card ${lv ? '' : 'locked'}"><div class="gc-pic">${typeof GAME_ART[g] === 'function' ? GAME_ART[g]() : GAME_ART[g]}</div><h2>${E.GAMES[g].name}</h2><p>${GAME_PURPOSE[g]}</p>${lv ? `<button class="kbtn big" data-act="gameStart" data-g="${g}">Play</button>${canTime ? `<button class="kbtn" data-act="gameStart" data-g="${g}" data-timed="1">Race the clock (optional)</button>${d.best[lv] ? `<p class="hint-text">Your best time: ${secs(d.best[lv])} seconds</p>` : ''}` : ''}` : '<p class="hint-text">Light more lanterns to open it.</p>'}</div>`;
         }).join('')}</div>
       </div></main>`;
     },
@@ -3491,6 +3540,13 @@ html:not(.motion-still) .z-wave .zs { animation: zBurst .7s cubic-bezier(.2,.8,.
       } else if (g === 'pizza') {
         play = `${pizzaSvg(rd)}<p class="hint-text" aria-live="polite">${session.slices.length} ${session.slices.length === 1 ? 'slice' : 'slices'} chosen</p>`;
         action = done ? '' : `<button class="checkbtn" data-act="gameCheck" ${session.slices.length ? '' : 'disabled'}>Serve</button>`;
+      } else if (g === 'race' || g === 'zrace') {
+        const it = rd.item, pos = session.i + (done ? 1 : 0);
+        const keys = ['1','2','3','4','5','6','7','8','9'].concat(/\./.test(rd.answer) ? ['.'] : []).concat(/\//.test(rd.answer) ? ['/'] : []);
+        play = raceTrack(g, pos, done && session.justMoved) + (it.model ? `<div class="race-model">${modelHtml(it, 0)}</div>` : '') + (done ? '' : it.format === 'choice'
+          ? `<div class="choices ${it.textChoices ? 'text' : ''}" role="group" aria-label="Choices">${it.choices.map((c) => `<button data-act="achoose" data-v="${esc(String(c))}" aria-pressed="${session.picked === String(c)}">${it.textChoices ? esc(String(c)) : escM(String(c))}</button>`).join('')}</div>`
+          : `<div class="entry num" aria-label="Your answer">${session.entry ? esc(session.entry) : '?'}</div><div class="pad">${keys.map((d) => `<button data-act="gdigit" data-d="${d}" aria-label="${d}">${d}</button>`).join('')}<button data-act="gdel" aria-label="Delete">⌫</button><button data-act="gdigit" data-d="0" aria-label="0">0</button><button data-act="gclear" aria-label="Clear">C</button></div>`);
+        action = done ? '' : `<button class="checkbtn" data-act="gameCheck" ${(it.format === 'choice' ? session.picked : session.entry) ? '' : 'disabled'}>Check</button>`;
       } else if (g === 'adventure') {
         const strip = `<div class="story-strip" role="group" aria-label="Story so far">${(rd.story || []).map(([k, v]) => `<div class="story-cell"><span>${esc(k)}</span><b class="num">${esc(String(v))}</b></div>`).join('')}</div>`;
         play = (session.i === 0 ? `<p class="hint-text">${esc(session.intro)}</p>` : '') + strip + (rd.coins ? coinsHtml(rd.coins) : '') + (rd.model && rd.model.type === 'priceline' ? priceLineHtml(rd.model) : '') + (done ? '' : rd.choices
@@ -3510,7 +3566,7 @@ html:not(.motion-still) .z-wave .zs { animation: zBurst .7s cubic-bezier(.2,.8,.
       return `<main class="stage"><div class="game-stage">
         <div class="topbar" style="width:100%"><button class="kbtn" data-act="go" data-to="${g === 'trial' ? 'trials' : g === 'adventure' ? 'adventures' : 'games'}">${icoBack} ${g === 'trial' ? 'Extra ways' : g === 'adventure' ? 'Adventures' : 'Games'}</button><div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="font-weight:800">${g === 'trial' ? esc(ST.byId[session.trial].name) : g === 'adventure' ? E.ADVENTURES[session.adv].name : E.GAMES[g].name}</span><span class="progress" aria-label="${session.i} of ${session.rounds.length} done">${session.rounds.map((_, k) => `<i class="${k < session.i ? 'done' : ''}"></i>`).join('')}</span>${session.timed ? `<span class="game-time" id="game-time">${secs(Date.now() - session.start)} s</span>` : ''}</div><button class="kbtn" data-act="say" data-text="${esc(rd.prompt)}">${icoSpeaker} Listen</button></div>
         <div class="panel game-panel" style="width:100%;align-items:center">
-        <div class="pip-say"><div class="pip-fig pose-${fb && fb.ok ? 'cheer' : 'point'}">${pipPose(100, fb && fb.ok ? 'cheer' : fb ? 'encourage' : 'point', { react: reactNow() })}</div><div class="bubble"><p>${escM(rd.prompt)}</p></div></div>
+        ${g === 'race' || g === 'zrace' ? `<div class="bubble race-q"><p>${escM(rd.prompt)}</p></div>` : `<div class="pip-say"><div class="pip-fig pose-${fb && fb.ok ? 'cheer' : 'point'}">${pipPose(100, fb && fb.ok ? 'cheer' : fb ? 'encourage' : 'point', { react: reactNow() })}</div><div class="bubble"><p>${escM(rd.prompt)}</p></div></div>`}
         ${play}${fbHtml}${action}${next}
         </div>
       </div></main>`;
@@ -3530,7 +3586,7 @@ html:not(.motion-still) .z-wave .zs { animation: zBurst .7s cubic-bezier(.2,.8,.
       if (session.game === 'trial') return `<main class="stage"><div class="end"><h1>${GAME_DONE.trial}</h1>${pipPose(150, 'dance', { react: reactNow() })}<p class="speech">You got ${session.first} of ${session.rounds.length} on the first try.</p><div class="row" style="justify-content:center"><button class="kbtn big" data-act="go" data-to="trials" data-autofocus>Extra ways</button><button class="kbtn" data-act="go" data-to="map">Back to the map</button></div></div></main>`;
       return `<main class="stage"><div class="end">
         <h1>${GAME_DONE[session.game]}</h1>
-        ${pipPose(150, 'dance', { react: reactNow() })}
+        ${session.game === 'zrace' ? zuriChar(150, 'spark') : pipPose(150, 'dance', { react: reactNow() })}
         <p class="speech">You got ${session.first} of ${session.rounds.length} on the first try.${session.timed ? ' Your time: ' + secs(r.ms) + ' seconds.' + (r.newBest ? ' That is your best time so far!' : ' Your best time is ' + secs(r.best) + ' seconds.') : ''}</p>
         <div class="row" style="justify-content:center"><button class="kbtn big" data-act="gameStart" data-g="${session.game}" data-autofocus>Play again</button><button class="kbtn" data-act="go" data-to="games">All games</button><button class="kbtn" data-act="go" data-to="map">Back to the map</button></div>
       </div></main>`;
@@ -4090,10 +4146,10 @@ html:not(.motion-still) .z-wave .zs { animation: zBurst .7s cubic-bezier(.2,.8,.
       case 'trialTest': startTrialTest(b.dataset.id); break;
       case 'plank': if (session.fb && (session.fb.ok || session.fb.final)) break; session.picked = b.dataset.v; session.fb = null; render(); { const nb = app.querySelector(`[data-act="plank"][data-v="${b.dataset.v}"]`); if (nb) nb.focus(); } break;
       case 'slice': { if (session.fb && (session.fb.ok || session.fb.final)) break; const k = +b.dataset.k, set = new Set(session.slices); if (set.has(k)) set.delete(k); else set.add(k); session.slices = [...set]; session.fb = null; sfx('hint'); render(); const nb = app.querySelector(`[data-act="slice"][data-k="${k}"]`); if (nb) nb.focus(); break; }
-      case 'gdigit': if (session.fb && (session.fb.ok || session.fb.final)) break; if (session.entry.length < 7 && !(b.dataset.d === '.' && session.entry.includes('.'))) session.entry += b.dataset.d; session.fb = null; render(); break;
+      case 'gdigit': if (session.fb && (session.fb.ok || session.fb.final)) break; if (session.entry.length < 9 && !(b.dataset.d === '.' && session.entry.includes('.')) && !(b.dataset.d === '/' && session.entry.includes('/'))) session.entry += b.dataset.d; session.fb = null; render(); break;
       case 'gdel': session.entry = session.entry.slice(0, -1); render(); break;
       case 'gclear': session.entry = ''; render(); break;
-      case 'gameCheck': { const g = session.game, rd = session.rounds[session.i]; gameCheck(g === 'bridge' || (g === 'adventure' && rd.choices) ? session.picked : g === 'pizza' ? session.slices.length : session.entry); break; }
+      case 'gameCheck': { const g = session.game, rd = session.rounds[session.i]; gameCheck(g === 'bridge' || (g === 'adventure' && rd.choices) || (rd.item && rd.item.format === 'choice') ? session.picked : g === 'pizza' ? session.slices.length : session.entry); break; }
       case 'achoose': if (session.fb && (session.fb.ok || session.fb.final)) break; session.picked = b.dataset.v; session.fb = null; render(); break;
       case 'advStart': startAdventure(b.dataset.id); break;
       case 'advWatch': startExplainer(b.dataset.id, false); break;
@@ -4349,7 +4405,7 @@ html:not(.motion-still) .z-wave .zs { animation: zBurst .7s cubic-bezier(.2,.8,.
       F("Hi, I'm Pip! I'm a helper made by the Tenbright team using a computer, and my voice is made by a computer too. I collect light beads. Ten beads make a lantern. Will you help me light the Kingdom?");
       F(ADV.intro); F(ADV.back); F(ADV.rest); D('I found 12 lanterns you can already light. ' + ADV.found); D('I found 1 lanterns you can already light. ' + ADV.found);
       F('Who is playing? Choose your player to start your Tenbright adventure!');
-      if (ZU) F(ZURI_HI);
+      if (ZU) { F(ZURI_HI); F(GAME_DONE.zrace); F(GAME_CLUE.zrace); F('Right!'); F('Right! You used the clue.'); F('Here is how.'); }
       F('Watch my capoeira moves!'); F('Let me play you a song!'); F('Hi, friend! I am so glad you are here.');
       F('Got it!'); F("Thanks! Let's keep exploring."); F('That’s how it works! Now it’s your turn.');
       Object.values(PRAISE).forEach((x) => { F(x); F(x + ' You fixed it.'); });

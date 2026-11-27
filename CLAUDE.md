@@ -160,7 +160,7 @@ with identical sw.js, manifest, icons, art and audio. It contains:
 - `build.js`: run `node build.js` to produce `dist/index.html` (and `dist/test.html` with test hooks).
 - Tests: `node test/engine.test.js` (math engine, millions of generated checks); `node test/explain.test.js` (plain-words lessons); `node test/strategies.test.js` (strategy library); Playwright suites
   `test/e2e.py`, `test/features_test.py`, `test/audio_test.py`, `test/living_test.py`,
-  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py`, `test/money_time_test.py`, `test/measure_shape_test.py`, `test/dashboard2_test.py`, `test/adventure_test.py`, `test/data_safety_test.py` (unreadable data, two tabs, failed saves, standards mode and phone viewport), `test/keyboard_test.py` (keyboard-only journey, focus rings), `test/who_test.py` (the "Who is playing?" screen), `test/pictures_test.py` (pictures of what is being learned), `test/zuri_test.py` (Zuri: where she guides, her hello, her voice) and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
+  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py`, `test/money_time_test.py`, `test/measure_shape_test.py`, `test/dashboard2_test.py`, `test/adventure_test.py`, `test/data_safety_test.py` (unreadable data, two tabs, failed saves, standards mode and phone viewport), `test/keyboard_test.py` (keyboard-only journey, focus rings), `test/who_test.py` (the "Who is playing?" screen), `test/pictures_test.py` (pictures of what is being learned), `test/zuri_test.py` (Zuri: where she guides, her hello, her voice), `test/race_test.py` (Pip's and Zuri's races) and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
 - `docs/animation-system.md` and `README.md`.
 
 Make changes in `source/tenbright-mvp/src/`, rebuild and run every suite.
@@ -256,6 +256,12 @@ equivalent fractions, adding with the same bottom number) and Number Detective (
 sentences). Rounds come from `gameRound` in engine.js; a game opens only when its skills are lit (`gameLevel`). A miss
 brings a clue, a second miss shows how. No clock unless the child picks the optional timed run, offered only after the
 game was finished once; it counts up and compares only with the child's own best. Games never change mastery.
+**Races (owner, Nov 27, 2026: "give two races, one to Zuri and one to Pip"):** Pip's Lantern Race and Zuri's Shape Race in
+the games list (`E.GAMES.race`/`zrace`, `E.raceRounds`, `RACE_STOPS` = 6). Each round is an engine question from the child's
+lit skills: every region but Zuri's for Pip, GE and MS for Zuri. A right answer (or "here is how" after two misses, in the
+lesson's plain words) moves the racer one stop on the track (`raceTrack`): Pip lights lanterns, Zuri draws glowing shape
+stones; never sent back. Same game rules: no clock unless the optional timed run, no effect on mastery. Zuri's race uses her
+voice (`guideId()` covers `zrace`).
 Touch targets: `--t-child` 64 px and `--t-primary` 88 px (hard rule 8), on every screen size. Raised from 60/76 px in
 Phase 5; the owner confirmed on Nov 26, 2026 to keep 64/88 (do not revert).
 **Strategy library (Phase 6):** `src/strategies.js` (window.TBStrategies), 18 strategies taught today plus 4 trial
