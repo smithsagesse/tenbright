@@ -4962,5 +4962,8 @@ TBi18n.add("fr", {"Count to {N}":"Compter jusqu'à {N}",
 "Add Player":"Ajouter un joueur",
 "Ready to explore":"Prêt à explorer",
 "{N} lantern lit":"{N} lanterne allumée",
-"{N} lanterns lit":"{N} lanternes allumées"
+"{N} lanterns lit":"{N} lanternes allumées",
+  "Picture credits: some pictures of everyday things are Microsoft Fluent Emoji, used under the MIT License.": "Crédits des images : certaines images d'objets du quotidien sont des Microsoft Fluent Emoji, utilisées sous la licence MIT.",
+  "The licence text comes with the app (art/obj/LICENSE.txt).": "Le texte de la licence est fourni avec l'application (art/obj/LICENSE.txt).",
+  "The coin pictures are made from US Mint images, which are in the public domain.": "Les images des pièces sont faites à partir d'images de la Monnaie des États-Unis (US Mint), qui sont dans le domaine public.",
 });

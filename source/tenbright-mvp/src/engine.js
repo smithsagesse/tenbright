@@ -385,6 +385,14 @@
   // ---------- generators for the rest of the 52-skill map ----------
   const NAMES = ['Ava', 'Kofi', 'Mei', 'Diego', 'Amara', 'Liam', 'Priya', 'Noah', 'Zara', 'Mateo', 'Hana', 'Elijah', 'Sofia', 'Kai', 'Nia', 'Omar'];
   const THINGS = ['beads', 'stickers', 'shells', 'marbles', 'stamps', 'leaves', 'cards', 'acorns'];
+  // the picture for each story object (src/art/obj/<key>.svg): the owner's rule, Nov 27, 2026 – show what is being learned
+  const OBJ = { beads: 'bead', stickers: 'sticker', shells: 'shell', marbles: 'marble', stamps: 'stamp', leaves: 'leaf', cards: 'card', acorns: 'acorn',
+    pizzas: 'pizza', pies: 'pie', 'loaves of bread': 'bread', melons: 'melon', pencil: 'pencil', sticker: 'sticker', ruler: 'ruler', marker: 'marker',
+    book: 'book', 'toy car': 'toy-car', juice: 'juice', kite: 'kite', melon: 'melon', notebook: 'notebook', ball: 'ball', game: 'game', 'bike bell': 'bike-bell',
+    'book set': 'book-set', pencils: 'pencil', stickers2: 'sticker', erasers: 'eraser', ribbon: 'ribbon', crayon: 'crayon', bags: 'bag', boxes: 'box', baskets: 'basket' };
+  // the fewest coins and bills for an amount (cents / whole dollars), largest first
+  const coinsFor = (c) => { const out = []; [25, 10, 5, 1].forEach((v) => { while (c >= v) { out.push(v); c -= v; } }); return out; };
+  const billsFor = (d) => { const out = []; [20, 10, 5, 1].forEach((v) => { while (d >= v) { out.push(v); d -= v; } }); return out; };
   const blocksOf = (n) => ({ type: 'blocks', h: Math.floor(n / 100), t: Math.floor(n / 10) % 10, o: n % 10 });
   const num = (skill, prompt, answer, predicted, steps, model, extra) => {
     const p = {};
@@ -636,33 +644,33 @@
       const name = r.pick(NAMES), thing = r.pick(THINGS);
       const start = r.int(15, 60), change = r.int(8, 35);
       const k = r.int(0, 2);
-      if (k === 0) return num('WP01', name + ' had ' + start + ' ' + thing + '. ' + name + ' found ' + change + ' more. How many ' + thing + ' now?', start + change, { M14: String(Math.abs(start - change)) }, ['Start ' + start + ', add ' + change + '.', start + ' + ' + change + ' = ' + (start + change)], { type: 'bar', whole: start + change, parts: [start, change], unknown: -1 });
-      if (k === 1) { const s2 = start + change; return num('WP01', name + ' had ' + s2 + ' ' + thing + ' and gave away ' + change + '. How many are left?', start, { M14: String(s2 + change) }, ['Start ' + s2 + ', take away ' + change + '.', s2 + ' − ' + change + ' = ' + start], { type: 'bar', whole: s2, parts: [start, change], unknown: 0 }); }
+      if (k === 0) return num('WP01', name + ' had ' + start + ' ' + thing + '. ' + name + ' found ' + change + ' more. How many ' + thing + ' now?', start + change, { M14: String(Math.abs(start - change)) }, ['Start ' + start + ', add ' + change + '.', start + ' + ' + change + ' = ' + (start + change)], { type: 'bar', obj: OBJ[thing], whole: start + change, parts: [start, change], unknown: -1 });
+      if (k === 1) { const s2 = start + change; return num('WP01', name + ' had ' + s2 + ' ' + thing + ' and gave away ' + change + '. How many are left?', start, { M14: String(s2 + change) }, ['Start ' + s2 + ', take away ' + change + '.', s2 + ' − ' + change + ' = ' + start], { type: 'bar', obj: OBJ[thing], whole: s2, parts: [start, change], unknown: 0 }); }
       const end = start + change;
-      return num('WP01', name + ' had ' + start + ' ' + thing + ', then found some more. Now there are ' + end + '. How many more did ' + name + ' find?', change, { M14: String(start + end) }, ['The whole is ' + end + ' and one part is ' + start + '.', end + ' − ' + start + ' = ' + change], { type: 'bar', whole: end, parts: [start, change], unknown: 1 });
+      return num('WP01', name + ' had ' + start + ' ' + thing + ', then found some more. Now there are ' + end + '. How many more did ' + name + ' find?', change, { M14: String(start + end) }, ['The whole is ' + end + ' and one part is ' + start + '.', end + ' − ' + start + ' = ' + change], { type: 'bar', obj: OBJ[thing], whole: end, parts: [start, change], unknown: 1 });
     },
     WP02(r) {
       const thing = r.pick(THINGS);
       const p1 = r.int(12, 60), p2 = r.int(12, 39);
-      if (r.next() < 0.5) return num('WP02', 'A box has ' + p1 + ' red ' + thing + ' and ' + p2 + ' blue ' + thing + '. How many in all?', p1 + p2, { M14: String(Math.abs(p1 - p2)) }, ['Both parts make the whole.', p1 + ' + ' + p2 + ' = ' + (p1 + p2)], { type: 'bar', whole: p1 + p2, parts: [p1, p2], unknown: -1 });
-      return num('WP02', 'There are ' + (p1 + p2) + ' ' + thing + '. ' + p1 + ' are red and the rest are blue. How many are blue?', p2, { M14: String(p1 + p2 + p1) }, ['The whole is ' + (p1 + p2) + '. One part is ' + p1 + '.', (p1 + p2) + ' − ' + p1 + ' = ' + p2], { type: 'bar', whole: p1 + p2, parts: [p1, p2], unknown: 1 });
+      if (r.next() < 0.5) return num('WP02', 'A box has ' + p1 + ' red ' + thing + ' and ' + p2 + ' blue ' + thing + '. How many in all?', p1 + p2, { M14: String(Math.abs(p1 - p2)) }, ['Both parts make the whole.', p1 + ' + ' + p2 + ' = ' + (p1 + p2)], { type: 'bar', obj: OBJ[thing], whole: p1 + p2, parts: [p1, p2], unknown: -1 });
+      return num('WP02', 'There are ' + (p1 + p2) + ' ' + thing + '. ' + p1 + ' are red and the rest are blue. How many are blue?', p2, { M14: String(p1 + p2 + p1) }, ['The whole is ' + (p1 + p2) + '. One part is ' + p1 + '.', (p1 + p2) + ' − ' + p1 + ' = ' + p2], { type: 'bar', obj: OBJ[thing], whole: p1 + p2, parts: [p1, p2], unknown: 1 });
     },
     WP03(r) {
       const n1 = r.pick(NAMES); let n2; do { n2 = r.pick(NAMES); } while (n2 === n1);
       const thing = r.pick(THINGS);
       const small = r.int(12, 50), diff = r.int(6, 30), big = small + diff;
-      return num('WP03', n1 + ' has ' + big + ' ' + thing + '. ' + n2 + ' has ' + small + '. How many more does ' + n1 + ' have?', diff, { M14: String(big + small) }, ['Compare: find the difference.', big + ' − ' + small + ' = ' + diff], { type: 'compareBar', big, small });
+      return num('WP03', n1 + ' has ' + big + ' ' + thing + '. ' + n2 + ' has ' + small + '. How many more does ' + n1 + ' have?', diff, { M14: String(big + small) }, ['Compare: find the difference.', big + ' − ' + small + ' = ' + diff], { type: 'compareBar', obj: OBJ[thing], big, small });
     },
     WP04(r) {
       const g = r.int(2, 9), s = r.int(2, 9);
       const box = r.pick(['bags', 'boxes', 'baskets', 'rows']);
       const thing = r.pick(THINGS);
-      return num('WP04', 'There are ' + g + ' ' + box + ' with ' + s + ' ' + thing + ' in each. How many ' + thing + ' in all?', g * s, { M15: String(g + s) }, [g + ' groups of ' + s + '.', g + ' × ' + s + ' = ' + g * s], { type: 'groups', g, s });
+      return num('WP04', 'There are ' + g + ' ' + box + ' with ' + s + ' ' + thing + ' in each. How many ' + thing + ' in all?', g * s, { M15: String(g + s) }, [g + ' groups of ' + s + '.', g + ' × ' + s + ' = ' + g * s], { type: 'groups', obj: OBJ[thing], g, s });
     },
     WP05(r) {
       const name = r.pick(NAMES), thing = r.pick(THINGS);
       const a = r.int(20, 60), b = r.int(10, 30), c = r.int(5, Math.min(a + b - 5, 40));
-      return num('WP05', name + ' had ' + a + ' ' + thing + ', got ' + b + ' more, then gave ' + c + ' to a friend. How many now?', a + b - c, { MN6: String(a + b) }, ['Step 1: ' + a + ' + ' + b + ' = ' + (a + b) + '.', 'Step 2: ' + (a + b) + ' − ' + c + ' = ' + (a + b - c) + '.'], { type: 'bar', whole: a + b, parts: [a, b], unknown: -1 });
+      return num('WP05', name + ' had ' + a + ' ' + thing + ', got ' + b + ' more, then gave ' + c + ' to a friend. How many now?', a + b - c, { MN6: String(a + b) }, ['Step 1: ' + a + ' + ' + b + ' = ' + (a + b) + '.', 'Step 2: ' + (a + b) + ' − ' + c + ' = ' + (a + b - c) + '.'], { type: 'bar', obj: OBJ[thing], whole: a + b, parts: [a, b], unknown: -1 });
     }
   });
 
@@ -860,10 +868,10 @@
       const who = nameOf(r), thing = thingOf(r);
       if (r.next() < 0.5) {
         const a = r.int(3, 12), b = r.int(2, 20 - a);
-        return num('C114', who + ' has ' + a + ' ' + thing + ' and finds ' + b + ' more. How many ' + thing + ' now?', a + b, { M14: a > b ? a - b : null }, ['Finding more makes the group bigger: add.', a + ' + ' + b + ' = ' + (a + b)], { type: 'bar', whole: a + b, parts: [a, b], unknown: -1 }, { a, b, op: '+' });
+        return num('C114', who + ' has ' + a + ' ' + thing + ' and finds ' + b + ' more. How many ' + thing + ' now?', a + b, { M14: a > b ? a - b : null }, ['Finding more makes the group bigger: add.', a + ' + ' + b + ' = ' + (a + b)], { type: 'bar', obj: OBJ[thing], whole: a + b, parts: [a, b], unknown: -1 }, { a, b, op: '+' });
       }
       const a = r.int(8, 20), b = r.int(2, a - 2);
-      return num('C114', who + ' has ' + a + ' ' + thing + ' and gives away ' + b + '. How many are left?', a - b, { M14: a + b }, ['Giving some away leaves fewer: subtract.', a + ' − ' + b + ' = ' + (a - b)], { type: 'bar', whole: a, parts: [b, a - b], unknown: 1 }, { a, b, op: '−' });
+      return num('C114', who + ' has ' + a + ' ' + thing + ' and gives away ' + b + '. How many are left?', a - b, { M14: a + b }, ['Giving some away leaves fewer: subtract.', a + ' − ' + b + ' = ' + (a - b)], { type: 'bar', obj: OBJ[thing], whole: a, parts: [b, a - b], unknown: 1 }, { a, b, op: '−' });
     },
 
     // ===== Grade 3 fractions =====
@@ -971,8 +979,8 @@
     F411(r) {
       const A = nameOf(r); let B = nameOf(r); while (B === A) B = nameOf(r);
       const thing = thingOf(r), a = r.int(3, 12), k = r.int(2, 9);
-      if (r.next() < 0.6) return num('F411', A + ' has ' + a + ' ' + thing + '. ' + B + ' has ' + k + ' times as many. How many does ' + B + ' have?', a * k, { M15: a + k }, [k + ' times as many means ' + k + ' groups of ' + a + '.', k + ' × ' + a + ' = ' + a * k], { type: 'timesbar', unit: a, k }, { a: k, b: a, op: '×' });
-      return num('F411', B + ' has ' + a * k + ' ' + thing + '. That is ' + k + ' times as many as ' + A + '. How many does ' + A + ' have?', a, { M15: a * k - k }, [a * k + ' is ' + k + ' equal groups. Find one group.', a * k + ' ÷ ' + k + ' = ' + a], { type: 'timesbar', unit: '?', k, total: a * k }, { a: a * k, b: k, op: '÷' });
+      if (r.next() < 0.6) return num('F411', A + ' has ' + a + ' ' + thing + '. ' + B + ' has ' + k + ' times as many. How many does ' + B + ' have?', a * k, { M15: a + k }, [k + ' times as many means ' + k + ' groups of ' + a + '.', k + ' × ' + a + ' = ' + a * k], { type: 'timesbar', obj: OBJ[thing], unit: a, k }, { a: k, b: a, op: '×' });
+      return num('F411', B + ' has ' + a * k + ' ' + thing + '. That is ' + k + ' times as many as ' + A + '. How many does ' + A + ' have?', a, { M15: a * k - k }, [a * k + ' is ' + k + ' equal groups. Find one group.', a * k + ' ÷ ' + k + ' = ' + a], { type: 'timesbar', obj: OBJ[thing], unit: '?', k, total: a * k }, { a: a * k, b: k, op: '÷' });
     },
     F412(r) {
       if (r.next() < 0.7) {
@@ -1152,9 +1160,9 @@
     },
     F512(r) {
       const b = r.int(2, 8), a = r.int(1, b - 1), thing = r.pick(['pizzas', 'pies', 'loaves of bread', 'melons']);
-      if (r.next() < 0.5) return num('F512', a + ' ÷ ' + b + ' = ?/' + b, a, { MF8: b }, ['Sharing ' + a + (a === 1 ? ' whole' : ' wholes') + ' among ' + b + ' gives each a fraction.', a + ' ÷ ' + b + ' = ' + a + '/' + b + ', so the top is ' + a], { type: 'fracbar', bars: Array.from({ length: a }, () => ({ n: 1, d: b })) }, { frac: [a, b] });
+      if (r.next() < 0.5) return num('F512', a + ' ÷ ' + b + ' = ?/' + b, a, { MF8: b }, ['Sharing ' + a + (a === 1 ? ' whole' : ' wholes') + ' among ' + b + ' gives each a fraction.', a + ' ÷ ' + b + ' = ' + a + '/' + b + ', so the top is ' + a], { type: 'fracbar', obj: OBJ[thing], bars: Array.from({ length: a }, () => ({ n: 1, d: b })) }, { frac: [a, b] });
       if (a === 1) return GEN.F512(r); // "1 loaves are shared": the story needs at least 2
-      return num('F512', a + ' ' + thing + ' are shared equally by ' + b + ' friends. How much does each friend get? ?/' + b, a, { MF8: b }, ['Cut each of the ' + a + ' into ' + b + ' equal pieces. Each friend gets 1 piece from each.', 'That is ' + a + ' pieces of size 1/' + b + ', so ' + a + '/' + b + ' and the top is ' + a], { type: 'fracbar', bars: Array.from({ length: a }, () => ({ n: 1, d: b })) }, { frac: [a, b] });
+      return num('F512', a + ' ' + thing + ' are shared equally by ' + b + ' friends. How much does each friend get? ?/' + b, a, { MF8: b }, ['Cut each of the ' + a + ' into ' + b + ' equal pieces. Each friend gets 1 piece from each.', 'That is ' + a + ' pieces of size 1/' + b + ', so ' + a + '/' + b + ' and the top is ' + a], { type: 'fracbar', obj: OBJ[thing], bars: Array.from({ length: a }, () => ({ n: 1, d: b })) }, { frac: [a, b] });
     },
     F513(r) {
       const b = r.int(2, 6), d = r.int(2, 6), a = r.int(1, b - 1), c = r.int(1, d - 1);
@@ -1181,8 +1189,8 @@
     },
     MY03(r) {
       const name = r.pick(NAMES), thing = r.pick(['pencil', 'sticker', 'ruler', 'marker']), price = r.int(2, 9) * 5;
-      if (r.next() < 0.5) { const have = r.int(price / 5 + 2, 19) * 5; return num('MY03', name + ' has ' + have + ' cents. A ' + thing + ' costs ' + price + ' cents. How many cents are left after ' + name + ' buys it?', have - price, { M14: have + price }, ['Buying it takes the price away.', have + ' − ' + price + ' = ' + (have - price)], { type: 'paper' }); }
-      const more = r.int(2, 9) * 5; return num('MY03', name + ' has ' + price + ' cents and finds ' + more + ' cents more. How many cents does ' + name + ' have now?', price + more, { M14: Math.abs(price - more) || null }, ['Finding more money means we add.', price + ' + ' + more + ' = ' + (price + more)], { type: 'paper' });
+      if (r.next() < 0.5) { const have = r.int(price / 5 + 2, 19) * 5; return num('MY03', name + ' has ' + have + ' cents. A ' + thing + ' costs ' + price + ' cents. How many cents are left after ' + name + ' buys it?', have - price, { M14: have + price }, ['Buying it takes the price away.', have + ' − ' + price + ' = ' + (have - price)], { type: 'paper', scene: [{ coins: coinsFor(have) }, { obj: OBJ[thing], tag: price + '¢' }] }); }
+      const more = r.int(2, 9) * 5; return num('MY03', name + ' has ' + price + ' cents and finds ' + more + ' cents more. How many cents does ' + name + ' have now?', price + more, { M14: Math.abs(price - more) || null }, ['Finding more money means we add.', price + ' + ' + more + ' = ' + (price + more)], { type: 'paper', scene: [{ coins: coinsFor(price) }, { op: '+' }, { coins: coinsFor(more) }] });
     },
     MY04(r) {
       const name = r.pick(NAMES), thing = r.pick(['book', 'toy car', 'juice', 'kite']);
@@ -1190,7 +1198,7 @@
       const toTen = (10 - price % 10) % 10, next = price + toTen, rest = 100 - next, change = 100 - price;
       const digitWise = String((10 - Math.floor(price / 10)) * 10 + (10 - price % 10));
       const steps = toTen ? ['Count up to the next ten. ' + price + ' + ' + toTen + ' = ' + next, 'Then count up by tens to 100. ' + next + ' + ' + rest + ' = 100', 'Add the two jumps. ' + toTen + ' + ' + rest + ' = ' + change] : ['The price is already a ten. Count up to 100. ' + price + ' + ' + rest + ' = 100', 'The change is the jump. 100 − ' + price + ' = ' + change];
-      return num('MY04', name + ' pays 1 dollar for a ' + thing + ' that costs ' + price + ' cents. A dollar is 100 cents. How many cents of change does ' + name + ' get?', change, { MY2: digitWise !== String(change) ? digitWise : null }, steps, { type: 'paper' });
+      return num('MY04', name + ' pays 1 dollar for a ' + thing + ' that costs ' + price + ' cents. A dollar is 100 cents. How many cents of change does ' + name + ' get?', change, { MY2: digitWise !== String(change) ? digitWise : null }, steps, { type: 'paper', scene: [{ bills: [1] }, { obj: OBJ[thing], tag: price + '¢' }] });
     },
     TM01(r) { return clockItem('TM01', r.int(1, 12), r.pick([0, 30]), r); },
     TM02(r) { let m; do { m = r.int(1, 11) * 5; } while (m === 30); return clockItem('TM02', r.int(1, 12), m, r); },
@@ -1214,9 +1222,9 @@
       const n = r.int(2, 9), p = r.int(2, 9), name = r.pick(NAMES);
       if (r.next() < 0.5) {
         const thing = r.pick(['melon', 'notebook', 'kite', 'ball']);
-        return num('FN01', 'A ' + thing + ' costs $' + p + '. How much do ' + n + ' ' + thing + 's cost?', n * p, { M15: n + p }, [n + ' ' + thing + 's at $' + p + ' each is ' + n + ' groups of ' + p + '.', n + ' × ' + p + ' = ' + n * p], { type: 'paper' });
+        return num('FN01', 'A ' + thing + ' costs $' + p + '. How much do ' + n + ' ' + thing + 's cost?', n * p, { M15: n + p }, [n + ' ' + thing + 's at $' + p + ' each is ' + n + ' groups of ' + p + '.', n + ' × ' + p + ' = ' + n * p], { type: 'paper', scene: [{ obj: OBJ[thing], n, tag: '$' + p }] });
       }
-      return num('FN01', name + ' sells ' + n + ' cups of lemonade at $' + p + ' each. How many dollars come in?', n * p, { M15: n + p }, ['Money that comes in is called revenue.', n + ' × ' + p + ' = ' + n * p], { type: 'paper' });
+      return num('FN01', name + ' sells ' + n + ' cups of lemonade at $' + p + ' each. How many dollars come in?', n * p, { M15: n + p }, ['Money that comes in is called revenue.', n + ' × ' + p + ' = ' + n * p], { type: 'paper', scene: [{ obj: 'lemonade', n, tag: '$' + p }] });
     },
     FN02(r) {
       const n = r.pick([5, 6, 8, 10, 12, 15, 20]), p = r.int(2, 5), c = r.int(1, p - 1), R = n * p, C = n * c;
@@ -1228,7 +1236,7 @@
       const steps = ['Revenue: ' + n + ' × ' + p + ' = ' + R, 'Cost of the cups: ' + n + ' × ' + c + ' = ' + C, e ? 'Profit: ' + R + ' − ' + C + ' − ' + e + ' = ' + P : 'Profit: ' + R + ' − ' + C + ' = ' + P];
       const pred = { MW1: R, MW3: R + C + e };
       if (e) pred.MW2 = R - C;
-      return num('FN02', prompt, P, pred, steps, { type: 'paper' });
+      return num('FN02', prompt, P, pred, steps, { type: 'paper', scene: [{ obj: 'lemonade', n, tag: '$' + p }, { obj: 'lemon', tag: '$' + c }].concat(e ? [{ obj: 'placard', tag: '$' + e }] : []) });
     },
     FN04(r) {
       const w = r.int(2, 9), k = r.int(2, 9), have = r.int(0, 4) * 5, goal = have + w * k, name = r.pick(NAMES), thing = r.pick(['game', 'bike bell', 'book set', 'kite']);
@@ -1236,30 +1244,30 @@
       const prompt = name + ' wants a ' + thing + ' that costs $' + goal + '.' + (have ? ' ' + name + ' has saved $' + have + '.' : '') + ' ' + name + ' saves $' + w + ' each week. How many weeks until ' + name + ' has enough?';
       const steps = have ? ['Still needed: ' + goal + ' − ' + have + ' = ' + need, 'Weeks: ' + need + ' ÷ ' + w + ' = ' + k] : ['Weeks: ' + goal + ' ÷ ' + w + ' = ' + k];
       const pred = {}; if (have) pred.MN6 = need;
-      return num('FN04', prompt, k, pred, steps, { type: 'paper' });
+      return num('FN04', prompt, k, pred, steps, { type: 'paper', scene: [{ obj: OBJ[thing], tag: '$' + goal }].concat(have ? [{ obj: 'jar', tag: '$' + have }] : []).concat([{ obj: 'calendar', tag: '+$' + w }]) });
     },
     FN05(r) {
       const T = r.pick([4, 5, 10]), k = r.int(1, T - 1), m = r.int(2, 9), P = T * m, name = r.pick(NAMES);
       const prompt = 'A lemonade company is split into ' + T + ' equal shares. ' + name + ' owns ' + k + ' of them. The company makes $' + P + ' profit. How many dollars is ' + name + '\u2019s part?';
       const steps = ['Each share gets ' + P + ' ÷ ' + T + ' = ' + m, k + ' shares get ' + k + ' × ' + m + ' = ' + k * m];
-      return num('FN05', prompt, k * m, { MW5: P, M15: k + m }, steps, { type: 'paper' });
+      return num('FN05', prompt, k * m, { MW5: P, M15: k + m }, steps, { type: 'paper', scene: [{ obj: 'lemonade' }, { shares: T, mine: k }, { obj: 'money-bag', tag: '$' + P }] });
     },
     FN07(r) {
       const A = r.int(1, 9) * 100, a = A / 10, A1 = A + a, b = A1 / 10, A2 = A1 + b, name = r.pick(NAMES);
       const intro = name + ' puts $' + A + ' in a savings jar. Each year the jar grows by one tenth of what is in it.';
       const steps = ['Year 1: one tenth of ' + A + ' is ' + a + '. ' + A + ' + ' + a + ' = ' + A1, 'Year 2: one tenth of ' + A1 + ' is ' + b + '. ' + A1 + ' + ' + b + ' = ' + A2];
-      if (r.next() < 0.35) return num('FN07', intro + ' How many dollars does the jar grow in year 2?', b, { MW4: a }, steps.concat(['Growth in year 2: ' + A2 + ' − ' + A1 + ' = ' + b]), { type: 'paper' });
-      return num('FN07', intro + ' How many dollars are in the jar after 2 years?', A2, { MW4: A + 2 * a }, steps, { type: 'paper' });
+      if (r.next() < 0.35) return num('FN07', intro + ' How many dollars does the jar grow in year 2?', b, { MW4: a }, steps.concat(['Growth in year 2: ' + A2 + ' − ' + A1 + ' = ' + b]), { type: 'paper', scene: [{ obj: 'jar', tag: '$' + A }] });
+      return num('FN07', intro + ' How many dollars are in the jar after 2 years?', A2, { MW4: A + 2 * a }, steps, { type: 'paper', scene: [{ obj: 'jar', tag: '$' + A }] });
     },
     FN03(r) {
       // dollars and cents: written with a decimal point, two places for the cents
       const a = r.int(105, 899), b = r.int(105, 899), add = r.next() < 0.5, name = r.pick(NAMES);
       if (add) {
         if (a + b > 999) return GEN.FN03(r);
-        return num('FN03', 'A pen costs $' + money(a) + ' and a pad costs $' + money(b) + '. How many dollars for both?', dec(a + b, 2), {}, ['Line up the decimal points: dollars with dollars, cents with cents.', money(a) + ' + ' + money(b) + ' = ' + money(a + b)], { type: 'paper' }, { decimal: true });
+        return num('FN03', 'A pen costs $' + money(a) + ' and a pad costs $' + money(b) + '. How many dollars for both?', dec(a + b, 2), {}, ['Line up the decimal points: dollars with dollars, cents with cents.', money(a) + ' + ' + money(b) + ' = ' + money(a + b)], { type: 'paper', scene: [{ obj: 'pen', tag: '$' + money(a) }, { obj: 'pad', tag: '$' + money(b) }] }, { decimal: true });
       }
       const pay = (Math.floor(a / 100) + 1 + r.int(0, 3)) * 100;
-      return num('FN03', name + ' pays $' + money(pay) + ' for a book that costs $' + money(a) + '. How many dollars of change?', dec(pay - a, 2), {}, ['Line up the decimal points: dollars with dollars, cents with cents.', money(pay) + ' − ' + money(a) + ' = ' + money(pay - a)], { type: 'paper' }, { decimal: true });
+      return num('FN03', name + ' pays $' + money(pay) + ' for a book that costs $' + money(a) + '. How many dollars of change?', dec(pay - a, 2), {}, ['Line up the decimal points: dollars with dollars, cents with cents.', money(pay) + ' − ' + money(a) + ' = ' + money(pay - a)], { type: 'paper', scene: [{ bills: billsFor(pay / 100) }, { obj: 'book', tag: '$' + money(a) }] }, { decimal: true });
     },
     FN06(r) {
       // unit price: the price of one, from a pack price
@@ -1267,9 +1275,9 @@
       if (r.next() < 0.3) {
         let n2, u2; do { n2 = r.pick([2, 3, 4, 5, 6, 8, 10]); u2 = r.int(2, 19) * 5; } while (n2 === n || u2 === u);
         const P2 = n2 * u2, cheaper = u < u2 ? 'Pack A' : 'Pack B';
-        return textChoice('FN06', 'Pack A has ' + n + ' ' + thing + ' for $' + money(P) + '. Pack B has ' + n2 + ' ' + thing + ' for $' + money(P2) + '. Which pack costs less for one?', cheaper, [cheaper === 'Pack A' ? 'Pack B' : 'Pack A'], ['Pack A: ' + money(P) + ' ÷ ' + n + ' = ' + money(u), 'Pack B: ' + money(P2) + ' ÷ ' + n2 + ' = ' + money(u2), 'The smaller price for one is the better buy.'], { type: 'paper' }, r);
+        return textChoice('FN06', 'Pack A has ' + n + ' ' + thing + ' for $' + money(P) + '. Pack B has ' + n2 + ' ' + thing + ' for $' + money(P2) + '. Which pack costs less for one?', cheaper, [cheaper === 'Pack A' ? 'Pack B' : 'Pack A'], ['Pack A: ' + money(P) + ' ÷ ' + n + ' = ' + money(u), 'Pack B: ' + money(P2) + ' ÷ ' + n2 + ' = ' + money(u2), 'The smaller price for one is the better buy.'], { type: 'paper', scene: [{ label: 'A', obj: OBJ[thing], n, tag: '$' + money(P) }, { label: 'B', obj: OBJ[thing], n: n2, tag: '$' + money(P2) }] }, r);
       }
-      return num('FN06', n + ' ' + thing + ' cost $' + money(P) + '. How many dollars is one?', dec(u, 2), {}, ['One costs the pack price divided by how many.', money(P) + ' ÷ ' + n + ' = ' + money(u)], { type: 'paper' }, { decimal: true });
+      return num('FN06', n + ' ' + thing + ' cost $' + money(P) + '. How many dollars is one?', dec(u, 2), {}, ['One costs the pack price divided by how many.', money(P) + ' ÷ ' + n + ' = ' + money(u)], { type: 'paper', scene: [{ obj: OBJ[thing], n, tag: '$' + money(P) }] }, { decimal: true });
     },
     FN08(r) {
       // read a price line: prices on a grid, week by week; going up is never guaranteed
@@ -1489,7 +1497,7 @@
       else if (op === '×' && a * b === c && Math.min(a, b) <= 99 && Math.min(a, b) >= 2) { const g = Math.min(a, b), e = Math.max(a, b); prompt = 'There are ' + g + ' ' + r.pick(['bags', 'boxes', 'baskets', 'rows']) + ' with ' + e + ' ' + thing + ' in each. How many ' + thing + ' in all?'; }
       else if (op === '÷' && a === b * c && b >= 2) { let other = r.pick(NAMES); while (other === name) other = r.pick(NAMES); prompt = name + ' has ' + a + ' ' + thing + '. That is ' + b + ' times as many as ' + other + '. How many does ' + other + ' have?'; }
       if (!prompt) continue;
-      return Object.assign({}, it, { prompt, kind: 'transfer', story: true, from: it.prompt });
+      return Object.assign({}, it, { prompt, kind: 'transfer', story: true, from: it.prompt, model: Object.assign({}, it.model, { obj: OBJ[thing] }) });
     }
     return null;
   }

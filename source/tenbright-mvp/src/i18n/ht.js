@@ -4962,5 +4962,8 @@ TBi18n.add("ht", {"Count to {N}":"Konte jiska {N}",
 "Add Player":"Ajoute yon jwè",
 "Ready to explore":"Pare pou eksplore",
 "{N} lantern lit":"{N} lantèn limen",
-"{N} lanterns lit":"{N} lantèn limen"
+"{N} lanterns lit":"{N} lantèn limen",
+  "Picture credits: some pictures of everyday things are Microsoft Fluent Emoji, used under the MIT License.": "Kredi foto yo: kèk foto bagay chak jou se Microsoft Fluent Emoji, yo itilize yo anba Lisans MIT.",
+  "The licence text comes with the app (art/obj/LICENSE.txt).": "Tèks lisans lan vini ak aplikasyon an (art/obj/LICENSE.txt).",
+  "The coin pictures are made from US Mint images, which are in the public domain.": "Foto pyès monnen yo fèt ak foto US Mint (Lamonnen Etazini), ki nan domèn piblik.",
 });

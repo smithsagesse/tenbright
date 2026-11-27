@@ -4962,5 +4962,8 @@ TBi18n.add("zh", {"Count to {N}":"數到{N}",
 "Add Player":"新增玩家",
 "Ready to explore":"準備好去探索",
 "{N} lantern lit":"點亮了 {N} 盞燈籠",
-"{N} lanterns lit":"點亮了 {N} 盞燈籠"
+"{N} lanterns lit":"點亮了 {N} 盞燈籠",
+  "Picture credits: some pictures of everyday things are Microsoft Fluent Emoji, used under the MIT License.": "圖片來源：部分日常物品圖片來自 Microsoft Fluent Emoji，依 MIT 授權使用。",
+  "The licence text comes with the app (art/obj/LICENSE.txt).": "授權全文隨應用程式提供（art/obj/LICENSE.txt）。",
+  "The coin pictures are made from US Mint images, which are in the public domain.": "硬幣圖片取材自美國鑄幣局的圖片，屬於公有領域。",
 });

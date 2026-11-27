@@ -1051,6 +1051,26 @@ html:not(.motion-still) .w2-card.on { animation: w2Rise .5s cubic-bezier(.2,.8,.
 html.motion-full .w2-world, html.motion-full .w2-hero { transform-origin: 50% 40%; animation: w2Drift 26s ease-in-out infinite alternate; }
 html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { animation: w2Twinkle 3.2s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .w2-card, .w2-card.on, .w2-world, .w2-hero, .w2-star svg, .w2-bstar svg { animation: none !important; } }
+
+/* pictures of what is being learned: story objects, coins, bills, shares */
+.scene { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px 18px; margin: 4px auto 8px; }
+.sc-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.sc-objs { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 280px; }
+.sc-objs.wrap { max-width: 230px; }
+.oi { width: 44px; height: 44px; display: block; }
+.oi.big { width: 72px; height: 72px; }
+.gi { width: 30px; height: 30px; display: block; }
+.grp.og { width: auto; height: auto; min-width: 92px; min-height: 92px; border-radius: 26px; display: grid; grid-template-columns: repeat(var(--c), 30px); gap: 4px; padding: 10px; align-content: center; }
+.sc-tag { display: inline-block; min-width: 44px; padding: 3px 10px; border-radius: 999px; background: #FFFFFF; border: 2px solid #F4A425; color: #1E2A3B; font-weight: 800; font-size: 18px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,.12); }
+.sc-label { font-weight: 800; font-size: 18px; color: var(--ink); }
+.sc-op { font-size: 34px; font-weight: 800; color: var(--ink); }
+.sc-times { font-size: 22px; font-weight: 800; color: var(--ink); }
+.sc-bills { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 300px; }
+.bill { position: relative; display: inline-block; width: 74px; height: 74px; }
+.bill img { width: 74px; height: 74px; display: block; }
+.bill b { position: absolute; left: 50%; bottom: 2px; transform: translateX(-50%); padding: 0 8px; border-radius: 999px; background: #FFFFFF; color: #0B6B3A; border: 2px solid #1F8A4C; font-size: 16px; font-weight: 800; line-height: 1.4; }
+.obj-hero { display: flex; justify-content: center; margin-bottom: 6px; }
+.stage .sc-label, .stage .sc-op, .stage .sc-times { color: var(--on-dusk); }
 </style>
 
 <div id="app" aria-live="polite"></div>
@@ -2157,7 +2177,37 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
     const heads = places === 3 ? ['HUNDREDS', 'TENS', 'ONES'] : ['TENS', 'ONES'];
     return `<table class="pv"><tr><th><span class="sr-only">Sign</span></th>${heads.map((h) => `<th>${h}</th>`).join('')}</tr>${rows.map((r) => `<tr class="${r.total ? 'total' : ''}"><td class="op">${r.op || ''}</td>${E.digits(r.n, places).map((d, i) => `<td class="${hlPos === i && r.hl ? 'hl' : ''}">${r.blank ? '&nbsp;' : (i === 0 && d === 0 && places > 1 && r.n < Math.pow(10, places - 1) ? '&nbsp;' : d)}</td>`).join('')}</tr>`).join('')}</table>`;
   }
-  function modelHtml(item, hint) {
+  // ---------- pictures of what is being learned (owner's rule, Nov 27, 2026) ----------
+  // story objects: Microsoft Fluent Emoji (MIT licence) plus a few drawn to match, in art/obj/; real US coins in art/coin-*.webp;
+  // bills are cartoon banknotes (no realistic currency images). Pictures repeat only what the question says, so they are
+  // hidden from screen readers (the question text carries the facts).
+  const objImg = (key, cls, size) => `<img class="${cls || 'oi'}" src="art/obj/${key}.svg" alt="" ${size ? `width="${size}" height="${size}"` : ''} decoding="async" draggable="false">`;
+  function billHtml(v) { return `<span class="bill"><img src="art/obj/bill.svg" alt="" decoding="async" draggable="false"><b>$${v}</b></span>`; }
+  function sceneHtml(scene) {
+    if (!scene || !scene.length) return '';
+    const part = (p) => {
+      if (p.op) return `<span class="sc-op">${p.op}</span>`;
+      if (p.coins) return `<div class="sc-item">${coinsHtml(p.coins).replace(' role="img"', ' aria-hidden="true"').replace(/ aria-label="[^"]*"/, '')}</div>`;
+      if (p.bills) return `<div class="sc-item"><div class="sc-bills">${p.bills.map(billHtml).join('')}</div></div>`;
+      if (p.shares) return `<div class="sc-item">${sharesSvg(p.shares, p.mine)}</div>`;
+      const n = p.n || 1, many = n > 10;
+      const icons = many ? objImg(p.obj, 'oi big') + `<span class="sc-times">× ${n}</span>` : objImg(p.obj, n > 1 ? 'oi' : 'oi big').repeat(n);
+      return `<div class="sc-item">${p.label ? `<span class="sc-label">${p.label}</span>` : ''}<div class="sc-objs${n > 5 && !many ? ' wrap' : ''}">${icons}</div>${p.tag ? `<span class="sc-tag">${esc(p.tag)}</span>` : ''}</div>`;
+    };
+    return `<div class="scene" aria-hidden="true" data-notr>${scene.map(part).join('')}</div>`;
+  }
+  // a share circle: T equal shares, the first "mine" filled
+  function sharesSvg(T, mine) {
+    const R = 46, c = 50; let g = '';
+    for (let i = 0; i < T; i++) { const a0 = -Math.PI / 2 + i * 2 * Math.PI / T, a1 = a0 + 2 * Math.PI / T;
+      g += `<path d="M${c} ${c} L${(c + R * Math.cos(a0)).toFixed(2)} ${(c + R * Math.sin(a0)).toFixed(2)} A${R} ${R} 0 ${T === 1 ? 1 : 0} 1 ${(c + R * Math.cos(a1)).toFixed(2)} ${(c + R * Math.sin(a1)).toFixed(2)} Z" fill="${i < mine ? '#F4A425' : '#FFF3DA'}" stroke="#1E2A3B" stroke-width="2.5"></path>`; }
+    return `<svg width="100" height="100" viewBox="0 0 100 100" aria-hidden="true">${g}</svg>`;
+  }
+  // one group: the story's own things in a rounded box when they fit (12 or fewer), otherwise the usual dots
+  const grpHtml = (m) => (m.obj && m.s <= 12 ? `<div class="grp og" style="--c:${Math.ceil(Math.sqrt(m.s))}">${objImg(m.obj, 'gi').repeat(m.s)}</div>` : `<div class="grp">${'<i></i>'.repeat(m.s)}</div>`);
+  const objHero = (m) => (m && m.obj && m.type !== 'groups' ? `<div class="obj-hero" aria-hidden="true">${objImg(m.obj, 'oi big')}</div>` : '') + (m && m.scene ? sceneHtml(m.scene) : '');
+  function modelHtml(item, hint) { return objHero(item.model) + modelHtmlCore(item, hint); }
+  function modelHtmlCore(item, hint) {
     const m = item.model;
     if (NEW_MODELS.has(m.type)) return newModel(item, hint, -1);
     if (m.type === 'tenframe' && m.remove) return tenFrames(m.a, 0);
@@ -2174,7 +2224,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
       return html;
     }
     if (m.type === 'compare') return pvTable([{ n: m.a }, { n: m.b }], 3);
-    if (m.type === 'groups') return `<div class="groups" aria-label="${m.g} groups of ${m.s}">${Array.from({ length: m.g }, () => `<div class="grp">${'<i></i>'.repeat(m.s)}</div>`).join('')}</div>`;
+    if (m.type === 'groups') return `<div class="groups" aria-label="${m.g} groups of ${m.s}">${Array.from({ length: m.g }, () => `${grpHtml(m)}`).join('')}</div>`;
     if (m.type === 'array') return `<div class="arr" style="grid-template-columns:repeat(${m.cols},16px)" aria-label="${m.rows} rows of ${m.cols}">${'<i></i>'.repeat(m.rows * m.cols)}</div>`;
     if (m.type === 'complement') {
       const places = m.base === 100 ? 2 : 3;
@@ -2403,7 +2453,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
     const parts = Object.keys(counts).sort((a, b) => b - a).map((v) => counts[v] + ' ' + COIN_LOOK[v].name[counts[v] === 1 ? 0 : 1]);
     const label = lang() === 'en' ? 'Coins: ' + parts.join(', ') : T('Coins:') + ' ' + parts.map((x) => T(x)).join(lang() === 'zh' ? '、' : lang() === 'ar' ? '، ' : ', ');
     // real US coins (official US Mint images, public domain) at their true relative sizes: a dime is smaller than a penny
-    return `<div class="coins-row" role="img" data-notr aria-label="${esc(label)}">${coins.map((v) => { const f = COIN_FILE[v]; const d = Math.round(COIN_MM[v] * 2.97); return `<img class="coin-img" src="art/coin-${f}.webp" alt="" width="${d}" height="${d}" decoding="async" draggable="false">`; }).join('')}</div>`;
+    return `<div class="coins-row" role="img" data-notr aria-label="${esc(label)}">${coins.map((v) => { const f = COIN_FILE[v]; const d = Math.round(COIN_MM[v] * (coins.length <= 2 ? 3.6 : 2.97)); return `<img class="coin-img" src="art/coin-${f}.webp" alt="" width="${d}" height="${d}" decoding="async" draggable="false">`; }).join('')}</div>`;
   }
   const COIN_FILE = { 1: 'penny', 5: 'nickel', 10: 'dime', 25: 'quarter' };
   const COIN_MM = { 1: 19.05, 5: 21.21, 10: 17.91, 25: 24.26 }; // US Mint coin diameters
@@ -2555,7 +2605,8 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
   }
 
   // The picture for step k of a worked example (k = -1 is the question before any step).
-  function stepVisual(item, k) {
+  function stepVisual(item, k) { return objHero(item.model) + stepVisualCore(item, k); }
+  function stepVisualCore(item, k) {
     const m = item.model, steps = item.steps || [], n = steps.length, last = k >= n - 1, sk = item.skill, s = steps[k] || '';
     if (m.type === 'paper') return paperHtml(item, k);
     if (NEW_MODELS.has(m.type)) return newModel(item, 4, k) + (k >= 0 ? paperHtml(item, k) : '');
@@ -2687,7 +2738,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
     }
     if (m.type === 'groups') {
       const showCount = k >= 0 && (last || n === 1);
-      return `<div class="groups" aria-label="${m.g} groups of ${m.s}">${Array.from({ length: m.g }, (_, i) => `<div class="gcol"><div class="grp">${'<i></i>'.repeat(m.s)}</div>${showCount ? `<span class="arr-count num">${m.s * (i + 1)}</span>` : ''}</div>`).join('')}</div>`;
+      return `<div class="groups" aria-label="${m.g} groups of ${m.s}">${Array.from({ length: m.g }, (_, i) => `<div class="gcol">${grpHtml(m)}${showCount ? `<span class="arr-count num">${m.s * (i + 1)}</span>` : ''}</div>`).join('')}</div>`;
     }
     if (m.type === 'array') {
       if (sk === 'MU10') {
@@ -3018,6 +3069,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
           <p>A parent or legal guardian must set it up and agree to the privacy notice. Children use it under that parent's account on this device.</p>
           <p>Tenbright supports learning; it is not a replacement for a teacher, and it makes no promise of particular test results.</p>
           <p>The Tenbright name, Pip and the other characters, the artwork and the software belong to GMIA. Lesson techniques are taught for their mathematics; the history note on the "all from 9" strategy explains where it comes from.</p>
+          <p>Picture credits: some pictures of everyday things are Microsoft Fluent Emoji, used under the MIT License. The licence text comes with the app (art/obj/LICENSE.txt). The coin pictures are made from US Mint images, which are in the public domain.</p>
           <p>There are no purchases in the preview. If paid plans are added, prices, renewal and how to cancel will be shown clearly before anyone pays.</p>
           <p>Questions: [contact email to be added before public launch].</p>
         </article>

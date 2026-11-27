@@ -73,6 +73,16 @@ https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
 - **Badges:** 9 badges that unlock Pip accessories (the 9th, Market maker, for 3 money adventures, gives a sun cap). Rewards are earned only and never sold.
 - **Child separation:** each child can have "secret pictures" (tap 3 of 9) to open their profile. Pictures are salted and hashed,
   and the lock is on by default from the second child.
+- **Pictures of what is being learned** (owner's rule, Nov 27, 2026: "show an image of a dime using the correct currency... the same
+  rule should apply to everything else"): coin questions show real US coins (`art/coin-*.webp`, from public-domain US Mint images,
+  `tools/art/coins.py`, sizes in proportion); money and story questions get a `{ type: 'paper', scene: [...] }` model or `obj` on
+  their model in engine.js (`OBJ`, `coinsFor`, `billsFor`), drawn by `sceneHtml`/`objHero`/`grpHtml` in app.html: coins, cartoon
+  bills (no realistic banknote images: 18 U.S.C. 504), price tags, the story's own things in groups, share circles. Pictures are
+  decorative (aria-hidden): the question text carries the facts, and a tag only repeats a number from the question.
+  Object art `src/art/obj/*.svg`: Microsoft Fluent Emoji (MIT, credit on the Terms page and `art/obj/LICENSE.txt`) plus 7 drawn to
+  match; `build.js` copies them, adds them to the offline cache and fails if one holds a link or script. The nickel is a real
+  Jefferson nickel but the 1938–2004 design (Wikimedia rate limits blocked the current one; swap `art-source/money/nickel-front.*`).
+  ElevenLabs images made on the free plan (Zuri concept, `art-source/objects/sheet-1.png`) have no commercial licence: not in the app.
 - **PWA:** installable and offline, using `sw.js` and `manifest.webmanifest`. The service worker registers only over http(s).
 - **Art:** the welcome, celebrate and journal scenes in `art/` have depth maps for mouse and device-tilt parallax.
 
@@ -135,7 +145,7 @@ with identical sw.js, manifest, icons, art and audio. It contains:
 - `build.js`: run `node build.js` to produce `dist/index.html` (and `dist/test.html` with test hooks).
 - Tests: `node test/engine.test.js` (math engine, millions of generated checks); `node test/explain.test.js` (plain-words lessons); `node test/strategies.test.js` (strategy library); Playwright suites
   `test/e2e.py`, `test/features_test.py`, `test/audio_test.py`, `test/living_test.py`,
-  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py`, `test/money_time_test.py`, `test/measure_shape_test.py`, `test/dashboard2_test.py`, `test/adventure_test.py`, `test/data_safety_test.py` (unreadable data, two tabs, failed saves, standards mode and phone viewport), `test/keyboard_test.py` (keyboard-only journey, focus rings) and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
+  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py`, `test/money_time_test.py`, `test/measure_shape_test.py`, `test/dashboard2_test.py`, `test/adventure_test.py`, `test/data_safety_test.py` (unreadable data, two tabs, failed saves, standards mode and phone viewport), `test/keyboard_test.py` (keyboard-only journey, focus rings), `test/who_test.py` (the "Who is playing?" screen), `test/pictures_test.py` (pictures of what is being learned) and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
 - `docs/animation-system.md` and `README.md`.
 
 Make changes in `source/tenbright-mvp/src/`, rebuild and run every suite.

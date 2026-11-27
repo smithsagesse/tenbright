@@ -33,11 +33,15 @@ fs.writeFileSync(path.join(__dirname, 'dist/index.html'), release);
 fs.writeFileSync(path.join(__dirname, 'dist/test.html'), full);
 // offline app: service worker, manifest and icons (used when the page is served from a website)
 const version = require('crypto').createHash('sha1').update(release + audioMap).digest('hex').slice(0, 10);
-fs.writeFileSync(path.join(__dirname, 'dist/sw.js'), R('src/pwa/sw.js').replace('__VERSION__', version));
+// story-object pictures (art/obj/*.svg) are cached for offline use with the rest of the artwork
+const OBJ_FILES = fs.readdirSync(path.join(__dirname, 'src/art/obj')).filter((f) => /\.svg$/.test(f)).sort();
+OBJ_FILES.forEach((f) => { const t = fs.readFileSync(path.join(__dirname, 'src/art/obj', f), 'utf8'); if (/https?:\/\/(?!www\.w3\.org\/)/.test(t) || /<script|href="(?!#)/i.test(t)) throw new Error('art/obj/' + f + ' has a link or script'); });
+fs.writeFileSync(path.join(__dirname, 'dist/sw.js'), R('src/pwa/sw.js').replace('__VERSION__', version).replace("'./art/coin-quarter.webp']", "'./art/coin-quarter.webp'" + OBJ_FILES.map((f) => ", './art/obj/" + f + "'").join('') + ']'));
 ['manifest.webmanifest', 'icon-192.png', 'icon-512.png'].forEach((f) => fs.copyFileSync(path.join(__dirname, 'src/pwa', f), path.join(__dirname, 'dist', f)));
 // artwork: copied next to the page (no outside image hosts)
 fs.mkdirSync(path.join(__dirname, 'dist/art'), { recursive: true });
 fs.readdirSync(path.join(__dirname, 'src/art')).filter((f) => /\.webp$/.test(f)).forEach((f) => fs.copyFileSync(path.join(__dirname, 'src/art', f), path.join(__dirname, 'dist/art', f)));
+fs.rmSync(path.join(__dirname, 'dist/art/obj'), { recursive: true, force: true }); fs.cpSync(path.join(__dirname, 'src/art/obj'), path.join(__dirname, 'dist/art/obj'), { recursive: true });
 // Pip's recorded voice: copy the audio files next to the page
 if (audioMap !== 'null') {
   fs.mkdirSync(path.join(__dirname, 'dist/audio'), { recursive: true });

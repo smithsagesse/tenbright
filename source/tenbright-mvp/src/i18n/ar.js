@@ -4962,5 +4962,8 @@ TBi18n.add("ar", {"Count to {N}":"العدّ حتى {N}",
 "Add Player":"أضف لاعبًا",
 "Ready to explore":"جاهز للاستكشاف",
 "{N} lantern lit":"فانوس واحد مضاء",
-"{N} lanterns lit":"{N} فوانيس مضاءة"
+"{N} lanterns lit":"{N} فوانيس مضاءة",
+  "Picture credits: some pictures of everyday things are Microsoft Fluent Emoji, used under the MIT License.": "مصادر الصور: بعض صور الأشياء اليومية من Microsoft Fluent Emoji، وتُستخدم بموجب رخصة MIT.",
+  "The licence text comes with the app (art/obj/LICENSE.txt).": "نص الرخصة مرفق بالتطبيق (art/obj/LICENSE.txt).",
+  "The coin pictures are made from US Mint images, which are in the public domain.": "صور العملات المعدنية مأخوذة من صور دار سك العملة الأمريكية، وهي ملك عام.",
 });
