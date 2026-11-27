@@ -14,6 +14,12 @@ Full history: `docs/DECISIONS_AND_HISTORY.md`. Planning documents: `docs/`.
 - **Guide character:** **Pip**. Since v22, Pip is drawn as a masked superhero boy with a blue suit, yellow cape and
   "T" belt (`art/pip-hero.webp`). The original concept was a glowmoth, which is still the icon
   (`icon-192.png`, `icon-512.png`) and appears in the Phase 3 docs.
+- **Zuri** (named by the owner, Nov 27, 2026): Pip's teammate, a cute Black girl superhero of about 8 (natural coily hair in two
+  puffs with gold star clips, teal mask, purple-and-teal suit with gold trim, gold cape, gold hexagon emblem). Her superpower,
+  **Shape Spark**: she draws glowing shapes in the air (triangle, square, hexagon) that become real things to build with
+  (bridges, stairs, shields), so she pairs with shapes, patterns, measuring and building while Pip has numbers and lanterns.
+  Concept art only so far (ElevenLabs flow jhjer4eyYc924ozWSlgN, gpt-image model); not in the app yet. Like Pip she is a
+  computer-made helper and never claims to be a friend (hard rule 6). AI-made art: the art-rights decision applies.
 - **Brand architecture:** GMIA is the company. Tenbright is the product. Number Kingdom is the world, with five regions:
   Lantern Village (review hub), Bead Meadows (place value), Ferry River (add/subtract),
   Orchard of Rows (multiplication) and Story Bridge (word problems).
