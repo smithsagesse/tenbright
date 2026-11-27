@@ -43,9 +43,11 @@ https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
 - **Lessons:** illustrated step-by-step walkthroughs with Pip and "Work it with Pip" guided practice. Models include
   base-ten blocks, place-value charts, number lines, ten-frames, bar models, arrays and an interactive soroban.
 - **Lantern Line**, a number-line warm-up game, plus a child journal and a parent dashboard.
-- **Narration:** free, on-device **Kokoro TTS**, voice `af_heart` at speed 0.95, pre-recorded to `audio/pip-*.mp3`.
+- **Narration:** free, on-device **Kokoro TTS**, voice **`am_eric`** (American English, male) at speed 0.95 since Nov 27, 2026
+  (the owner's choice from 12 samples, to match Pip drawn as a boy; `af_heart` was used Nov 3 to 27), pre-recorded to `audio/pip-*.mp3`.
+  Where the device voice speaks for Pip (other languages, or a line with no clip), `rankVoice` prefers a male device voice (`MALE_VOICE`).
   An earlier ElevenLabs "Simone" voice was dropped because the paid plan was insufficient.
-  On Nov 25, 2026 the owner auditioned 13 Kokoro voices and kept `af_heart` as is. His rule for Pip's speech:
+  On Nov 25, 2026 the owner auditioned 13 Kokoro voices and kept `af_heart` as is; on Nov 27 he switched to `am_eric` (all clips re-recorded). His rule for Pip's speech:
   **no filler words** ("Hmm", "um", "well"...); use pauses instead (sentence breaks, commas).
   When Pip's English wording changes, run `python3 narration/record.py` after the build (see README.md):
   it records only the missing clips, from the app's own list of everything Pip says. The model files (about 350 MB) are not

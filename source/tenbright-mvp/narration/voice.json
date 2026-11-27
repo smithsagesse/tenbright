@@ -1,12 +1,13 @@
 {
   "character": "Pip",
   "engine": "Kokoro-82M (open model, Apache-2.0 licence, run locally)",
-  "voice": "af_heart (American English, female)",
-  "kokoro_voice": "af_heart",
+  "voice": "am_eric (American English, male)",
+  "kokoro_voice": "am_eric",
   "speed": 0.95,
   "lang": "en-us",
-  "chosen": "2026-11-03",
+  "chosen": "2026-11-27",
   "previous_choice": "ElevenLabs 'Simone' (not used: the free plan is not licensed for commercial use)",
   "how_it_works": "Every sentence Pip can say is split by src/speech.js into whole-sentence, phrase and number clips. narration/audio holds the recorded clips as audio sprites plus map.json; build.js copies them into dist/audio and embeds the map. Sentences without clips fall back to the device voice. narration/record.py makes the recordings: it records only clips the app needs and does not have yet, or every clip with --all after a voice change.",
-  "disclosure": "Pip tells children his voice is made by a computer; the privacy notice says the voice is AI-generated audio included in the app."
+  "disclosure": "Pip tells children his voice is made by a computer; the privacy notice says the voice is AI-generated audio included in the app.",
+  "previous_voice": "af_heart (American English, female), Nov 3 to Nov 27, 2026"
 }

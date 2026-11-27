@@ -1503,6 +1503,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
   // Picks the most natural on-device English voice. Online voices are never used:
   // they would send the text and the device's IP address to a third party.
   let pipVoice = null;
+  const MALE_VOICE = /\b(male|man|boy|alex|aaron|arthur|daniel|evan|fred|gordon|nathan|oliver|reed|rishi|rocko|tom|eddy|grandpa|david|mark|guy|andrew|brian|christopher|eric|roger|ryan|steffan|thomas|henri|paul|r[ée]my|antoine|jorge|diego|juan|[aá]lvaro|pablo|ra[uú]l|carlos|enrique|yunxi|yunyang|yunjian|kangkang|zhiwei|hamed|maged|shakir|naayf|tarik)\b/i;
   function rankVoice(v) {
     let s = 0;
     if (/premium/i.test(v.name)) s += 40;
@@ -1510,6 +1511,9 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
     if (/siri/i.test(v.name)) s += 25;
     if (/^en-(US|GB|AU|CA|IE|NZ)/i.test(v.lang)) s += 5;
     if (/compact|espeak|robot|novelty|whisper|zarvox|trinoids|bells|bubbles|cellos|bad news|good news|jester|organ|superstar|wobble|boing|bahh|albert/i.test(v.name)) s -= 100;
+    // Pip's recorded voice is a boy's (Kokoro am_eric, since Nov 27, 2026): where the device voice speaks for him (other
+    // languages, or a sentence with no recording), prefer a male device voice when one is installed
+    if (MALE_VOICE.test(v.name)) s += 35;
     return s;
   }
   function pickVoice() {
