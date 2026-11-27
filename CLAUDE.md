@@ -99,6 +99,11 @@ https://claude.ai/artifact/DzUkbiyZdo9DFxotvogjHT
   Home Screen tip because Safari can clear site data after 7 days without use.
 - Older Safari: every `color-mix()` declaration has a plain fallback before it; blur effects carry the `-webkit-` prefix.
 - Child controls keep 64/88 px on every screen, including Pip's wardrobe, icon buttons in crowded bars and short translated labels.
+- apple-design review (Nov 27, 2026; the design system in `source/tenbright-mvp/docs/design-system.md` is built on that skill):
+  entrance animations use `backwards` fill, never `both`, so they do not hold `transform` and block the press scale; no
+  full-screen moving backgrounds and no endless slow pulses (the who-page drift and glow were removed); every new glass
+  surface gets `prefers-reduced-transparency` and `prefers-contrast` fallbacks; `.stage` fills the window (100dvh);
+  captions on the night sky use the light caption colour in both themes. Living Pip's animations are the owner's and stay.
 
 ## Hard rules (do not break)
 
