@@ -194,9 +194,11 @@ still needs the owner's approval.
 5. **Rights to the superhero Pip art.** It was cut out of an image the owner supplied; **the owner confirmed on Nov 27, 2026 that
    it is computer-generated (AI)**. Consequences: under US Copyright Office guidance (Copyright and AI, Part 2, Jan 2025) and
    Thaler v. Perlmutter (D.C. Cir., Mar 2025), purely AI-generated images get no copyright, so GMIA cannot stop others copying
-   that exact picture (trademark on the name and character, and copyright in human-made changes, are separate). Still to
-   confirm: which tool and plan made it, and that its terms allow commercial use. Zuri's image (same style, from the owner) is
-   presumably the same and needs the same check. Before release. Earlier scene art was AI-generated, then upscaled and restyled. Final art is planned as a human commission
+   that exact picture (trademark on the name and character, and copyright in human-made changes, are separate). Owner (Nov 27):
+   Pip and Zuri were made with Claude (paid plan) or the free ChatGPT. Both tools' consumer terms assign whatever rights they
+   hold in outputs to the user, with no free-plan or non-commercial limit (OpenAI Terms of Use; Anthropic Consumer Terms, Oct
+   2025), so commercial use is allowed by the tool; the remaining risks are no copyright, other users getting similar
+   output, and resemblance to someone else's character. The planned human commission (full copyright to GMIA) closes them. Earlier scene art was AI-generated, then upscaled and restyled. Final art is planned as a human commission
    with no generative AI and full copyright assignment (`docs/Tenbright_Art_Commission_Brief.txt`).
 6. **Native-speaker review** of all 5 translations.
 7. **Next build step the owner was offered:** App Store prep (store build with preview items hidden, iOS project, store listing).
