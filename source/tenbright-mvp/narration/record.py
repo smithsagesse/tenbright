@@ -9,6 +9,7 @@ Usage (from source/tenbright-mvp, after `node build.js`):
   python3 narration/record.py --drop KEY ...  also remove clips that are no longer used (exact keys)
   python3 narration/record.py --all           re-record every clip (e.g. after changing the voice); about 40 minutes
   python3 narration/record.py --say "Text"    write one test sentence to narration/say.wav and stop
+  python3 narration/record.py --speaker zuri  the same for Zuri's voice (narration/voice-zuri.json, narration/audio-zuri)
 
 Settings come from narration/voice.json: kokoro_voice, speed, lang.
 Needs: pip install kokoro-onnx soundfile playwright; ffmpeg; the Kokoro v1.0 model files
@@ -20,6 +21,10 @@ import numpy as np
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 NARR = ROOT / 'narration'
+# each speaker has a voice file, a clip folder and a sprite name: Pip (narration/voice.json, audio/, pip-N.mp3) and
+# Zuri (narration/voice-zuri.json, audio-zuri/, zuri-N.mp3); set by --speaker
+SPEAKERS = {'pip': ('voice.json', 'audio', 'pip'), 'zuri': ('voice-zuri.json', 'audio-zuri', 'zuri')}
+SPEAKER = 'pip'
 AUDIO = NARR / 'audio'
 MAP = AUDIO / 'map.json'
 SR = 24000
@@ -28,7 +33,7 @@ SPRITE_SECONDS = 600  # start a new sprite file after about ten minutes of audio
 CORPUS_PER_SKILL = 60  # random items per skill when listing what Pip can say
 
 
-def corpus_parts(per):
+def corpus_parts(per, who='pip'):
     """Every utterance Pip can say, split the way the app will play it: [(sentenceKey, sentenceText, [(key, text), ...]), ...]."""
     from playwright.sync_api import sync_playwright
     sock = socket.socket(); sock.bind(('127.0.0.1', 0)); port = sock.getsockname()[1]; sock.close()
@@ -40,15 +45,15 @@ def corpus_parts(per):
             b = p.chromium.launch(executable_path='/usr/bin/google-chrome', args=['--no-sandbox'])
             pg = b.new_page()
             pg.goto('http://127.0.0.1:%d/test.html#selftest' % port)
-            out = pg.evaluate("""(per) => {
-              const c = window.__tbSpeechCorpus(per), S = window.TBSpeech, seen = new Set(), out = [];
+            out = pg.evaluate("""([per, who]) => {
+              const c = window.__tbSpeechCorpus(per, who), S = window.TBSpeech, seen = new Set(), out = [];
               for (const t of c.fixed.concat(c.dynamic)) for (const s of S.sentences(t)) {
                 if (seen.has(s)) continue; seen.add(s);
                 const seg = S.segment(s);
                 out.push([S.sentenceKey(s), s, seg ? seg.map((p) => [p.key, p.text]) : null]);
               }
               return out;
-            }""", per)
+            }""", [per, who])
             b.close()
             return out
     finally:
@@ -116,7 +121,7 @@ def write_sprites(clips, first_index):
         if not buf:
             return
         audio = np.concatenate(buf + [np.zeros(int(LEAD * SR), np.float32)])
-        name = 'pip-%d.mp3' % idx
+        name = '%s-%d.mp3' % (SPEAKERS[SPEAKER][2], idx)
         with tempfile.NamedTemporaryFile(suffix='.wav') as w:
             import soundfile as sf
             sf.write(w.name, audio, SR, subtype='PCM_16')
@@ -142,8 +147,17 @@ def main():
     ap.add_argument('--drop', nargs='*', default=[])
     ap.add_argument('--say')
     ap.add_argument('--per', type=int, default=CORPUS_PER_SKILL)
+    ap.add_argument('--speaker', choices=sorted(SPEAKERS), default='pip')
     args = ap.parse_args()
-    cfg = json.loads((NARR / 'voice.json').read_text())
+    global SPEAKER, AUDIO, MAP
+    SPEAKER = args.speaker
+    vfile, adir, _ = SPEAKERS[SPEAKER]
+    AUDIO = NARR / adir
+    MAP = AUDIO / 'map.json'
+    AUDIO.mkdir(exist_ok=True)
+    if not MAP.exists():
+        MAP.write_text(json.dumps({'voice': '', 'sprites': [], 'clips': {}}))
+    cfg = json.loads((NARR / vfile).read_text())
     voice = Voice(cfg)
     if args.say:
         import soundfile as sf
@@ -154,12 +168,12 @@ def main():
     for k in args.drop:
         if m['clips'].pop(k, None) is None:
             sys.exit('not in map: ' + k)
-    print('listing everything Pip can say...', flush=True)
-    parts = corpus_parts(args.per)
+    print('listing everything %s can say...' % SPEAKER.capitalize(), flush=True)
+    parts = corpus_parts(args.per, SPEAKER)
     if args.all:
         todo, fallback = all_clips(parts, m['clips'])
         print(len(todo), 'clips to re-record;', len(fallback), 'recorded from their key text (not found in this corpus sample)')
-        for f in pathlib.Path(AUDIO).glob('pip-*.mp3'):
+        for f in pathlib.Path(AUDIO).glob(SPEAKERS[SPEAKER][2] + '-*.mp3'):
             f.unlink()
         m['clips'], m['sprites'], first = {}, [], 0
     else:

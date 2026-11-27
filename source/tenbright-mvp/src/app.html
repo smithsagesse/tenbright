@@ -939,6 +939,7 @@ tr:last-child td { border-bottom: none; }
   .checkbtn { height: var(--t-primary); font-size: 22px; }
   .buddy { margin: 0; }
   .buddy .pip { width: 72px; height: 72px; }
+  .buddy .zuri { --zs: 66px; margin-left: 18px; }
   /* Pip sits beside the answer box, so the keypad and Check stay on screen */
   .work > .panel:has(> .buddy + .entry) { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 10px; }
   .work > .panel:has(> .buddy + .entry) > * { grid-column: 1 / -1; }
@@ -1074,6 +1075,29 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
    on the night sky (not in a card) use the light caption colour in both themes */
 .stage { min-height: 100vh; min-height: 100dvh; }
 .stage > .hint-text, .stage .game-stage > .hint-text { color: rgba(235,240,255,.82); }
+
+/* ---------- Zuri: her figure and her Shape Spark (glowing shapes drawn in code) ---------- */
+.zuri { position: relative; display: block; height: calc(var(--zs, 124px) * 1.15); aspect-ratio: 620 / 1100; flex: none; }
+.z-img { display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 6px 10px rgba(0,0,0,.28)); }
+.zuri .zs { position: absolute; width: 30%; height: auto; aspect-ratio: 1; overflow: visible; fill: rgba(95,208,255,.16); stroke: #9BE7FF; stroke-width: 7; stroke-linejoin: round;
+  filter: drop-shadow(0 0 3px #4FC3FF) drop-shadow(0 0 9px rgba(79,195,255,.75)); opacity: 0; pointer-events: none; }
+/* around her raised fingertip (about 21% across, 25% down the picture) */
+.zuri .zs0 { left: -4%; top: 0; }
+.zuri .zs1 { left: -30%; top: 12%; width: 26%; }
+.zuri .zs2 { left: -12%; top: 27%; width: 28%; }
+.z-point .zs1, .z-wave .zs, .z-spark .zs { opacity: 1; }
+html:not(.motion-still) .z-spark .zs { animation: zBurst .8s cubic-bezier(.2,.8,.2,1) backwards; }
+html:not(.motion-still) .z-spark .zs1 { animation-delay: .08s; }
+html:not(.motion-still) .z-spark .zs2 { animation-delay: .16s; }
+html:not(.motion-still) .z-spark .z-img { animation: zHop .55s cubic-bezier(.3,1.4,.5,1) 1; }
+html:not(.motion-still) .z-wave .zs { animation: zBurst .7s cubic-bezier(.2,.8,.2,1) backwards; }
+@keyframes zBurst { from { opacity: 0; transform: translate(60%, 40%) scale(.2) rotate(-30deg); } to { opacity: 1; transform: none; } }
+@keyframes zHop { 0% { transform: none; } 40% { transform: translateY(-9%); } 100% { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .zuri .zs, .zuri .z-img { animation: none !important; } }
+.buddy .zuri { --zs: 108px; margin-left: 12%; }
+.pip-fig .zuri { height: calc(clamp(96px, 20vw, 150px) * 1.4); margin-left: 9%; }
+.zuri-hi { margin: 0 0 6px; }
+@media (max-width: 520px) { .buddy .zuri { --zs: 84px; } }
 </style>
 
 <div id="app" aria-live="polite"></div>
@@ -1129,7 +1153,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
     I.setLang(l);
     try { refreshVoiceStatus().then(() => { if (view && view.name === 'dashboard') render(); }); } catch (e) {}
     try { document.documentElement.lang = I.HTML_LANG[I.getLang()]; document.documentElement.dir = I.RTL[I.getLang()] ? 'rtl' : 'ltr'; } catch (e) {}
-    pipVoice = null;
+    pipVoice = null; zuriVoice = null;
   }
   S.children.forEach((c) => E.migrateLearner(c));
   // retention: answer events and sessions older than 13 months are removed from this device
@@ -1526,7 +1550,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
 
   // Picks the most natural on-device English voice. Online voices are never used:
   // they would send the text and the device's IP address to a third party.
-  let pipVoice = null;
+  let pipVoice = null, zuriVoice = null;
   const MALE_VOICE = /\b(male|man|boy|alex|aaron|arthur|daniel|evan|fred|gordon|nathan|oliver|reed|rishi|rocko|tom|eddy|grandpa|david|mark|guy|andrew|brian|christopher|eric|roger|ryan|steffan|thomas|henri|paul|r[ée]my|antoine|jorge|diego|juan|[aá]lvaro|pablo|ra[uú]l|carlos|enrique|yunxi|yunyang|yunjian|kangkang|zhiwei|hamed|maged|shakir|naayf|tarik)\b/i;
   function rankVoice(v) {
     let s = 0;
@@ -1540,6 +1564,8 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
     if (MALE_VOICE.test(v.name)) s += 35;
     return s;
   }
+  // Zuri's recorded voice is a woman's (Kokoro af_heart): her device voice is the best one that is not a male voice
+  const rankZuri = (v) => rankVoice(v) - (MALE_VOICE.test(v.name) ? 70 : 0);
   function pickVoice() {
     try {
       const l = lang(), want = { en: /^en/i, es: /^es/i, fr: /^fr/i, ht: /^ht/i, zh: /^(zh|cmn)/i, ar: /^ar/i }[l] || /^en/i;
@@ -1547,7 +1573,8 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
       const pref = { es: /^es[-_](US|MX|419)/i, fr: /^fr[-_]FR/i, ht: /^ht/i, zh: /^zh[-_](TW|Hant)/i, ar: /^ar[-_](SA|001)/i, en: /^en[-_]US/i }[l];
       vs.sort((a, b) => (rankVoice(b) + (pref.test(b.lang) ? 20 : 0)) - (rankVoice(a) + (pref.test(a.lang) ? 20 : 0)));
       pipVoice = vs[0] || null;
-    } catch (e) { pipVoice = null; }
+      zuriVoice = vs.slice().sort((a, b) => (rankZuri(b) + (pref.test(b.lang) ? 20 : 0)) - (rankZuri(a) + (pref.test(a.lang) ? 20 : 0)))[0] || null;
+    } catch (e) { pipVoice = null; zuriVoice = null; }
   }
   try {
     if ('speechSynthesis' in window) {
@@ -1559,8 +1586,12 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
   // ---------- Pip's recorded voice ----------
   // Clips are pre-recorded (Kokoro, voice "Heart", Apache-2.0 model) into a few audio files that ship with the app.
   // Nothing is fetched from anywhere else; if a sentence has no clip, the device voice reads it instead.
-  const AUDIO = { map: /*AUDIOMAP*/null, ctx: null, buffers: {}, loading: {}, sources: [], misses: [] };
-  const hasClip = (k) => !!(AUDIO.map && AUDIO.map.clips[k]);
+  const AUDIO = { map: /*AUDIOMAP*/null, zmap: /*AUDIOMAP_ZURI*/null, ctx: null, buffers: {}, loading: {}, sources: [], misses: [] };
+  // Zuri has her own recordings (audio/zuri-*.mp3, narration/audio-zuri); Pip's are audio/pip-*.mp3
+  const voiceMap = (who) => (who === 'zuri' ? AUDIO.zmap : AUDIO.map);
+  const bufKey = (who, i) => (who === 'zuri' ? 'z' : '') + i;
+  const hasClipFor = (who) => (k) => !!(voiceMap(who) && voiceMap(who).clips[k]);
+  const hasClip = hasClipFor('pip');
   function audioCtx() {
     try {
       if (!AUDIO.ctx) { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; AUDIO.ctx = new AC(); }
@@ -1568,15 +1599,16 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
       return AUDIO.ctx;
     } catch (e) { return null; }
   }
-  function loadSprite(i) {
-    if (AUDIO.buffers[i]) return Promise.resolve(AUDIO.buffers[i]);
-    if (!AUDIO.loading[i]) {
-      AUDIO.loading[i] = fetch(AUDIO.map.sprites[i]).then((r) => { if (!r.ok) throw new Error('audio ' + r.status); return r.arrayBuffer(); })
+  function loadSprite(i, who) {
+    const key = bufKey(who, i);
+    if (AUDIO.buffers[key]) return Promise.resolve(AUDIO.buffers[key]);
+    if (!AUDIO.loading[key]) {
+      AUDIO.loading[key] = fetch(voiceMap(who).sprites[i]).then((r) => { if (!r.ok) throw new Error('audio ' + r.status); return r.arrayBuffer(); })
         .then((buf) => new Promise((res, rej) => audioCtx().decodeAudioData(buf, res, rej)))
-        .then((dec) => (AUDIO.buffers[i] = dec))
-        .catch((e) => { AUDIO.loading[i] = null; throw e; });
+        .then((dec) => (AUDIO.buffers[key] = dec))
+        .catch((e) => { AUDIO.loading[key] = null; throw e; });
     }
-    return AUDIO.loading[i];
+    return AUDIO.loading[key];
   }
   // the first file (numbers and the most common lines) loads first; the rest follow one at a time
   function preloadPipAudio() {
@@ -1585,14 +1617,15 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
     AUDIO.map.sprites.reduce((p, _, i) => p.then(() => loadSprite(i)).catch(() => {}), Promise.resolve());
   }
   function stopClips() { AUDIO.sources.forEach((src) => { try { src.stop(); } catch (e) {} }); AUDIO.sources = []; }
-  function playPlan(planned, token, done) {
+  function playPlan(planned, token, done, who) {
+    AUDIO.lastWho = who || 'pip';
     const ctx = audioCtx(), PAD = 0.03, GAP = 0.05, SENT = 0.32;
     let t = ctx.currentTime + 0.06;
     planned.forEach((sentence) => {
       sentence.forEach((k) => {
-        const [si, start, dur] = AUDIO.map.clips[k];
+        const [si, start, dur] = voiceMap(who).clips[k];
         const src = ctx.createBufferSource();
-        src.buffer = AUDIO.buffers[si];
+        src.buffer = AUDIO.buffers[bufKey(who, si)];
         src.connect(voiceOut(ctx));
         src.start(t, Math.max(0, start - PAD), dur + 2 * PAD);
         AUDIO.sources.push(src);
@@ -1615,11 +1648,13 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
     if ((!force && S.settings && S.settings.narrate === false) || voiceVol() === 0) { setTalking(false); setTimeout(done, Math.max(1500, String(text).split(/\s+/).length * 330)); return; }
     setTalking(true);
     if (lang() !== 'en') { deviceSpeak(I.speakableL(lang(), T(text)), done, true); return; }
-    const planned = AUDIO.map ? TBSpeech.plan(text, hasClip) : null;
-    if (AUDIO.map && !planned && AUDIO.misses.length < 200) AUDIO.misses.push(String(text));
+    // the guide on screen speaks: Zuri in her lessons and questions, Pip everywhere else
+    const who = guideId(), vm = voiceMap(who);
+    const planned = vm ? TBSpeech.plan(text, hasClipFor(who)) : null;
+    if (vm && !planned && AUDIO.misses.length < 200) AUDIO.misses.push(String(text));
     if (planned && location.protocol !== 'file:' && audioCtx()) {
-      const need = new Set(); planned.forEach((sen) => sen.forEach((k) => need.add(AUDIO.map.clips[k][0])));
-      Promise.all([...need].map(loadSprite)).then(() => { if (token === speakToken) playPlan(planned, token, done); }, () => { if (token === speakToken) deviceSpeak(text, done); });
+      const need = new Set(); planned.forEach((sen) => sen.forEach((k) => need.add(vm.clips[k][0])));
+      Promise.all([...need].map((i) => loadSprite(i, who))).then(() => { if (token === speakToken) playPlan(planned, token, done, who); }, () => { if (token === speakToken) deviceSpeak(text, done); });
       return;
     }
     deviceSpeak(text, done);
@@ -1630,12 +1665,13 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
     try {
       if (!('speechSynthesis' in window)) { fallback(); return; }
       if (!pipVoice) pickVoice();
-      if (!pipVoice) { fallback(); return; }
+      const dv = guideId() === 'zuri' ? zuriVoice || pipVoice : pipVoice;
+      if (!dv) { fallback(); return; }
       // One utterance per sentence gives natural pauses between sentences (decimal points are not sentence ends).
       const parts = ready ? (String(text).match(/[^.!?。！？]*(?:[.!?。！？]+|$)\s*/g) || []).map((x) => x.replace(/\s+$/, '')).filter((x) => x.trim()) : TBSpeech.sentences(text);
       parts.forEach((p, i) => {
         const u = new SpeechSynthesisUtterance(p);
-        u.voice = pipVoice; u.lang = pipVoice.lang; u.rate = 0.95; u.pitch = 1.05; u.volume = voiceVol();
+        u.voice = dv; u.lang = dv.lang; u.rate = 0.95; u.pitch = guideId() === 'zuri' ? 1.15 : 1.05; u.volume = voiceVol();
         if (i === parts.length - 1) { u.onend = done; u.onerror = done; }
         window.speechSynthesis.speak(u);
       });
@@ -1774,7 +1810,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
       <div class="walk-nav">
         <button class="kbtn" data-act="guideBack" ${g.i < 0 ? 'disabled' : ''}>${icoBack} Back</button>
         <button class="kbtn" data-act="guideSay" aria-label="Hear Pip again">${icoSpeaker} Again</button>
-        ${micBtn('Talk to Pip')}
+        ${micBtn('Talk to ' + guideName())}
         ${g.i < g.steps.length && !guideWaiting() ? `<button class="kbtn big" data-act="guideNext">${g.i < 0 ? 'I wrote it' : 'Next'}</button>` : ''}
       </div>
     </div>`;
@@ -1886,6 +1922,31 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
     </svg>`;
   }
   const pipSvg = (size, mood, opts) => pipChar(size, mood || 'idle', opts);
+  // ---------- Zuri (owner, Nov 27, 2026): Pip's teammate, guide of the Shape Garden and the Measuring Workshop ----------
+  // Art: art/zuri-hero.webp, cut out of the owner's image by tools/art/zuri.py. Her superpower, Shape Spark: she draws glowing
+  // shapes in the air. The shapes are drawn here in code, so they stay sharp and can move (only when animation allows).
+  // Like Pip she says she is a computer-made helper and never claims to be a friend (hard rule 6).
+  const ZURI = { met: false };
+  const ZURI_HI = "Hi, I'm Zuri! I'm a helper the Tenbright team made with a computer, and my voice is made by a computer too. I draw shapes with light. Let's measure and build together!";
+  const zuriSkill = (id) => /^(GE|MS)\d/.test(id || '');
+  // the guide on screen now: Zuri for her skills (a "Fix Pip's mistake" question stays Pip's), Pip everywhere else
+  function guideId() {
+    if (view.name === 'learn' && session && zuriSkill(session.skill)) return 'zuri';
+    if (view.name === 'item' && session && session.item && session.item.format !== 'mistake' && zuriSkill(session.item.skill)) return 'zuri';
+    return 'pip';
+  }
+  const guideName = () => (guideId() === 'zuri' ? 'Zuri' : 'Pip');
+  const ZURI_MOOD = { cheer: 'spark', proud: 'spark', dance: 'spark', wave: 'wave', encourage: 'calm', think: 'calm', curious: 'calm', point: 'point', idle: 'calm' };
+  const sparkShape = (k) => k === 0 ? '<path d="M50 14 L84 74 L16 74 Z"></path>'
+    : k === 1 ? '<rect x="22" y="22" width="56" height="56" rx="3"></rect>'
+    : '<path d="M50 12 L83 31 L83 69 L50 88 L17 69 L17 31 Z"></path>';
+  function zuriChar(size, mood) {
+    const m = ZURI_MOOD[mood] || 'calm';
+    const sparks = [0, 1, 2].map((k) => `<svg class="zs zs${k}" viewBox="0 0 100 100" aria-hidden="true">${sparkShape(k)}</svg>`).join('');
+    return `<div class="zuri z-${m}" style="--zs:${size}px" aria-hidden="true"><img class="z-img" src="art/zuri-hero.webp" alt="" width="620" height="1100" decoding="async" draggable="false">${sparks}</div>`;
+  }
+  // the guide's figure: Pip's rig, or Zuri for her skills
+  const guideChar = (size, mood, opts) => (guideId() === 'zuri' ? zuriChar(size, mood) : pipChar(size, mood, opts));
   const pipPose = (size, pose, opts) => pipChar(size, pose, opts);
 
   // ---------- settings for sound and motion (grown-ups page; kept on this device) ----------
@@ -2055,6 +2116,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
       if (host && lvl === 'full') { const r = host.getBoundingClientRect(); if (r.width) confetti({ x: r.left + r.width / 2, y: r.top + r.height / 2, n: 18 }); }
     }
     animateVisuals(lvl);
+    if (FX.dive && guideId() === 'zuri') FX.dive = false;
     if (FX.dive) { FX.dive = false; const q = app.querySelector('.work > .panel'); if (q) setTimeout(() => galaxyDive(q), 120); }
   }
   // Compares each math picture with the previous one of the same lesson or question; only new or changed parts animate,
@@ -2140,7 +2202,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
     try {
       if (document.hidden || animLevel() !== 'full' || !FLY_VIEWS[view.name]) return;
       const now = Date.now();
-      if (FX.nextFly && now >= FX.nextFly) { flyby(); FX.nextFly = now + 22000 + Math.random() * 23000; }
+      if (FX.nextFly && now >= FX.nextFly && guideId() !== 'zuri') { flyby(); FX.nextFly = now + 22000 + Math.random() * 23000; }
       if (view.name === 'map' && !FX.idlePlayed && !FX.poke && now - (FX.lastInput || now) > 20000) {
         FX.idlePlayed = true; FX.poke = 'piano'; render(); sfx('piano');
         FX.pokeT = setTimeout(() => { if (view.name === 'map' && FX.poke === 'piano') { FX.poke = null; render(); } }, 5500);
@@ -3244,7 +3306,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
         <div class="panel walk">
           <div class="walk-top"><span class="eyebrow">Picture ${i + 1} of ${frames.length}</span><div class="progress" aria-hidden="true">${frames.map((_, j) => `<i class="${j <= i ? 'done' : ''}"></i>`).join('')}</div></div>
           <div class="pip-say pop" data-frame="${i}">
-            <div class="pip-fig pose-${f.pose}">${pipPose(150, f.pose, { react: reactNow() })}</div>
+            <div class="pip-fig pose-${f.pose}">${guideId() === 'zuri' ? zuriChar(150, f.pose) : pipPose(150, f.pose, { react: reactNow() })}</div>
             <div class="bubble"><p>${escM(f.text)}</p>${f.idea ? `<ol class="learn-steps">${f.idea.map((t) => `<li>${escM(t)}</li>`).join('')}</ol>` : ''}</div>
           </div>
           <div class="model step-visual pop">${f.visual}</div>
@@ -3253,8 +3315,8 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
           <div class="walk-nav">
             <button class="kbtn" data-act="framePrev" ${i === 0 ? 'disabled' : ''} aria-label="Back one picture">${icoBack} Back</button>
             <button class="kbtn" data-act="autoplay" aria-pressed="${!!session.autoplay}">${session.autoplay ? '❚❚ Pause' : '▶ Play all'}</button>
-            ${micBtn('Talk to Pip: say next, back or again')}
-            ${lastFrame ? '<button class="kbtn big" data-act="beginPractice" data-autofocus>Try it with Pip</button>' : '<button class="kbtn big" data-act="frameNext" data-autofocus>Next</button>'}
+            ${micBtn(`Talk to ${guideName()}: say next, back or again`)}
+            ${lastFrame ? `<button class="kbtn big" data-act="beginPractice" data-autofocus>Try it with ${guideName()}</button>` : '<button class="kbtn big" data-act="frameNext" data-autofocus>Next</button>'}
           </div>
         </div>
       </main>`;
@@ -3302,7 +3364,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
             <div class="pad">${['1','2','3','4','5','6','7','8','9'].map((d) => `<button data-act="digit" data-d="${d}" aria-label="${d}">${d}</button>`).join('')}<button data-act="del" aria-label="Delete">⌫</button><button data-act="digit" data-d="0" aria-label="0">0</button><button data-act="digit" data-d="." aria-label="Decimal point">.</button></div>
             <button class="checkbtn" data-act="guideCheck" ${session.entry ? '' : 'disabled'}>Check step</button>`
           : `<p class="speech" style="color:var(--ink);background:var(--surface);border-color:var(--hairline)">Write it on your paper, then tap <b>${g.i < 0 ? 'I wrote it' : 'Next'}</b>${voiceOn() ? ' or say "next"' : ''}.</p>`)
-        : `${input}${actionBtn}${!fb && session.mode !== 'placement' && !g && !mistake && !fill ? '<button class="kbtn guide-btn" data-act="startGuide"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path><path d="M13.5 6.5l4 4"></path></svg> Work it with Pip</button>' : ''}${!fb ? micBtn('Say your answer') : ''}${heardLine()}`;
+        : `${input}${actionBtn}${!fb && session.mode !== 'placement' && !g && !mistake && !fill ? '<button class="kbtn guide-btn" data-act="startGuide"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path><path d="M13.5 6.5l4 4"></path></svg> Work it with ' + guideName() + '</button>' : ''}${!fb ? micBtn('Say your answer') : ''}${heardLine()}`;
       return `<main class="stage">
         <div class="topbar">
           <button class="kbtn" data-act="exitSession">${icoBack} Map</button>
@@ -3314,7 +3376,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
             <div class="row" style="justify-content:space-between;flex-wrap:nowrap"><p class="prompt ${words ? 'words' : ''}">${prompt}</p><button class="kbtn icon" style="background:var(--lantern);border-color:var(--lantern);color:#1E2A3B" data-act="say" data-text="${esc(it.prompt)}" aria-label="Hear the question">${icoSpeaker}</button></div>
             ${mistake ? `<div class="pip-say"><div class="pip-fig pose-${fb && fb.ok ? 'cheer' : 'think'}">${pipPose(110, fb && fb.ok ? 'cheer' : session.mnote && !session.mnote.ok ? 'encourage' : session.mnote ? 'proud' : 'think', { react: reactNow() })}</div><div class="bubble"><p>${fb && fb.ok ? 'Thank you for fixing my mistake!' : session.mstage === 'why' ? 'I worked this out, but I made a mistake. Can you find it?' : 'Now show me the right answer.'}</p></div></div><div class="paper-sheet pip-paper"><span class="paper-tag">Pip's paper</span><ol>${(it.lines || [it.prompt]).map((l, i, arr) => `<li class="${i === arr.length - 1 ? 'ptitle pip-wrong' : 'ptitle'}">${escM(l)}</li>`).join('')}</ol></div>${mnote}${session.mstage === 'fix' ? `<div class="model">${modelHtml(it, session.hint)}</div>` : ''}${fbHtml}` : guiding ? guideHtml() : g ? `<div class="model">${modelHtml(it, session.hint)}</div>${paperHtml(Object.assign({}, it, { steps: g.steps.map((x) => x.full) }), g.steps.length - 1)}` : fill ? `<p class="hint-text" style="font-size:16px;color:var(--ink)">One step is missing. What number goes in the box?</p>${stepFillHtml(it)}${hintBox}` : `<div class="model">${modelHtml(it, session.hint)}</div>${hintBox}`}${mistake ? '' : fbHtml}
           </div>
-          <div class="panel">${mistake ? '' : `<div class="buddy">${pipChar(124, buddyMood(), { react: reactNow(), hidden: true })}</div>`}${rightPanel}</div>
+          <div class="panel">${mistake ? '' : `${session.zuriHi && guideId() === 'zuri' ? `<p class="speech zuri-hi">${esc(ZURI_HI)}</p>` : ''}<div class="buddy">${guideChar(124, buddyMood(), { react: reactNow(), hidden: true })}</div>`}${rightPanel}</div>
         </div>
       </main>`;
     },
@@ -3663,6 +3725,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
       view = { name: 'learn' };
       react('hello'); sfx('start');
       render();
+      if (zuriSkill(skill) && !ZURI.met && session.frames) { ZURI.met = true; session.frames[0] = Object.assign({}, session.frames[0], { text: ZURI_HI + ' ' + session.frames[0].text }); render(); }
       if (session.frames) speak(session.frames[0].text);
       return;
     }
@@ -3728,7 +3791,10 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
     session.hint = session.mode === 'remediate' ? 2 : 0;
     session.guide = null; session.xkind = null; session.xi = 0; session.xnew = false; VOICE.heard = '';
     view = { name: 'item' };
+    session.zuriHi = false;
+    if (!ZURI.met && guideId() === 'zuri') { ZURI.met = true; session.zuriHi = true; }
     render();
+    if (session.zuriHi) speak(ZURI_HI);
   }
 
   // Pip beside every practice question: curious while the child works, thinking with a hint, cheering or proud on a right
@@ -4275,17 +4341,20 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
       session.item = E.makeMistake(id, rng); session.mstage = 'why'; view = { name: 'item' }; render();
     };
     // every sentence Pip can say, built with the app's own wording functions (used to choose what to record)
-    window.__tbSpeechCorpus = (per) => {
+    // who: 'pip' (default) lists everything Pip says; 'zuri' lists what Zuri says (her skills, her hello, the shared lines)
+    window.__tbSpeechCorpus = (per, who) => {
+      const SK = who === 'zuri' ? E.SKILL_ORDER.filter(zuriSkill) : E.SKILL_ORDER, ZU = who === 'zuri';
       const fixed = new Set(), dyn = new Set();
       const F = (t) => { if (t) fixed.add(String(t)); }, D = (t) => { if (t) dyn.add(String(t)); };
       F("Hi, I'm Pip! I'm a helper made by the Tenbright team using a computer, and my voice is made by a computer too. I collect light beads. Ten beads make a lantern. Will you help me light the Kingdom?");
       F(ADV.intro); F(ADV.back); F(ADV.rest); D('I found 12 lanterns you can already light. ' + ADV.found); D('I found 1 lanterns you can already light. ' + ADV.found);
       F('Who is playing? Choose your player to start your Tenbright adventure!');
+      if (ZU) F(ZURI_HI);
       F('Watch my capoeira moves!'); F('Let me play you a song!'); F('Hi, friend! I am so glad you are here.');
       F('Got it!'); F("Thanks! Let's keep exploring."); F('That’s how it works! Now it’s your turn.');
       Object.values(PRAISE).forEach((x) => { F(x); F(x + ' You fixed it.'); });
       Object.values(E.MISCONCEPTIONS).forEach((m) => F(m.clue + ' Try again.'));
-      E.SKILL_ORDER.forEach((id) => {
+      SK.forEach((id) => {
         const c = C[id];
         F(c.hook); c.teach.forEach(F); F(c.nudge); F(c.strategy); if (c.history) F(c.history);
         F(c.hook + ' ' + c.teach.join(' '));
@@ -4306,20 +4375,20 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
       });
       // new learning features
       Object.values(E.PIP_DID).forEach((t) => { F('Yes! ' + t + ' What should the answer be?'); F('Not quite. ' + t + ' What should the answer be?'); });
-      E.SKILL_ORDER.forEach((id) => { F('Yes! ' + C[id].strategy); F('Here is why: ' + C[id].strategy); });
+      SK.forEach((id) => { F('Yes! ' + C[id].strategy); F('Here is why: ' + C[id].strategy); });
       ['Bullseye!', 'So close!', 'Here is where it lives.'].forEach(F);
       // Phase 4: new kinds of questions and explanation variants
       F('One step is missing. What number goes in the box?');
       // Phase 6: trial strategies (children see these only when a parent turns them on)
-      ST.LIST.forEach((sg) => { if (sg.status !== 'trial') return; F(sg.child.join(' ')); sg.child.forEach(F); for (let k = 0; k < 80; k++) { const q = ST.question(sg.id, E, rng); D(q.prompt); q.steps.forEach(D); } });
+      if (!ZU) ST.LIST.forEach((sg) => { if (sg.status !== 'trial') return; F(sg.child.join(' ')); sg.child.forEach(F); for (let k = 0; k < 80; k++) { const q = ST.question(sg.id, E, rng); D(q.prompt); q.steps.forEach(D); } });
       F(GAME_DONE.trial); F(GAME_CLUE.trial);
       // Phase 5: games
       Object.values(GAME_DONE).forEach(F); Object.values(GAME_CLUE).forEach(F); F('Right!'); F('Right! You used the clue.');
-      Object.keys(E.GAMES).forEach((g) => E.GAMES[g].levels.forEach((_, i) => { for (let k = 0; k < 60; k++) { const rd = E.gameRound(g, i + 1, rng); D(rd.prompt); D('Here is how. ' + rd.how); } }));
+      if (!ZU) Object.keys(E.GAMES).forEach((g) => E.GAMES[g].levels.forEach((_, i) => { for (let k = 0; k < 60; k++) { const rd = E.gameRound(g, i + 1, rng); D(rd.prompt); D('Here is how. ' + rd.how); } }));
       // Money & Wealth Adventures: what Pip says at the start of each story, each step, "here is how", and the explainers
-      Object.keys(E.ADVENTURES).forEach((id) => { for (let k = 0; k < 60; k++) { const a = E.adventure(id, rng); D(a.intro + ' ' + a.steps[0].prompt); a.steps.forEach((st) => { D(st.prompt); D('Here is how. ' + st.how); }); } if (E.ADVENTURES[id].explainer) for (let k = 0; k < 40; k++) E.adventureExplainer(id, rng).forEach((f) => D(f.say)); });
+      if (!ZU) Object.keys(E.ADVENTURES).forEach((id) => { for (let k = 0; k < 60; k++) { const a = E.adventure(id, rng); D(a.intro + ' ' + a.steps[0].prompt); a.steps.forEach((st) => { D(st.prompt); D('Here is how. ' + st.how); }); } if (E.ADVENTURES[id].explainer) for (let k = 0; k < 40; k++) E.adventureExplainer(id, rng).forEach((f) => D(f.say)); });
       Object.values(X_LABEL).forEach((l) => { F(l); F('Let’s try it a new way. ' + l); });
-      E.SKILL_ORDER.forEach((id) => {
+      SK.forEach((id) => {
         F(X_LABEL.idea + ' ' + C[id].teach.join(' ')); F('Let’s try it a new way. ' + X_LABEL.idea + ' ' + C[id].teach.join(' '));
         for (let i = 0; i < Math.max(4, per >> 1); i++) {
           const t = E.makeTransfer(id, rng); if (t) D(t.prompt);
@@ -4329,7 +4398,7 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
         }
       });
       for (const g of [1, 2, 3, 4, 5]) for (let i = 0; i < 300; i++) { const li = E.lineItem(g, rng); D('Where does ' + li.label + ' go on the line from ' + li.lo + ' to ' + li.hiLabel + '?'); D('Where does ' + li.label + ' go?'); }
-      E.SKILL_ORDER.forEach((id) => { for (let i = 0; i < 40; i++) { const m = E.makeMistake(id, rng); if (!m) break; D(m.prompt); D('You fixed Pip’s mistake! The answer is ' + m.answer + '.'); } });
+      SK.forEach((id) => { for (let i = 0; i < 40; i++) { const m = E.makeMistake(id, rng); if (!m) break; D(m.prompt); D('You fixed Pip’s mistake! The answer is ' + m.answer + '.'); } });
       session = null;
       return { fixed: [...fixed], dynamic: [...dyn] };
     };
@@ -4353,10 +4422,13 @@ html:not(.motion-still) .w2-star svg, html:not(.motion-still) .w2-bstar svg { an
       startGame(g, !!timed); return session;
     };
     window.__tbSpeechMisses = () => AUDIO.misses.slice();
-    window.__tbSpeakPlan = (t) => (AUDIO.map ? TBSpeech.plan(t, hasClip) : null);
-    window.__tbAudioMap = () => AUDIO.map;
+    window.__tbSpeakPlan = (t, who) => (voiceMap(who) ? TBSpeech.plan(t, hasClipFor(who)) : null);
+    window.__tbGuide = () => guideId();
+    window.__tbAudioMap = (who) => voiceMap(who);
     window.__tbSay = (t, cb) => speak(t, cb);
-    window.__tbAudioState = () => ({ clipsPlayed: AUDIO.played || 0, deviceVoice: AUDIO.deviceUsed || 0, misses: AUDIO.misses.length });
+    window.__tbAudioState = () => ({ clipsPlayed: AUDIO.played || 0, deviceVoice: AUDIO.deviceUsed || 0, misses: AUDIO.misses.length, voice: AUDIO.lastWho || '' });
+    window.__tbPractice = (id) => startSession('practice', id);
+    window.__tbZuriHi = () => ZURI_HI;
     window.__tbVoice = { parse: (alts, item) => parseVoice(alts, item), num: parseSpokenNumber, status: () => VOICE.status, refresh: refreshVoiceStatus, on: voiceOn };
   }
   /*SELFTEST-END*/

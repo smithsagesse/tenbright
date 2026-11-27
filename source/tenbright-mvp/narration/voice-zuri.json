@@ -1,0 +1,12 @@
+{
+  "character": "Zuri",
+  "engine": "Kokoro-82M (open model, Apache-2.0 licence, run locally)",
+  "voice": "af_heart (American English, female)",
+  "kokoro_voice": "af_heart",
+  "speed": 0.95,
+  "lang": "en-us",
+  "chosen": "2026-11-27",
+  "why": "Kokoro has no child voices; af_heart is the warm American female voice the owner kept for Pip from Nov 3 to Nov 27, 2026. The owner can pick another from samples; then run record.py --speaker zuri --all.",
+  "how_it_works": "Same as Pip (voice.json): record.py --speaker zuri lists everything Zuri says from the app (her skills GE and MS, her hello, the shared praise and clue lines), records the missing clips into narration/audio-zuri as zuri-N.mp3 sprites plus map.json; build.js embeds the map and copies the sprites into dist/audio.",
+  "disclosure": "Zuri tells children her voice is made by a computer, as Pip does."
+}

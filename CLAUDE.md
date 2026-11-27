@@ -20,8 +20,18 @@ Full history: `docs/DECISIONS_AND_HISTORY.md`. Planning documents: `docs/`.
   (bridges, stairs, shields), so she pairs with shapes, patterns, measuring and building while Pip has numbers and lanterns.
   Her interests (owner, Nov 27): **science, mathematics and the arts**: she experiments, measures and makes things beautiful
   (patterns, symmetry, colour), so she fits the Shape Garden, Measuring Workshop, patterns and any science-flavoured story.
-  Concept art only so far (ElevenLabs flow jhjer4eyYc924ozWSlgN, gpt-image model); not in the app yet. Like Pip she is a
-  computer-made helper and never claims to be a friend (hard rule 6). AI-made art: the art-rights decision applies.
+  **In the app since Nov 27, 2026, from the owner's own image** ("Please use this girl"): blue suit, gold cape, gold boots and
+  the same "T" belt as Pip, curly hair with a gold headband (this replaces the earlier ElevenLabs concept, which stays unused
+  because the free plan has no commercial licence). `tools/art/zuri.py` cuts her out of `art-source/zuri-reference.webp`
+  (the checkerboard there is painted, not transparent) into `art/zuri-hero.webp`; her floating symbols are left out and her
+  Shape Spark shapes (triangle, square, hexagon) are drawn in code (`zuriChar`), still under reduced motion.
+  She guides the GE and MS skills (`zuriSkill`, `guideId()`): lesson figure, the buddy beside the answer box, "Try it /
+  Work it with Zuri"; "Fix Pip's mistake" stays Pip, and Pip's flyby and galaxy dive skip her screens. Her hello
+  (`ZURI_HI`, captioned) plays once per page visit (memory only, nothing stored). Her voice: Kokoro **`af_heart`**
+  (`narration/voice-zuri.json`, clips in `narration/audio-zuri/` as `audio/zuri-*.mp3`, recorded with
+  `python3 narration/record.py --speaker zuri`); speak() uses her clips whenever she is the guide on screen, and her device
+  voice prefers a non-male voice. Like Pip she is a computer-made helper and never claims to be a friend (hard rule 6).
+  The art-rights decision applies to her picture as to Pip's.
 - **Brand architecture:** GMIA is the company. Tenbright is the product. Number Kingdom is the world, with five regions:
   Lantern Village (review hub), Bead Meadows (place value), Ferry River (add/subtract),
   Orchard of Rows (multiplication) and Story Bridge (word problems).
@@ -150,7 +160,7 @@ with identical sw.js, manifest, icons, art and audio. It contains:
 - `build.js`: run `node build.js` to produce `dist/index.html` (and `dist/test.html` with test hooks).
 - Tests: `node test/engine.test.js` (math engine, millions of generated checks); `node test/explain.test.js` (plain-words lessons); `node test/strategies.test.js` (strategy library); Playwright suites
   `test/e2e.py`, `test/features_test.py`, `test/audio_test.py`, `test/living_test.py`,
-  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py`, `test/money_time_test.py`, `test/measure_shape_test.py`, `test/dashboard2_test.py`, `test/adventure_test.py`, `test/data_safety_test.py` (unreadable data, two tabs, failed saves, standards mode and phone viewport), `test/keyboard_test.py` (keyboard-only journey, focus rings), `test/who_test.py` (the "Who is playing?" screen), `test/pictures_test.py` (pictures of what is being learned) and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
+  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py`, `test/money_time_test.py`, `test/measure_shape_test.py`, `test/dashboard2_test.py`, `test/adventure_test.py`, `test/data_safety_test.py` (unreadable data, two tabs, failed saves, standards mode and phone viewport), `test/keyboard_test.py` (keyboard-only journey, focus rings), `test/who_test.py` (the "Who is playing?" screen), `test/pictures_test.py` (pictures of what is being learned), `test/zuri_test.py` (Zuri: where she guides, her hello, her voice) and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
 - `docs/animation-system.md` and `README.md`.
 
 Make changes in `source/tenbright-mvp/src/`, rebuild and run every suite.
