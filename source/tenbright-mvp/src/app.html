@@ -2243,10 +2243,20 @@ html.motion-still .z-notes { opacity: 1; }
     // Pip's piano tune (C major pentatonic, two short phrases)
     piano: [[523.3, 0], [587.3, 0.22], [659.3, 0.44], [784, 0.66], [659.3, 0.88], [784, 1.1], [880, 1.32], [1046.5, 1.6, 'sine', 0.8], [659.3, 1.6, 'sine', 0.4], [784, 1.6, 'sine', 0.4]]
   };
-  // Zuri's violin piece: a recording made by tools/art/violin.py, played as a normal audio file so it also works offline
-  function playViolin() {
+  // Pip's piano and Zuri's violin: 15-second hip-hop tunes made by tools/art/music.py (sounds/pip-piano.mp3,
+  // sounds/zuri-violin.mp3), played as ordinary audio files on the sound-effects volume, one at a time, map only
+  const TUNE_MS = 15300;
+  function playTune(name) {
     const v = sfxVol(); if (!v) return;
-    try { if (FX.violinAudio) FX.violinAudio.pause(); const a = new Audio('sounds/zuri-violin.mp3'); a.volume = Math.min(1, v * 0.8); FX.violinAudio = a; const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); } catch (e) { /* no audio */ }
+    try { stopTune(true); const a = new Audio('sounds/' + name + '.mp3'); a.volume = Math.min(1, v * 0.8); FX.violinAudio = a; const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); } catch (e) { /* no audio */ }
+  }
+  // stop the music; unless keepActs, also put the violin away and end Pip's piano act
+  function stopTune(keepActs) {
+    try { if (FX.violinAudio) FX.violinAudio.pause(); } catch (e) {}
+    clearTimeout(FX.tuneT);
+    if (keepActs) return;
+    if (FX.zviolin) { FX.zviolin = false; clearTimeout(FX.zviolinT); }
+    if (FX.poke === 'piano') { FX.poke = null; clearTimeout(FX.pokeT); }
   }
   function sfx(name) {
     const v = sfxVol(); if (!v || !SFX_NOTES[name]) return;
@@ -2467,8 +2477,8 @@ html.motion-still .z-notes { opacity: 1; }
       const now = Date.now();
       if (FX.nextFly && now >= FX.nextFly && guideId() !== 'zuri') { flyby(); FX.nextFly = now + 22000 + Math.random() * 23000; }
       if (view.name === 'map' && !FX.idlePlayed && !FX.poke && now - (FX.lastInput || now) > 20000) {
-        FX.idlePlayed = true; FX.poke = 'piano'; render(); sfx('piano');
-        FX.pokeT = setTimeout(() => { if (view.name === 'map' && FX.poke === 'piano') { FX.poke = null; render(); } }, 5500);
+        FX.idlePlayed = true; stopTune(); FX.poke = 'piano'; render(); playTune('pip-piano');
+        FX.pokeT = setTimeout(() => { if (view.name === 'map' && FX.poke === 'piano') { FX.poke = null; render(); } }, TUNE_MS);
       }
     } catch (e) {}
   }, 1000);
@@ -3276,6 +3286,8 @@ html.motion-still .z-notes { opacity: 1; }
   }
   let lastRendered = null;
   function render() {
+    // the music belongs to the map: leaving it (or opening a destination card) stops the tune
+    if ((view.name !== 'map' || view.dest) && (FX.zviolin || FX.poke === 'piano' || (FX.violinAudio && !FX.violinAudio.paused))) stopTune();
     const fn = VIEWS[view.name];
     // a new screen starts at the top (the same screen redrawing keeps its place)
     const newScreen = lastRendered !== view.name; lastRendered = view.name;
@@ -4250,8 +4262,8 @@ html.motion-still .z-notes { opacity: 1; }
       case 'zuriPoke': {
         // Zuri plays her violin piece (7 seconds, sounds/zuri-violin.mp3, on the sound-effects volume); a second tap waits
         if (FX.zviolin) break;
-        FX.zviolin = true; stopSpeaking(); render(); playViolin();
-        clearTimeout(FX.zviolinT); FX.zviolinT = setTimeout(() => { FX.zviolin = false; if (view.name === 'map') render(); }, 7300);
+        stopTune(); FX.zviolin = true; stopSpeaking(); render(); playTune('zuri-violin');
+        clearTimeout(FX.zviolinT); FX.zviolinT = setTimeout(() => { FX.zviolin = false; if (view.name === 'map') render(); }, TUNE_MS);
         break;
       }
       case 'dest': view = { name: 'map', dest: b.dataset.id }; render(); speak(destSay(b.dataset.id)); break;
@@ -4305,9 +4317,9 @@ html.motion-still .z-notes { opacity: 1; }
         FX.pokes = (FX.pokes || 0) + 1;
         const m = moves[(FX.pokes - 1) % moves.length]; // capoeira first, then the piano, then a hello
         FX.poke = m[1]; clearTimeout(FX.pokeT);
-        if (m[0] === 'piano') { react('hop'); setTimeout(() => sfx('piano'), 900); } else { react(m[0]); sfx(m[0] === 'capo' ? 'berimbau' : 'poke'); }
+        if (m[0] === 'piano') { stopTune(true); FX.zviolin = false; clearTimeout(FX.zviolinT); react('hop'); clearTimeout(FX.tuneT); FX.tuneT = setTimeout(() => { if (view.name === 'map' && FX.poke === 'piano') playTune('pip-piano'); }, 900); } else { react(m[0]); sfx(m[0] === 'capo' ? 'berimbau' : 'poke'); }
         render(); speak(m[2]);
-        FX.pokeT = setTimeout(() => { if (view.name === 'map' && FX.poke) { FX.poke = null; render(); } }, m[0] === 'piano' ? 5200 : 3200);
+        FX.pokeT = setTimeout(() => { if (view.name === 'map' && FX.poke) { FX.poke = null; render(); } }, m[0] === 'piano' ? TUNE_MS + 900 : 3200);
         break;
       }
       case 'gate': view = { name: 'gate', next: b.dataset.next }; render(); break;

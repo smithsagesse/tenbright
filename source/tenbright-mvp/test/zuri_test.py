@@ -95,10 +95,20 @@ try:
         v = pg.evaluate("() => window.__tbViolin()")
         assert v['src'] == 'sounds/zuri-violin.mp3' and v['playing'] and 0 < v['volume'] <= 1, v
         dur = pg.evaluate("async () => { const a = new Audio('sounds/zuri-violin.mp3'); await new Promise((r) => { a.onloadedmetadata = r; a.onerror = r; }); return a.duration; }")
-        assert 6.8 <= dur <= 7.3, dur
+        assert 14.8 <= dur <= 15.3, dur
         assert pg.evaluate("() => getComputedStyle(document.querySelector('.zv-art .z-bow')).animationName") == 'zBow'
-        pg.wait_for_timeout(7500)
-        assert pg.locator('.zuri-poke .zv-art').count() == 0, 'the violin should be put away after the piece'
+        # one tune at a time, and the music belongs to the map: opening a destination card stops it
+        pg.locator('[data-act="dest"][data-id="river"]').click(); pg.wait_for_timeout(100)
+        assert not pg.evaluate("() => window.__tbViolin().playing"), 'the violin should stop when the child moves on'
+        pg.keyboard.press('Escape')
+        # Pip's piano: the second tap on Pip plays his 15-second piece (same length as Zuri's)
+        pg.locator('[data-act="pipPoke"]').click(); pg.wait_for_timeout(300); pg.locator('[data-act="pipPoke"]').click(); pg.wait_for_timeout(1300)
+        assert pg.locator('.pip-poke svg.pip.mood-piano').count() == 1
+        assert pg.evaluate("() => window.__tbViolin().src") == 'sounds/pip-piano.mp3'
+        dur = pg.evaluate("async () => { const a = new Audio('sounds/pip-piano.mp3'); await new Promise((r) => { a.onloadedmetadata = r; a.onerror = r; }); return a.duration; }")
+        assert 14.8 <= dur <= 15.3, dur
+        pg.wait_for_timeout(15500)
+        assert pg.locator('.pip-poke svg.pip.mood-piano').count() == 0, 'the piano act should end after the piece'
         # 5. reduced motion: her shapes do not move
         ctx = b.new_context(reduced_motion='reduce'); pg2 = ctx.new_page()
         pg2.on('pageerror', lambda e: errors.append(str(e)))
