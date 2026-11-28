@@ -92,8 +92,9 @@ try:
         pg.evaluate("() => window.__tbView('map')")
         pg.locator('[data-act="zuriPoke"]').click(); pg.wait_for_timeout(200)
         assert pg.locator('.zuri-poke .zv-art').count() == 1 and pg.locator('.zuri-cap').inner_text() == 'Zuri plays the violin.'
+        pg.wait_for_function("() => window.__tbViolin().plays >= 1", timeout=5000)
         v = pg.evaluate("() => window.__tbViolin()")
-        assert v['src'] == 'sounds/zuri-violin.mp3' and v['playing'] and 0 < v['volume'] <= 1, v
+        assert v['src'] == 'sounds/zuri-violin.mp3' and v['playing'] and v['webAudio'], v
         dur = pg.evaluate("async () => { const a = new Audio('sounds/zuri-violin.mp3'); await new Promise((r) => { a.onloadedmetadata = r; a.onerror = r; }); return a.duration; }")
         assert 9.8 <= dur <= 10.3, dur
         assert pg.evaluate("() => getComputedStyle(document.querySelector('.zv-art .z-bow')).animationName") == 'zBow'
@@ -102,9 +103,9 @@ try:
         assert not pg.evaluate("() => window.__tbViolin().playing"), 'the violin should stop when the child moves on'
         pg.keyboard.press('Escape')
         # Pip's piano: the second tap on Pip plays his 10-second piece (same length as Zuri's)
-        pg.locator('[data-act="pipPoke"]').click(); pg.wait_for_timeout(300); pg.locator('[data-act="pipPoke"]').click(); pg.wait_for_timeout(1300)
+        pg.locator('[data-act="pipPoke"]').click(); pg.wait_for_timeout(300); pg.locator('[data-act="pipPoke"]').click(); pg.wait_for_timeout(300)
         assert pg.locator('.pip-poke svg.pip.mood-piano').count() == 1
-        assert pg.evaluate("() => window.__tbViolin().src") == 'sounds/pip-piano.mp3'
+        pg.wait_for_function("() => window.__tbViolin().src === 'sounds/pip-piano.mp3' && window.__tbViolin().webAudio", timeout=5000)
         dur = pg.evaluate("async () => { const a = new Audio('sounds/pip-piano.mp3'); await new Promise((r) => { a.onloadedmetadata = r; a.onerror = r; }); return a.duration; }")
         assert 9.8 <= dur <= 10.3, dur
         pg.wait_for_timeout(10500)
