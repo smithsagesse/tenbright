@@ -1193,6 +1193,19 @@ html:not(.motion-still) .dest-card { animation: destUp .38s cubic-bezier(.2,.9,.
 @media (max-width: 420px) { .dest-tile { grid-template-columns: 76px minmax(0, 1fr); } .dest-tile .dest-art { width: 76px; height: 76px; } .dest-tile h3 { font-size: 21px; } }
 @media (prefers-reduced-transparency: reduce) { .dest-scrim { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(5,10,30,.85); } }
 @media (prefers-contrast: more) { .dest-tile { outline: 2px solid #FFFFFF; } .dest-subject { background: #000000; } }
+
+/* ---------- Zuri on the map, and her violin ---------- */
+.zuri-poke { position: relative; border: 0; background: transparent; padding: 0 6px; min-width: var(--t-child); min-height: var(--t-child); display: flex; align-items: flex-end; justify-content: center; cursor: pointer; }
+.zuri-poke .zuri { margin: 0; }
+.zuri-cap { position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%); white-space: nowrap; font-size: 14px; font-weight: 800; color: #FFFFFF; background: rgba(16,26,78,.85); padding: 2px 10px; border-radius: 999px; }
+.zuri .zv-art { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.z-notes { opacity: 0; }
+html:not(.motion-still) .zv-art .z-bow { animation: zBow .58s ease-in-out infinite alternate; transform-box: view-box; }
+html:not(.motion-still) .zv-art .z-notes { animation: zNotes 1.6s ease-out infinite; }
+html.motion-still .z-notes { opacity: 1; }
+@keyframes zBow { from { transform: translate(-22px, 45px); } to { transform: translate(22px, -45px); } }
+@keyframes zNotes { 0% { opacity: 0; transform: translateY(30px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-80px); } }
+@media (prefers-reduced-motion: reduce) { .zv-art .z-bow, .zv-art .z-notes { animation: none !important; } .z-notes { opacity: 1; } }
 </style>
 
 <div id="app" aria-live="polite"></div>
@@ -2169,14 +2182,26 @@ html:not(.motion-still) .dest-card { animation: destUp .38s cubic-bezier(.2,.9,.
     return 'pip';
   }
   const guideName = () => (guideId() === 'zuri' ? 'Zuri' : 'Pip');
-  const ZURI_MOOD = { cheer: 'spark', proud: 'spark', dance: 'spark', wave: 'wave', encourage: 'calm', think: 'calm', curious: 'calm', point: 'point', idle: 'calm' };
+  const ZURI_MOOD = { violin: 'violin', cheer: 'spark', proud: 'spark', dance: 'spark', wave: 'wave', encourage: 'calm', think: 'calm', curious: 'calm', point: 'point', idle: 'calm' };
   const sparkShape = (k) => k === 0 ? '<path d="M50 14 L84 74 L16 74 Z"></path>'
     : k === 1 ? '<rect x="22" y="22" width="56" height="56" rx="3"></rect>'
     : '<path d="M50 12 L83 31 L83 69 L50 88 L17 69 L17 31 Z"></path>';
+  // Zuri's violin (owner, Nov 28, 2026), drawn over her picture in its own 620 x 1100 coordinates: the scroll in her raised
+  // hand, the body under her chin, the bow across the strings by the bridge. The bow and the notes move only with motion on.
+  const VIOLIN = '<svg class="zv-art" viewBox="0 0 620 1100" aria-hidden="true"><defs><linearGradient id="vwood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D98A3D"></stop><stop offset=".55" stop-color="#A4521A"></stop><stop offset="1" stop-color="#6E300C"></stop></linearGradient></defs>'
+    + '<g transform="translate(398 442) rotate(-66)">'
+    + '<path d="M0 -75 C40 -75 52 -55 46 -30 C42 -15 34 -8 34 0 C34 8 44 18 56 38 C66 70 40 92 0 92 C-40 92 -66 70 -56 38 C-44 18 -34 8 -34 0 C-34 -8 -42 -15 -46 -30 C-52 -55 -40 -75 0 -75 Z" fill="url(#vwood)" stroke="#4A2208" stroke-width="4"></path>'
+    + '<path d="M-20 -6 c-6 10 6 18 0 30 M20 -6 c6 10 -6 18 0 30" fill="none" stroke="#2A1206" stroke-width="4" stroke-linecap="round"></path>'
+    + '<rect x="-9" y="-205" width="18" height="160" rx="5" fill="#1E1410"></rect><circle cx="0" cy="-214" r="12" fill="#6E300C" stroke="#4A2208" stroke-width="3"></circle>'
+    + '<path d="M-14 -196 h-10 M14 -196 h10 M-14 -180 h-10 M14 -180 h10" stroke="#2A1206" stroke-width="5" stroke-linecap="round"></path>'
+    + '<rect x="-17" y="20" width="34" height="5" rx="2" fill="#F3E3C3"></rect><path d="M-14 58 h28 l-4 22 h-20 Z" fill="#1E1410"></path>'
+    + '<path d="M-6 -200 V60 M-2 -200 V60 M2 -200 V60 M6 -200 V60" stroke="#F4EBDD" stroke-width="1.6"></path></g>'
+    + '<g class="z-bow"><path d="M372 610 L488 372" stroke="#5A2E12" stroke-width="7" stroke-linecap="round"></path><path d="M380 606 L494 376" stroke="#F4EBDD" stroke-width="3"></path><rect x="362" y="596" width="22" height="30" rx="5" transform="rotate(26 373 611)" fill="#1E1410"></rect></g>'
+    + '<g class="z-notes" fill="#FFD45E"><text x="120" y="250" font-size="70">♪</text><text x="60" y="380" font-size="56">♫</text><text x="170" y="150" font-size="52">♪</text></g></svg>';
   function zuriChar(size, mood) {
     const m = ZURI_MOOD[mood] || 'calm';
     const sparks = [0, 1, 2].map((k) => `<svg class="zs zs${k}" viewBox="0 0 100 100" aria-hidden="true">${sparkShape(k)}</svg>`).join('');
-    return `<div class="zuri z-${m}" style="--zs:${size}px" aria-hidden="true"><img class="z-img" src="art/zuri-hero.webp" alt="" width="620" height="1100" decoding="async" draggable="false">${sparks}</div>`;
+    return `<div class="zuri z-${m}" style="--zs:${size}px" aria-hidden="true"><img class="z-img" src="art/zuri-hero.webp" alt="" width="620" height="1100" decoding="async" draggable="false">${m === 'violin' ? VIOLIN : sparks}</div>`;
   }
   // the guide's figure: Pip's rig, or Zuri for her skills
   const guideChar = (size, mood, opts) => (guideId() === 'zuri' ? zuriChar(size, mood) : pipChar(size, mood, opts));
@@ -2218,6 +2243,11 @@ html:not(.motion-still) .dest-card { animation: destUp .38s cubic-bezier(.2,.9,.
     // Pip's piano tune (C major pentatonic, two short phrases)
     piano: [[523.3, 0], [587.3, 0.22], [659.3, 0.44], [784, 0.66], [659.3, 0.88], [784, 1.1], [880, 1.32], [1046.5, 1.6, 'sine', 0.8], [659.3, 1.6, 'sine', 0.4], [784, 1.6, 'sine', 0.4]]
   };
+  // Zuri's violin piece: a recording made by tools/art/violin.py, played as a normal audio file so it also works offline
+  function playViolin() {
+    const v = sfxVol(); if (!v) return;
+    try { if (FX.violinAudio) FX.violinAudio.pause(); const a = new Audio('sounds/zuri-violin.mp3'); a.volume = Math.min(1, v * 0.8); FX.violinAudio = a; const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); } catch (e) { /* no audio */ }
+  }
   function sfx(name) {
     const v = sfxVol(); if (!v || !SFX_NOTES[name]) return;
     const ctx = audioCtx(); if (!ctx) return;
@@ -3515,7 +3545,7 @@ html:not(.motion-still) .dest-card { animation: destUp .38s cubic-bezier(.2,.9,.
           <button class="kbtn icon" data-act="pin" data-target="dashboard" aria-label="Grown-ups: enter PIN">${icoLock}</button>
         </div>
         <header class="universe-head"><span class="uh-star" aria-hidden="true"></span><div><h1>Tenbright Discovery Universe</h1><p>Tap a place to see what you will learn.</p></div></header>
-        <div class="pip-row"><button class="pip-poke" data-act="pipPoke" aria-label="Say hi to Pip">${pipSvg(96, FX.poke || 'idle', { react: reactNow(), hidden: true })}</button><button class="kbtn big" data-act="pipIdea" ${view.dest ? '' : 'data-autofocus'}>Pip's idea: ${idea}<span class="sr-only">, ${esc(E.SKILLS[na.skill].name)}</span></button></div>
+        <div class="pip-row"><button class="pip-poke" data-act="pipPoke" aria-label="Say hi to Pip">${pipSvg(96, FX.poke || 'idle', { react: reactNow(), hidden: true })}</button><button class="zuri-poke" data-act="zuriPoke" aria-label="Zuri plays the violin" aria-pressed="${!!FX.zviolin}">${zuriChar(88, FX.zviolin ? 'violin' : 'calm')}${FX.zviolin ? '<span class="zuri-cap">Zuri plays the violin.</span>' : ''}</button><button class="kbtn big" data-act="pipIdea" ${view.dest ? '' : 'data-autofocus'}>Pip's idea: ${idea}<span class="sr-only">, ${esc(E.SKILLS[na.skill].name)}</span></button></div>
         <div class="row" style="justify-content:center">${trialsOn() ? '<button class="kbtn" data-act="go" data-to="trials">Extra ways to solve</button>' : ''}<button class="kbtn" data-act="go" data-to="journal"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"></path><path d="M5 17a3 3 0 0 1 3-3h11"></path></svg> My journal</button></div>
         <div class="grade-pick" role="group" aria-label="Grade level">${[['all', 'All levels'], [1, 'Grade 1'], [2, 'Grade 2'], [3, 'Grade 3'], [4, 'Grade 4'], [5, 'Grade 5']].map(([v, l]) => `<button class="gchip" data-act="focus" data-g="${v}" aria-pressed="${fg === v}">${l}${v !== 'all' ? ` <span class="gcount num">${E.gradeProgress(ch.skills).find((x) => x.grade === v).lit}/${E.gradeProgress(ch.skills).find((x) => x.grade === v).total}</span>` : ''}</button>`).join('')}</div>
         ${DEST_CATS.map((c) => { const ids = Object.keys(DEST).filter((id) => DEST[id].cat === c.id && destShown(id)); return ids.length ? `<section class="dest-cat dc-${c.id}" aria-labelledby="dc-${c.id}"><h2 id="dc-${c.id}">${c.name}</h2><p class="dc-sub">${c.sub}</p><div class="map dest-grid">${ids.map((id) => destTile(id, ch, fg)).join('')}</div></section>` : ''; }).join('')}
@@ -4217,6 +4247,13 @@ html:not(.motion-still) .dest-card { animation: destUp .38s cubic-bezier(.2,.9,.
     const ch = child();
     switch (act) {
       case 'go': view = { name: b.dataset.to }; confirmDelete = null; render(); break;
+      case 'zuriPoke': {
+        // Zuri plays her violin piece (7 seconds, sounds/zuri-violin.mp3, on the sound-effects volume); a second tap waits
+        if (FX.zviolin) break;
+        FX.zviolin = true; stopSpeaking(); render(); playViolin();
+        clearTimeout(FX.zviolinT); FX.zviolinT = setTimeout(() => { FX.zviolin = false; if (view.name === 'map') render(); }, 7300);
+        break;
+      }
       case 'dest': view = { name: 'map', dest: b.dataset.id }; render(); speak(destSay(b.dataset.id)); break;
       case 'destClose': { const was = view.dest; view = { name: 'map' }; stopSpeaking(); render(); const t = app.querySelector(`[data-act="dest"][data-id="${was}"]`); if (t) t.focus(); break; }
       case 'sample': {
@@ -4666,6 +4703,7 @@ html:not(.motion-still) .dest-card { animation: destUp .38s cubic-bezier(.2,.9,.
     window.__tbAudioState = () => ({ clipsPlayed: AUDIO.played || 0, deviceVoice: AUDIO.deviceUsed || 0, misses: AUDIO.misses.length, voice: AUDIO.lastWho || '' });
     window.__tbPractice = (id) => startSession('practice', id);
     window.__tbZuriHi = () => ZURI_HI;
+    window.__tbViolin = () => (FX.violinAudio ? { src: FX.violinAudio.getAttribute('src'), volume: FX.violinAudio.volume, playing: !!FX.zviolin } : { playing: !!FX.zviolin });
     window.__tbVoice = { parse: (alts, item) => parseVoice(alts, item), num: parseSpokenNumber, status: () => VOICE.status, refresh: refreshVoiceStatus, on: voiceOn };
   }
   /*SELFTEST-END*/

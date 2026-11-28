@@ -5096,4 +5096,6 @@ TBi18n.add("ar", {"Count to {N}":"العدّ حتى {N}",
   "Time Tower.": "برج الوقت.",
   "Measurement Workshop.": "ورشة القياس.",
   "Geometry Galaxy.": "مجرة الهندسة.",
+  "Zuri plays the violin.": "زوري تعزف على الكمان.",
+  "Zuri plays the violin": "زوري تعزف على الكمان",
 });

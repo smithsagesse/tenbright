@@ -5096,4 +5096,6 @@ TBi18n.add("ht", {"Count to {N}":"Konte jiska {N}",
   "Time Tower.": "Tou Lè.",
   "Measurement Workshop.": "Atelye Mezi.",
   "Geometry Galaxy.": "Galaksi Jeyometri.",
+  "Zuri plays the violin.": "Zuri ap jwe violon.",
+  "Zuri plays the violin": "Zuri ap jwe violon",
 });

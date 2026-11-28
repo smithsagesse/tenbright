@@ -44,6 +44,7 @@ fs.writeFileSync(path.join(__dirname, 'dist/sw.js'), R('src/pwa/sw.js').replace(
 // artwork: copied next to the page (no outside image hosts)
 fs.mkdirSync(path.join(__dirname, 'dist/art'), { recursive: true });
 fs.readdirSync(path.join(__dirname, 'src/art')).filter((f) => /\.webp$/.test(f)).forEach((f) => fs.copyFileSync(path.join(__dirname, 'src/art', f), path.join(__dirname, 'dist/art', f)));
+fs.rmSync(path.join(__dirname, 'dist/sounds'), { recursive: true, force: true }); if (fs.existsSync(path.join(__dirname, 'src/sounds'))) fs.cpSync(path.join(__dirname, 'src/sounds'), path.join(__dirname, 'dist/sounds'), { recursive: true });
 fs.rmSync(path.join(__dirname, 'dist/art/obj'), { recursive: true, force: true }); fs.cpSync(path.join(__dirname, 'src/art/obj'), path.join(__dirname, 'dist/art/obj'), { recursive: true });
 // Pip's recorded voice: copy the audio files next to the page
 if (audioMap !== 'null') {

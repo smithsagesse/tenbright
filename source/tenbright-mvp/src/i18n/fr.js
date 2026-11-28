@@ -5096,4 +5096,6 @@ TBi18n.add("fr", {"Count to {N}":"Compter jusqu'à {N}",
   "Time Tower.": "La Tour du temps.",
   "Measurement Workshop.": "L'Atelier des mesures.",
   "Geometry Galaxy.": "La Galaxie de la géométrie.",
+  "Zuri plays the violin.": "Zuri joue du violon.",
+  "Zuri plays the violin": "Zuri joue du violon",
 });

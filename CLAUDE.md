@@ -32,6 +32,10 @@ Full history: `docs/DECISIONS_AND_HISTORY.md`. Planning documents: `docs/`.
   `python3 narration/record.py --speaker zuri`); speak() uses her clips whenever she is the guide on screen, and her device
   voice prefers a non-male voice. Like Pip she is a computer-made helper and never claims to be a friend (hard rule 6).
   The art-rights decision applies to her picture as to Pip's.
+  **Her violin** (owner, Nov 28, 2026): Zuri stands beside Pip on the map; a tap (`zuriPoke`) puts a violin and bow over her
+  picture (`VIOLIN`, drawn in code; the bow moves and notes float up only with motion on) and plays a 7-second original piece in
+  D major, `sounds/zuri-violin.mp3`, synthesized by `tools/art/violin.py` (harmonics, delayed vibrato, slides, body
+  resonances, bow noise, small-hall echo; no samples). It plays on the sound-effects volume and is cached for offline use.
 - **The Tenbright Discovery Universe** (owner, Nov 28, 2026): the map's identity. A starry night sky, the title "Tenbright
   Discovery Universe", and three categories, each shown only where real lessons exist: Mathematics, Financial Intelligence
   and Thinking and Discovery (`DEST_CATS`). Every destination (`DEST`: the 11 regions plus Money Adventures, Math Games and
@@ -182,7 +186,7 @@ Make changes in `source/tenbright-mvp/src/`, rebuild and run every suite.
 
 **Owner's standing instruction (Nov 25, 2026): refresh `app/` every time the source changes.** Once the suites pass,
 copy the build into `app/` in the same commit as the source change:
-`index.html`, `sw.js`, `manifest.webmanifest`, `icon-192.png`, `icon-512.png`, and replace `app/art/` and `app/audio/` whole.
+`index.html`, `sw.js`, `manifest.webmanifest`, `icon-192.png`, `icon-512.png`, and replace `app/art/`, `app/audio/` and `app/sounds/` whole.
 **Never copy `dist/test.html`**: it carries the test hooks, and shipping a test hook was compliance finding F11.
 Afterwards `diff -rq source/tenbright-mvp/dist app` must report only `test.html`.
 Refreshing `app/` in the repository is not a release. Publishing to families (the live link, a website or the app stores)

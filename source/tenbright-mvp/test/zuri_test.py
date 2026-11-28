@@ -88,6 +88,17 @@ try:
         }""")
         print('Zuri lesson line played:', played)
         assert played != 'timeout' and played['clipsPlayed'] > 3 and played['deviceVoice'] == 0 and played['voice'] == 'zuri', played
+        # 4b. her violin: a tap on the map plays her 7-second piece from the app's own file, with the violin and moving bow
+        pg.evaluate("() => window.__tbView('map')")
+        pg.locator('[data-act="zuriPoke"]').click(); pg.wait_for_timeout(200)
+        assert pg.locator('.zuri-poke .zv-art').count() == 1 and pg.locator('.zuri-cap').inner_text() == 'Zuri plays the violin.'
+        v = pg.evaluate("() => window.__tbViolin()")
+        assert v['src'] == 'sounds/zuri-violin.mp3' and v['playing'] and 0 < v['volume'] <= 1, v
+        dur = pg.evaluate("async () => { const a = new Audio('sounds/zuri-violin.mp3'); await new Promise((r) => { a.onloadedmetadata = r; a.onerror = r; }); return a.duration; }")
+        assert 6.8 <= dur <= 7.3, dur
+        assert pg.evaluate("() => getComputedStyle(document.querySelector('.zv-art .z-bow')).animationName") == 'zBow'
+        pg.wait_for_timeout(7500)
+        assert pg.locator('.zuri-poke .zv-art').count() == 0, 'the violin should be put away after the piece'
         # 5. reduced motion: her shapes do not move
         ctx = b.new_context(reduced_motion='reduce'); pg2 = ctx.new_page()
         pg2.on('pageerror', lambda e: errors.append(str(e)))

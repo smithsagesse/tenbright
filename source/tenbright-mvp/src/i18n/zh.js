@@ -5096,4 +5096,6 @@ TBi18n.add("zh", {"Count to {N}":"數到{N}",
   "Time Tower.": "時間塔。",
   "Measurement Workshop.": "測量工作坊。",
   "Geometry Galaxy.": "幾何星系。",
+  "Zuri plays the violin.": "Zuri在拉小提琴。",
+  "Zuri plays the violin": "Zuri在拉小提琴",
 });
