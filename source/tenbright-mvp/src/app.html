@@ -1206,6 +1206,14 @@ html.motion-still .z-notes { opacity: 1; }
 @keyframes zBow { from { transform: translate(-22px, 45px); } to { transform: translate(22px, -45px); } }
 @keyframes zNotes { 0% { opacity: 0; transform: translateY(30px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-80px); } }
 @media (prefers-reduced-motion: reduce) { .zv-art .z-bow, .zv-art .z-notes { animation: none !important; } .z-notes { opacity: 1; } }
+
+.sound-check { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--hairline); }
+.sound-check h3 { margin: 0; font-size: 17px; font-weight: 700; }
+.sound-report { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 15px; }
+.sound-report li { display: flex; gap: 8px; align-items: baseline; }
+.sound-report li.ok span { color: #1A7F37; font-weight: 800; }
+.sound-report li.warn span { color: var(--danger); font-weight: 800; }
+.sound-report li.tip { color: var(--muted); }
 </style>
 
 <div id="app" aria-live="polite"></div>
@@ -2256,6 +2264,43 @@ html.motion-still .z-notes { opacity: 1; }
       .then((buf) => new Promise((res, rej) => ctx.decodeAudioData(buf, res, rej)))
       .catch((e) => { TUNES[name] = null; throw e; });
     return TUNES[name];
+  }
+  // ---------- Sound check (grown-ups page): what is blocked when nothing can be heard ----------
+  // Plays a chime straight to the speakers (ignoring the volume settings), then Pip's recorded line, and reports what it
+  // found. Nothing is stored or sent; the report lives only on this screen.
+  const SOUND_LINE = 'This is Pip. Can you hear me?';
+  let SOUNDCHECK = null;
+  function soundReportHtml() {
+    const r = SOUNDCHECK; if (!r) return '';
+    const li = (ok, text) => `<li class="${ok ? 'ok' : 'warn'}"><span aria-hidden="true">${ok ? '✓' : '!'}</span> ${text}</li>`;
+    if (r.busy) return '<li>Checking…</li>';
+    return li(r.browser, r.browser ? 'Sound in this browser: on.' : 'Sound in this browser: blocked. Click anywhere on this page, then press Test the sound again.')
+      + li(r.clips, r.clips ? 'Pip’s recorded voice: ready.' : r.file ? 'Pip’s recorded voice: not available when the app is opened as a file. Pip uses the computer’s own voice.' : 'Pip’s recorded voice: could not load. Pip uses the computer’s own voice.')
+      + li(r.music, r.music ? 'Music for Pip and Zuri: ready.' : 'Music for Pip and Zuri: could not load.')
+      + li(r.voiceVol > 0, `Pip’s voice volume: ${r.voiceVol}%.`)
+      + li(r.sfxVol > 0, r.sfxVol > 0 ? `Sound effects and music volume: ${r.sfxVol}%.` : 'Sound effects and music: off.')
+      + '<li class="tip">Everything says ready but you heard nothing? Then the sound is stopped outside the app. Check that the computer’s volume is up and not muted, that sound goes to the right speakers or headphones, and that this browser tab is not muted (in Chrome, right-click the tab and choose Unmute site).</li>';
+  }
+  async function soundCheck() {
+    SOUNDCHECK = { busy: true }; render();
+    const r = { file: location.protocol === 'file:', voiceVol: Math.round(voiceVol() * 100), sfxVol: Math.round(sfxVol() * 100) };
+    const ctx = audioCtx();
+    try { if (ctx && ctx.state !== 'running') await ctx.resume(); } catch (e) {}
+    r.browser = !!ctx && ctx.state === 'running';
+    if (r.browser) {
+      try {
+        const o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime;
+        o.type = 'sine'; o.frequency.setValueAtTime(880, t); o.frequency.setValueAtTime(1320, t + 0.15);
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.3, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.4);
+        o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + 0.42);
+      } catch (e) {}
+    }
+    r.clips = false;
+    if (!r.file && AUDIO.map && ctx) { try { await loadSprite(0, 'pip'); r.clips = true; } catch (e) {} }
+    r.music = false;
+    if (!r.file && ctx) { try { await loadTune('pip-piano'); r.music = true; } catch (e) {} }
+    SOUNDCHECK = r; render();
+    setTimeout(() => speak(SOUND_LINE, null, true), 500);
   }
   function playTune(name) {
     const v = sfxVol(); if (!v) return;
@@ -3991,6 +4036,9 @@ html.motion-still .z-notes { opacity: 1; }
             <div class="range-row"><label for="sfx-vol">Sound effects volume</label><input type="range" id="sfx-vol" min="0" max="100" step="5" value="${Math.round(+setting('sfxVol', 0.6) * 100)}" ${setting('sfx', true) ? '' : 'disabled'}><button class="btn" type="button" data-act="testSound" style="min-height:40px;padding:0 14px">Play a sample</button></div>
             <div class="field"><label for="anim-level">Animation</label><select id="anim-level">${[['full', 'Full: Pip moves, dances and celebrates'], ['gentle', 'Gentle: Pip blinks and changes expression, nothing bounces'], ['still', 'Still: nothing moves']].map(([v, l]) => `<option value="${v}" ${setting('anim', 'full') === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
             <span class="hint-text">${reduceMotion() ? 'This device asks for reduced motion, so Tenbright stays still whatever is chosen here.' : 'Nothing in Tenbright flashes. Celebrations are short and never block the next step.'}</span></div>
+            <div class="sound-check"><h3>Sound check</h3><p class="hint-text">Can’t hear Pip? Press the button. You should hear a short chime, then Pip says: This is Pip. Can you hear me?</p>
+              <div class="row"><button class="btn" type="button" data-act="soundCheck">Test the sound</button></div>
+              <ul class="sound-report" id="sound-report" aria-live="polite">${soundReportHtml()}</ul></div>
           </fieldset>
           <div class="field"><label for="sess-len">Session length</label><select id="sess-len">${[10, 15, 20].map((m) => `<option value="${m}" ${S.settings.sessionMin === m ? 'selected' : ''}>${m} minutes</option>`).join('')}</select></div>
           <div class="row"><button class="btn" data-act="go" data-to="data">See everything stored</button></div>
@@ -4284,6 +4332,7 @@ html.motion-still .z-notes { opacity: 1; }
     const ch = child();
     switch (act) {
       case 'go': view = { name: b.dataset.to }; confirmDelete = null; render(); break;
+      case 'soundCheck': soundCheck(); break;
       case 'zuriPoke': {
         // Zuri plays her violin piece (7 seconds, sounds/zuri-violin.mp3, on the sound-effects volume); a second tap waits
         if (FX.zviolin) break;
@@ -4659,7 +4708,7 @@ html.motion-still .z-notes { opacity: 1; }
       F("Hi, I'm Pip! I'm a helper made by the Tenbright team using a computer, and my voice is made by a computer too. I collect light beads. Ten beads make a lantern. Will you help me light the Kingdom?");
       F(ADV.intro); F(ADV.back); F(ADV.rest); D('I found 12 lanterns you can already light. ' + ADV.found); D('I found 1 lanterns you can already light. ' + ADV.found);
       F('Who is playing? Choose your player to start your Tenbright adventure!');
-      if (!ZU) Object.keys(DEST).forEach((id) => F(destSay(id)));
+      if (!ZU) { Object.keys(DEST).forEach((id) => F(destSay(id))); F(SOUND_LINE); }
       if (ZU) { F(ZURI_HI); F(GAME_DONE.zrace); F(GAME_CLUE.zrace); F('Right!'); F('Right! You used the clue.'); F('Here is how.'); }
       F('Watch my capoeira moves!'); F('Let me play you a song!'); F('Hi, friend! I am so glad you are here.');
       F('Got it!'); F("Thanks! Let's keep exploring."); F('That’s how it works! Now it’s your turn.');

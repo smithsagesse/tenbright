@@ -40,6 +40,10 @@ Full history: `docs/DECISIONS_AND_HISTORY.md`. Planning documents: `docs/`.
   Gmaj7 F#m7 Gmaj7 D; Pip: electric piano in C major over Fmaj7 Em7 Fmaj7 C), synthesized by `tools/art/music.py` (no samples,
   no words) into `sounds/zuri-violin.mp3` and `sounds/pip-piano.mp3`, matched in loudness. `playTune`/`stopTune`: one tune at
   a time, on the sound-effects volume, map only (leaving the map or opening a destination card stops it); cached offline.
+  Tunes play through Web Audio (`loadTune`, preloaded when the map shows), the same route as Pip's voice, started by the tap
+  itself: an <audio> element and a delayed start were silent on some devices (owner heard nothing, Nov 28). **Sound check**
+  on the grown-ups page (`soundCheck`): a chime straight to the speakers, Pip's line "This is Pip. Can you hear me?" and a
+  report (browser sound, Pip's recordings, the music, both volumes, then what to check outside the app). Nothing stored.
 - **The Tenbright Discovery Universe** (owner, Nov 28, 2026): the map's identity. A starry night sky, the title "Tenbright
   Discovery Universe", and three categories, each shown only where real lessons exist: Mathematics, Financial Intelligence
   and Thinking and Discovery (`DEST_CATS`). Every destination (`DEST`: the 11 regions plus Money Adventures, Math Games and

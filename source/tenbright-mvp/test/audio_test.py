@@ -53,6 +53,19 @@ try:
         }""")
         print('played a lesson line with recorded clips:', played)
         assert played != 'timeout' and played['clipsPlayed'] > 3 and played['deviceVoice'] == 0, played
+        # 4. the Sound check on the grown-ups page: a chime, Pip's line, and a report that finds the recordings and music
+        pg.goto('http://127.0.0.1:%d/test.html#selftest' % PORT); pg.evaluate('localStorage.clear()'); pg.reload()
+        pg.get_by_text('Set up as a parent').click(); pg.fill('#gate-year', '1980'); pg.get_by_role('button', name='Continue').click()
+        pg.check('#c-guardian'); pg.check('#c-record'); pg.fill('#pin', '2580'); pg.get_by_role('button', name='Agree and continue').click()
+        pg.fill('#nick', 'Ana'); pg.uncheck('#pic-lock'); pg.get_by_role('button', name='Add child').click()
+        pg.evaluate("() => window.__tbView('dashboard')")
+        pg.locator('[data-act="soundCheck"]').click()
+        pg.wait_for_function("() => document.querySelectorAll('#sound-report li.ok, #sound-report li.warn').length === 5", timeout=20000)
+        rep = pg.locator('#sound-report').inner_text()
+        print('sound check:', ' | '.join(l for l in rep.split('\n') if l.strip() and l.strip() not in ('✓', '!'))[:300])
+        assert pg.locator('#sound-report li.ok').count() == 5, rep
+        pg.evaluate("() => window.__tbSetLang('fr')")
+        assert 'Sound in this browser' not in pg.locator('#sound-report').inner_text() and 'Test the sound' not in pg.locator('main').inner_text()
         b.close()
 finally:
     server.terminate()
