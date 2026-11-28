@@ -32,6 +32,17 @@ Full history: `docs/DECISIONS_AND_HISTORY.md`. Planning documents: `docs/`.
   `python3 narration/record.py --speaker zuri`); speak() uses her clips whenever she is the guide on screen, and her device
   voice prefers a non-male voice. Like Pip she is a computer-made helper and never claims to be a friend (hard rule 6).
   The art-rights decision applies to her picture as to Pip's.
+- **The Tenbright Discovery Universe** (owner, Nov 28, 2026): the map's identity. A starry night sky, the title "Tenbright
+  Discovery Universe", and three categories, each shown only where real lessons exist: Mathematics, Financial Intelligence
+  and Thinking and Discovery (`DEST_CATS`). Every destination (`DEST`: the 11 regions plus Money Adventures, Math Games and
+  the Lantern Line) has its existing name, a subject chip, one child-friendly line, a real-life line, a picture of its subject
+  (`DEST_ART`: drawn in code or the app's own object art) and, for Zuri's two places, her face badge (`art/*-face.webp`,
+  `tools/art/faces.py`). A tap opens a discovery card (`destCard`, a dialog; the page behind is inert; Escape closes): category,
+  name, subject, description, "In real life", "What you will learn" (the region's engine skills for the chosen grade, the
+  adventures grouped by idea with investing only when a grown-up turns it on, or the real games) and one "Start exploring"
+  button, which runs what tapping the region used to. Pip reads the card (`destSay`, recorded). Not shown because the app has
+  no lessons for them yet: percentages, bonds, banking, earning income, science and technology. Region names were kept
+  (brand); renaming them is the owner's call.
 - **Brand architecture:** GMIA is the company. Tenbright is the product. Number Kingdom is the world, with five regions:
   Lantern Village (review hub), Bead Meadows (place value), Ferry River (add/subtract),
   Orchard of Rows (multiplication) and Story Bridge (word problems).
@@ -160,7 +171,7 @@ with identical sw.js, manifest, icons, art and audio. It contains:
 - `build.js`: run `node build.js` to produce `dist/index.html` (and `dist/test.html` with test hooks).
 - Tests: `node test/engine.test.js` (math engine, millions of generated checks); `node test/explain.test.js` (plain-words lessons); `node test/strategies.test.js` (strategy library); Playwright suites
   `test/e2e.py`, `test/features_test.py`, `test/audio_test.py`, `test/living_test.py`,
-  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py`, `test/money_time_test.py`, `test/measure_shape_test.py`, `test/dashboard2_test.py`, `test/adventure_test.py`, `test/data_safety_test.py` (unreadable data, two tabs, failed saves, standards mode and phone viewport), `test/keyboard_test.py` (keyboard-only journey, focus rings), `test/who_test.py` (the "Who is playing?" screen), `test/pictures_test.py` (pictures of what is being learned), `test/zuri_test.py` (Zuri: where she guides, her hello, her voice), `test/race_test.py` (Pip's and Zuri's races) and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
+  `test/separation_test.py`, `test/discovery_test.py`, `test/adaptive_test.py`, `test/games_test.py`, `test/strategies_test.py`, `test/money_time_test.py`, `test/measure_shape_test.py`, `test/dashboard2_test.py`, `test/adventure_test.py`, `test/data_safety_test.py` (unreadable data, two tabs, failed saves, standards mode and phone viewport), `test/keyboard_test.py` (keyboard-only journey, focus rings), `test/who_test.py` (the "Who is playing?" screen), `test/pictures_test.py` (pictures of what is being learned), `test/zuri_test.py` (Zuri: where she guides, her hello, her voice), `test/race_test.py` (Pip's and Zuri's races), `test/map_test.py` (the Discovery Universe map and its cards) and `test/i18n_test.py` (axe-core accessibility in light and dark, all languages; `LANGS=en,ar` limits the run).
 - `docs/animation-system.md` and `README.md`.
 
 Make changes in `source/tenbright-mvp/src/`, rebuild and run every suite.

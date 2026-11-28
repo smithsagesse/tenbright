@@ -55,7 +55,7 @@ with sync_playwright() as p:
         setup(pg)
         # 1. games are on the map; a new child's games are closed until skills are lit
         pg.evaluate("() => window.__tbView('map')")
-        pg.locator('[data-act="go"][data-to="games"]').click()
+        pg.locator('[data-act="dest"][data-id="games"]').click(); pg.locator('.dest-card [data-act="go"][data-to="games"]').click()
         txt = pg.locator('main').inner_text()
         for name in ['Build the Bridge', 'Pizza Shop', 'Number Detective']: assert name in txt, name
         assert pg.locator('[data-act="gameStart"]').count() == 0 and txt.count('Light more lanterns to open it.') == 5, 'games and races should be closed'

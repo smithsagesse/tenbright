@@ -131,8 +131,9 @@ with sync_playwright() as p:
         look('session-end'); page.screenshot(path=str(OUT / ('%s-end.png' % L)))
         page.locator('[data-act="go"][data-to="map"]').first.click()
         # Lantern Line warm-up
-        if page.locator('[data-act="lineStart"]').count():
-            page.locator('[data-act="lineStart"]').click(); look('line')
+        if page.locator('[data-act="dest"][data-id="line"]').count():
+            page.locator('[data-act="dest"][data-id="line"]').click(); look('discovery card')
+            page.locator('.dest-card [data-act="lineStart"]').click(); look('line')
             for i in range(8):
                 if not page.locator('[data-act="linePlace"]').count(): break
                 box = page.locator('[data-act="linePlace"]').bounding_box()

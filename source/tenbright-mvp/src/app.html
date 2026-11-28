@@ -1125,6 +1125,74 @@ html:not(.motion-still) .rt-run.dash { animation: rtDash .75s cubic-bezier(.25,.
 @keyframes rtDash { from { transform: translateX(var(--from)); } to { transform: translateX(var(--to)); } }
 @media (prefers-reduced-motion: reduce) { .rt-run.dash { animation: none !important; } }
 .race-model { width: 100%; display: flex; justify-content: center; }
+
+/* ---------- The Tenbright Discovery Universe: the map ---------- */
+.map-universe { background:
+  radial-gradient(1.5px 1.5px at 12% 18%, rgba(255,255,255,.8) 50%, transparent 51%), radial-gradient(1px 1px at 72% 9%, rgba(255,255,255,.7) 50%, transparent 51%),
+  radial-gradient(1.5px 1.5px at 88% 32%, rgba(255,255,255,.6) 50%, transparent 51%), radial-gradient(1px 1px at 34% 41%, rgba(255,255,255,.6) 50%, transparent 51%),
+  radial-gradient(1.2px 1.2px at 58% 64%, rgba(255,255,255,.55) 50%, transparent 51%), radial-gradient(1px 1px at 8% 77%, rgba(255,255,255,.6) 50%, transparent 51%),
+  radial-gradient(1.4px 1.4px at 93% 86%, rgba(255,255,255,.6) 50%, transparent 51%),
+  radial-gradient(60% 30% at 15% 0%, rgba(124,92,255,.28), transparent 70%), radial-gradient(50% 30% at 100% 40%, rgba(47,140,255,.2), transparent 70%),
+  radial-gradient(140% 70% at 50% -8%, #2A3A73 0%, #1A2450 42%, #10173A 78%, #0C1230 100%); background-attachment: scroll; }
+.map-body { display: flex; flex-direction: column; gap: 18px; }
+.universe-head { display: flex; align-items: center; gap: 14px; padding: 4px 2px; }
+.universe-head h1 { margin: 0; font-size: clamp(26px, 4.2vw, 38px); line-height: 1.08; letter-spacing: -.022em; font-weight: 800; color: #FFFFFF; }
+.universe-head p { margin: 4px 0 0; font-size: 17px; color: rgba(235,240,255,.86); }
+.uh-star { flex: none; width: 52px; height: 52px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #FFF6C9 0 18%, #FFD45E 40%, #F4A425 70%, rgba(244,164,37,0) 72%); box-shadow: 0 0 22px rgba(255,201,60,.7); }
+.dest-cat { display: flex; flex-direction: column; gap: 10px; }
+.dest-cat > h2 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -.012em; color: #FFFFFF; display: flex; align-items: center; gap: 10px; }
+.dest-cat > h2::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--cat, #FFD45E); box-shadow: 0 0 12px var(--cat, #FFD45E); }
+.dc-math { --cat: #7EE2A8; } .dc-money { --cat: #FFD45E; } .dc-think { --cat: #9BE7FF; }
+.dest-cat .dc-sub { margin: -6px 0 2px 22px; font-size: 16px; color: rgba(235,240,255,.82); }
+.dest-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+.dest-tile { position: relative; display: grid; grid-template-columns: 96px minmax(0, 1fr); align-items: center; column-gap: 14px; min-height: 140px; padding: 16px 16px 16px 14px; border-radius: 26px; text-align: start; border: none; color: #FFFFFF; cursor: pointer;
+  background-image: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,0) 55%); box-shadow: 0 10px 28px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.2); }
+.dest-tile.adventures { background-color: #7A4E0E; } .dest-tile.games { background-color: #3B3F9A; } .dest-tile.line { background-color: #24507E; }
+.dest-tile.locked { background-color: rgba(255,255,255,.04); background-image: none; border: 1.5px dashed rgba(255,255,255,.28); box-shadow: none; color: rgba(235,240,255,.9); }
+.dest-tile.sel { outline: 3px solid #FFD45E; outline-offset: 3px; }
+.dest-body { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.dest-tile h3 { margin: 0; font-size: 23px; font-weight: 800; letter-spacing: -.018em; line-height: 1.1; }
+.dest-subject { align-self: flex-start; padding: 3px 10px; border-radius: 999px; background: rgba(0,0,0,.28); font-size: 14px; font-weight: 800; letter-spacing: .01em; }
+.dest-desc { font-size: 16px; line-height: 1.3; }
+.dest-tile .sub { font-size: 14px; font-weight: 700; opacity: .95; }
+.dest-tile .lantern-row { display: flex; gap: 5px; flex-wrap: wrap; }
+.dest-art { position: relative; width: 96px; height: 96px; border-radius: 50%; flex: none; overflow: hidden;
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.4), rgba(255,255,255,.08) 55%, rgba(0,0,0,.25)); box-shadow: inset 0 -6px 14px rgba(0,0,0,.3), 0 0 0 3px rgba(255,255,255,.18), 0 6px 16px rgba(0,0,0,.3); }
+.dest-art svg { position: absolute; inset: 6%; width: 88%; height: 88%; overflow: visible; }
+.dest-art .da-img { position: absolute; height: auto; filter: drop-shadow(0 3px 4px rgba(0,0,0,.35)); }
+.dest-art .da-coin { border-radius: 50%; }
+.locked .dest-art { filter: saturate(.35); opacity: .75; }
+.dest-guide { position: absolute; top: 10px; inset-inline-end: 10px; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 2px solid #FFD45E; background: #2A2266; }
+.guide-face { width: 100%; height: 100%; object-fit: cover; display: block; }
+.dest-guide.big { position: static; width: 64px; height: 64px; flex: none; }
+/* the discovery card */
+.dest-scrim { position: fixed; inset: 0; z-index: 40; border: 0; padding: 0; background: rgba(5,10,30,.62); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); cursor: default; }
+.dest-card { position: fixed; z-index: 41; left: 50%; bottom: 0; transform: translateX(-50%); width: min(620px, 100%); max-height: 88vh; max-height: 88dvh; overflow: auto; overscroll-behavior: contain;
+  background: var(--raised); color: var(--ink); border-radius: 28px 28px 0 0; padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px)); box-shadow: 0 -12px 40px rgba(0,0,0,.4); display: flex; flex-direction: column; gap: 12px; }
+@media (min-width: 700px) { .dest-card { bottom: auto; top: 50%; transform: translate(-50%, -50%); border-radius: 28px; } }
+html:not(.motion-still) .dest-card { animation: destUp .38s cubic-bezier(.2,.9,.25,1) backwards; }
+@keyframes destUp { from { opacity: 0; translate: 0 24px; } to { opacity: 1; translate: 0 0; } }
+@media (prefers-reduced-motion: reduce) { .dest-card { animation: none !important; } }
+.dest-card-head { display: flex; align-items: center; gap: 14px; }
+.dest-card-head > div { flex: 1; min-width: 0; }
+.dest-card .dest-art { width: 104px; height: 104px; background-color: #1F2C66; }
+.dest-card h2 { margin: 2px 0 0; font-size: 28px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
+.dest-card .dest-subject { margin: 4px 0 0; background: var(--fill, #EEF1F8); color: var(--ink); }
+.dest-cat-chip { display: inline-block; font-size: 13px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.dest-card .dest-desc { margin: 0; font-size: 20px; font-weight: 700; line-height: 1.3; }
+.dest-real { margin: 0; font-size: 17px; }
+.dest-card h3 { margin: 4px 0 0; font-size: 18px; font-weight: 800; }
+.dest-card h4 { margin: 6px 0 0; font-size: 16px; font-weight: 800; }
+.dest-topics { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.dest-topics li { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 17px; padding: 8px 10px; border-radius: 14px; background: var(--fill, #EEF1F8); }
+.dest-topics .dt-grade { margin-inline-start: auto; font-size: 14px; color: var(--muted); }
+.dest-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; margin: 4px -20px calc(-20px - env(safe-area-inset-bottom, 0px)); padding: 12px 20px calc(14px + env(safe-area-inset-bottom, 0px)); position: sticky; bottom: calc(-20px - env(safe-area-inset-bottom, 0px)); background: var(--raised); border-top: 1px solid var(--hairline); }
+.dest-card .dest-go { min-height: var(--t-primary); }
+.dest-card .kbtn:not(.dest-go) { background: var(--fill, #EEF1F8); color: var(--ink); border-color: var(--hairline); }
+.dest-card .speech { margin: 0; background: var(--fill, #EEF1F8); color: var(--ink); border-color: var(--hairline); }
+@media (max-width: 420px) { .dest-tile { grid-template-columns: 76px minmax(0, 1fr); } .dest-tile .dest-art { width: 76px; height: 76px; } .dest-tile h3 { font-size: 21px; } }
+@media (prefers-reduced-transparency: reduce) { .dest-scrim { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(5,10,30,.85); } }
+@media (prefers-contrast: more) { .dest-tile { outline: 2px solid #FFFFFF; } .dest-subject { background: #000000; } }
 </style>
 
 <div id="app" aria-live="polite"></div>
@@ -1271,6 +1339,122 @@ html:not(.motion-still) .rt-run.dash { animation: rtDash .75s cubic-bezier(.25,.
     { id: 'workshop', name: 'Measuring Workshop', what: 'Length, perimeter and area' },
     { id: 'shapes', name: 'Shape Garden', what: 'Shapes, angles and grids' }
   ];
+  // ---------- The Tenbright Discovery Universe (owner, Nov 28, 2026): every place on the map says what it teaches ----------
+  // Three categories, only where the app has real lessons (no percentages, bonds, banking, science or technology yet).
+  // Each destination: subject, a short child-friendly line, a real-life line, its guide and a picture of its subject.
+  // The topics on its discovery card come from the engine (skill names), the adventures or the games, never invented.
+  const DEST_CATS = [
+    { id: 'math', name: 'Mathematics', sub: 'Numbers, shapes, measuring and time' },
+    { id: 'money', name: 'Financial Intelligence', sub: 'Money smarts for real life' },
+    { id: 'think', name: 'Thinking and Discovery', sub: 'Solve problems, play and reason' }
+  ];
+  const DEST = {
+    meadows: { cat: 'math', subject: 'Counting and Place Value', desc: 'Count, build and read numbers, all the way to a million!', real: 'Read big numbers on signs, prices and scoreboards.' },
+    river: { cat: 'math', subject: 'Addition and Subtraction', desc: 'See how numbers come together and come apart!', real: 'Add up scores and find how many are left.' },
+    orchard: { cat: 'math', subject: 'Multiplication and Division', desc: 'Discover the power of equal groups!', real: 'Count things in rows and share snacks fairly.' },
+    falls: { cat: 'math', subject: 'Fractions', desc: 'Explore how a whole splits into equal parts!', real: 'Share a pizza or follow a recipe.' },
+    docks: { cat: 'math', subject: 'Decimals', desc: 'Sail past the ones place into tenths and hundredths!', real: 'Read prices like $2.50 and race times.' },
+    shapes: { cat: 'math', subject: 'Geometry', desc: 'Discover shapes, angles and grids with Zuri!', real: 'Spot shapes in buildings and read maps.', guide: 'zuri' },
+    workshop: { cat: 'math', subject: 'Measurement', desc: 'Measure lengths and find perimeter and area with Zuri!', real: 'Measure a room, a garden or a drawing.', guide: 'zuri' },
+    clock: { cat: 'math', subject: 'Time', desc: 'Read clocks and find how much time has passed!', real: 'Know when lunch or the bus is coming.' },
+    village: { cat: 'math', subject: 'Early Algebra and Patterns', desc: 'Solve mystery numbers, patterns and Pip’s puzzles!', real: 'Spot patterns and keep both sides of a sum equal.' },
+    market: { cat: 'money', subject: 'Money Math and Business Math', desc: 'Count coins, make change and work with prices!', real: 'Pay at a shop and check your change.' },
+    adventures: { cat: 'money', subject: 'Saving, Spending and Business', desc: 'Run a pretend lemonade stand and save for a goal!', real: 'Plan what to save, what to spend and how a shop makes money.', go: 'adventures' },
+    bridge: { cat: 'think', subject: 'Problem Solving', desc: 'Turn stories into math and solve real problems!', real: 'Plan a party or share things fairly.' },
+    games: { cat: 'think', subject: 'Logic and Mental Math', desc: 'Play math games and race with Pip and Zuri!', real: 'Think fast, spot patterns and find hidden numbers.', go: 'games' },
+    line: { cat: 'think', subject: 'Number Sense', desc: 'Guess where numbers live on a number line!', real: 'Judge how big a number is at a glance.', act: 'lineStart' }
+  };
+  const DEST_NAME = { adventures: 'Money Adventures', games: 'Math Games', line: 'Lantern Line' };
+  const destName = (id) => DEST_NAME[id] || (REGIONS.find((r) => r.id === id) || {}).name || id;
+  const destSay = (id) => destName(id) + '. ' + DEST[id].subject + '. ' + DEST[id].desc;
+  // the money adventures by what they teach (investing stories show only when a grown-up turns them on)
+  const ADV_GROUPS = [
+    ['Saving and budgeting', ['piggy', 'kite', 'jar', 'twenty', 'shopping']],
+    ['Spending wisely', ['shelf', 'change', 'better', 'split', 'cents']],
+    ['Running a business', ['stall', 'lemonade', 'pricetest', 'rainy', 'bulk']],
+    ['Growing money and investing', ['growth', 'early', 'company', 'dividend', 'updown']]
+  ];
+  // pictures of each subject: drawn here, or the app's own 3D-style object art (art/obj, Microsoft Fluent Emoji, MIT)
+  const oimg = (k, w, x, y) => `<img class="da-img" src="art/obj/${k}.svg" alt="" width="${w}" height="${w}" style="left:${x}%;top:${y}%;width:${w}%" decoding="async" draggable="false">`;
+  const DEST_ART = {
+    meadows: '<svg viewBox="0 0 100 100" aria-hidden="true"><g stroke="#0B3D25" stroke-width="2">' + [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => `<rect x="18" y="${12 + i * 7.2}" width="13" height="7" fill="#7EE2A8"></rect>`).join('') + [0, 1, 2].map((i) => `<rect x="${40 + i * 12}" y="76" width="9" height="9" fill="#FFD45E"></rect>`).join('') + '</g><text x="66" y="52" text-anchor="middle" font-size="26" font-weight="800" fill="#FFFFFF">123</text></svg>',
+    river: '<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M6 80 Q28 70 50 80 T94 80" fill="none" stroke="#9FD3FF" stroke-width="5" stroke-linecap="round"></path><text x="22" y="56" font-size="30" font-weight="800" fill="#FFD45E">2</text><text x="40" y="54" font-size="28" font-weight="800" fill="#FFFFFF">+</text><text x="60" y="56" font-size="30" font-weight="800" fill="#7EE2A8">3</text><text x="44" y="30" font-size="26" font-weight="800" fill="#FF9AB5">−</text></svg>',
+    orchard: '<svg viewBox="0 0 100 100" aria-hidden="true">' + [0, 1, 2].map((r) => [0, 1, 2, 3].map((c) => `<circle cx="${22 + c * 15}" cy="${30 + r * 18}" r="6" fill="#FF6B6B" stroke="#7A1E1E" stroke-width="1.5"></circle>`).join('')).join('') + '<text x="84" y="50" text-anchor="middle" font-size="28" font-weight="800" fill="#FFD45E">×</text><text x="84" y="80" text-anchor="middle" font-size="26" font-weight="800" fill="#FFFFFF">÷</text></svg>',
+    falls: '<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="44" cy="52" r="32" fill="#FFF3DA" stroke="#0B3D45" stroke-width="3"></circle><path d="M44 52 L44 20 A32 32 0 1 1 12 52 Z" fill="#F4A425" stroke="#0B3D45" stroke-width="3"></path><path d="M44 20 V84 M12 52 H76" stroke="#0B3D45" stroke-width="3"></path><text x="86" y="40" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF">3</text><path d="M78 46 H94" stroke="#FFFFFF" stroke-width="3"></path><text x="86" y="66" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF">4</text></svg>',
+    docks: '<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M18 66 H82 L72 82 H28 Z" fill="#C97B3E" stroke="#5A3214" stroke-width="2.5"></path><path d="M50 14 V66 M50 18 L76 58 H50" fill="#FFFFFF" stroke="#E9EEF8" stroke-width="2"></path><text x="32" y="56" text-anchor="middle" font-size="24" font-weight="800" fill="#FFD45E">0.5</text><path d="M6 88 Q28 80 50 88 T94 88" fill="none" stroke="#9FD3FF" stroke-width="4" stroke-linecap="round"></path></svg>',
+    shapes: '<svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="dsph" cx="35%" cy="35%" r="70%"><stop offset="0" stop-color="#FFE8F0"></stop><stop offset="1" stop-color="#D23B74"></stop></radialGradient></defs><path d="M14 44 L34 34 L54 44 L54 68 L34 78 L14 68 Z" fill="#5FD0FF" stroke="#0B3D5A" stroke-width="2"></path><path d="M14 44 L34 54 L54 44 M34 54 V78" fill="none" stroke="#0B3D5A" stroke-width="2"></path><path d="M14 44 L34 54 L34 78 L14 68 Z" fill="#3BA8DE"></path><circle cx="72" cy="66" r="15" fill="url(#dsph)"></circle><path d="M66 14 L86 46 L46 46 Z" fill="#FFD45E" stroke="#7A5A00" stroke-width="2"></path></svg>',
+    workshop: oimg('ruler', 70, 15, 18),
+    clock: '<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="52" r="36" fill="#FFFDF6" stroke="#3A1E46" stroke-width="5"></circle>' + Array.from({ length: 12 }, (_, i) => { const a = i * Math.PI / 6; return `<circle cx="${(50 + 28 * Math.sin(a)).toFixed(1)}" cy="${(52 - 28 * Math.cos(a)).toFixed(1)}" r="2.6" fill="#3A1E46"></circle>`; }).join('') + '<path d="M50 52 V30 M50 52 L66 60" stroke="#3A1E46" stroke-width="5" stroke-linecap="round"></path><circle cx="50" cy="52" r="4" fill="#E0623C"></circle></svg>',
+    village: '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="45" y="10" width="10" height="8" rx="2" fill="#6B5A3A"></rect><path d="M34 20 H66 L60 58 H40 Z" fill="#FFD45E" stroke="#6B5A3A" stroke-width="3" stroke-linejoin="round"></path><rect x="36" y="58" width="28" height="7" rx="3" fill="#6B5A3A"></rect><text x="50" y="88" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF">? + 3 = 7</text></svg>',
+    market: oimg('piggy-bank', 64, 4, 24) + '<img class="da-img da-coin" src="art/coin-quarter.webp" alt="" width="40" height="40" style="left:56%;top:12%;width:40%" decoding="async" draggable="false">',
+    adventures: oimg('lemonade', 52, 4, 30) + oimg('chart-up', 50, 46, 10),
+    bridge: oimg('book', 60, 6, 26) + '<svg viewBox="0 0 100 100" aria-hidden="true"><text x="78" y="44" text-anchor="middle" font-size="34" font-weight="800" fill="#FFD45E">?</text></svg>',
+    games: oimg('game', 72, 14, 14),
+    line: '<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M10 62 H90 M10 54 V70 M90 54 V70 M50 57 V67" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"></path><text x="10" y="86" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">0</text><text x="90" y="86" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">100</text><path d="M66 20 L76 20 L74 44 L68 44 Z" fill="#FFD45E" stroke="#6B5A3A" stroke-width="2.5"></path><path d="M71 46 V58" stroke="#FFD45E" stroke-width="3"></path></svg>'
+  };
+  const destArt = (id) => `<span class="dest-art da-${id}" aria-hidden="true">${DEST_ART[id] || ''}</span>`;
+  const guideFace = (g) => `<img class="guide-face" src="art/${g === 'zuri' ? 'zuri' : 'pip'}-face.webp" alt="" width="160" height="160" decoding="async" draggable="false">`;
+
+  // ---------- map destinations: tiles, and the discovery card a tap opens ----------
+  const LIT = ['mastered', 'certified', 'placed'];
+  const destShown = (id) => id !== 'adventures' || advOn();
+  function destSkills(id, ch, fg) {
+    const all = E.SKILL_ORDER.filter((x) => regionOf(x) === id);
+    const onGrade = all.filter((x) => fg === 'all' || E.gradeOf(x) === fg);
+    return { all, onGrade };
+  }
+  const advVisible = () => Object.keys(E.ADVENTURES).filter((a) => !E.ADVENTURES[a].investing || investOn());
+  // open, and the line under the title, for any destination
+  function destState(id, ch, fg) {
+    if (REGIONS.some((r) => r.id === id)) {
+      const { onGrade } = destSkills(id, ch, fg);
+      if (!onGrade.length) return { open: false, none: true, sub: `No Grade ${fg} skills here`, ids: [] };
+      const open = onGrade.some((x) => ch.skills[x].status !== 'locked');
+      const lit = onGrade.filter((x) => LIT.includes(ch.skills[x].status)).length;
+      const dim = onGrade.filter((x) => E.dueCheck(ch.skills[x], now())).length;
+      return { open, ids: onGrade, sub: (fg !== 'all' ? `Grade ${fg} · ` : '') + (open ? `${lit} of ${onGrade.length} lanterns lit${dim ? ` · ${dim} to relight` : ''}` : fg === 3 ? 'Opens after the Grade 2 skills it needs' : 'Opens later on the map') };
+    }
+    if (id === 'adventures') { const n = openAdventures(ch).length, t = advVisible().length; return { open: n > 0, sub: n ? `${n} of ${t} adventures open` : 'Light more lanterns to open it.' }; }
+    // the games list is always worth a look: it shows what each game needs
+    if (id === 'games') { const g = Object.keys(E.GAMES), n = g.filter((x) => E.gameLevel(ch.skills, x)).length; return { open: true, sub: n ? `${n} of ${g.length} games open` : 'Light more lanterns to open it.' }; }
+    return { open: true, sub: 'A one-minute warm-up' };
+  }
+  function destTile(id, ch, fg) {
+    const d = DEST[id], st = destState(id, ch, fg), region = REGIONS.some((r) => r.id === id);
+    const lanterns = region && st.ids.length ? `<span class="lantern-row" aria-hidden="true">${st.ids.map((x) => { const k = ch.skills[x]; return `<span class="lantern-ico ${LIT.includes(k.status) && !E.dueCheck(k, now()) ? '' : k.status === 'locked' ? 'locked' : 'dim'}"></span>`; }).join('')}</span>` : '';
+    return `<button class="dest-tile ${region ? 'region ' : ''}${id} ${st.open ? '' : 'locked'} ${view.dest === id ? 'sel' : ''}" data-act="dest" data-id="${id}" aria-haspopup="dialog">
+      ${destArt(id)}<span class="dest-body"><h3>${destName(id)}</h3><span class="dest-subject">${d.subject}</span><span class="dest-desc">${d.desc}</span>${lanterns}<span class="sub">${st.sub}</span></span>${d.guide === 'zuri' ? `<span class="dest-guide">${guideFace('zuri')}</span>` : ''}
+    </button>`;
+  }
+  const statusIco = (k) => `<span class="lantern-ico ${k === 'lit' ? '' : k === 'locked' ? 'locked' : 'dim'}" aria-hidden="true"></span><span class="sr-only">${k === 'lit' ? 'Lit' : k === 'locked' ? 'Not open yet' : 'Ready to learn'}</span>`;
+  function destTopics(id, ch, fg) {
+    if (REGIONS.some((r) => r.id === id)) {
+      const { all, onGrade } = destSkills(id, ch, fg), ids = onGrade.length ? onGrade : all;
+      return `<ul class="dest-topics">${ids.map((x) => { const k = ch.skills[x]; return `<li>${statusIco(LIT.includes(k.status) ? 'lit' : k.status === 'locked' ? 'locked' : 'open')}<span class="dt-name">${esc(E.SKILLS[x].name)}</span>${fg === 'all' ? `<span class="dt-grade">Grade ${E.gradeOf(x)}</span>` : ''}</li>`; }).join('')}</ul>`;
+    }
+    if (id === 'adventures') {
+      const vis = new Set(advVisible());
+      return ADV_GROUPS.map(([g, list]) => { const ids = list.filter((a) => vis.has(a)); return ids.length ? `<h4>${g}</h4><ul class="dest-topics">${ids.map((a) => `<li>${statusIco(advOpen(ch, a) ? 'open' : 'locked')}<span class="dt-name">${esc(E.ADVENTURES[a].name)}</span><span class="dt-grade">${esc(E.ADVENTURES[a].idea)}</span></li>`).join('')}</ul>` : ''; }).join('') + (investOn() ? '' : '<p class="hint-text">Investing stories: a grown-up can turn these on.</p>');
+    }
+    if (id === 'games') return `<ul class="dest-topics">${Object.keys(E.GAMES).map((g) => `<li>${statusIco(E.gameLevel(ch.skills, g) ? 'open' : 'locked')}<span class="dt-name">${esc(E.GAMES[g].name)}</span><span class="dt-grade">${esc(GAME_PURPOSE[g])}</span></li>`).join('')}</ul>`;
+    return '<ul class="dest-topics"><li>' + statusIco('open') + '<span>Place numbers on a number line.</span></li><li>' + statusIco('open') + '<span>Five numbers in about a minute.</span></li></ul>';
+  }
+  function destCard(id, ch, fg) {
+    const d = DEST[id], st = destState(id, ch, fg), cat = DEST_CATS.find((c) => c.id === d.cat);
+    const go = !st.open ? `<p class="speech">${st.none ? st.sub : st.sub.replace(/^Grade \d+ · /, '')}</p>`
+      : REGIONS.some((r) => r.id === id) ? `<button class="kbtn big dest-go" data-act="region" data-region="${id}" data-autofocus>Start exploring</button>`
+      : d.go ? `<button class="kbtn big dest-go" data-act="go" data-to="${d.go}" data-autofocus>Start exploring</button>`
+      : `<button class="kbtn big dest-go" data-act="${d.act}" data-autofocus>Start exploring</button>`;
+    return `<button class="dest-scrim" data-act="destClose" tabindex="-1" aria-label="Close"></button>
+      <section class="dest-card dc-${d.cat}" role="dialog" aria-modal="true" aria-labelledby="dest-title">
+        <div class="dest-card-head">${destArt(id)}<div><span class="dest-cat-chip">${cat.name}</span><h2 id="dest-title">${destName(id)}</h2><p class="dest-subject">${d.subject}</p></div>${d.guide ? `<span class="dest-guide big">${guideFace(d.guide)}</span>` : ''}</div>
+        <p class="dest-desc">${d.desc}</p>
+        <p class="dest-real"><b>In real life:</b> <span>${d.real}</span></p>
+        <h3>What you will learn</h3>
+        ${destTopics(id, ch, fg)}
+        <div class="dest-actions">${go}<button class="kbtn" data-act="say" data-text="${esc(destSay(id))}">${icoSpeaker} Listen</button><button class="kbtn" data-act="destClose">Close</button></div>
+      </section>`;
+  }
   // ---------- Tenbright 2.0 Phase 8: parent dashboard v2 ----------
   // what each part of the map is for, in plain words (no outcome claims)
   const REGION_WHY = {
@@ -3322,27 +3506,20 @@ html:not(.motion-still) .rt-run.dash { animation: rtDash .75s cubic-bezier(.25,.
       const fg = focusOf(ch);
       const na = E.nextActivity(ch.skills, now(), fg);
       const idea = { learn: 'Learn something new', practice: 'Keep practicing', check: 'Relight a lantern', remediate: 'Look closer at a clue', review: 'Mix it up' }[na.kind];
-      return `<main class="stage">
+      return `<main class="stage map-universe">
+        ${view.dest && DEST[view.dest] ? destCard(view.dest, ch, fg) : ''}
+        <div class="map-body" ${view.dest ? 'inert' : ''}>
         <div class="topbar">
           <button class="kbtn" data-act="go" data-to="who">${icoBack} ${esc(ch.nickname)}</button>
           <div class="lanterns-lit"><span class="lantern-ico"></span> <span class="num">${litCount(ch)}</span> of ${E.SKILL_ORDER.length} lanterns lit</div>
           <button class="kbtn icon" data-act="pin" data-target="dashboard" aria-label="Grown-ups: enter PIN">${icoLock}</button>
         </div>
-        <div class="pip-row"><button class="pip-poke" data-act="pipPoke" aria-label="Say hi to Pip">${pipSvg(96, FX.poke || 'idle', { react: reactNow(), hidden: true })}</button><button class="kbtn big" data-act="pipIdea" data-autofocus>Pip's idea: ${idea}<span class="sr-only">, ${esc(E.SKILLS[na.skill].name)}</span></button></div>
-        <div class="row" style="justify-content:center"><button class="kbtn" data-act="lineStart"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M2 14h20M4 11v6M20 11v6M14 9l-2 5-2-5z"></path></svg> Warm-up: Lantern Line</button><button class="kbtn" data-act="go" data-to="games"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="12" rx="4"></rect><path d="M7 11v4M5 13h4M15 12h.01M18 14h.01"></path></svg> Math games</button>${trialsOn() ? '<button class="kbtn" data-act="go" data-to="trials">Extra ways to solve</button>' : ''}${openAdventures(child()).length ? '<button class="kbtn" data-act="go" data-to="adventures">Money adventures</button>' : ''}<button class="kbtn" data-act="go" data-to="journal"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"></path><path d="M5 17a3 3 0 0 1 3-3h11"></path></svg> My journal</button></div>
+        <header class="universe-head"><span class="uh-star" aria-hidden="true"></span><div><h1>Tenbright Discovery Universe</h1><p>Tap a place to see what you will learn.</p></div></header>
+        <div class="pip-row"><button class="pip-poke" data-act="pipPoke" aria-label="Say hi to Pip">${pipSvg(96, FX.poke || 'idle', { react: reactNow(), hidden: true })}</button><button class="kbtn big" data-act="pipIdea" ${view.dest ? '' : 'data-autofocus'}>Pip's idea: ${idea}<span class="sr-only">, ${esc(E.SKILLS[na.skill].name)}</span></button></div>
+        <div class="row" style="justify-content:center">${trialsOn() ? '<button class="kbtn" data-act="go" data-to="trials">Extra ways to solve</button>' : ''}<button class="kbtn" data-act="go" data-to="journal"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"></path><path d="M5 17a3 3 0 0 1 3-3h11"></path></svg> My journal</button></div>
         <div class="grade-pick" role="group" aria-label="Grade level">${[['all', 'All levels'], [1, 'Grade 1'], [2, 'Grade 2'], [3, 'Grade 3'], [4, 'Grade 4'], [5, 'Grade 5']].map(([v, l]) => `<button class="gchip" data-act="focus" data-g="${v}" aria-pressed="${fg === v}">${l}${v !== 'all' ? ` <span class="gcount num">${E.gradeProgress(ch.skills).find((x) => x.grade === v).lit}/${E.gradeProgress(ch.skills).find((x) => x.grade === v).total}</span>` : ''}</button>`).join('')}</div>
-        <div class="map">${REGIONS.map((r) => {
-          const ids = E.SKILL_ORDER.filter((id) => regionOf(id) === r.id && (fg === 'all' || E.gradeOf(id) === fg));
-          if (!ids.length) return `<div class="region locked" aria-label="${r.name}: no Grade ${fg} skills"><h2>${r.name}</h2><span class="sub">No Grade ${fg} skills here</span></div>`;
-          const open = ids.some((id) => ch.skills[id].status !== 'locked');
-          const lit = ids.filter((id) => ['mastered', 'certified', 'placed'].includes(ch.skills[id].status)).length;
-          const dim = ids.filter((id) => E.dueCheck(ch.skills[id], now())).length;
-          return `<button class="region ${open ? r.id : 'locked'}" data-act="region" data-region="${r.id}" ${open ? '' : 'disabled aria-disabled="true"'}>
-            <h2>${r.name}</h2>
-            <span class="lantern-row" aria-hidden="true">${ids.map((id) => { const st = ch.skills[id]; return `<span class="lantern-ico ${['mastered', 'certified', 'placed'].includes(st.status) && !E.dueCheck(st, now()) ? '' : st.status === 'locked' ? 'locked' : 'dim'}"></span>`; }).join('')}</span>
-            <span class="sub">${fg !== 'all' ? `Grade ${fg} · ` : ''}${open ? `${lit} of ${ids.length} lanterns lit${dim ? ` · ${dim} to relight` : ''}` : fg === 3 ? 'Opens after the Grade 2 skills it needs' : 'Opens later on the map'}</span>
-          </button>`;
-        }).join('')}</div>
+        ${DEST_CATS.map((c) => { const ids = Object.keys(DEST).filter((id) => DEST[id].cat === c.id && destShown(id)); return ids.length ? `<section class="dest-cat dc-${c.id}" aria-labelledby="dc-${c.id}"><h2 id="dc-${c.id}">${c.name}</h2><p class="dc-sub">${c.sub}</p><div class="map dest-grid">${ids.map((id) => destTile(id, ch, fg)).join('')}</div></section>` : ''; }).join('')}
+        </div>
       </main>`;
     },
     learn() {
@@ -4040,6 +4217,8 @@ html:not(.motion-still) .rt-run.dash { animation: rtDash .75s cubic-bezier(.25,.
     const ch = child();
     switch (act) {
       case 'go': view = { name: b.dataset.to }; confirmDelete = null; render(); break;
+      case 'dest': view = { name: 'map', dest: b.dataset.id }; render(); speak(destSay(b.dataset.id)); break;
+      case 'destClose': { const was = view.dest; view = { name: 'map' }; stopSpeaking(); render(); const t = app.querySelector(`[data-act="dest"][data-id="${was}"]`); if (t) t.focus(); break; }
       case 'sample': {
         const L = makeSample();
         if (!S.parent) { const salt = 'sample'; S.parent = { name: '', salt, pinHash: hashPin('1234', salt), consentAt: null, sampleOnly: true }; }
@@ -4282,6 +4461,7 @@ html:not(.motion-still) .rt-run.dash { animation: rtDash .75s cubic-bezier(.25,.
   });
   // keyboard: number keys work on item screens
   document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && view.name === 'map' && view.dest) { const c = app.querySelector('.dest-card [data-act="destClose"]'); if (c) c.click(); return; }
     if (view.name === 'learn' && session && session.frames && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
       const b = app.querySelector(`[data-act="${e.key === 'ArrowRight' ? 'frameNext' : 'framePrev'}"]:not([disabled])`); if (b) b.click(); return;
     }
@@ -4405,6 +4585,7 @@ html:not(.motion-still) .rt-run.dash { animation: rtDash .75s cubic-bezier(.25,.
       F("Hi, I'm Pip! I'm a helper made by the Tenbright team using a computer, and my voice is made by a computer too. I collect light beads. Ten beads make a lantern. Will you help me light the Kingdom?");
       F(ADV.intro); F(ADV.back); F(ADV.rest); D('I found 12 lanterns you can already light. ' + ADV.found); D('I found 1 lanterns you can already light. ' + ADV.found);
       F('Who is playing? Choose your player to start your Tenbright adventure!');
+      if (!ZU) Object.keys(DEST).forEach((id) => F(destSay(id)));
       if (ZU) { F(ZURI_HI); F(GAME_DONE.zrace); F(GAME_CLUE.zrace); F('Right!'); F('Right! You used the clue.'); F('Here is how.'); }
       F('Watch my capoeira moves!'); F('Let me play you a song!'); F('Hi, friend! I am so glad you are here.');
       F('Got it!'); F("Thanks! Let's keep exploring."); F('That’s how it works! Now it’s your turn.');

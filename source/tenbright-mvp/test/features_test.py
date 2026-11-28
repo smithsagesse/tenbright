@@ -49,7 +49,7 @@ with sync_playwright() as p:
     print('why did that work: ok')
     # 3. Lantern Line warm-up, 5 rounds, by slider and by tap
     pg.locator('[data-act="exitSession"]').click()
-    pg.locator('[data-act="lineStart"]').click()
+    pg.locator('[data-act="dest"][data-id="line"]').click(); pg.locator('.dest-card [data-act="lineStart"]').click()
     axe(pg, 'line')
     for i in range(5):
         if i % 2:

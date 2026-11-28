@@ -45,7 +45,7 @@ with sync_playwright() as p:
         setup(pg, lit=False)
         assert pg.locator('[data-to="adventures"]').count() == 0, 'adventures must wait for their math'
         pg.evaluate("() => { window.__tbChild().skills.FN02.status = 'mastered'; window.__tbView('map'); }")
-        pg.locator('[data-act="go"][data-to="adventures"]').click()
+        pg.locator('[data-act="dest"][data-id="adventures"]').click(); pg.locator('.dest-card [data-act="go"][data-to="adventures"]').click()
         assert 'Money adventures' in pg.locator('h1').inner_text() and 'The money is pretend.' in pg.locator('main').inner_text()
         axe(pg, 'adventures list ' + scheme)
         # 2. play: a story of linked steps with a running total
