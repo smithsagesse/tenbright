@@ -1,4 +1,4 @@
-"""Money and time (Tenbright 2.0, Phase 7, first strands): the Money Market and Clock Tower regions on the map, coin and
+"""Money and time (Tenbright 2.0, Phase 7, first strands): the Money Mission and Time Tower regions on the map, coin and
 clock pictures whose descriptions never give the answer away, a practice session in each strand with a clue on a
 known mistake, lessons that play through, coins only as math objects (no wallet or currency anywhere), light and dark
 accessibility, Arabic layout. Run after build: python3 test/money_time_test.py"""
@@ -32,7 +32,7 @@ with sync_playwright() as p:
         setup(pg)
         # 1. the two regions are on the map and open once their first skills' prerequisites are lit
         pg.evaluate("() => window.__tbView('map')")
-        for name in ['Money Market', 'Clock Tower']:
+        for name in ['Money Mission', 'Time Tower']:
             reg = pg.locator('button.region', has_text=name)
             assert reg.count() == 1 and reg.is_enabled(), name + ' should be open'
         axe(pg, 'map ' + scheme)

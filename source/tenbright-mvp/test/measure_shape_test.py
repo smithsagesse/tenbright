@@ -1,4 +1,4 @@
-"""Measurement and geometry (Tenbright 2.0, Phase 7, second slice): the Measuring Workshop and Shape Garden regions,
+"""Measurement and geometry (Tenbright 2.0, Phase 7, second slice): the Measurement Workshop and Geometry Galaxy regions,
 ruler, rectangle, shape, angle and grid pictures with descriptions (the grid's says where the star is), a clue on a known mistake, lessons that play through,
 light and dark accessibility, Arabic layout. Run after build: python3 test/measure_shape_test.py"""
 import pathlib, re
@@ -31,7 +31,7 @@ with sync_playwright() as p:
         setup(pg)
         # 1. the two regions are on the map and open once their first skills' prerequisites are lit
         pg.evaluate("() => window.__tbView('map')")
-        for name in ['Measuring Workshop', 'Shape Garden']:
+        for name in ['Measurement Workshop', 'Geometry Galaxy']:
             reg = pg.locator('button.region', has_text=name)
             assert reg.count() == 1 and reg.is_enabled(), name + ' should be open'
         axe(pg, 'map ' + scheme)

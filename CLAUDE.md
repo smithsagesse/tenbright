@@ -41,11 +41,15 @@ Full history: `docs/DECISIONS_AND_HISTORY.md`. Planning documents: `docs/`.
   name, subject, description, "In real life", "What you will learn" (the region's engine skills for the chosen grade, the
   adventures grouped by idea with investing only when a grown-up turns it on, or the real games) and one "Start exploring"
   button, which runs what tapping the region used to. Pip reads the card (`destSay`, recorded). Not shown because the app has
-  no lessons for them yet: percentages, bonds, banking, earning income, science and technology. Region names were kept
-  (brand); renaming them is the owner's call.
-- **Brand architecture:** GMIA is the company. Tenbright is the product. Number Kingdom is the world, with five regions:
-  Lantern Village (review hub), Bead Meadows (place value), Ferry River (add/subtract),
-  Orchard of Rows (multiplication) and Story Bridge (word problems).
+  no lessons for them yet: percentages, bonds, banking, earning income, science and technology. Region names became subject
+  names on Nov 28, 2026 (see Brand architecture).
+- **Brand architecture:** GMIA is the company. Tenbright is the product. The world is the Tenbright Discovery Universe (until
+  Nov 28, 2026 "Number Kingdom"). **Place names are subject names since Nov 28, 2026 (owner's decision):** Place Value Peaks
+  (was Bead Meadows), Addition Adventure (Ferry River), Multiplication Mountain (Orchard of Rows), Fraction Forest (Fraction
+  Falls), Decimal Docks (unchanged), Geometry Galaxy (Shape Garden), Measurement Workshop (Measuring Workshop), Time Tower
+  (Clock Tower), Pattern Palace (Lantern Village, the review hub), Money Mission (Money Market) and Word Problem Bridge
+  (Story Bridge). Region ids in code are unchanged (meadows, river, orchard, falls, docks, shapes, workshop, clock, village,
+  market, bridge); older notes below still use the old names.
 
 ## Current state (Tenbright 2.0, Nov 26, 2026; started from v22 of Nov 10)
 

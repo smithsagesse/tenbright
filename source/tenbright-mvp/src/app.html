@@ -1327,17 +1327,17 @@ html:not(.motion-still) .dest-card { animation: destUp .38s cubic-bezier(.2,.9,.
   const gradeOptions = (sel, withUnset) => (withUnset ? `<option value="" ${!sel ? 'selected' : ''}>Not set</option>` : '') + E.SCHOOL_GRADES.map((g) => `<option value="${g}" ${String(sel) === g ? 'selected' : ''}>${GRADE_LABEL[g]}</option>`).join('');
   const gradeNote = (g) => g === 'other' ? 'Pip will follow the learning path from wherever the placement walk shows your child is ready.' : '';
   const REGIONS = [
-    { id: 'meadows', name: 'Bead Meadows', what: 'Place value' },
-    { id: 'river', name: 'Ferry River', what: 'Adding and subtracting' },
-    { id: 'orchard', name: 'Orchard of Rows', what: 'Multiplying' },
-    { id: 'bridge', name: 'Story Bridge', what: 'Word problems' },
-    { id: 'village', name: 'Lantern Village', what: "Pip's puzzles and review" },
-    { id: 'falls', name: 'Fraction Falls', what: 'Fractions' },
+    { id: 'meadows', name: 'Place Value Peaks', what: 'Place value' },
+    { id: 'river', name: 'Addition Adventure', what: 'Adding and subtracting' },
+    { id: 'orchard', name: 'Multiplication Mountain', what: 'Multiplying' },
+    { id: 'bridge', name: 'Word Problem Bridge', what: 'Word problems' },
+    { id: 'village', name: 'Pattern Palace', what: "Pip's puzzles and review" },
+    { id: 'falls', name: 'Fraction Forest', what: 'Fractions' },
     { id: 'docks', name: 'Decimal Docks', what: 'Decimals' },
-    { id: 'market', name: 'Money Market', what: 'Coins and money' },
-    { id: 'clock', name: 'Clock Tower', what: 'Telling time' },
-    { id: 'workshop', name: 'Measuring Workshop', what: 'Length, perimeter and area' },
-    { id: 'shapes', name: 'Shape Garden', what: 'Shapes, angles and grids' }
+    { id: 'market', name: 'Money Mission', what: 'Coins and money' },
+    { id: 'clock', name: 'Time Tower', what: 'Telling time' },
+    { id: 'workshop', name: 'Measurement Workshop', what: 'Length, perimeter and area' },
+    { id: 'shapes', name: 'Geometry Galaxy', what: 'Shapes, angles and grids' }
   ];
   // ---------- The Tenbright Discovery Universe (owner, Nov 28, 2026): every place on the map says what it teaches ----------
   // Three categories, only where the app has real lessons (no percentages, bonds, banking, science or technology yet).
@@ -2154,7 +2154,7 @@ html:not(.motion-still) .dest-card { animation: destUp .38s cubic-bezier(.2,.9,.
     </svg>`;
   }
   const pipSvg = (size, mood, opts) => pipChar(size, mood || 'idle', opts);
-  // ---------- Zuri (owner, Nov 27, 2026): Pip's teammate, guide of the Shape Garden and the Measuring Workshop ----------
+  // ---------- Zuri (owner, Nov 27, 2026): Pip's teammate, guide of Geometry Galaxy and the Measurement Workshop ----------
   // Art: art/zuri-hero.webp, cut out of the owner's image by tools/art/zuri.py. Her superpower, Shape Spark: she draws glowing
   // shapes in the air. The shapes are drawn here in code, so they stay sharp and can move (only when animation allows).
   // Like Pip she says she is a computer-made helper and never claims to be a friend (hard rule 6).

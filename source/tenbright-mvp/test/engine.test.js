@@ -260,7 +260,7 @@ ok(E.SKILL_ORDER.filter((id) => !E.SKILLS[id].strategy).length === 125, '125 cor
   // a + b − c = d style sentences, left to right (× and ÷ only appear alone)
   // a + b − c = d style sentences, whole numbers or decimals; × binds tighter than + and −
   const trueSentences = (text, tag) => { const re = /(?<![\d.])(\d+(?:\.\d+)?)((?: [+−×÷] \d+(?:\.\d+)?)+) = (\d+(?:\.\d+)?)(?![\d.]*\d)/g; let m; while ((m = re.exec(text))) { const t = (m[1] + m[2]).split(' '); const terms = [+t[0]], ops = []; for (let i = 1; i < t.length; i += 2) { const x = +t[i + 1]; if (t[i] === '×') terms[terms.length - 1] *= x; else if (t[i] === '÷') terms[terms.length - 1] /= x; else { ops.push(t[i]); terms.push(x); } } let v = terms[0]; ops.forEach((o, i) => { v = o === '+' ? v + terms[i + 1] : v - terms[i + 1]; }); ok(Math.abs(v - +m[3]) < 1e-9, tag + ': false sentence ' + m[0]); } };
-  ['FN01', 'FN02', 'FN04', 'FN05', 'FN07'].forEach((id) => ok(E.SKILLS[id].region === 'market', id + ' in the Money Market'));
+  ['FN01', 'FN02', 'FN04', 'FN05', 'FN07'].forEach((id) => ok(E.SKILLS[id].region === 'market', id + ' in Money Mission'));
   for (let i = 0; i < 4000; i++) {
     for (const id of ['FN01', 'FN02', 'FN04', 'FN05', 'FN07']) {
       const it = E.generate(id, RF);

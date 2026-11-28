@@ -1,4 +1,4 @@
-"""Zuri (owner, Nov 27, 2026): Pip's teammate guides the Shape Garden and Measuring Workshop. Her picture (cut out of the
+"""Zuri (owner, Nov 27, 2026): Pip's teammate guides the Geometry Galaxy and Measurement Workshop. Her picture (cut out of the
 owner's image) and her code-drawn Shape Spark appear in those lessons and questions, Pip everywhere else (and in "Fix Pip's
 mistake"). Her hello says she is a computer-made helper and is captioned; labels say "with Zuri"; she speaks with her own
 recorded voice (Kokoro af_heart, audio/zuri-*.mp3); her shapes do not move with reduced motion; nothing leaves the device.
