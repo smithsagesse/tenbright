@@ -2243,9 +2243,9 @@ html.motion-still .z-notes { opacity: 1; }
     // Pip's piano tune (C major pentatonic, two short phrases)
     piano: [[523.3, 0], [587.3, 0.22], [659.3, 0.44], [784, 0.66], [659.3, 0.88], [784, 1.1], [880, 1.32], [1046.5, 1.6, 'sine', 0.8], [659.3, 1.6, 'sine', 0.4], [784, 1.6, 'sine', 0.4]]
   };
-  // Pip's piano and Zuri's violin: 15-second hip-hop tunes made by tools/art/music.py (sounds/pip-piano.mp3,
+  // Pip's piano and Zuri's violin: 10-second hip-hop tunes made by tools/art/music.py (sounds/pip-piano.mp3,
   // sounds/zuri-violin.mp3), played as ordinary audio files on the sound-effects volume, one at a time, map only
-  const TUNE_MS = 15300;
+  const TUNE_MS = 10300;
   function playTune(name) {
     const v = sfxVol(); if (!v) return;
     try { stopTune(true); const a = new Audio('sounds/' + name + '.mp3'); a.volume = Math.min(1, v * 0.8); FX.violinAudio = a; const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); } catch (e) { /* no audio */ }

@@ -32,12 +32,12 @@ Full history: `docs/DECISIONS_AND_HISTORY.md`. Planning documents: `docs/`.
   `python3 narration/record.py --speaker zuri`); speak() uses her clips whenever she is the guide on screen, and her device
   voice prefers a non-male voice. Like Pip she is a computer-made helper and never claims to be a friend (hard rule 6).
   The art-rights decision applies to her picture as to Pip's.
-  **Her violin and Pip's piano** (owner, Nov 28, 2026: 15 seconds each, "some hip-hop flavor", "make certain the kids are
+  **Her violin and Pip's piano** (owner, Nov 28, 2026: 10 seconds each since Nov 28 (15 seconds briefly before), "some hip-hop flavor", "make certain the kids are
   having fun while learning"): Zuri stands beside Pip on the map; a tap (`zuriPoke`) puts a violin and bow over her picture
   (`VIOLIN`, drawn in code; the bow moves and notes float up only with motion on). Pip's piano act (second tap on Pip, or once
-  when the map sits idle) now plays his own track. Both are original 15-second instrumentals at 96 BPM, 6 bars of 4/4: a
+  when the map sits idle) now plays his own track. Both are original 10-second instrumentals at 96 BPM, 4 bars of 4/4: a
   boom-bap beat (kick, snare, swung hi-hats), a sub bass, electric-piano chords, and the lead (Zuri: violin in D major over
-  Gmaj7 F#m7 Em7 A7; Pip: electric piano in C major over Fmaj7 Em7 Dm7 G7), synthesized by `tools/art/music.py` (no samples,
+  Gmaj7 F#m7 Gmaj7 D; Pip: electric piano in C major over Fmaj7 Em7 Fmaj7 C), synthesized by `tools/art/music.py` (no samples,
   no words) into `sounds/zuri-violin.mp3` and `sounds/pip-piano.mp3`, matched in loudness. `playTune`/`stopTune`: one tune at
   a time, on the sound-effects volume, map only (leaving the map or opening a destination card stops it); cached offline.
 - **The Tenbright Discovery Universe** (owner, Nov 28, 2026): the map's identity. A starry night sky, the title "Tenbright
